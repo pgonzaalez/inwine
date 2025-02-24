@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('description');
             $table->integer('price_demanded');
             $table->integer('quantity');
+            $table->string('image');
             $table->unsignedBigInteger('seller_id');
 
             $table->foreign('wine_type_id')->references('id')->on('wine_types');
