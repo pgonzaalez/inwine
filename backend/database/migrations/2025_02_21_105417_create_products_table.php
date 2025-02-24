@@ -18,9 +18,9 @@ return new class extends Migration
             $table->integer('year');
             $table->unsignedBigInteger('wine_type_id');
             $table->string('description');
-            $table->integer('price_demanded');
+            $table->integer('price_demanded')->nullable();;
             $table->integer('quantity');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->unsignedBigInteger('seller_id');
 
             $table->foreign('wine_type_id')->references('id')->on('wine_types');

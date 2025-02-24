@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('credit_card')->nullable();
             $table->string('bank_account')->nullable();
             $table->integer('balance')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
         });
     }
 

@@ -29,7 +29,7 @@ class ProductController extends Controller
             'year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
             'wine_type_id' => 'required|exists:wine_types,id',
             'description' => 'nullable|string',
-            'price_demand' => 'required|numeric|min:0',
+            'price_demanded' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'image' => 'nullable|url|max:255',
             'seller_id' => 'required|exists:sellers,id'
