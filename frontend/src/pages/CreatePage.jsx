@@ -8,7 +8,7 @@ export default function CreateProduct() {
         year: '',
         wine_type_id: '',
         description: '',
-        price_demand: '',
+        price_demanded: '',
         quantity: '',
         image: '',
         seller_id: ''
@@ -84,8 +84,8 @@ export default function CreateProduct() {
                 </div>
                 <div>
                     <label>Price Demand:</label>
-                    <input type="number" name="price_demand" value={formData.price_demand} onChange={handleChange} />
-                    {errors.price_demand && <span>{errors.price_demand[0]}</span>}
+                    <input type="number" name="price_demanded" value={formData.price_demanded} onChange={handleChange} />
+                    {errors.price_demanded && <span>{errors.price_demanded[0]}</span>}
                 </div>
                 <div>
                     <label>Quantity:</label>
