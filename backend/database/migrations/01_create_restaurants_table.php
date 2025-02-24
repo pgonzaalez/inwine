@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('restaurants', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('role_id');
-            $table->foreign('role_id')->references('id')->on('roles');
             $table->unsignedBigInteger('NIF')->unique();
             $table->string('name');
             $table->string('email')->unique();
