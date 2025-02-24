@@ -16,12 +16,12 @@ class Request extends Model
 
     public function restaurant()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Restaurant::class);
     }
     
     public function inversor()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Investor::class);
     }
   
     public function product()

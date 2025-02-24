@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->integer('price_offer');
             $table->enum('status', ['pending', 'accepted', 'rejected']);
-            $table->foreign('restaurant_id')->references('id')->on('users');
-            $table->foreign('inversor_id')->references('id')->on('users');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants');
+            $table->foreign('inversor_id')->references('id')->on('investors');
             $table->foreign('product_id')->references('id')->on('products');
 
             $table->timestamps();
