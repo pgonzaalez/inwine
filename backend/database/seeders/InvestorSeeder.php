@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Investor;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Restaurant;
+use App\Models\Seller;
 
 class InvestorSeeder extends Seeder
 {
@@ -13,6 +15,8 @@ class InvestorSeeder extends Seeder
      */
     public function run(): void
     {
-        Investor::factory()->count(10)->create();
+        Investor::factory()->count(5)->create();
+        Restaurant::factory()->count(5)->create();
+        Seller::factory()->count(5)->create();
     }
 }
