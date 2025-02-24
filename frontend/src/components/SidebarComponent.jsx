@@ -1,7 +1,7 @@
 export default function Sidebar() {
   return (
     <section>
-      <div className="w-[245px] h-[773px] absolute left-6 top-[193px] overflow-hidden bg-white">
+      <div className="w-[245px] h-[773px]  left-6 top-[193px] overflow-hidden bg-white">
         <div className="h-[115px] w-full p-4 flex items-center gap-4">
           <img
             src="image-usuari0.png"
