@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroui/avatar": "^2.2.10",
+    "@heroui/system": "^2.4.10",
+    "@heroui/theme": "^2.4.9",
     "@tailwindcss/vite": "^4.0.8",
+    "framer-motion": "^12.4.7",
     "lucide-react": "^0.475.0",
     "primereact": "^10.9.2",
     "prop-types": "^15.8.1",

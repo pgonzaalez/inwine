@@ -1,29 +1,26 @@
 import WineList from "@components/WineListComponent";
-import Header from "@components/HeaderComponent";
+import Sidebar from "@components/SidebarComponent";
 export default function SellerDashboardPage() {
   return (
     <>
-    <Header />
-
-      <div className="border border-black h-[966px] relative shadow-lg overflow-hidden">
-        
-          <div className="w-[1037px] h-[526px] absolute left-[87px] top-[212px] overflow-hidden">
+      <div className="flex">
+        <Sidebar />
+        <div className="flex-1 ml-[245px] p-6 bg-gray-100">
+          <div className="text-2xl font-bold text-gray-900">Els teus productes</div>
+          <div className="text-gray-700 mb-4">Gestiona els teus productes que hi son a la página</div>
+          
+          <div className="flex gap-4 mb-6">
+            <button className="text-[#800020] font-extrabold px-4 py-2 border-b-2 border-[#800020]">ACTIUS</button>
+            <button className="font-extrabold px-4 py-2 border-b-2 border-transparent hover:border-gray-400">EN ESPERA</button>
+            <button className="font-extrabold px-4 py-2 border-b-2 border-transparent hover:border-gray-400">VENUTS</button>
+          </div>
+          
+          <div className=" p-4 rounded-2xl ">
             <WineList />
           </div>
-
-          <div className="text-[32px] leading-[48px] absolute left-[91px] top-[61px]">
-            Els teus productes
-          </div>
-          <div className="text-[#91969e] font-semibold absolute left-[91px] top-[109px]">
-            Gestiona els teus productes que hi son a la página
-          </div>
-
-          <div className="flex gap-6 absolute left-[91px] top-[161px]">
-            <button className="text-[#800020] font-extrabold">ACTIUS</button>
-            <button className="font-extrabold">EN ESPERA</button>
-            <button className="font-extrabold">VENUTS</button>
-          </div>
+        </div>
       </div>
     </>
   );
 }
+
