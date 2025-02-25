@@ -5,7 +5,7 @@ export default function App() {
     <>
       <div>
         <h1>Hello</h1>
-        <Link to="/seller/123">Go to seller</Link>
+        <Link to="/seller/123/products">Go to seller</Link>
         <Link to="/create">Create product</Link>
       </div>
     </>
