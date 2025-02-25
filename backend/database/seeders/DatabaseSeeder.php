@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\WineType;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -11,13 +12,20 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+    public function run()
     {
-        // User::factory(10)->create();
+        if ($this->command->confirm('Vols refrescar la base de dades?', true)) {
+            $this->command->call('migrate:fresh');
+            $this->command->info("S'ha reconstruït la base de dades");
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->command->info('Base de dades inicialitzada amb exit.');
+
+        $this->call([
+            WineTypeSeeder::class,
+            InvestorSeeder::class,
+            SellerSeeder::class,
+            RestaurantSeeder::class,
         ]);
     }
 }

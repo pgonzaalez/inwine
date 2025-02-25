@@ -11,16 +11,19 @@ class Product extends Model
 
     protected $fillable = [
         "name",
+        "origin",
+        "year",
+        "wine_type_id",
         "description",
         "price_demand",
         "quantity",
-        "category_id",
+        "image",
         "seller_id",
     ];
 
-    public function category()
+    public function wineType()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(WineType::class, 'wine_type_id');
     }
 
     public function seller()

@@ -13,12 +13,12 @@ class Seller extends Model
     protected $fillable = [
         'NIF',
         'name',
+        'name_contact',
         'email',
         'password',
         'address',
         'phone',
         'credit_card',
-        'bank_account',
         'balance',
     ];
 
