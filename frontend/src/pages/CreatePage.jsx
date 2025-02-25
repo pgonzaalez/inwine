@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function CreateProduct() {
     const [wineTypes, setWineTypes] = useState([]);
-    
     const [formData, setFormData] = useState({
         name: '',
         origin: '',
@@ -18,6 +17,17 @@ export default function CreateProduct() {
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
+    useEffect(() => {
+        // Fetch wine types from the API
+        const fetchWineTypes = async () => {
+            const response = await fetch('http://localhost:8000/api/v1/winetypes');
+            const data = await response.json();
+            setWineTypes(data);
+        };
+
+        fetchWineTypes();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -25,6 +35,14 @@ export default function CreateProduct() {
             [name]: value
         });
     };
+
+    const handleWineTypeSelect = (wineTypeId) => {
+        setFormData({
+            ...formData,
+            wine_type_id: wineTypeId
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -59,7 +77,6 @@ export default function CreateProduct() {
                 <h1 className="text-2xl font-bold">Crear Producto</h1>
                 <Link to="/" className="text-blue-500 hover:underline">Volver</Link>
             </div>
-
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 {/* Nombre del producto */}
                 <div className="w-full">
@@ -69,44 +86,35 @@ export default function CreateProduct() {
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.name ? 'pt-6' : ''
-                                }`}
+                            className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.name ? 'pt-6' : ''}`}
                             placeholder="Nombre del producto"
                         />
                         <label
-                            className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.name
-                                ? '-top-2 text-gray-600 text-xs bg-white'
-                                : 'top-4 text-base'
-                                }`}
+                            className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.name ? '-top-2 text-gray-600 text-xs bg-white' : 'top-4 text-base'}`}
                         >
                             Nombre del producto
                         </label>
                     </div>
                     {errors.name && (
-                        <span className="text-red-500 text-xs mt-1">
-                            {errors.name[0]}
-                        </span>
+                        <span className="text-red-500 text-xs mt-1">{errors.name[0]}</span>
                     )}
                 </div>
 
 
-                {/* ID del Vendedor */}
+                {/* Selección del Tipo de Vino */}
                 <div className="w-full">
-                    <div className="relative">
-                        <input
-                            type="number"
-                            name="wine_type_id"
-                            value={formData.wine_type_id}
-                            onChange={handleChange}
-                            className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.wine_type_id ? 'pt-6' : ''}`}
-                            placeholder="ID del Vendedor"
-                        />
-                        <label className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.wine_type_id ? '-top-2 text-gray-600 text-xs bg-white' : 'top-4 text-base'}`}>
-                            ID del Tipo de Vino
-                        </label>
-                    </div>
-                    <div className="text-gray-400 text-xs mt-2 px-1">
-                        <span>Ejemplo: 1</span>
+                    <div className="text-lg font-semibold mb-2">Selecciona el Tipo de Vino</div>
+                    <div className="grid grid-cols-3 gap-4">
+                        {wineTypes.map((wine) => (
+                            <div
+                                key={wine.id}
+                                onClick={() => handleWineTypeSelect(wine.id)}
+                                className={`cursor-pointer border p-4 rounded-lg ${formData.wine_type_id === wine.id ? 'bg-blue-100 border-blue-500' : 'border-gray-300'}`}
+                            >
+                                <img src={wine.image} alt={wine.name} className="w-full h-32 object-cover mb-2 rounded" />
+                                <div className="text-center text-sm">{wine.name}</div>
+                            </div>
+                        ))}
                     </div>
                     {errors.wine_type_id && (
                         <span className="text-red-500 text-xs mt-1">{errors.wine_type_id[0]}</span>
