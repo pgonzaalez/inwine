@@ -20,16 +20,18 @@ class InvestorFactory extends Factory
         $letter = $this->calculateNIFLetter($numbers);
         $nif = $numbers . $letter;
 
+        $phone = '6' . $this->faker->numberBetween(10000000, 99999999);
+
         return [
             'NIF' => $nif,
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'password' => bcrypt('password'),
             'address' => $this->faker->address,
-            // 'phone' => $this->faker->phoneNumber,
+            'phone' => $phone,
             'credit_card' => $this->faker->creditCardNumber,
             'bank_account' => $this->faker->bankAccountNumber,
-            'balance' => $this->faker->numberBetween(1000, 100000),
+            'balance' => $this->faker->randomFloat(2, 0, 100000),
         ];
     }
 
