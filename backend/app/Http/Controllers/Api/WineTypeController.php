@@ -6,14 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\WineType;
 
-class WineTypeControler extends Controller
+class WineTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $wineType = WineType::all();
+        $wineType = WineType::pluck('name');
+
         return response()->json($wineType);
     }
 
