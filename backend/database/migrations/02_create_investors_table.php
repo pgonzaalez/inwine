@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('investors', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('NIF')->unique();
+            $table->string('NIF', 9)->unique();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('address')->nullable();
-            $table->integer('phone')->nullable();
+            $table->string('phone')->nullable();
             $table->string('credit_card')->nullable();
             $table->string('bank_account')->nullable();
-            $table->integer('balance')->nullable();
+            $table->decimal('balance', 10, 2)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
