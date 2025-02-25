@@ -13,11 +13,8 @@ class WineTypeController extends Controller
      */
     public function index()
     {
-        $wineType = WineType::pluck('name');
-
-        return response()->json($wineType);
+        return response()->json(WineType::get(['id','name', 'image']));
     }
-
     /**
      * Store a newly created resource in storage.
      */
