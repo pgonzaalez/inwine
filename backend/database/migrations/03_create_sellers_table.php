@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sellers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('NIF')->unique();
+            $table->string('NIF', 9)->unique();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('credit_card')->nullable();
             $table->string('bank_account')->nullable();
             $table->integer('balance')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
         });
     }
 
