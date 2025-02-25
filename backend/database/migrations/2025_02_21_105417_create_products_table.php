@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('year');
             $table->unsignedBigInteger('wine_type_id');
             $table->string('description');
-            $table->integer('price_demanded')->nullable();
+            $table->float('price_demanded');
             $table->integer('quantity');
             $table->string('image')->nullable();
             $table->unsignedBigInteger('seller_id');

@@ -15,7 +15,7 @@ class Product extends Model
         "year",
         "wine_type_id",
         "description",
-        "price_demand",
+        "price_demanded",
         "quantity",
         "image",
         "seller_id",
