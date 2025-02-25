@@ -19,10 +19,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('address')->nullable();
-            $table->integer('phone')->nullable();
+            $table->string('phone')->nullable();
             $table->string('credit_card')->nullable();
             $table->string('bank_account')->nullable();
-            $table->integer('balance')->nullable();
+            $table->decimal('balance', 10, 2)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
