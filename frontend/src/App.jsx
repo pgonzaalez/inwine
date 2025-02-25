@@ -3,6 +3,7 @@ import "./App.css"
 // Pages
 import Main from "@pages/MainPage";
 import Seller from "@pages/SellerDashboardPage";
+import Create from "@pages/CreatePage";
 
 export default function App() {
   
@@ -11,6 +12,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/seller/:id" element={<Seller />} />
+        <Route path="/create" element={<Create />} />
       </Routes>
     </Router>
   )
