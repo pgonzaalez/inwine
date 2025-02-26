@@ -7,6 +7,7 @@ export default function App() {
         <h1>Hello</h1>
         <Link to="/seller/123">Go to seller</Link>
         <Link to="/create">Create product</Link>
+        <Link to="/register">Register Inversor</Link>
       </div>
     </>
   )
