@@ -1,7 +1,8 @@
 import { Trash, Gift, Edit } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-const WineItem = ({ image, price, name, year, create_date, update_date }) => {
+const WineItem = ({ id,image, price, name, year, create_date, update_date }) => {
   create_date = new Date(create_date).toLocaleDateString("ca-ES", {
     year: "numeric",
     month: "2-digit",
@@ -15,6 +16,7 @@ const WineItem = ({ image, price, name, year, create_date, update_date }) => {
   });
 
   return (
+    <Link to={`/seller/123/products/${id}`} className="w-full">
     <div className="flex items-center gap-x-4">
       <input type="checkbox" className="w-5 h-5" />
       <div className="flex-1 bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full sm:w-auto">
@@ -57,6 +59,7 @@ const WineItem = ({ image, price, name, year, create_date, update_date }) => {
         </div>
       </div>
     </div>
+    </Link> 
   );
 };
 
@@ -104,6 +107,7 @@ export default function WineList() {
           {wines.map((wine) => (
             <WineItem
               key={wine.id}
+              id={wine.id}
               image={wine.image}
               price={wine.price_demanded}
               name={wine.name}

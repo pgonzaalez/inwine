@@ -23,8 +23,8 @@ export default function Header() {
           />
         </div>
         <Avatar
-          className="w-[40px] h-[40px]"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEjEsvXTv8VN3qvqghpw4cspvlwTsA1JHzEQ&s"
+          className="w-[40px] h-[40px] rounded-full"
+          src=""
         />
       </div>
     </header>
