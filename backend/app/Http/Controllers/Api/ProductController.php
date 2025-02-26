@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -42,14 +43,23 @@ class ProductController extends Controller
             ], 422);
         }
 
-        $product = Product::create($request->all());
+        try {
+            $product = Product::create($request->all());
+            Log::info('Producto creado exitosamente', ['product_id' => $product->id, 'product_data' => $product]);
+        } catch (\Exception $e) {
+            Log::error('Error al crear el producto', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear el producto'
+            ], 500);
+        }
 
+        // Respuesta exitosa
         return response()->json([
             'success' => true,
             'data' => $product
         ], 201);
     }
-
     /**
      * Display the specified resource.
      */
