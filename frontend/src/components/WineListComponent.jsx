@@ -1,8 +1,7 @@
-/* eslint-disable react/prop-types */
 import { Trash, Gift, Edit } from "lucide-react";
 import { useEffect, useState } from "react";
-const WineItem = ({ image, price, name, year, create_date, update_date }) => {
 
+const WineItem = ({ image, price, name, year, create_date, update_date }) => {
   create_date = new Date(create_date).toLocaleDateString("ca-ES", {
     year: "numeric",
     month: "2-digit",
@@ -64,6 +63,7 @@ const WineItem = ({ image, price, name, year, create_date, update_date }) => {
 export default function WineList() {
   const [wines, setWines] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchWines = async () => {
@@ -73,9 +73,13 @@ export default function WineList() {
           throw new Error("No s'ha pogut connectar amb el servidor");
         }
         const data = await response.json();
-        setWines(data);
+        if (data.length === 0) {
+          setErrorMessage("No tens vins publicats");
+        } else {
+          setWines(data);
+        }
       } catch (error) {
-        console.error(error);
+        setErrorMessage(error.message);
       } finally {
         setLoading(false);
       }
@@ -93,19 +97,23 @@ export default function WineList() {
 
   return (
     <>
-      <div className="mt-4 space-y-4">
-        {wines.map((wine) => (
-          <WineItem
-            key={wine.id}
-            image={wine.image}
-            price={wine.price_demanded}
-            name={wine.name}
-            year={wine.year}
-            create_date_date={wine.created_at}
-            update_date={wine.updated_at}
-          />
-        ))}
-      </div>
+      {errorMessage ? (
+        <div className="text-center">{errorMessage}</div>
+      ) : (
+        <div className="mt-4 space-y-4">
+          {wines.map((wine) => (
+            <WineItem
+              key={wine.id}
+              image={wine.image}
+              price={wine.price_demanded}
+              name={wine.name}
+              year={wine.year}
+              create_date={wine.created_at}
+              update_date={wine.updated_at}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }
