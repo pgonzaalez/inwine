@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/SidebarComponent";
 
 export default function CreateProduct() {
     const [wineTypes, setWineTypes] = useState([]);
@@ -72,254 +73,148 @@ export default function CreateProduct() {
     };
 
     return (
-        <div className="min-h-screen p-8 max-w-4xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-2xl font-bold">Crear Producto</h1>
-                <Link to="/" className="text-blue-500 hover:underline">Volver</Link>
-            </div>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                {/* Nombre del producto */}
-                <div className="w-full">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.name ? 'pt-6' : ''}`}
-                            placeholder="Nombre del producto"
-                        />
-                        <label
-                            className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.name ? '-top-2 text-gray-600 text-xs bg-white' : 'top-4 text-base'}`}
-                        >
-                            Nombre del producto
-                        </label>
-                    </div>
-                    {errors.name && (
-                        <span className="text-red-500 text-xs mt-1">{errors.name[0]}</span>
-                    )}
-                </div>
-
-
-                {/* Selección del Tipo de Vino */}
-                <div className="w-full">
-                    <div className="text-lg font-semibold mb-2">Selecciona el Tipo de Vino</div>
-                    <div className="grid grid-cols-3 gap-4">
-                        {wineTypes.map((wine) => (
-                            <div
-                                key={wine.id}
-                                onClick={() => handleWineTypeSelect(wine.id)}
-                                className={`cursor-pointer border p-4 rounded-lg ${formData.wine_type_id === wine.id ? 'bg-blue-100 border-blue-500' : 'border-gray-300'}`}
-                            >
-                                <img src={wine.image} alt={wine.name} className="w-full h-32 object-cover mb-2 rounded" />
-                                <div className="text-center text-sm">{wine.name}</div>
+        <div className="flex flex-col md:flex-row">
+            <div className="flex-1 p-4 md:p-8 max-w-4xl mx-auto">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                    {/* Sección 1 */}
+                    <div className="flex flex-col md:flex-row justify-between">
+                        <div className="md:w-1/3 text-sm text-gray-600 mb-4 md:mb-0">
+                            <h2 className="text-lg font-semibold">Escoge la categoría</h2>
+                            <p>Selecciona una opción del desplegable para elegir la categoría.</p>
+                        </div>
+                        <div className="md:w-2/3">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                {wineTypes.map((wine) => (
+                                    <div
+                                        key={wine.id}
+                                        onClick={() => handleWineTypeSelect(wine.id)}
+                                        className={`cursor-pointer border p-4 rounded-lg ${formData.wine_type_id === wine.id ? 'bg-blue-100 border-blue-500' : 'border-gray-300'}`}
+                                    >
+                                        <img src={wine.image} alt={wine.name} className="w-full h-24 object-cover mb-2 rounded" />
+                                        <div className="text-center text-sm">{wine.name}</div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                    {errors.wine_type_id && (
-                        <span className="text-red-500 text-xs mt-1">{errors.wine_type_id[0]}</span>
-                    )}
-                </div>
-
-
-                {/* Denominación de origen y Año */}
-                <div className="flex flex-wrap gap-5 w-full">
-                    <div className="flex-1 min-w-[250px]">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                name="origin"
-                                value={formData.origin}
-                                onChange={handleChange}
-                                className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.origin ? 'pt-6' : ''
-                                    }`}
-                                placeholder="Denominación de origen"
-                            />
-                            <label
-                                className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.origin
-                                    ? '-top-2 text-gray-600 text-xs bg-white'
-                                    : 'top-4 text-base'
-                                    }`}
-                            >
-                                Denominación de origen
-                            </label>
+                            {errors.wine_type_id && (
+                                <span className="text-red-500 text-xs mt-1">{errors.wine_type_id[0]}</span>
+                            )}
                         </div>
-                        <div className="flex justify-between text-gray-400 text-xs mt-2 px-1">
-                            <span>Ejemplo: Rioja</span>
-                            <span>{formData.origin.length}/50</span>
-                        </div>
-                        {errors.origin && (
-                            <span className="text-red-500 text-xs mt-1">
-                                {errors.origin[0]}
-                            </span>
-                        )}
                     </div>
 
-                    <div className="flex-1 min-w-[250px]">
-                        <div className="relative">
-                            <input
-                                type="number"
-                                name="year"
-                                value={formData.year}
-                                onChange={handleChange}
-                                className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.year ? 'pt-6' : ''
-                                    }`}
-                                placeholder="Año"
-                            />
-                            <label
-                                className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.year
-                                    ? '-top-2 text-gray-600 text-xs bg-white'
-                                    : 'top-4 text-base'
-                                    }`}
-                            >
-                                Año
-                            </label>
+                    {/* Sección 2 */}
+                    <div className="flex flex-col md:flex-row justify-between mt-8 border-t pt-8">
+                        <div className="md:w-1/3 text-sm text-gray-600 mb-4 md:mb-0">
+                            <h2 className="text-lg font-semibold">Crea el producto</h2>
+                            <p>Rellena los siguientes datos para crear tu vino. Proporciona toda la información relevante.</p>
                         </div>
-                        <div className="text-gray-400 text-xs mt-2 px-1">
-                            <span>Ejemplo: 2020</span>
+                        <div className="md:w-2/3 w-full">
+                            {/* Nombre del Producto */}
+                            <div className="relative mb-4">
+                                <input type="text" name="name" value={formData.name} onChange={handleChange}
+                                    className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder=" " id="name" />
+                                <label htmlFor="name" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
+                                    Nombre del producto
+                                </label>
+                                {errors.name && <span className="text-red-500 text-xs mt-1">{errors.name[0]}</span>}
+                            </div>
+
+                            {/* Denominación y Año en la misma fila */}
+                            <div className="flex flex-col md:flex-row gap-4">
+                                {/* Denominación */}
+                                <div className="relative mb-4 w-full">
+                                    <input type="text" name="origin" value={formData.origin} onChange={handleChange}
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder=" " id="origin" />
+                                    <label htmlFor="origin" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
+                                        Denominación de Origen
+                                    </label>
+                                    {errors.origin && <span className="text-red-500 text-xs mt-1">{errors.origin[0]}</span>}
+                                </div>
+
+                                {/* Año */}
+                                <div className="relative mb-4 w-full">
+                                    <input type="number" name="year" value={formData.year} onChange={handleChange}
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder=" " id="year" />
+                                    <label htmlFor="year" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
+                                        Año
+                                    </label>
+                                    {errors.year && <span className="text-red-500 text-xs mt-1">{errors.year[0]}</span>}
+                                </div>
+                            </div>
+
+                            {/* Descripción */}
+                            <div className="relative mb-4">
+                                <textarea name="description" value={formData.description} onChange={handleChange}
+                                    className="peer w-full h-24 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder=" " id="description" />
+                                <label htmlFor="description" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
+                                    Descripción
+                                </label>
+                                <div className="flex justify-between text-gray-400 text-xs mt-2 px-1">
+                                    <span>Máximo 255 caracteres</span>
+                                    <span>{formData.description.length}/255</span>
+                                </div>
+                                {errors.description && <span className="text-red-500 text-xs mt-1">{errors.description[0]}</span>}
+                            </div>
+
+                            {/* Cantidad y Precio en la misma fila */}
+                            <div className="flex flex-col md:flex-row gap-4">
+                                {/* Cantidad */}
+                                <div className="relative mb-4 w-full">
+                                    <input type="number" name="quantity" value={formData.quantity} onChange={handleChange}
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder=" " id="quantity" />
+                                    <label htmlFor="quantity" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
+                                        Cantidad
+                                    </label>
+                                    {errors.quantity && <span className="text-red-500 text-xs mt-1">{errors.quantity[0]}</span>}
+                                </div>
+
+                                {/* Precio */}
+                                <div className="relative mb-4 w-full">
+                                    <input type="number" name="price_demanded" value={formData.price_demanded} onChange={handleChange}
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder=" " id="price_demanded" />
+                                    <label htmlFor="price_demanded" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
+                                        Precio
+                                    </label>
+                                    {errors.price_demanded && <span className="text-red-500 text-xs mt-1">{errors.price_demanded[0]}</span>}
+                                </div>
+                            </div>
+
+                            {/* Imagen */}
+                            <div className="relative mb-4">
+                                <input type="text" name="image" value={formData.image} onChange={handleChange}
+                                    className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder=" " id="image" />
+                                <label htmlFor="image" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
+                                    URL de Imagen
+                                </label>
+                                {errors.image && <span className="text-red-500 text-xs mt-1">{errors.image[0]}</span>}
+                            </div>
+
+                            {/* ID del Vendedor */}
+                            <div className="relative mb-4">
+                                <input type="number" name="seller_id" value={formData.seller_id} onChange={handleChange}
+                                    className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder=" " id="seller_id" />
+                                <label htmlFor="seller_id" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
+                                    ID del Vendedor
+                                </label>
+                                {errors.seller_id && <span className="text-red-500 text-xs mt-1">{errors.seller_id[0]}</span>}
+                            </div>
                         </div>
-                        {errors.year && (
-                            <span className="text-red-500 text-xs mt-1">
-                                {errors.year[0]}
-                            </span>
-                        )}
-                    </div>
-                </div>
-
-                {/* Descripción */}
-                <div className="w-full relative">
-                    <div className="relative">
-                        <textarea
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            className={`w-full h-24 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.description ? 'pt-6' : ''
-                                }`}
-                            placeholder="Descripción"
-                        />
-                        <label
-                            className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.description
-                                ? '-top-2 text-gray-600 text-xs bg-white'
-                                : 'top-4 text-base'
-                                }`}
-                        >
-                            Descripción
-                        </label>
-                    </div>
-                    <div className="text-gray-400 text-xs mt-2">
-                        Añade información como la fecha, el identificador y cualquier otro detalle relevante
-                    </div>
-                    <div className="absolute right-0 bottom-8 text-gray-400 text-xs">
-                        {formData.description.length}/255
-                    </div>
-                    {errors.description && (
-                        <span className="text-red-500 text-xs mt-1">
-                            {errors.description[0]}
-                        </span>
-                    )}
-                </div>
-
-                {/* Precio Demandado y Cantidad */}
-                <div className="flex flex-wrap gap-5 w-full">
-                    <div className="flex-1 min-w-[250px]">
-                        <div className="relative">
-                            <input
-                                type="number"
-                                name="price_demanded"
-                                value={formData.price_demanded}
-                                onChange={handleChange}
-                                className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.price_demanded ? 'pt-6' : ''}`}
-                                placeholder="Precio Demandado"
-                            />
-                            <label className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.price_demanded ? '-top-2 text-gray-600 text-xs bg-white' : 'top-4 text-base'}`}>
-                                Precio Demandado
-                            </label>
-                        </div>
-                        <div className="text-gray-400 text-xs mt-2 px-1">
-                            <span>Ejemplo: 50.00</span>
-                        </div>
-                        {errors.price_demanded && (
-                            <span className="text-red-500 text-xs mt-1">{errors.price_demanded[0]}</span>
-                        )}
                     </div>
 
-                    <div className="flex-1 min-w-[250px]">
-                        <div className="relative">
-                            <input
-                                type="number"
-                                name="quantity"
-                                value={formData.quantity}
-                                onChange={handleChange}
-                                className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.quantity ? 'pt-6' : ''}`}
-                                placeholder="Cantidad"
-                            />
-                            <label className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.quantity ? '-top-2 text-gray-600 text-xs bg-white' : 'top-4 text-base'}`}>
-                                Cantidad
-                            </label>
-                        </div>
-                        <div className="text-gray-400 text-xs mt-2 px-1">
-                            <span>Ejemplo: 10</span>
-                        </div>
-                        {errors.quantity && (
-                            <span className="text-red-500 text-xs mt-1">{errors.quantity[0]}</span>
-                        )}
-                    </div>
-                </div>
 
-                {/* URL de la imagen */}
-                <div className="w-full">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            name="image"
-                            value={formData.image}
-                            onChange={handleChange}
-                            className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.image ? 'pt-6' : ''}`}
-                            placeholder="URL de la imagen"
-                        />
-                        <label className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.image ? '-top-2 text-gray-600 text-xs bg-white' : 'top-4 text-base'}`}>
-                            URL de la imagen
-                        </label>
-                    </div>
-                    <div className="flex justify-between text-gray-400 text-xs mt-2 px-1">
-                        <span>Ejemplo: https://ejemplo.com/imagen.jpg</span>
-                        <span>{formData.image.length}/255</span>
-                    </div>
-                    {errors.image && (
-                        <span className="text-red-500 text-xs mt-1">{errors.image[0]}</span>
-                    )}
-                </div>
-
-                {/* ID del Vendedor */}
-                <div className="w-full">
-                    <div className="relative">
-                        <input
-                            type="number"
-                            name="seller_id"
-                            value={formData.seller_id}
-                            onChange={handleChange}
-                            className={`w-full h-12 bg-white rounded-lg border border-gray-300 py-4 px-3 placeholder-transparent peer ${formData.seller_id ? 'pt-6' : ''}`}
-                            placeholder="ID del Vendedor"
-                        />
-                        <label className={`absolute left-3 transition-all text-gray-400 text-xs px-1 ${formData.seller_id ? '-top-2 text-gray-600 text-xs bg-white' : 'top-4 text-base'}`}>
-                            ID del Vendedor
-                        </label>
-                    </div>
-                    <div className="text-gray-400 text-xs mt-2 px-1">
-                        <span>Ejemplo: 123</span>
-                    </div>
-                    {errors.seller_id && (
-                        <span className="text-red-500 text-xs mt-1">{errors.seller_id[0]}</span>
-                    )}
-                </div>
-
-                <button
-                    type="submit"
-                    className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                    Crear Producto
-                </button>
-            </form>
+                    {/* Botón de enviar formulario */}
+                    <button type="submit" className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors self-end">
+                        Crear Producto
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

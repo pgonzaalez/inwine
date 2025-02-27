@@ -60,7 +60,6 @@ class ProductController extends Controller
             'data' => $product
         ], 201);
     }
-
     /**
      * Display the specified resource.
      */
