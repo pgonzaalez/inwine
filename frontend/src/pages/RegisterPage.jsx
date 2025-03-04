@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Mail, Lock, Home, Phone, CreditCard, Banknote } from 'lucide-react';
+import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark ,Banknote } from 'lucide-react';
 
 const AddInvestorForm = () => {
     const [formData, setFormData] = useState({
@@ -60,7 +60,7 @@ const AddInvestorForm = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl flex">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl flex">
                 <div className="w-1/2">
                     <div className="text-center mb-6">
                         <h1 className="text-2xl font-bold">Crear compte d'usuari inversor</h1>
@@ -68,65 +68,214 @@ const AddInvestorForm = () => {
                     </div>
                     {message && <p className="text-center text-green-500 mb-4">{message}</p>}
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <h2 className="text-lg font-semibold mb-2">Informació dades personals</h2>
                                 <div className="space-y-3">
-                                    <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                        <User className="text-gray-400 mr-2" />
-                                        <input type="text" name="name" placeholder="Nombre" value={formData.name} onChange={handleChange} required className="w-full outline-none" />
+                                    {/* Nombre */}
+                                    <div className="relative">
+                                        <div className="flex items-center">
+                                            <User className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={formData.name}
+                                                onChange={handleChange}
+                                                className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                placeholder=" "
+                                                id="name"
+                                                required
+                                            />
+                                            <label
+                                                htmlFor="name"
+                                                className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
+                                            >
+                                                Nom usuari
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                        <User className="text-gray-400 mr-2" />
-                                        <input type="text" name="NIF" placeholder="NIF" value={formData.NIF} onChange={handleChange} required className="w-full outline-none" />
+
+                                    {/* NIF */}
+                                    <div className="relative">
+                                        <div className="flex items-center">
+                                            <IdCard className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                            <input
+                                                type="text"
+                                                name="NIF"
+                                                value={formData.NIF}
+                                                onChange={handleChange}
+                                                className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                placeholder=" "
+                                                id="NIF"
+                                                required
+                                            />
+                                            <label
+                                                htmlFor="NIF"
+                                                className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
+                                            >
+                                                NIF
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                        <Home className="text-gray-400 mr-2" />
-                                        <input type="text" name="address" placeholder="Dirección" value={formData.address} onChange={handleChange} className="w-full outline-none" />
+
+                                    {/* Dirección */}
+                                    <div className="relative">
+                                        <div className="flex items-center">
+                                            <Home className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                            <input
+                                                type="text"
+                                                name="address"
+                                                value={formData.address}
+                                                onChange={handleChange}
+                                                className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                placeholder=" "
+                                                id="address"
+                                            />
+                                            <label
+                                                htmlFor="address"
+                                                className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
+                                            >
+                                                Adreça
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                        <Phone className="text-gray-400 mr-2" />
-                                        <input type="text" name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange} className="w-full outline-none" />
+
+                                    {/* Teléfono */}
+                                    <div className="relative">
+                                        <div className="flex items-center">
+                                            <Phone className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                            <input
+                                                type="text"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleChange}
+                                                className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                placeholder=" "
+                                                id="phone"
+                                            />
+                                            <label
+                                                htmlFor="phone"
+                                                className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
+                                            >
+                                                Telèfon contacte
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div>
                                 <h2 className="text-lg font-semibold mb-2">Informació inici de sessió</h2>
                                 <div className="space-y-3">
-                                    <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                        <Mail className="text-gray-400 mr-2" />
-                                        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required className="w-full outline-none" />
+                                    {/* Email */}
+                                    <div className="relative">
+                                        <div className="flex items-center">
+                                            <Mail className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                placeholder=" "
+                                                id="email"
+                                                required
+                                            />
+                                            <label
+                                                htmlFor="email"
+                                                className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
+                                            >
+                                                Email
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                        <Lock className="text-gray-400 mr-2" />
-                                        <input type="password" name="password" placeholder="Contraseña" value={formData.password} onChange={handleChange} required className="w-full outline-none" />
+
+                                    {/* Contraseña */}
+                                    <div className="relative">
+                                        <div className="flex items-center">
+                                            <Lock className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                            <input
+                                                type="password"
+                                                name="password"
+                                                value={formData.password}
+                                                onChange={handleChange}
+                                                className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                placeholder=" "
+                                                id="password"
+                                                required
+                                            />
+                                            <label
+                                                htmlFor="password"
+                                                className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
+                                            >
+                                                Contrasenya
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div>
                             <h2 className="text-lg font-semibold mb-2">Informació dades bancàries</h2>
                             <div className="space-y-3">
-                                <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                    <CreditCard className="text-gray-400 mr-2" />
-                                    <input type="text" name="credit_card" placeholder="Tarjeta de crédito" value={formData.credit_card} onChange={handleChange} className="w-full outline-none" />
+                                {/* Tarjeta de crédito */}
+                                <div className="relative">
+                                    <div className="flex items-center">
+                                        <CreditCard className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                        <input
+                                            type="text"
+                                            name="credit_card"
+                                            value={formData.credit_card}
+                                            onChange={handleChange}
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder=" "
+                                            id="credit_card"
+                                        />
+                                        <label
+                                            htmlFor="credit_card"
+                                            className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
+                                        >
+                                            Número tarjeta crèdit
+                                        </label>
+                                    </div>
                                 </div>
-                                <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                    <Banknote className="text-gray-400 mr-2" />
-                                    <input type="text" name="bank_account" placeholder="Cuenta bancaria" value={formData.bank_account} onChange={handleChange} className="w-full outline-none" />
-                                </div>
-                                <div className="flex items-center border-1 border-gray-400 rounded-lg p-2">
-                                    <Banknote className="text-gray-400 mr-2" />
-                                    <input type="number" name="balance" placeholder="Saldo" value={formData.balance} onChange={handleChange} className="w-full outline-none" />
+
+                                {/* Cuenta bancaria */}
+                                <div className="relative">
+                                    <div className="flex items-center">
+                                        <Landmark className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                        <input
+                                            type="text"
+                                            name="bank_account"
+                                            value={formData.bank_account}
+                                            onChange={handleChange}
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder=" "
+                                            id="bank_account"
+                                        />
+                                        <label
+                                            htmlFor="bank_account"
+                                            className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
+                                        >
+                                            Número compte
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" className="w-full bg-[#800020] text-white py-2 rounded-lg hover:bg-[#600018] transition duration-300">Agregar Inversor</button>
+
+                        <button
+                            type="submit"
+                            className="w-full bg-[#800020] text-white py-2 rounded-lg hover:bg-[#600018] transition duration-300"
+                        >
+                            Agregar Inversor
+                        </button>
                     </form>
                 </div>
                 <div className="w-1/2 pl-8">
-                    <img 
-                        src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" // Reemplaza con la URL de tu imagen
+                    <img
+                        src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         alt="Imagen lateral"
                         className="w-full h-full object-cover rounded-lg"
                     />
