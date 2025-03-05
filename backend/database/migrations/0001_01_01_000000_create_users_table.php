@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('address');
             $table->integer('phone');
+            $table->enum('role', ['seller', 'investor', 'restaurant']);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

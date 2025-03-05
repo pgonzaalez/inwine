@@ -13,15 +13,9 @@ return new class extends Migration
     {
         Schema::create('sellers', function (Blueprint $table) {
             $table->id();
-            $table->string('NIF', 9)->unique();
-            $table->string('name');
-            $table->string('name_contact');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('address')->nullable();
-            $table->integer('phone')->nullable();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('credit_card')->nullable();
+            $table->string('bank_account')->nullable();
             $table->decimal('balance', 10, 2)->nullable();
             $table->rememberToken();
             $table->timestamps();
