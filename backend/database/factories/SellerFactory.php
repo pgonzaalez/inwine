@@ -20,21 +20,9 @@ class SellerFactory extends Factory
         return [
             'user_id' => User::factory()->state(['role' => 'seller']),
             'name_contact' => $this->faker->name,
-            'credit_card' => $this->faker->creditCardNumber,
+            'bank_account' => $this->faker->bankAccountNumber,
             'balance' => $this->faker->randomFloat(2, 0, 100000),
         ];
     }
 
-    /**
-     * Calcula la letra del NIF a partir de los 8 números.
-     *
-     * @param int $numbers Los 8 números del NIF.
-     * @return string La letra correspondiente.
-     */
-    private function calculateNIFLetter($numbers)
-    {
-        $letters = 'TRWAGMYFPDXBNJZSQVHLCKE';
-        $index = $numbers % 23;
-        return $letters[$index];
-    }
 }

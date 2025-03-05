@@ -13,7 +13,7 @@ class Seller extends Model
     protected $fillable = [
         'user_id',
         'name_contact',
-        'credit_card',
+        'bank_account',
         'balance',
     ];
 
