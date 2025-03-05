@@ -23,11 +23,21 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $numbers = $this->faker->numberBetween(10000000, 99999999);
+        $letter = $this->calculateNIFLetter($numbers);
+        $nif = $numbers . $letter;
+
+        $phone = '6' . $this->faker->numberBetween(10000000, 99999999);
+
         return [
+            'NIF' => $nif,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'address' => $this->faker->address,
+            'phone' => $phone,
+            'role' => $this->faker->randomElement(['seller', 'investor', 'restaurant']),
+            'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ];
     }
@@ -37,8 +47,21 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Calcula la letra del NIF a partir de los 8 números.
+     *
+     * @param int $numbers Los 8 números del NIF.
+     * @return string La letra correspondiente.
+     */
+    private function calculateNIFLetter($numbers)
+    {
+        $letters = 'TRWAGMYFPDXBNJZSQVHLCKE';
+        $index = $numbers % 23;
+        return $letters[$index];
     }
 }
