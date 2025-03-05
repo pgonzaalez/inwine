@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Base de dades inicialitzada amb exit.');
 
         $this->call([
+            UserSeeder::class,
             WineTypeSeeder::class,
             InvestorSeeder::class,
             SellerSeeder::class,
             RestaurantSeeder::class,
-            UserSeeder::class,
         ]);
     }
 }

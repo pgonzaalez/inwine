@@ -10,12 +10,7 @@ class Investor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'NIF',
-        'name',
-        'email',
-        'password',
-        'address',
-        'phone',
+        'user_id',
         'credit_card',
         'bank_account',
         'balance',
@@ -31,7 +26,5 @@ class Investor extends Model
         return $this->belongsTo(Request::class);
 
     }
-
-
 
 }
