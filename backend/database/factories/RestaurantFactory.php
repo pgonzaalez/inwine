@@ -20,7 +20,7 @@ class RestaurantFactory extends Factory
 
         return [
             'user_id' => User::factory()->state([
-                'role' => 'seller',
+                'role' => 'restaurant',
                 'name' => $this->faker->company // Asegurar que sea una empresa
             ]),
             'name_contact' => $this->faker->name,
