@@ -2,7 +2,15 @@ import { Trash, Gift, Edit } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const WineItem = ({ id,image, price, name, year, create_date, update_date }) => {
+const WineItem = ({
+  id,
+  image,
+  price,
+  name,
+  year,
+  create_date,
+  update_date,
+}) => {
   create_date = new Date(create_date).toLocaleDateString("ca-ES", {
     year: "numeric",
     month: "2-digit",
@@ -17,49 +25,49 @@ const WineItem = ({ id,image, price, name, year, create_date, update_date }) => 
 
   return (
     <Link to={`/seller/123/products/${id}`} className="w-full">
-    <div className="flex items-center gap-x-4">
-      <input type="checkbox" className="w-5 h-5" />
-      <div className="flex-1 bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full sm:w-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-4 w-full sm:min-w-[300px]">
-            <img
-              src={image}
-              alt={name}
-              className="w-16 h-16 rounded-lg object-cover"
-            />
-            <div className="space-y-1">
-              <p className="text-lg font-semibold text-gray-900">{price}€</p>
-              <p className="text-gray-900 font-medium truncate max-w-[200px]">
-                {name}
-              </p>
-              <p className="text-gray-500 text-sm">{year}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-2">
+        <input type="checkbox" className="w-5 h-5" />
+        <div className="flex-1 bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4 w-full sm:min-w-[300px]">
+              <img
+                src={image}
+                alt={name}
+                className="w-16 h-16 rounded-lg object-cover"
+              />
+              <div className="space-y-1">
+                <p className="text-lg font-semibold text-gray-900">{price}€</p>
+                <p className="text-gray-900 font-medium truncate max-w-[200px]">
+                  {name}
+                </p>
+                <p className="text-gray-500 text-sm">{year}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-gray-600 w-full sm:w-auto">
-            <div className="text-center sm:text-left">
-              <p className="text-sm text-gray-500">Publicació</p>
-              <p className="text-gray-700 font-medium">{create_date}</p>
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-gray-600 w-full sm:w-auto">
+              <div className="text-center sm:text-left">
+                <p className="text-sm text-gray-500">Publicació</p>
+                <p className="text-gray-700 font-medium">{create_date}</p>
+              </div>
+              <div className="text-center sm:text-left">
+                <p className="text-sm text-gray-500">Modificació</p>
+                <p className="text-gray-700 font-medium">{update_date}</p>
+              </div>
             </div>
-            <div className="text-center sm:text-left">
-              <p className="text-sm text-gray-500">Modificació</p>
-              <p className="text-gray-700 font-medium">{update_date}</p>
+            <div className="flex gap-2 justify-end w-full sm:w-auto">
+              <button className="p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <Gift size={20} className="text-gray-600" />
+              </button>
+              <button className="p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <Edit size={20} className="text-gray-600" />
+              </button>
+              <button className="p-2.5 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors">
+                <Trash size={20} className="text-red-600" />
+              </button>
             </div>
-          </div>
-          <div className="flex gap-2 justify-end w-full sm:w-auto">
-            <button className="p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <Gift size={20} className="text-gray-600" />
-            </button>
-            <button className="p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <Edit size={20} className="text-gray-600" />
-            </button>
-            <button className="p-2.5 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors">
-              <Trash size={20} className="text-red-600" />
-            </button>
           </div>
         </div>
       </div>
-    </div>
-    </Link> 
+    </Link>
   );
 };
 
