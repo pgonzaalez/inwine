@@ -16,4 +16,9 @@ class Restaurant extends Model
         'credit_card',
         'balance',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

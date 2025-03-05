@@ -33,7 +33,7 @@ class UserFactory extends Factory
             'NIF' => $nif,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('1234'),
             'address' => $this->faker->address,
             'phone_contact' => $phone,
             'role' => $this->faker->randomElement(['seller', 'investor', 'restaurant']),
