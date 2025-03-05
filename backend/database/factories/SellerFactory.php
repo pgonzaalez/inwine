@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Seller>
@@ -16,20 +17,9 @@ class SellerFactory extends Factory
      */
     public function definition(): array
     {
-        $numbers = $this->faker->numberBetween(10000000, 99999999);
-        $letter = $this->calculateNIFLetter($numbers);
-        $nif = $numbers . $letter;
-
-        $phone = '6' . $this->faker->numberBetween(10000000, 99999999);
-
         return [
-            'NIF' => $nif,
-            'name' => $this->faker->company,
+            'user_id' => User::factory()->state(['role' => 'seller']),
             'name_contact' => $this->faker->name,
-            'email' => $this->faker->unique()->safeEmail,
-            'password' => bcrypt('password'),
-            'address' => $this->faker->address,
-            'phone' => $phone,
             'credit_card' => $this->faker->creditCardNumber,
             'balance' => $this->faker->randomFloat(2, 0, 100000),
         ];
