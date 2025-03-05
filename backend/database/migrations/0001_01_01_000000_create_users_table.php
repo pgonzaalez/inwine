@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('address');
-            $table->integer('phone');
+            $table->integer('phone_contact');
             $table->enum('role', ['seller', 'investor', 'restaurant']);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
