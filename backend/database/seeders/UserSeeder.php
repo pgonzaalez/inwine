@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Investor;
+use App\Models\Seller;
+use App\Models\Restaurant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +15,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory()->count(10)->create();
+        Investor::factory()->count(10)->create();
+        Seller::factory()->count(10)->create();
+        Restaurant::factory()->count(10)->create();
     }
 }
