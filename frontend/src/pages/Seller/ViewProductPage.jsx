@@ -6,7 +6,7 @@ import { CircleAlert, CornerDownLeft, Edit, Star, Trash } from "lucide-react";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { useEffect, useState } from "react";
-import ConfirmationDialog from "@components/ConfirmationDialogComponent"; // Importar el diálogo
+import ConfirmationDialog from "@components/ConfirmationDialogComponent"; // Importar el diàleg
 
 export default function ViewProductPage() {
   const { id: productID } = useParams();
@@ -17,7 +17,7 @@ export default function ViewProductPage() {
   const location = useLocation();
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // Estado para el diálogo
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // Estat per al diàleg
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,17 +84,17 @@ export default function ViewProductPage() {
     error: sellerError,
   } = useFetchUser(wines.user_id);
 
-  // Función para abrir el diálogo de confirmación
+  // Funció per obrir el diàleg de confirmació
   const openDeleteDialog = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  // Función para cerrar el diálogo de confirmación
+  // Funció per tancar el diàleg de confirmació
   const closeDeleteDialog = () => {
     setIsDeleteDialogOpen(false);
   };
 
-  // Función para eliminar el producto
+  // Funció per eliminar el producte
   const handleDeleteProduct = async () => {
     try {
       const response = await fetch(
@@ -108,15 +108,20 @@ export default function ViewProductPage() {
         throw new Error("No s'ha pogut eliminar el producte");
       }
 
-      // Redirigir a la lista de productos con un mensaje de éxito
+      // Redirigir a la llista de productes amb un missatge d'èxit
       navigate("/seller/123/products", {
         state: { successMessage: "Producte eliminat correctament ✅" },
       });
     } catch (error) {
       setErrorMessage(error.message);
     } finally {
-      closeDeleteDialog(); // Cerrar el diálogo después de la acción
+      closeDeleteDialog(); // Tancar el diàleg després de l'acció
     }
+  };
+
+  const formatDates = (data) => {
+    const date = new Date(data);
+    return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
   };
 
   if (loading) {
@@ -144,11 +149,6 @@ export default function ViewProductPage() {
     },
   ];
 
-  const formatDates = (data) => {
-    const date = new Date(data);
-    return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
-  };
-
   return (
     <>
       {errorMessage ? (
@@ -157,15 +157,17 @@ export default function ViewProductPage() {
         <>
           <Header />
           <div className="flex flex-col mt-[60px] h-[calc(100vh-60px)]">
-            <div className="flex flex-1">
+            {/* Envoltem el contingut amb flex-col per a mòbil i en fila en desktop */}
+            <div className="flex flex-1 flex-col md:flex-row">
               <Sidebar />
-              <main className="flex-1 ml-[245px] p-6 bg-gray-100 overflow-y-auto">
+              {/* El marge esquerre només s'aplica en desktop i afegim padding-bottom per a mòbil */}
+              <main className="flex-1 md:ml-[245px] p-6 pb-20 bg-gray-100 overflow-y-auto">
                 {showSuccessNotification && (
                   <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
                     {successMessage}
                   </div>
                 )}
-                {/* Diálogo de confirmación */}
+                {/* Diàleg de confirmació */}
                 <ConfirmationDialog
                   isOpen={isDeleteDialogOpen}
                   onClose={closeDeleteDialog}
@@ -188,18 +190,15 @@ export default function ViewProductPage() {
                       <Edit size={20} className="cursor-pointer" />
                     </Link>
                     <button
-                      onClick={openDeleteDialog} // Abrir el diálogo de confirmación
+                      onClick={openDeleteDialog}
                       className="border-2 border-red-500 rounded-lg p-1 hover:bg-red-100 transition-colors duration-200"
                     >
-                      <Trash
-                        size={20}
-                        className="text-red-500 cursor-pointer"
-                      />
+                      <Trash size={20} className="text-red-500 cursor-pointer" />
                     </button>
                   </div>
                 </div>
-                <div className="flex bg-white rounded-b-lg shadow-lg p-8 w-full">
-                  <div className="flex flex-col gap-4 w-1/2">
+                <div className="flex flex-col md:flex-row bg-white rounded-b-lg shadow-lg p-8 w-full">
+                  <div className="flex flex-col gap-4 md:w-1/2">
                     <div className="w-full flex justify-center items-center h-[400px]">
                       <div className="w-full max-w-lg object-cover">
                         <ImageGallery
@@ -213,16 +212,14 @@ export default function ViewProductPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="w-1/2 pl-8 flex flex-col justify-between">
+                  <div className="md:w-1/2 pl-0 md:pl-8 flex flex-col justify-between mt-4 md:mt-0">
                     <div>
                       <div className="flex flex-col justify-between text-gray-500 text-sm">
                         <div className="flex justify-between gap-2 items-center">
-                          <span>Vi {typeWines.name} </span>
+                          <span>Vi {typeWines.name}</span>
                           <span>
                             Productor:{" "}
-                            {sellerLoading
-                              ? "Carregant..."
-                              : seller?.name || "Desconegut"}
+                            {sellerLoading ? "Carregant..." : seller?.name || "Desconegut"}
                           </span>
                         </div>
                       </div>
@@ -230,9 +227,7 @@ export default function ViewProductPage() {
                         {wines.name} {wines.year}
                       </h2>
                       <div className="flex gap-2 items-center mt-2">
-                        <span className="text-gray-500 text-sm">
-                          {wines.origin}
-                        </span>
+                        <span className="text-gray-500 text-sm">{wines.origin}</span>
                       </div>
                       <div className="flex gap-2 items-center mt-2">
                         <span className="text-black text-xl font-bold">
@@ -242,9 +237,7 @@ export default function ViewProductPage() {
                       <div className="flex gap-2 items-center mt-2">
                         <span
                           className={`text-sm ${
-                            wines.quantity <= 10
-                              ? "text-red-500"
-                              : "text-gray-500"
+                            wines.quantity <= 10 ? "text-red-500" : "text-gray-500"
                           }`}
                         >
                           {wines.quantity} en stock
@@ -268,15 +261,13 @@ export default function ViewProductPage() {
                         <span className="text-black text-xs">1,3k Reseñas</span>
                       </div>
                       <div className="mt-4">
-                        <h3 className="text-black text-lg font-bold">
-                          Descripció
-                        </h3>
+                        <h3 className="text-black text-lg font-bold">Descripció</h3>
                         <p className="text-gray-500 text-base leading-6 mt-1">
                           {wines.description}
                         </p>
                       </div>
                     </div>
-                    <div className="flex justify-end gap-2 items-center text-gray-500">
+                    <div className="flex justify-end gap-2 items-center text-gray-500 mt-4">
                       <span>Publicat: {formatDates(wines.created_at)}</span>
                       <span>Actualitzat: {formatDates(wines.updated_at)}</span>
                     </div>

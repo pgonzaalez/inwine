@@ -10,12 +10,12 @@ export default function SellerDashboardPage() {
       <div className="flex flex-col mt-[60px] h-[calc(100vh-60px)]">
         <div className="flex flex-1">
           <Sidebar />
-          <div className="flex-1 ml-[245px] p-6 bg-gray-100 overflow-y-auto">
+          <div className="flex-1 md:ml-[245px] p-6 bg-gray-100 overflow-y-auto pb-16">
             <div className="text-2xl font-bold text-gray-900">
               Els teus productes
             </div>
             <div className="text-gray-700 mb-4">
-              Gestiona els teus productes que hi son a la página
+              Gestiona els teus productes que hi són a la pàgina
             </div>
 
             <div className="flex gap-4 mb-6">
