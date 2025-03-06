@@ -62,7 +62,7 @@ export default function CreateProduct() {
                 if (response.status === 422) {
                     setErrors(data.errors);
                 } else {
-                    throw new Error('Error creating product');
+                    throw new Error('Error en crear el producte');
                 }
             } else {
                 navigate('/');
@@ -77,10 +77,10 @@ export default function CreateProduct() {
             <div className="flex-1 p-4 md:p-8 max-w-4xl mx-auto">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                     {/* Sección 1 */}
-                    <div className="flex flex-col md:flex-row justify-between">
-                        <div className="md:w-1/3 text-sm text-gray-600 mb-4 md:mb-0">
-                            <h2 className="text-lg font-semibold">Escoge la categoría</h2>
-                            <p>Selecciona una opción del desplegable para elegir la categoría.</p>
+                    <div className="flex flex-col md:flex-row justify-between ">
+                        <div className="md:w-1/3 text-sm text-gray-600 mb-10 md:mb-0">
+                            <h2 className="text-lg font-semibold">Tria la categoría</h2>
+                            <p>Selecciona una opció d'aquest menú desplegable per escollir la categoria</p>
                         </div>
                         <div className="md:w-2/3">
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -104,8 +104,8 @@ export default function CreateProduct() {
                     {/* Sección 2 */}
                     <div className="flex flex-col md:flex-row justify-between mt-8 border-t pt-8">
                         <div className="md:w-1/3 text-sm text-gray-600 mb-4 md:mb-0">
-                            <h2 className="text-lg font-semibold">Crea el producto</h2>
-                            <p>Rellena los siguientes datos para crear tu vino. Proporciona toda la información relevante.</p>
+                            <h2 className="text-lg font-semibold">Crea el producte</h2>
+                            <p>Omple les següents dades per crear el teu producte. Proporciona tota la informació rellevant.</p>
                         </div>
                         <div className="md:w-2/3 w-full">
                             {/* Nombre del Producto */}
@@ -114,7 +114,7 @@ export default function CreateProduct() {
                                     className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder=" " id="name" />
                                 <label htmlFor="name" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
-                                    Nombre del producto
+                                    Nom del Vi
                                 </label>
                                 {errors.name && <span className="text-red-500 text-xs mt-1">{errors.name[0]}</span>}
                             </div>
@@ -127,7 +127,7 @@ export default function CreateProduct() {
                                         className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" " id="origin" />
                                     <label htmlFor="origin" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
-                                        Denominación de Origen
+                                        Denominació d'Origen
                                     </label>
                                     {errors.origin && <span className="text-red-500 text-xs mt-1">{errors.origin[0]}</span>}
                                 </div>
@@ -138,7 +138,7 @@ export default function CreateProduct() {
                                         className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" " id="year" />
                                     <label htmlFor="year" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
-                                        Año
+                                        Any
                                     </label>
                                     {errors.year && <span className="text-red-500 text-xs mt-1">{errors.year[0]}</span>}
                                 </div>
@@ -150,10 +150,10 @@ export default function CreateProduct() {
                                     className="peer w-full h-24 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder=" " id="description" />
                                 <label htmlFor="description" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
-                                    Descripción
+                                    Descripció
                                 </label>
                                 <div className="flex justify-between text-gray-400 text-xs mt-2 px-1">
-                                    <span>Máximo 255 caracteres</span>
+                                    <span>Máxim de  255 cáracters</span>
                                     <span>{formData.description.length}/255</span>
                                 </div>
                                 {errors.description && <span className="text-red-500 text-xs mt-1">{errors.description[0]}</span>}
@@ -167,7 +167,7 @@ export default function CreateProduct() {
                                         className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" " id="quantity" />
                                     <label htmlFor="quantity" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
-                                        Cantidad
+                                        Quantitat
                                     </label>
                                     {errors.quantity && <span className="text-red-500 text-xs mt-1">{errors.quantity[0]}</span>}
                                 </div>
@@ -178,7 +178,7 @@ export default function CreateProduct() {
                                         className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" " id="price_demanded" />
                                     <label htmlFor="price_demanded" className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75">
-                                        Precio
+                                        Preu
                                     </label>
                                     {errors.price_demanded && <span className="text-red-500 text-xs mt-1">{errors.price_demanded[0]}</span>}
                                 </div>
@@ -211,7 +211,7 @@ export default function CreateProduct() {
 
                     {/* Botón de enviar formulario */}
                     <button type="submit" className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors self-end">
-                        Crear Producto
+                        Crear Producte
                     </button>
                 </form>
             </div>

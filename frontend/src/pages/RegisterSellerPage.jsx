@@ -4,7 +4,7 @@ import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark ,Banknote }
 const AddSellerForm = () => {
     const [formData, setFormData] = useState({
         NIF: '',
-        name: '',
+        name: '',   
         email: '',
         password: '',
         address: '',
