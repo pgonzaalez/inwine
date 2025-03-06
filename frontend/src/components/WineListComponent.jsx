@@ -25,9 +25,10 @@ const WineItem = ({
 
   return (
     <Link to={`/seller/123/products/${id}`} className="w-full">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-2">
+      {/* Hem canviat flex-col sm:flex-row per forçar sempre la direcció horitzontal */}
+      <div className="flex items-center justify-between gap-6 p-2">
         <input type="checkbox" className="w-5 h-5" />
-        <div className="flex-1 bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full sm:w-auto">
+        <div className="flex-1 bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4 w-full sm:min-w-[300px]">
               <img
