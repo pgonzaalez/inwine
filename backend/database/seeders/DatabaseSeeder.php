@@ -23,10 +23,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             WineTypeSeeder::class,
-            // SellerSeeder::class,
-            // InvestorSeeder::class,
             UserSeeder::class,
-            // RestaurantSeeder::class,
         ]);
     }
 }
