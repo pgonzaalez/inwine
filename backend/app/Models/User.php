@@ -54,17 +54,17 @@ class User extends Authenticatable
     
     public function restaurants()
     {
-        return $this->hasMany(Restaurant::class);
+        return $this->hasOne(Restaurant::class);
     }
 
 
     public function sellers()
     {
-        return $this->hasMany(Seller::class);
+        return $this->hasOne(Seller::class);
     }
 
     public function investors()
     {
-        return $this->hasMany(Investor::class);
+        return $this->hasOne(Investor::class);
     }
 }
