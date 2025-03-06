@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Investor;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
-
 class InvestorController extends Controller
 {
     /**
@@ -25,55 +25,64 @@ class InvestorController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
-    
-        try {
-            // Validar los datos de entrada
-            $validatedData = $request->validate([
-                'NIF' => 'required|string|max:9|unique:investors',
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:investors',
-                'password' => 'required|string|min:8',
-                'address' => 'nullable|string|max:255',
-                'phone' => 'nullable|string|max:20',
-                'credit_card' => 'nullable|string|max:20',
-                'bank_account' => 'nullable|string|max:34',
-                'balance' => 'nullable|numeric',
-            ]);
-    
-            Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
-    
-            // Crear el inversor
-            $investor = Investor::create([
-                'NIF' => $request->NIF,
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password), // Encriptar la contraseña
-                'address' => $request->address,
-                'phone' => $request->phone,
-                'credit_card' => $request->credit_card,
-                'bank_account' => $request->bank_account,
-                'balance' => $request->balance ?? 0.00, // Valor por defecto si no se proporciona
-            ]);
-    
-            Log::info('Inversor creado exitosamente', ['investor_id' => $investor->id]);
-    
-            // Respuesta JSON
-            return response()->json([
-                'message' => 'Inversor creado exitosamente',
-                'investor' => $investor,
-            ], 201);
-    
-        } catch (\Exception $e) {
-            Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
-            
-            return response()->json([
-                'message' => 'Error al crear inversor',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+{
+    Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
+
+    try {
+        // Validar los datos de entrada
+        $validatedData = $request->validate([
+            'NIF' => 'required|string|max:9|unique:users,NIF',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'credit_card' => 'nullable|string|max:20',
+            'bank_account' => 'nullable|string|max:34',
+            'balance' => 'nullable|numeric',
+        ]);
+
+        Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
+
+        // Crear usuario
+        $user = User::create([
+            'NIF' => $validatedData['NIF'],
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+            'address' => $validatedData['address'],
+            'phone_contact' => $validatedData['phone'],
+            'role' => 'investor',
+            'email_verified_at' => now(),
+        ]);
+
+        Log::info('Usuario creado correctamente', ['user_id' => $user->id]);
+
+        // Crear inversor
+        $investor = Investor::create([
+            'user_id' => $user->id,
+            'credit_card' => $validatedData['credit_card'],
+            'bank_account' => $validatedData['bank_account'],
+            'balance' => $validatedData['balance'] ?? 0.00,
+        ]);
+
+        Log::info('Inversor creado exitosamente', ['investor_id' => $investor->id]);
+
+        return response()->json([
+            'message' => 'Inversor creado exitosamente',
+            'investor' => $investor,
+        ], 201);
+
+    } catch (\Exception $e) {
+        Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
+
+        return response()->json([
+            'message' => 'Error al crear inversor',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
     
 
     /**
