@@ -6,7 +6,7 @@ export default function Sidebar() {
   return (
     <section className="w-[245px] h-screen fixed top-[100px] left-0 bg-white shadow-md flex flex-col p-4 overflow-y-auto">
       <Link to="/seller/123/" className="flex gap-3 items-center cursor-pointer">
-      <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEjEsvXTv8VN3qvqghpw4cspvlwTsA1JHzEQ&s" />
+      <Avatar className="w-[40px] h-[40px] rounded-full" src="" />
         <div>
           <div className="font-extrabold text-black">Usuari Prova</div>
           <div className="text-[#91969e] text-xs">Rol del Usuari</div>
