@@ -5,6 +5,7 @@ import Main from "@pages/MainPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
 import Create from "@pages/CreatePage";
 import Register from "@pages/RegisterPage";
+import RegisterSeller from "@pages/RegisterSellerPage";
 
 export default function App() {
   
@@ -15,6 +16,8 @@ export default function App() {
         <Route path="/seller/:id/products" element={<Seller />} />
         <Route path="/create" element={<Create />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/registerseller" element={<RegisterSeller />} />
+
       </Routes>
     </Router>
   )
