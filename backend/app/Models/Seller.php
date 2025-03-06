@@ -11,17 +11,16 @@ class Seller extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'NIF',
-        'name',
+        'user_id',
         'name_contact',
-        'email',
-        'password',
-        'address',
-        'phone',
-        'credit_card',
+        'bank_account',
         'balance',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function products()
     {
         return $this->hasMany(Product::class);

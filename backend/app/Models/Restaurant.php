@@ -11,14 +11,14 @@ class Restaurant extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'NIF',
-        'name',
+        'user_id',
         'name_contact',
-        'email',
-        'password',
-        'address',
-        'phone',
         'credit_card',
         'balance',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
