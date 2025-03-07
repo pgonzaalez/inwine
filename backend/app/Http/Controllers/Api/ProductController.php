@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -42,12 +43,20 @@ class ProductController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
+        
+        DB::beginTransaction();
+        
         try {
             $product = Product::create($request->all());
             Log::info('Producto creado exitosamente', ['product_id' => $product->id, 'product_data' => $product]);
+            
+            DB::commit();
+
         } catch (\Exception $e) {
             Log::error('Error al crear el producto', ['error' => $e->getMessage()]);
+
+            DB::rollBack();
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al crear el producto'
