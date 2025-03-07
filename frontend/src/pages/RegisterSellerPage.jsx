@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark ,Banknote } from 'lucide-react';
 
-const AddInvestorForm = () => {
+const AddSellerForm = () => {
     const [formData, setFormData] = useState({
         NIF: '',
-        name: '',
+        name: '',   
         email: '',
         password: '',
         address: '',
         phone: '',
-        credit_card: '',
+        name_contact: '',
         bank_account: '',
         balance: '',
     });
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const [message, setMessage] = useState('');
-    const apiUrl = import.meta.env.VITE_API_URL;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,7 +27,7 @@ const AddInvestorForm = () => {
         setMessage('');
 
         try {
-            const response = await fetch(`${apiUrl}/v1/investor`, {
+            const response = await fetch(`${apiUrl}/v1/seller`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,11 +38,11 @@ const AddInvestorForm = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al crear inversor');
+                throw new Error(errorData.message || 'Error al crear seller');
             }
 
             const result = await response.json();
-            setMessage('Inversor creado exitosamente');
+            setMessage('seller creado exitosamente');
             setFormData({
                 NIF: '',
                 name: '',
@@ -50,7 +50,7 @@ const AddInvestorForm = () => {
                 password: '',
                 address: '',
                 phone: '',
-                credit_card: '',
+                name_contact: '',
                 bank_account: '',
                 balance: '',
             });
@@ -64,7 +64,7 @@ const AddInvestorForm = () => {
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl flex">
                 <div className="w-1/2">
                     <div className="text-center mb-6">
-                        <h1 className="text-2xl font-bold">Crear compte d'usuari inversor</h1>
+                        <h1 className="text-2xl font-bold">Crear compte d'usuari productor</h1>
                         <h4 className="text-gray-600">Tens un compte? <a href="#" className="text-[#800020]">Inicia sessió</a></h4>
                     </div>
                     {message && <p className="text-center text-green-500 mb-4">{message}</p>}
@@ -220,24 +220,24 @@ const AddInvestorForm = () => {
                         <div>
                             <h2 className="text-lg font-semibold mb-2">Informació dades bancàries</h2>
                             <div className="space-y-3">
-                                {/* Tarjeta de crédito */}
+                                {/* Nom de contacto */}
                                 <div className="relative">
                                     <div className="flex items-center">
                                         <CreditCard className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                                         <input
                                             type="text"
-                                            name="credit_card"
-                                            value={formData.credit_card}
+                                            name="name_contact"
+                                            value={formData.name_contact}
                                             onChange={handleChange}
                                             className="peer w-full h-12 bg-white rounded-lg border border-gray-300 pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
-                                            id="credit_card"
+                                            id="name_contact"
                                         />
                                         <label
-                                            htmlFor="credit_card"
+                                            htmlFor="name_contact"
                                             className="absolute left-10 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
                                         >
-                                            Número tarjeta crèdit
+                                            Nom de contacte
                                         </label>
                                     </div>
                                 </div>
@@ -270,13 +270,13 @@ const AddInvestorForm = () => {
                             type="submit"
                             className="w-full bg-[#800020] text-white py-2 rounded-lg hover:bg-[#600018] transition duration-300"
                         >
-                            Agregar Inversor
+                            Agregar Productor
                         </button>
                     </form>
                 </div>
                 <div className="w-1/2 pl-8">
                     <img
-                        src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        src="https://media.istockphoto.com/id/1363666079/es/foto/el-propietario-de-la-bodega-y-experto-en-control-de-calidad-comprobando-la-calidad-del-vino-en.jpg?s=612x612&w=0&k=20&c=23hm_w9AIaUJsQyBZd0TmqkWAvk5iglIjZ7Pw_857_8="
                         alt="Imagen lateral"
                         className="w-full h-full object-cover rounded-lg"
                     />
@@ -286,4 +286,4 @@ const AddInvestorForm = () => {
     );
 };
 
-export default AddInvestorForm;
+export default AddSellerForm;

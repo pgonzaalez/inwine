@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
 class InvestorController extends Controller
 {
     /**
@@ -25,65 +27,68 @@ class InvestorController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
+    {
+        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
 
-    try {
-        // Validar los datos de entrada
-        $validatedData = $request->validate([
-            'NIF' => 'required|string|max:9|unique:users,NIF',
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8',
-            'address' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'credit_card' => 'nullable|string|max:20',
-            'bank_account' => 'nullable|string|max:34',
-            'balance' => 'nullable|numeric',
-        ]);
+        try {
+            // Validar los datos de entrada
+            $validatedData = $request->validate([
+                'NIF' => 'required|string|max:9|unique:users,NIF',
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email',
+                'password' => 'required|string|min:8',
+                'address' => 'nullable|string|max:255',
+                'phone' => 'nullable|string|max:20',
+                'name_contact' => 'nullable|string|max:20',
+                'bank_account' => 'nullable|string|max:34',
+                'balance' => 'nullable|numeric',
+            ]);
 
-        Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
+            Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
 
-        // Crear usuario
-        $user = User::create([
-            'NIF' => $validatedData['NIF'],
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-            'address' => $validatedData['address'],
-            'phone_contact' => $validatedData['phone'],
-            'role' => 'investor',
-            'email_verified_at' => now(),
-        ]);
+            DB::beginTransaction();
 
-        Log::info('Usuario creado correctamente', ['user_id' => $user->id]);
+            // Crear usuario
+            $user = User::create([
+                'NIF' => $validatedData['NIF'],
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($validatedData['password']),
+                'address' => $validatedData['address'],
+                'phone_contact' => $validatedData['phone'],
+                'role' => 'investor',
+                'email_verified_at' => now(),
+            ]);
 
-        // Crear inversor
-        $investor = Investor::create([
-            'user_id' => $user->id,
-            'credit_card' => $validatedData['credit_card'],
-            'bank_account' => $validatedData['bank_account'],
-            'balance' => $validatedData['balance'] ?? 0.00,
-        ]);
+            Log::info('Usuario creado correctamente', ['user_id' => $user->id]);
 
-        Log::info('Inversor creado exitosamente', ['investor_id' => $investor->id]);
+            // Crear inversor
+            $investor = Investor::create([
+                'user_id' => $user->id,
+                'name_contact' => $validatedData['name_contact'],
+                'bank_account' => $validatedData['bank_account'],
+                'balance' => $validatedData['balance'] ?? 0.00,
+            ]);
 
-        return response()->json([
-            'message' => 'Inversor creado exitosamente',
-            'investor' => $investor,
-        ], 201);
+            Log::info('Inversor creado exitosamente', ['investor_id' => $investor->id]);
 
-    } catch (\Exception $e) {
-        Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
+            DB::commit();
 
-        return response()->json([
-            'message' => 'Error al crear inversor',
-            'error' => $e->getMessage(),
-        ], 500);
+            return response()->json([
+                'message' => 'Inversor creado exitosamente',
+                'investor' => $investor,
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
+
+            DB::rollBack();
+            
+            return response()->json([
+                'message' => 'Error al crear inversor',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
-}
-
-    
 
     /**
      * Display the specified resource.
