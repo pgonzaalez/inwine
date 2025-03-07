@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark ,Banknote } from 'lucide-react';
+import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark } from 'lucide-react';
 
 const AddInvestorForm = () => {
     const [formData, setFormData] = useState({
@@ -61,15 +61,17 @@ const AddInvestorForm = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl flex">
-                <div className="w-1/2">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl flex flex-col md:flex-row">
+                <div className="w-full md:w-1/2">
                     <div className="text-center mb-6">
                         <h1 className="text-2xl font-bold">Crear compte d'usuari inversor</h1>
-                        <h4 className="text-gray-600">Tens un compte? <a href="#" className="text-[#800020]">Inicia sessió</a></h4>
+                        <h4 className="text-gray-600">
+                            Tens un compte? <a href="#" className="text-[#800020]">Inicia sessió</a>
+                        </h4>
                     </div>
                     {message && <p className="text-center text-green-500 mb-4">{message}</p>}
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <h2 className="text-lg font-semibold mb-2">Informació dades personals</h2>
                                 <div className="space-y-3">
@@ -274,7 +276,7 @@ const AddInvestorForm = () => {
                         </button>
                     </form>
                 </div>
-                <div className="w-1/2 pl-8">
+                <div className="w-full md:w-1/2 md:pl-8 mt-8 md:mt-0">
                     <img
                         src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         alt="Imagen lateral"
