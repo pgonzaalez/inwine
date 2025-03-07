@@ -23,6 +23,7 @@ export default function App() {
         >
           Registra un Productor
         </Link>
+        <Link to="/login">Login</Link>
       </div>
     </div>
   );
