@@ -17,7 +17,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
-    Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
+    // Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
+    Route::apiResource('/products', ProductController::class);
     Route::apiResource('/winetypes', WineTypeController::class);
     Route::apiResource('/investor', InvestorController::class);
     Route::post('/seller', [AuthController::class, 'storeSeller']);
