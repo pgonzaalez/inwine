@@ -61,7 +61,7 @@ export default function EditProductPage() {
     e.preventDefault();
   
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/products/${productID}`, {
+      const response = await fetch(`${apiUrl}/v1/products/${productID}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
