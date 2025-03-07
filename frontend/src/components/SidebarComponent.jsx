@@ -1,7 +1,12 @@
 import React from "react";
 import { Avatar, Divider } from "@heroui/react";
 import { Link, useLocation } from "react-router-dom";
-import { LucideShoppingCart, BookmarkPlusIcon, Bell, LogOut } from "lucide-react";
+import {
+  LucideShoppingCart,
+  BookmarkPlusIcon,
+  Bell,
+  LogOut,
+} from "lucide-react";
 
 export default function Sidebar() {
   const location = useLocation();
@@ -10,7 +15,10 @@ export default function Sidebar() {
     <>
       {/* Barra lateral per a pantalles grans */}
       <section className="hidden md:flex flex-col w-[245px] h-screen fixed top-[100px] left-0 bg-white shadow-md p-4 overflow-y-auto">
-        <Link to="/seller/123/" className="flex gap-3 items-center cursor-pointer">
+        <Link
+          to="/seller/123/"
+          className="flex gap-3 items-center cursor-pointer"
+        >
           <Avatar className="w-[40px] h-[40px] rounded-full" src="" />
           <div>
             <div className="font-extrabold text-black">Usuari Prova</div>
@@ -22,7 +30,9 @@ export default function Sidebar() {
           <Link
             to="/create"
             className={`flex items-center gap-4 p-3 rounded-[20px] cursor-pointer ${
-              location.pathname === "/create" ? "bg-[#efefef]" : "hover:bg-gray-100"
+              location.pathname === "/create"
+                ? "bg-[#efefef]"
+                : "hover:bg-gray-100"
             }`}
           >
             <BookmarkPlusIcon size={20} />
@@ -31,7 +41,9 @@ export default function Sidebar() {
           <Link
             to="/seller/123/products"
             className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer ${
-              location.pathname === "/seller/123/products" ? "bg-[#efefef]" : "hover:bg-gray-100"
+              location.pathname === "/seller/123/products"
+                ? "bg-[#efefef]"
+                : "hover:bg-gray-100"
             }`}
           >
             <LucideShoppingCart size={20} />
@@ -40,7 +52,9 @@ export default function Sidebar() {
           <Link
             to="/seller/123/notificacions"
             className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer ${
-              location.pathname === "/seller/123/notificacions" ? "bg-[#efefef]" : "hover:bg-gray-100"
+              location.pathname === "/seller/123/notificacions"
+                ? "bg-[#efefef]"
+                : "hover:bg-gray-100"
             }`}
           >
             <Bell size={20} />
@@ -49,7 +63,9 @@ export default function Sidebar() {
           <Link
             to="/logout"
             className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer ${
-              location.pathname === "/logout" ? "bg-[#efefef]" : "hover:bg-gray-100"
+              location.pathname === "/logout"
+                ? "bg-[#efefef]"
+                : "hover:bg-gray-100"
             }`}
           >
             <LogOut size={20} />
@@ -59,7 +75,7 @@ export default function Sidebar() {
       </section>
 
       {/* Barra inferior per a mòbils */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow flex justify-around p-2">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow flex justify-around p-2 z-10">
         <Link
           to="/create"
           className={`flex flex-col items-center p-2 ${
@@ -72,7 +88,9 @@ export default function Sidebar() {
         <Link
           to="/seller/123/products"
           className={`flex flex-col items-center p-2 ${
-            location.pathname === "/seller/123/products" ? "text-[#800020]" : "text-gray-500"
+            location.pathname === "/seller/123/products"
+              ? "text-[#800020]"
+              : "text-gray-500"
           }`}
         >
           <LucideShoppingCart size={20} />
@@ -81,7 +99,9 @@ export default function Sidebar() {
         <Link
           to="/seller/123/notificacions"
           className={`flex flex-col items-center p-2 ${
-            location.pathname === "/seller/123/notificacions" ? "text-[#800020]" : "text-gray-500"
+            location.pathname === "/seller/123/notificacions"
+              ? "text-[#800020]"
+              : "text-gray-500"
           }`}
         >
           <Bell size={20} />
