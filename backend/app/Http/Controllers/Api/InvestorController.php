@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class InvestorController extends Controller
 {
@@ -45,6 +46,8 @@ class InvestorController extends Controller
 
             Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
 
+            DB::beginTransaction();
+
             // Crear usuario
             $user = User::create([
                 'NIF' => $validatedData['NIF'],
@@ -69,6 +72,8 @@ class InvestorController extends Controller
 
             Log::info('Inversor creado exitosamente', ['investor_id' => $investor->id]);
 
+            DB::commit();
+
             return response()->json([
                 'message' => 'Inversor creado exitosamente',
                 'investor' => $investor,
@@ -76,6 +81,8 @@ class InvestorController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
 
+            DB::rollBack();
+            
             return response()->json([
                 'message' => 'Error al crear inversor',
                 'error' => $e->getMessage(),
