@@ -8,6 +8,7 @@ export default function App() {
         <Link to="/seller/123/products">Go to seller</Link>
         <Link to="/create">Create product</Link>
         <Link to="/register">Register Inversor</Link>
+        <Link to="/login">Login</Link>
       </div>
     </>
   )
