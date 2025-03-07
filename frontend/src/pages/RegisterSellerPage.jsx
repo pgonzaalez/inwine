@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const AddSellerForm = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         NIF: '',
-        name: '',   
+        name: '',
         email: '',
         password: '',
         address: '',
@@ -54,6 +57,10 @@ const AddSellerForm = () => {
                 bank_account: '',
                 balance: '',
             });
+
+            setTimeout(() => {
+                navigate("/");
+            }, 2000);
         } catch (error) {
             setMessage(`Error: ${error.message}`);
         }
