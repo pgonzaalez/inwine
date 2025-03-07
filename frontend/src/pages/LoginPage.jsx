@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { User, Lock } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+
 
 const AddLoginForm = () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
 
     const [message, setMessage] = useState('');
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,7 +25,7 @@ const AddLoginForm = () => {
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:8000/api/login', {
+            const response = await fetch(`${apiUrl}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,6 +48,10 @@ const AddLoginForm = () => {
                 email: '',
                 password: '',
             });
+
+            setTimeout(() => {
+                navigate("/"); 
+            }, 2000);
         } catch (error) {
             setMessage(`Error: ${error.message}`);
         }
