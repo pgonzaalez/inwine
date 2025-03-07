@@ -20,4 +20,5 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
     Route::apiResource('/winetypes', WineTypeController::class);
     Route::apiResource('/investor', InvestorController::class);
+    Route::post('/seller', [AuthController::class, 'storeSeller']);
 });

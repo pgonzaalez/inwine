@@ -1,0 +1,170 @@
+= Desplegament d'un Projecte React amb Vite en Apache
+
+== Requisits previs
+- Servidor amb Apache instal·lat (Ubuntu 22.04 o similar)
+- Projecte React amb Vite en un repositori Git
+- Accés SSH al servidor
+- Domini apuntant a la IP del servidor
+
+== Pas 1: Preparació del servidor
+
+1. Accedeix al servidor per SSH:
+
+   ```bash
+   ssh usuari@el-teu-servidor-ip
+   ```
+
+2. Assegura't que Apache estigui instal·lat i en execució:
+
+   ```bash
+   sudo apt update
+   sudo apt install apache2 -y
+   sudo systemctl enable --now apache2
+   ```
+
+3. Verifica l'estat d'Apache:
+
+   ```bash
+   sudo systemctl status apache2
+   ```
+
+== Pas 2: Clonar i construir el projecte React
+
+1. Clona el repositori del teu projecte al servidor:
+
+   ```bash
+   cd /var/www/
+   sudo git clone https://gitlab.com/gonzalez.miranda.pol/grup-6-polgonzalez.git 
+   cd grup-6-polgonzalez/individual
+   ```
+
+2. Instal·la les dependències i construeix el projecte:
+
+   ```bash
+   sudo apt install nodejs npm -y
+   npm install
+   npm run build
+   ```
+
+3. Copia els fitxers de `dist/` a la carpeta d'Apache:
+
+   ```bash
+   sudo cp -r dist/* /var/www/html/
+   ```
+
+4. Ajusta els permisos:
+
+   ```bash
+   sudo chown -R www-data:www-data /var/www/html/
+   sudo chmod -R 755 /var/www/html/
+   ```
+
+== Pas 3: Configuració d'Apache
+
+1. Edita la configuració del lloc d'Apache:
+
+   ```bash
+   sudo nano /etc/apache2/sites-available/000-default.conf
+   ```
+
+   Afegeix o modifica el següent dins de `<VirtualHost *:80>`:
+
+   ```apache
+   <VirtualHost *:80>
+       ServerAdmin webmaster@el-teu-domini
+       DocumentRoot /var/www/html
+
+       <Directory /var/www/html>
+           Options -Indexes +FollowSymLinks
+           AllowOverride All
+           Require all granted
+       </Directory>
+
+       <IfModule mod_mime.c>
+           AddType application/javascript .js
+           AddType text/css .css
+       </IfModule>
+
+       ErrorLog ${APACHE_LOG_DIR}/error.log
+       CustomLog ${APACHE_LOG_DIR}/access.log combined
+   </VirtualHost>
+   ```
+
+2. Habilita `mod_mime` i reinicia Apache:
+
+   ```bash
+   sudo a2enmod mime
+   sudo systemctl restart apache2
+   ```
+
+== Pas 4: Configuració del fitxer `.htaccess`
+
+1. Crea o edita el fitxer `.htaccess` a `/var/www/html/`:
+
+   ```bash
+   sudo nano /var/www/html/.htaccess
+   ```
+
+   Afegeix el següent contingut:
+
+   ```apache
+   RewriteEngine On
+   RewriteBase /
+   RewriteRule ^index\.html$ - [L]
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteRule . /index.html [L]
+   ```
+
+2. Desa els canvis (`CTRL + X`, després `Y`, després `ENTER`).
+3. Reinicia Apache:
+
+   ```bash
+   sudo systemctl restart apache2
+   ```
+
+== Pas 5: Solució d'errors comuns
+
+1. **Error `Failed to load module script`**
+   - Verifica que els fitxers `.js` existeixen:
+
+     ```bash
+     ls -l /var/www/html/assets/
+     ```
+   - Si els fitxers falten, torna a copiar `dist/`:
+
+     ```bash
+     sudo cp -r /ruta/del/projecte/dist/* /var/www/html/
+     ```
+
+2. **Error `RewriteEngine: Invalid command`**
+   - Habilita `mod_rewrite` a Apache:
+
+     ```bash
+     sudo a2enmod rewrite
+     sudo systemctl restart apache2
+     ```
+
+3. **Els canvis a Apache no s'apliquen**
+   - Recàrrega la configuració:
+
+     ```bash
+     sudo systemctl daemon-reload
+     sudo systemctl restart apache2
+     ```
+
+== Pas 5: Verificació final
+
+1. Obre el teu navegador i accedeix al teu domini:
+   ```
+   http://el-teu-domini
+   ```
+2. Neteja la memòria cau del navegador (`CTRL + SHIFT + R`).
+3. Verifica la consola del desenvolupador (`F12` > Consola) per assegurar-te que no hi ha errors.
+
+Si encara tens problemes, revisa el fitxer d'errors d'Apache:
+
+```bash
+sudo tail -f /var/log/apache2/error.log
+```
+
