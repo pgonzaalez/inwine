@@ -19,8 +19,8 @@ export default function App() {
         <Route path="/seller/:id/products/:id" element={<ViewProductPage />} />
         <Route path="/seller/:id/products/:id/edit" element={<EditProductPage />} />
         <Route path="/create" element={<Create />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/registerseller" element={<RegisterSeller />} />
+        <Route path="/register" element={<RegisterSeller />} />
+        <Route path="/registerinversor" element={<Register />} />
 
       </Routes>
     </Router>
