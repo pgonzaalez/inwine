@@ -13,6 +13,7 @@ const AddSellerForm = () => {
         bank_account: '',
         balance: '',
     });
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const [message, setMessage] = useState('');
 
@@ -26,7 +27,7 @@ const AddSellerForm = () => {
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/seller', {
+            const response = await fetch(`${apiUrl}/v1/seller`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -21,18 +21,19 @@ export default function EditProductPage() {
   const [errors, setErrors] = useState({});
   const [showSuccessNotification, setShowSuccessNotification] = useState(false); // Estado para la notificación
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     // Fetch wine types from the API
     const fetchWineTypes = async () => {
-      const response = await fetch('http://localhost:8000/api/v1/winetypes');
+      const response = await fetch(`${apiUrl}/v1/winetypes`);
       const data = await response.json();
       setWineTypes(data);
     };
 
     // Fetch product data from the API
     const fetchProductData = async () => {
-      const response = await fetch(`http://localhost:8000/api/v1/products/${productID}`);
+      const response = await fetch(`${apiUrl}/v1/products/${productID}`);
       const data = await response.json();
       setFormData(data);
     };

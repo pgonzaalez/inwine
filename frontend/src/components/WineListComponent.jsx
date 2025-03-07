@@ -76,11 +76,12 @@ export default function WineList() {
   const [wines, setWines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchWines = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/v1/products");
+        const response = await fetch(`${apiUrl}/v1/products`);
         if (!response.ok) {
           throw new Error("No s'ha pogut connectar amb el servidor");
         }

@@ -15,6 +15,7 @@ const AddInvestorForm = () => {
     });
 
     const [message, setMessage] = useState('');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,7 +27,7 @@ const AddInvestorForm = () => {
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/investor', {
+            const response = await fetch(`${apiUrl}/v1/investor`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

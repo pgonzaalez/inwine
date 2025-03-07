@@ -17,11 +17,13 @@ export default function CreateProduct() {
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
     // Obtenir els tipus de vi de l'API
     const fetchWineTypes = async () => {
-      const response = await fetch("http://localhost:8000/api/v1/winetypes");
+      const response = await fetch(`${apiUrl}/v1/winetypes`);
       const data = await response.json();
       setWineTypes(data);
     };
@@ -48,7 +50,7 @@ export default function CreateProduct() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/products", {
+      const response = await fetch(`${apiUrl}/v1/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
