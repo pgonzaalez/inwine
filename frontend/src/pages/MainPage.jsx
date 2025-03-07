@@ -21,7 +21,7 @@ export default function App() {
           to="/register" 
           className="block bg-purple-500 text-white py-2 px-4 rounded-md my-2 transition duration-300 hover:bg-purple-700"
         >
-          Regista un Productor
+          Registra un Productor
         </Link>
       </div>
     </div>

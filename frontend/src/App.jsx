@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router";
 import "./App.css"
+
 // Pages
 import Main from "@pages/MainPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
