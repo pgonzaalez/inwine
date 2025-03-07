@@ -276,7 +276,7 @@ const AddSellerForm = () => {
                 </div>
                 <div className="w-1/2 pl-8">
                     <img
-                        src="https://media.istockphoto.com/id/824860820/es/foto/macaco-barbary.jpg?s=612x612&w=0&k=20&c=ZpSUFg0ZZtnVUVMo_k1wB5gO-7sXqrwoa29O-e5EM1o="
+                        src="https://media.istockphoto.com/id/1363666079/es/foto/el-propietario-de-la-bodega-y-experto-en-control-de-calidad-comprobando-la-calidad-del-vino-en.jpg?s=612x612&w=0&k=20&c=23hm_w9AIaUJsQyBZd0TmqkWAvk5iglIjZ7Pw_857_8="
                         alt="Imagen lateral"
                         className="w-full h-full object-cover rounded-lg"
                     />
