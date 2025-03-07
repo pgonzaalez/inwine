@@ -15,13 +15,13 @@ export default function App() {
           to="/create" 
           className="block bg-green-500 text-white py-2 px-4 rounded-md my-2 transition duration-300 hover:bg-green-700"
         >
-          Create product
+          Create a product
         </Link>
         <Link 
           to="/register" 
           className="block bg-purple-500 text-white py-2 px-4 rounded-md my-2 transition duration-300 hover:bg-purple-700"
         >
-          Register Inversor
+          Regista un Productor
         </Link>
       </div>
     </div>
