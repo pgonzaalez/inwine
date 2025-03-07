@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/SidebarComponent";
 
 export default function CreateProduct() {
+    const token = localStorage.getItem('token');
+
     const [wineTypes, setWineTypes] = useState([]);
     const [formData, setFormData] = useState({
         name: '',
@@ -51,6 +53,7 @@ export default function CreateProduct() {
             const response = await fetch('http://localhost:8000/api/v1/products', {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
