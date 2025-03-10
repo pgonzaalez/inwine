@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Seller;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -27,7 +28,7 @@ class AuthController extends Controller
             ]);
         }
 
-        if (Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.']
             ]);
@@ -53,6 +54,7 @@ class AuthController extends Controller
     {
         Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
 
+     
         try {
             // Validar los datos de entrada
             $validatedData = $request->validate([
@@ -66,6 +68,8 @@ class AuthController extends Controller
                 'bank_account' => 'nullable|string|max:34',
                 'balance' => 'nullable|numeric',
             ]);
+
+            DB::beginTransaction();
 
             Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
 
@@ -93,13 +97,18 @@ class AuthController extends Controller
 
             Log::info('Inversor creado exitosamente', ['seller_id' => $seller->id]);
 
+            DB::commit();
+
             return response()->json([
                 'message' => 'Inversor creado exitosamente',
                 'seller' => $seller,
             ], 201);
         } catch (\Exception $e) {
+            
+            DB::rollBack();
+            
             Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
-
+            
             return response()->json([
                 'message' => 'Error al crear inversor',
                 'error' => $e->getMessage(),

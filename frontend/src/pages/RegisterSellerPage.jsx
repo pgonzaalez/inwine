@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark ,Banknote } from 'lucide-react';
+import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const AddSellerForm = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         NIF: '',
-        name: '',   
+        name: '',
         email: '',
         password: '',
         address: '',
@@ -13,6 +16,7 @@ const AddSellerForm = () => {
         bank_account: '',
         balance: '',
     });
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const [message, setMessage] = useState('');
 
@@ -26,7 +30,7 @@ const AddSellerForm = () => {
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/seller', {
+            const response = await fetch(`${apiUrl}/v1/seller`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,7 +45,7 @@ const AddSellerForm = () => {
             }
 
             const result = await response.json();
-            setMessage('seller creado exitosamente');
+            setMessage('Seller creado exitosamente');
             setFormData({
                 NIF: '',
                 name: '',
@@ -53,6 +57,10 @@ const AddSellerForm = () => {
                 bank_account: '',
                 balance: '',
             });
+
+            setTimeout(() => {
+                navigate("/");
+            }, 1000);
         } catch (error) {
             setMessage(`Error: ${error.message}`);
         }
@@ -60,15 +68,17 @@ const AddSellerForm = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl flex">
-                <div className="w-1/2">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl flex flex-col md:flex-row">
+                <div className="w-full md:w-1/2">
                     <div className="text-center mb-6">
                         <h1 className="text-2xl font-bold">Crear compte d'usuari productor</h1>
-                        <h4 className="text-gray-600">Tens un compte? <a href="#" className="text-[#800020]">Inicia sessió</a></h4>
+                        <h4 className="text-gray-600">
+                            Tens un compte? <a href="#" className="text-[#800020]">Inicia sessió</a>
+                        </h4>
                     </div>
                     {message && <p className="text-center text-green-500 mb-4">{message}</p>}
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <h2 className="text-lg font-semibold mb-2">Informació dades personals</h2>
                                 <div className="space-y-3">
@@ -273,9 +283,9 @@ const AddSellerForm = () => {
                         </button>
                     </form>
                 </div>
-                <div className="w-1/2 pl-8">
+                <div className="w-full md:w-1/2 md:pl-8 mt-8 md:mt-0">
                     <img
-                        src="https://media.istockphoto.com/id/824860820/es/foto/macaco-barbary.jpg?s=612x612&w=0&k=20&c=ZpSUFg0ZZtnVUVMo_k1wB5gO-7sXqrwoa29O-e5EM1o="
+                        src="https://media.istockphoto.com/id/1363666079/es/foto/el-propietario-de-la-bodega-y-experto-en-control-de-calidad-comprobando-la-calidad-del-vino-en.jpg?s=612x612&w=0&k=20&c=23hm_w9AIaUJsQyBZd0TmqkWAvk5iglIjZ7Pw_857_8="
                         alt="Imagen lateral"
                         className="w-full h-full object-cover rounded-lg"
                     />
