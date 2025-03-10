@@ -77,11 +77,13 @@ export default function CreateProduct() {
 
     return (
         <div className="flex flex-col md:flex-row">
-            <Sidebar />
-            <div className="flex-1 md:ml-[245px] p-4 md:p-8 pb-20">
+            <div className="flex-1 md:ml-[245px] p-4 md:p-8 pb-20 bg-gray-100 min-h-screen">
                 {/* Encapsulem el formulari dins d'un contenidor centrat */}
                 <div className="max-w-4xl mx-auto">
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                    <h1 className="text-2xl font-semibold text-gray-900 mb-5">
+                        Crear un nou producte
+                    </h1>
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-6 bg-white p-8 rounded-lg shadow-md">
                         {/* Secció 1 */}
                         <div className="flex flex-col md:flex-row justify-between">
                             <div className="md:w-1/3 text-sm text-gray-600 mb-10 md:mb-0">
@@ -91,13 +93,13 @@ export default function CreateProduct() {
                                     categoria
                                 </p>
                             </div>
-                            <div className="md:w-2/3">
+                            <div className="md:w-2/3 ">
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                     {wineTypes.map((wine) => (
                                         <div
                                             key={wine.id}
                                             onClick={() => handleWineTypeSelect(wine.id)}
-                                            className={`cursor-pointer border p-4 rounded-lg ${formData.wine_type_id === wine.id
+                                            className={`cursor-pointer border p-6 rounded-lg ${formData.wine_type_id === wine.id
                                                     ? "bg-blue-100 border-blue-500"
                                                     : "border-gray-300"
                                                 }`}
@@ -118,7 +120,7 @@ export default function CreateProduct() {
                                 )}
                             </div>
                         </div>
-
+    
                         {/* Secció 2 */}
                         <div className="flex flex-col md:flex-row justify-between mt-8 border-t pt-8">
                             <div className="md:w-1/3 text-sm text-gray-600 mb-4 md:mb-0">
@@ -136,7 +138,7 @@ export default function CreateProduct() {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" "
                                         id="name"
                                     />
@@ -152,7 +154,7 @@ export default function CreateProduct() {
                                         </span>
                                     )}
                                 </div>
-
+    
                                 {/* Denominació i Any en la mateixa fila */}
                                 <div className="flex flex-col md:flex-row gap-4">
                                     {/* Denominació */}
@@ -162,7 +164,7 @@ export default function CreateProduct() {
                                             name="origin"
                                             value={formData.origin}
                                             onChange={handleChange}
-                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
                                             id="origin"
                                         />
@@ -178,7 +180,7 @@ export default function CreateProduct() {
                                             </span>
                                         )}
                                     </div>
-
+    
                                     {/* Any */}
                                     <div className="relative mb-4 w-full">
                                         <input
@@ -186,7 +188,7 @@ export default function CreateProduct() {
                                             name="year"
                                             value={formData.year}
                                             onChange={handleChange}
-                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
                                             id="year"
                                         />
@@ -203,14 +205,14 @@ export default function CreateProduct() {
                                         )}
                                     </div>
                                 </div>
-
+    
                                 {/* Descripció */}
                                 <div className="relative mb-4">
                                     <textarea
                                         name="description"
                                         value={formData.description}
                                         onChange={handleChange}
-                                        className="peer w-full h-24 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="peer w-full h-24 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" "
                                         id="description"
                                     />
@@ -230,7 +232,7 @@ export default function CreateProduct() {
                                         </span>
                                     )}
                                 </div>
-
+    
                                 {/* Quantitat i Preu en la mateixa fila */}
                                 <div className="flex flex-col md:flex-row gap-4">
                                     {/* Quantitat */}
@@ -240,7 +242,7 @@ export default function CreateProduct() {
                                             name="quantity"
                                             value={formData.quantity}
                                             onChange={handleChange}
-                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
                                             id="quantity"
                                         />
@@ -256,7 +258,7 @@ export default function CreateProduct() {
                                             </span>
                                         )}
                                     </div>
-
+    
                                     {/* Preu */}
                                     <div className="relative mb-4 w-full">
                                         <input
@@ -264,7 +266,7 @@ export default function CreateProduct() {
                                             name="price_demanded"
                                             value={formData.price_demanded}
                                             onChange={handleChange}
-                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
                                             id="price_demanded"
                                         />
@@ -281,7 +283,7 @@ export default function CreateProduct() {
                                         )}
                                     </div>
                                 </div>
-
+    
                                 {/* Imatge */}
                                 <div className="relative mb-4">
                                     <input
@@ -289,7 +291,7 @@ export default function CreateProduct() {
                                         name="image"
                                         value={formData.image}
                                         onChange={handleChange}
-                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" "
                                         id="image"
                                     />
@@ -305,7 +307,7 @@ export default function CreateProduct() {
                                         </span>
                                     )}
                                 </div>
-
+    
                                 {/* ID del Venedor */}
                                 <div className="relative mb-4">
                                     <input
@@ -313,7 +315,7 @@ export default function CreateProduct() {
                                         name="seller_id"
                                         value={formData.seller_id}
                                         onChange={handleChange}
-                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" "
                                         id="seller_id"
                                     />
@@ -331,7 +333,7 @@ export default function CreateProduct() {
                                 </div>
                             </div>
                         </div>
-
+    
                         {/* Botó d'enviament */}
                         <button
                             type="submit"
@@ -344,4 +346,5 @@ export default function CreateProduct() {
             </div>
         </div>
     );
+    
 }
