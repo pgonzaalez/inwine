@@ -19,6 +19,8 @@ export default function ViewProductPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // Estat per al diàleg
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
     if (location.state?.successMessage) {
@@ -32,7 +34,7 @@ export default function ViewProductPage() {
     const fetchWines = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/products/${productID}`
+          `${apiUrl}/v1/products/${productID}`
         );
         if (!response.ok) {
           throw new Error("No s'ha pogut connectar amb el servidor");
@@ -59,7 +61,7 @@ export default function ViewProductPage() {
     const fetchTypeWines = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/v1/winetypes/${wines.wine_type_id}`
+          `${apiUrl}/v1/winetypes/${wines.wine_type_id}`
         );
         if (!response.ok) {
           throw new Error("No s'ha pogut connectar amb el servidor");
@@ -98,7 +100,7 @@ export default function ViewProductPage() {
   const handleDeleteProduct = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/products/${productID}`,
+        `${ap}/v1/products/${productID}`,
         {
           method: "DELETE",
         }
