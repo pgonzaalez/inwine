@@ -1,4 +1,4 @@
-import { useFetchUser } from "@components/FetchApiUsersComponent";
+import { useFetchUser } from "@components/FetchUser";
 import Header from "@components/HeaderComponent";
 import Sidebar from "@components/SidebarComponent";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
