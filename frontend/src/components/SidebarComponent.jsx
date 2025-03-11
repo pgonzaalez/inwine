@@ -7,7 +7,7 @@ import {
   Bell,
   LogOut,
 } from "lucide-react";
-import { useFetchUser } from '@components/FetchApiUsersComponent'; // Importar el hook
+import { useFetchUser } from '@components/FetchUser'; // Importar el hook
 
 export default function Sidebar() {
   const location = useLocation();
@@ -54,7 +54,7 @@ export default function Sidebar() {
           <Avatar className="w-[40px] h-[40px] rounded-full" src="" />
           <div>
             <div className="font-extrabold text-black">{user ? user.name : 'Usuari Desconegut'}</div> {/* Mostrar el nombre del usuario */}
-            <div className="text-[#91969e] text-xs">Rol del Usuari</div>
+            <div className="text-[#91969e] text-xs">{user?.role || 'Rol no disponible'}</div>
           </div>
         </Link>
         <div className="mt-5 space-y-2">
