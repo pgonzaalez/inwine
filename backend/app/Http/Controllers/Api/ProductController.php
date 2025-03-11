@@ -34,7 +34,7 @@ class ProductController extends Controller
             'price_demanded' => 'required|decimal:0,2|min:0',
             'quantity' => 'required|integer|min:0',
             'image' => 'nullable|url|max:255',
-            'seller_id' => 'required|exists:sellers,id'
+            'user_id' => 'required|exists:users,id'
         ]);
 
         if ($validator->fails()) {

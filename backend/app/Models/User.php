@@ -26,7 +26,7 @@ class User extends Authenticatable
         'address',
         'phone_contact',
         'role',
-        
+
     ];
 
     /**
@@ -51,7 +51,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    
+
     public function restaurants()
     {
         return $this->hasOne(Restaurant::class);
@@ -66,5 +66,10 @@ class User extends Authenticatable
     public function investors()
     {
         return $this->hasOne(Investor::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }
