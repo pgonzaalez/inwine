@@ -17,7 +17,7 @@ const AddSellerForm = () => {
         balance: '',
     });
     const apiUrl = import.meta.env.VITE_API_URL;
-
+    const [errors, setErrors] = useState({});
     const [message, setMessage] = useState('');
 
     const handleChange = (e) => {
@@ -28,7 +28,7 @@ const AddSellerForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
-
+    
         try {
             const response = await fetch(`${apiUrl}/v1/seller`, {
                 method: 'POST',
@@ -38,29 +38,33 @@ const AddSellerForm = () => {
                 },
                 body: JSON.stringify(formData),
             });
-
+    
+            const data = await response.json();
+    
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al crear seller');
+                if (response.status === 422) {
+                    setErrors(data.errors || {}); // Asegúrate de que data.errors no sea undefined
+                } else {
+                    throw new Error(data.message || 'Error al crear seller');
+                }
+            } else {
+                setMessage('Seller creado exitosamente');
+                setFormData({
+                    NIF: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    address: '',
+                    phone: '',
+                    name_contact: '',
+                    bank_account: '',
+                    balance: '',
+                });
+    
+                setTimeout(() => {
+                    navigate("/");
+                }, 1000);
             }
-
-            const result = await response.json();
-            setMessage('Seller creado exitosamente');
-            setFormData({
-                NIF: '',
-                name: '',
-                email: '',
-                password: '',
-                address: '',
-                phone: '',
-                name_contact: '',
-                bank_account: '',
-                balance: '',
-            });
-
-            setTimeout(() => {
-                navigate("/");
-            }, 1000);
         } catch (error) {
             setMessage(`Error: ${error.message}`);
         }
@@ -103,6 +107,11 @@ const AddSellerForm = () => {
                                                 Nom usuari
                                             </label>
                                         </div>
+                                        {errors.name && (
+                                        <span className="text-red-500 text-xs mt-1">
+                                            {errors.name[0]}
+                                        </span>
+                                    )}
                                     </div>
 
                                     {/* NIF */}
@@ -126,6 +135,11 @@ const AddSellerForm = () => {
                                                 NIF
                                             </label>
                                         </div>
+                                        {errors.NIF && (
+                                        <span className="text-red-500 text-xs mt-1">
+                                            {errors.NIF[0]}
+                                        </span>
+                                    )}
                                     </div>
 
                                     {/* Dirección */}
@@ -148,6 +162,11 @@ const AddSellerForm = () => {
                                                 Adreça
                                             </label>
                                         </div>
+                                        {errors.address && (
+                                        <span className="text-red-500 text-xs mt-1">
+                                            {errors.address[0]}
+                                        </span>
+                                    )}
                                     </div>
 
                                     {/* Teléfono */}
@@ -170,6 +189,11 @@ const AddSellerForm = () => {
                                                 Telèfon contacte
                                             </label>
                                         </div>
+                                        {errors.phone && (
+                                        <span className="text-red-500 text-xs mt-1">
+                                            {errors.phone[0]}
+                                        </span>
+                                    )}
                                     </div>
                                 </div>
                             </div>
@@ -198,6 +222,11 @@ const AddSellerForm = () => {
                                                 Email
                                             </label>
                                         </div>
+                                        {errors.email && (
+                                        <span className="text-red-500 text-xs mt-1">
+                                            {errors.email[0]}
+                                        </span>
+                                    )}
                                     </div>
 
                                     {/* Contraseña */}
@@ -221,6 +250,11 @@ const AddSellerForm = () => {
                                                 Contrasenya
                                             </label>
                                         </div>
+                                        {errors.password && (
+                                        <span className="text-red-500 text-xs mt-1">
+                                            {errors.password[0]}
+                                        </span>
+                                    )}
                                     </div>
                                 </div>
                             </div>
@@ -249,6 +283,11 @@ const AddSellerForm = () => {
                                             Nom de contacte
                                         </label>
                                     </div>
+                                    {errors.name_contact && (
+                                        <span className="text-red-500 text-xs mt-1">
+                                            {errors.name_contact[0]}
+                                        </span>
+                                    )}
                                 </div>
 
                                 {/* Cuenta bancaria */}
@@ -271,6 +310,11 @@ const AddSellerForm = () => {
                                             Número compte
                                         </label>
                                     </div>
+                                    {errors.bank_account && (
+                                        <span className="text-red-500 text-xs mt-1">
+                                            {errors.bank_account[0]}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </div>

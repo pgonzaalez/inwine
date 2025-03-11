@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Seller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -54,22 +55,31 @@ class AuthController extends Controller
     {
         Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
 
-     
         try {
             // Validar los datos de entrada
-            $validatedData = $request->validate([
+            $validatedData = Validator::make($request->all(), [
                 'NIF' => 'required|string|max:9|unique:users,NIF',
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:8',
-                'address' => 'nullable|string|max:255',
-                'phone' => 'nullable|string|max:20',
+                'address' => 'nullable|string|min:8|max:255',
+                'phone' => 'nullable|string|min:3|max:20',
                 'name_contact' => 'nullable|string|max:20',
                 'bank_account' => 'nullable|string|max:34',
                 'balance' => 'nullable|numeric',
             ]);
 
+            if ($validatedData->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validatedData->errors()
+                ], 422);
+            }
+
             DB::beginTransaction();
+
+            // Obtener los datos validados
+            $validatedData = $validatedData->validated();
 
             Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
 
@@ -104,11 +114,8 @@ class AuthController extends Controller
                 'seller' => $seller,
             ], 201);
         } catch (\Exception $e) {
-            
             DB::rollBack();
-            
             Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
-            
             return response()->json([
                 'message' => 'Error al crear inversor',
                 'error' => $e->getMessage(),
