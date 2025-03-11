@@ -210,6 +210,7 @@ export default function ViewProductPage() {
                           showNav={false}
                           showPlayButton={false}
                           showFullscreenButton={false}
+                          style={{ width: "10%", height: "10%" }}
                         />
                       </div>
                     </div>
@@ -219,10 +220,6 @@ export default function ViewProductPage() {
                       <div className="flex flex-col justify-between text-gray-500 text-sm">
                         <div className="flex justify-between gap-2 items-center">
                           <span>Vi {typeWines.name}</span>
-                          <span>
-                            Productor:{" "}
-                            {sellerLoading ? "Carregant..." : seller?.name || "Desconegut"}
-                          </span>
                         </div>
                       </div>
                       <h2 className="text-black text-2xl font-semibold mt-2">
