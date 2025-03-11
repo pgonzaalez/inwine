@@ -4,7 +4,7 @@ import "./App.css"
 // Pages
 import Main from "@pages/MainPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
-import Create from "@pages/CreatePage";
+import Create from "@pages/Seller/CreateProductPage";
 import ViewProductPage from "./pages/Seller/ViewProductPage";
 import EditProductPage from "./pages/Seller/EditProductPage";
 import Register from "@pages/RegisterPage";
