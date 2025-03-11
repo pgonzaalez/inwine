@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/SidebarComponent";
+import { useFetchUser } from "@components/FetchUser";
 
 export default function CreateProduct() {
-
+    const { user, loading } = useFetchUser();
     const [wineTypes, setWineTypes] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
@@ -20,17 +20,23 @@ export default function CreateProduct() {
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
 
-
     useEffect(() => {
-        // Obtenir els tipus de vi de l'API
         const fetchWineTypes = async () => {
             const response = await fetch(`${apiUrl}/v1/winetypes`);
             const data = await response.json();
             setWineTypes(data);
         };
-
         fetchWineTypes();
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            setFormData((prevData) => ({
+                ...prevData,
+                seller_id: user.id, // Asigna el ID del usuario autenticado
+            }));
+        }
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -49,7 +55,6 @@ export default function CreateProduct() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
             const response = await fetch(`${apiUrl}/v1/products`, {
                 method: "POST",
@@ -65,7 +70,7 @@ export default function CreateProduct() {
                 if (response.status === 422) {
                     setErrors(data.errors);
                 } else {
-                    throw new Error("Error en crear el producte");
+                    throw new Error("Error en crear el producto");
                 }
             } else {
                 navigate("/");
@@ -83,7 +88,10 @@ export default function CreateProduct() {
                     <h1 className="text-2xl font-semibold text-gray-900 mb-5">
                         Crear un nou producte
                     </h1>
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-6 bg-white p-8 rounded-lg shadow-md">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col gap-6 bg-white p-8 rounded-lg shadow-md"
+                    >
                         {/* Secció 1 */}
                         <div className="flex flex-col md:flex-row justify-between">
                             <div className="md:w-1/3 text-sm text-gray-600 mb-10 md:mb-0">
@@ -100,8 +108,8 @@ export default function CreateProduct() {
                                             key={wine.id}
                                             onClick={() => handleWineTypeSelect(wine.id)}
                                             className={`cursor-pointer border p-6 rounded-lg ${formData.wine_type_id === wine.id
-                                                    ? "bg-blue-100 border-blue-500"
-                                                    : "border-gray-300"
+                                                ? "bg-blue-100 border-blue-500"
+                                                : "border-gray-300"
                                                 }`}
                                         >
                                             <img
@@ -120,7 +128,7 @@ export default function CreateProduct() {
                                 )}
                             </div>
                         </div>
-    
+
                         {/* Secció 2 */}
                         <div className="flex flex-col md:flex-row justify-between mt-8 border-t pt-8">
                             <div className="md:w-1/3 text-sm text-gray-600 mb-4 md:mb-0">
@@ -154,7 +162,7 @@ export default function CreateProduct() {
                                         </span>
                                     )}
                                 </div>
-    
+
                                 {/* Denominació i Any en la mateixa fila */}
                                 <div className="flex flex-col md:flex-row gap-4">
                                     {/* Denominació */}
@@ -180,7 +188,7 @@ export default function CreateProduct() {
                                             </span>
                                         )}
                                     </div>
-    
+
                                     {/* Any */}
                                     <div className="relative mb-4 w-full">
                                         <input
@@ -205,7 +213,7 @@ export default function CreateProduct() {
                                         )}
                                     </div>
                                 </div>
-    
+
                                 {/* Descripció */}
                                 <div className="relative mb-4">
                                     <textarea
@@ -232,7 +240,7 @@ export default function CreateProduct() {
                                         </span>
                                     )}
                                 </div>
-    
+
                                 {/* Quantitat i Preu en la mateixa fila */}
                                 <div className="flex flex-col md:flex-row gap-4">
                                     {/* Quantitat */}
@@ -258,7 +266,7 @@ export default function CreateProduct() {
                                             </span>
                                         )}
                                     </div>
-    
+
                                     {/* Preu */}
                                     <div className="relative mb-4 w-full">
                                         <input
@@ -283,7 +291,7 @@ export default function CreateProduct() {
                                         )}
                                     </div>
                                 </div>
-    
+
                                 {/* Imatge */}
                                 <div className="relative mb-4">
                                     <input
@@ -307,33 +315,9 @@ export default function CreateProduct() {
                                         </span>
                                     )}
                                 </div>
-    
-                                {/* ID del Venedor */}
-                                <div className="relative mb-4">
-                                    <input
-                                        type="number"
-                                        name="seller_id"
-                                        value={formData.seller_id}
-                                        onChange={handleChange}
-                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder=" "
-                                        id="seller_id"
-                                    />
-                                    <label
-                                        htmlFor="seller_id"
-                                        className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                                    >
-                                        ID del Venedor
-                                    </label>
-                                    {errors.seller_id && (
-                                        <span className="text-red-500 text-xs mt-1">
-                                            {errors.seller_id[0]}
-                                        </span>
-                                    )}
-                                </div>
                             </div>
                         </div>
-    
+
                         {/* Botó d'enviament */}
                         <button
                             type="submit"
@@ -346,5 +330,4 @@ export default function CreateProduct() {
             </div>
         </div>
     );
-    
 }
