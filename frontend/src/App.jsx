@@ -28,14 +28,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/seller/:id/products/:id/edit"
-          element={
-            <ProtectedRoute>
-              <EditProductPage />
-            </ProtectedRoute>
-          }
-        />
+
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}> {/* Aquí usas el Layout con Sidebar */}
           <Route
@@ -54,6 +47,15 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/seller/:id/products/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EditProductPage />
+              </ProtectedRoute>
+            }
+          />
+
         </Route>
 
         <Route path="/register" element={<RegisterSeller />} />

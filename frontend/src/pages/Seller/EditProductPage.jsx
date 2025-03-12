@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Header from "@components/HeaderComponent";
-import Sidebar from "@components/SidebarComponent";
 import { CornerDownLeft } from "lucide-react";
 
 export default function EditProductPage() {
@@ -92,7 +91,6 @@ export default function EditProductPage() {
       <Header />
       <div className="flex flex-col mt-[60px] h-[calc(100vh-60px)]">
         <div className="flex flex-1">
-          <Sidebar />
           <main className="flex-1 ml-[245px] p-6 bg-gray-100 overflow-y-auto">
 
             <div className="bg-white rounded-t-lg shadow-sm p-4 flex justify-between items-center">
