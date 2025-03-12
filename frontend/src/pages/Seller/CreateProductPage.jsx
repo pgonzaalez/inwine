@@ -15,7 +15,7 @@ export default function CreateProduct() {
         price_demanded: "",
         quantity: "",
         image: "",
-        seller_id: "",
+        user_id: "",
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function CreateProduct() {
         if (user) {
             setFormData((prevData) => ({
                 ...prevData,
-                seller_id: user.id, // Asigna el ID del usuario autenticado
+                user_id: user.id, // Asigna el ID del usuario autenticado
             }));
         }
     }, [user]);
