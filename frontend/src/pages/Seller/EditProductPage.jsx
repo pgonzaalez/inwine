@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Header from "@components/HeaderComponent";
 import { CornerDownLeft } from "lucide-react";
+import { useFetchUser } from "@components/FetchUser";
 
 export default function EditProductPage() {
   const { id: productID } = useParams();
+  const { user, error } = useFetchUser();
   const [wineTypes, setWineTypes] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -77,7 +79,7 @@ export default function EditProductPage() {
           throw new Error('Error updating product');
         }
       } else {
-        navigate(`/seller/123/products/${productID}`, {
+        navigate(`/seller/${user?.id || "usuari"}/products/${productID}`, {
           state: { successMessage: "Producte modificat correctament ✅" },
         });
       }
@@ -95,7 +97,7 @@ export default function EditProductPage() {
 
             <div className="bg-white rounded-t-lg shadow-sm p-4 flex justify-between items-center">
               <Link
-                to={`/seller/123/products/${productID}`}
+                to={`/seller/${user?.id || "usuari"}/products/${productID}`}
                 className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
               >
                 <CornerDownLeft size={20} className="cursor-pointer" />

@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
+import { useFetchUser } from "@components/FetchUser";
 
 export default function App() {
+  const { user, loading, error } = useFetchUser();
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg text-center">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">Hello</h1>
         <Link
-          to="/seller/123/products"
+          to={`/seller/${user?.id || "usuari"}/products`}
           className="block bg-blue-500 text-white py-2 px-4 rounded-md my-2 transition duration-300 hover:bg-blue-700"
         >
           Go to seller
