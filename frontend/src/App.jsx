@@ -10,6 +10,7 @@ import EditProductPage from "./pages/Seller/EditProductPage";
 import Register from "@pages/RegisterPage";
 import RegisterSeller from "@pages/RegisterSellerPage";
 import Login from "@pages/LoginPage";
+import Layout from "@layout/Layout";
 
 import ProtectedRoute from "@components/ProtectedRoute";
 
@@ -20,14 +21,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route
-          path="/seller/:id/products"
-          element={
-            <ProtectedRoute>
-              <Seller />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/seller/:id/products/:id"
           element={
             <ProtectedRoute>
@@ -35,22 +28,36 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/seller/:id/products/:id/edit"
-          element={
-            <ProtectedRoute>
-              <EditProductPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/create"
-          element={
-            <ProtectedRoute>
-              <Create />
-            </ProtectedRoute>
-          }
-        />
+
+        {/* Rutas con Sidebar */}
+        <Route element={<Layout />}> {/* Aquí usas el Layout con Sidebar */}
+          <Route
+            path="/create"
+            element={
+              <ProtectedRoute>
+                <Create />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/:id/products"
+            element={
+              <ProtectedRoute>
+                <Seller />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/:id/products/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EditProductPage />
+              </ProtectedRoute>
+            }
+          />
+
+        </Route>
+
         <Route path="/register" element={<RegisterSeller />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registerinversor" element={<Register />} />

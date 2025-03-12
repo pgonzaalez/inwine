@@ -21,10 +21,10 @@ return new class extends Migration
             $table->float('price_demanded');
             $table->integer('quantity');
             $table->string('image')->nullable();
-            $table->unsignedBigInteger('seller_id');
+            $table->unsignedBigInteger('user_id');
 
             $table->foreign('wine_type_id')->references('id')->on('wine_types');
-            $table->foreign('seller_id')->references('id')->on('sellers');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

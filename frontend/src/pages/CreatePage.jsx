@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/SidebarComponent";
+import { useFetchUser } from "@components/FetchUser";
 
 export default function CreateProduct() {
-
+    const { user, loading } = useFetchUser();
     const [wineTypes, setWineTypes] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
@@ -14,23 +14,29 @@ export default function CreateProduct() {
         price_demanded: "",
         quantity: "",
         image: "",
-        seller_id: "",
+        user_id: "",
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
 
-
     useEffect(() => {
-        // Obtenir els tipus de vi de l'API
         const fetchWineTypes = async () => {
             const response = await fetch(`${apiUrl}/v1/winetypes`);
             const data = await response.json();
             setWineTypes(data);
         };
-
         fetchWineTypes();
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            setFormData((prevData) => ({
+                ...prevData,
+                user_id: user.id, // Asigna el ID del usuario autenticado
+            }));
+        }
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -49,7 +55,6 @@ export default function CreateProduct() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
             const response = await fetch(`${apiUrl}/v1/products`, {
                 method: "POST",
@@ -65,7 +70,7 @@ export default function CreateProduct() {
                 if (response.status === 422) {
                     setErrors(data.errors);
                 } else {
-                    throw new Error("Error en crear el producte");
+                    throw new Error("Error en crear el producto");
                 }
             } else {
                 navigate("/");
@@ -77,11 +82,16 @@ export default function CreateProduct() {
 
     return (
         <div className="flex flex-col md:flex-row">
-            <Sidebar />
-            <div className="flex-1 md:ml-[245px] p-4 md:p-8 pb-20">
+            <div className="flex-1 md:ml-[245px] p-4 md:p-8 pb-20 bg-gray-100 min-h-screen">
                 {/* Encapsulem el formulari dins d'un contenidor centrat */}
                 <div className="max-w-4xl mx-auto">
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                    <h1 className="text-2xl font-semibold text-gray-900 mb-5">
+                        Crear un nou producte
+                    </h1>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col gap-6 bg-white p-8 rounded-lg shadow-md"
+                    >
                         {/* Secció 1 */}
                         <div className="flex flex-col md:flex-row justify-between">
                             <div className="md:w-1/3 text-sm text-gray-600 mb-10 md:mb-0">
@@ -91,15 +101,15 @@ export default function CreateProduct() {
                                     categoria
                                 </p>
                             </div>
-                            <div className="md:w-2/3">
+                            <div className="md:w-2/3 ">
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                     {wineTypes.map((wine) => (
                                         <div
                                             key={wine.id}
                                             onClick={() => handleWineTypeSelect(wine.id)}
-                                            className={`cursor-pointer border p-4 rounded-lg ${formData.wine_type_id === wine.id
-                                                    ? "bg-blue-100 border-blue-500"
-                                                    : "border-gray-300"
+                                            className={`cursor-pointer border p-6 rounded-lg ${formData.wine_type_id === wine.id
+                                                ? "bg-blue-100 border-blue-500"
+                                                : "border-gray-300"
                                                 }`}
                                         >
                                             <img
@@ -136,7 +146,7 @@ export default function CreateProduct() {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" "
                                         id="name"
                                     />
@@ -162,7 +172,7 @@ export default function CreateProduct() {
                                             name="origin"
                                             value={formData.origin}
                                             onChange={handleChange}
-                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
                                             id="origin"
                                         />
@@ -186,7 +196,7 @@ export default function CreateProduct() {
                                             name="year"
                                             value={formData.year}
                                             onChange={handleChange}
-                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
                                             id="year"
                                         />
@@ -210,7 +220,7 @@ export default function CreateProduct() {
                                         name="description"
                                         value={formData.description}
                                         onChange={handleChange}
-                                        className="peer w-full h-24 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="peer w-full h-24 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" "
                                         id="description"
                                     />
@@ -240,7 +250,7 @@ export default function CreateProduct() {
                                             name="quantity"
                                             value={formData.quantity}
                                             onChange={handleChange}
-                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
                                             id="quantity"
                                         />
@@ -264,7 +274,7 @@ export default function CreateProduct() {
                                             name="price_demanded"
                                             value={formData.price_demanded}
                                             onChange={handleChange}
-                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder=" "
                                             id="price_demanded"
                                         />
@@ -289,7 +299,7 @@ export default function CreateProduct() {
                                         name="image"
                                         value={formData.image}
                                         onChange={handleChange}
-                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder=" "
                                         id="image"
                                     />
@@ -302,30 +312,6 @@ export default function CreateProduct() {
                                     {errors.image && (
                                         <span className="text-red-500 text-xs mt-1">
                                             {errors.image[0]}
-                                        </span>
-                                    )}
-                                </div>
-
-                                {/* ID del Venedor */}
-                                <div className="relative mb-4">
-                                    <input
-                                        type="number"
-                                        name="seller_id"
-                                        value={formData.seller_id}
-                                        onChange={handleChange}
-                                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-3 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder=" "
-                                        id="seller_id"
-                                    />
-                                    <label
-                                        htmlFor="seller_id"
-                                        className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                                    >
-                                        ID del Venedor
-                                    </label>
-                                    {errors.seller_id && (
-                                        <span className="text-red-500 text-xs mt-1">
-                                            {errors.seller_id[0]}
                                         </span>
                                     )}
                                 </div>
