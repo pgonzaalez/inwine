@@ -43,13 +43,13 @@ class ProductController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         DB::beginTransaction();
-        
+
         try {
             $product = Product::create($request->all());
             Log::info('Producto creado exitosamente', ['product_id' => $product->id, 'product_data' => $product]);
-            
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -69,12 +69,18 @@ class ProductController extends Controller
             'data' => $product
         ], 201);
     }
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+
         return response()->json($product);
     }
 
@@ -87,6 +93,8 @@ class ProductController extends Controller
         $product->update($request->all());
         return response()->json($product);
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -108,5 +116,14 @@ class ProductController extends Controller
             'success' => true,
             'message' => 'Producto eliminado correctamente'
         ]);
+    }
+
+    public function indexByUser(string $userId)
+    {
+        $products = Product::where('user_id', $userId)->get();
+
+        return response()->json(
+            $products
+        );
     }
 }
