@@ -1,7 +1,8 @@
-import { Trash, Gift, Edit } from "lucide-react";
+import { Trash, Edit } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ConfirmationDialog from "@components/ConfirmationDialogComponent";
+import { useFetchUser } from "@components/FetchUser";
 
 const WineItem = ({
   id,
@@ -11,8 +12,11 @@ const WineItem = ({
   year,
   create_date,
   update_date,
-  onDelete, // Recibe la función onDelete
+  onDelete,
+  userId, // Recibimos el userId como prop
 }) => {
+  const navigate = useNavigate(); // Definim navigate
+
   create_date = new Date(create_date).toLocaleDateString("ca-ES", {
     year: "numeric",
     month: "2-digit",
@@ -26,9 +30,16 @@ const WineItem = ({
   });
 
   return (
-    <Link to={`/seller/123/products/${id}`} className="w-full">
+    <div
+      className="w-full cursor-pointer"
+      onClick={() => navigate(`/seller/${userId}/products/${id}`)}
+    >
       <div className="flex items-center justify-between gap-6 p-2">
-        <input type="checkbox" className="w-5 h-5" />
+        <input
+          type="checkbox"
+          className="w-5 h-5"
+          onClick={(e) => e.stopPropagation()} // Evitem que el checkbox interfereixi amb el clic de la card
+        />
         <div className="flex-1 bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4 w-full sm:min-w-[300px]">
@@ -57,27 +68,26 @@ const WineItem = ({
             </div>
             <div className="flex gap-2 justify-end w-full sm:w-auto">
               <Link
-                to={`/seller/123/products/${id}/edit`}
+                to={`/seller/${userId}/products/${id}/edit`} // Usamos userId dinámicamente
                 className="p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={(e) => e.stopPropagation()}
               >
                 <Edit size={20} className="text-gray-800" />
               </Link>
-              <Link
-                to="#"
+              <button
                 onClick={(e) => {
-                  e.preventDefault();
                   e.stopPropagation();
                   onDelete(id);
                 }}
                 className="p-2.5 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors"
               >
                 <Trash size={20} className="text-red-800" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
@@ -88,7 +98,7 @@ export default function WineList() {
   const apiUrl = import.meta.env.VITE_API_URL;
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentWineId, setCurrentWineId] = useState(null);
-
+  const { user, error } = useFetchUser();
   const openDeleteDialog = (id) => {
     setCurrentWineId(id);
     setIsDeleteDialogOpen(true);
@@ -101,16 +111,18 @@ export default function WineList() {
 
   useEffect(() => {
     const fetchWines = async () => {
+      if (!user) return;
       try {
-        const response = await fetch(`${apiUrl}/v1/products`);
+        const response = await fetch(`${apiUrl}/v1/${user.id}/products`);
         if (!response.ok) {
           throw new Error("No s'ha pogut connectar amb el servidor");
         }
         const data = await response.json();
-        if (data.length === 0) {
-          setErrorMessage("No tens vins publicats");
+        if (data) {
+          setWines(Array.isArray(data) ? data : [data]);
         } else {
-          setWines(data);
+          setWines([]);
+          setErrorMessage("No tens vins publicats");
         }
       } catch (error) {
         setErrorMessage(error.message);
@@ -118,8 +130,9 @@ export default function WineList() {
         setLoading(false);
       }
     };
+
     fetchWines();
-  }, []);
+  }, [user]);
 
   const handleDeleteWine = async () => {
     try {
@@ -165,6 +178,7 @@ export default function WineList() {
               create_date={wine.created_at}
               update_date={wine.updated_at}
               onDelete={openDeleteDialog}
+              userId={user?.id}
             />
           ))}
 
