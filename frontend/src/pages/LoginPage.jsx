@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { User, Lock } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import { useFetchUser } from "@components/FetchUser";
 
 const AddLoginForm = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
-
+    const { user } = useFetchUser();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -46,9 +47,8 @@ const AddLoginForm = () => {
                 email: '',
                 password: '',
             });
-
             setTimeout(() => {
-                navigate("/"); 
+                navigate(`/seller/${user.id}/products`); 
             }, 1000);
         } catch (error) {
             setMessage(`Error: ${error.message}`);

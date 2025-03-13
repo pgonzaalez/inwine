@@ -35,11 +35,11 @@ const WineItem = ({
       onClick={() => navigate(`/seller/${userId}/products/${id}`)}
     >
       <div className="flex items-center justify-between gap-6 p-2">
-        <input
+        {/* <input
           type="checkbox"
           className="w-5 h-5"
-          onClick={(e) => e.stopPropagation()} // Evitem que el checkbox interfereixi amb el clic de la card
-        />
+          onClick={(e) => e.stopPropagation()}
+        /> */}
         <div className="flex-1 bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow w-full">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4 w-full sm:min-w-[300px]">
@@ -68,8 +68,8 @@ const WineItem = ({
             </div>
             <div className="flex gap-2 justify-end w-full sm:w-auto">
               <Link
-                to={`/seller/${userId}/products/${id}/edit`} // Usamos userId dinámicamente
-                className="p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                to={`/seller/${userId}/products/${id}/edit`}
+                className="p-2.5 bg-gray-50 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
               >
                 <Edit size={20} className="text-gray-800" />
@@ -79,7 +79,7 @@ const WineItem = ({
                   e.stopPropagation();
                   onDelete(id);
                 }}
-                className="p-2.5 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors"
+                className="p-2.5 bg-gray-50 rounded-lg hover:bg-red-200 transition-colors cursor-pointer"
               >
                 <Trash size={20} className="text-red-800" />
               </button>
