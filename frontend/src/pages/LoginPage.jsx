@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Lock } from 'lucide-react';
+import { User, Lock, CornerDownLeft } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 const AddLoginForm = () => {
@@ -11,6 +11,7 @@ const AddLoginForm = () => {
     });
 
     const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState(''); // 'error' o 'success'
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -21,6 +22,7 @@ const AddLoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
+        setMessageType('');
 
         try {
             const response = await fetch(`${apiUrl}/login`, {
@@ -38,7 +40,8 @@ const AddLoginForm = () => {
             }
 
             const result = await response.json();
-            setMessage('Login creado exitosamente');
+            setMessage('Login creat exitosament');
+            setMessageType('success'); // Establecer el tipo de mensaje como 'success'
 
             localStorage.setItem('token', result.token);
 
@@ -48,21 +51,34 @@ const AddLoginForm = () => {
             });
 
             setTimeout(() => {
-                navigate("/"); 
+                navigate("/");
             }, 1000);
         } catch (error) {
             setMessage(`Error: ${error.message}`);
+            setMessageType('error'); // Establecer el tipo de mensaje como 'error'
         }
     };
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
             <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="border-2 rounded-lg p-2 hover:bg-gray-200 transition-colors duration-200"
+                >
+                    <CornerDownLeft size={20} className="cursor-pointer" />
+                </button>
                 <div className="mb-6 text-center">
                     <h1 className="text-3xl font-bold text-gray-800">Inicia sessió</h1>
                     <p className="mt-2 text-sm text-gray-600">Introdueix les teves credencials per accedir</p>
                 </div>
-                {message && <p className="text-center mb-4 text-green-500">{message}</p>}
+                <div className="h-12">
+                    {message && (
+                        <p className={`text-center mb-4 ${messageType === 'error' ? 'text-red-500' : 'text-green-500'}`}>
+                            {message}
+                        </p>
+                    )}
+                </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3">

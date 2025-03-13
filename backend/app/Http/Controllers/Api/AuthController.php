@@ -25,13 +25,13 @@ class AuthController extends Controller
 
         if (!$user) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.']
+                'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
 
         if (!Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.']
+                'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
 
@@ -62,8 +62,8 @@ class AuthController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:8',
-                'address' => 'nullable|string|min:8|max:255',
-                'phone' => 'nullable|string|min:3|max:20',
+                'address' => 'nullable|string|min:2|max:255',
+                'phone' => 'nullable|string|max:11',
                 'name_contact' => 'nullable|string|max:20',
                 'bank_account' => 'nullable|string|max:34',
                 'balance' => 'nullable|numeric',
