@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router";
-import "./App.css"
+import "./App.css";
 
 // Pages
 import Main from "@pages/MainPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
-import Create from "@pages/CreatePage";
+import Create from "@pages/Seller/CreateProductPage";
 import ViewProductPage from "./pages/Seller/ViewProductPage";
 import EditProductPage from "./pages/Seller/EditProductPage";
 import Register from "@pages/RegisterPage";
@@ -15,22 +15,15 @@ import Layout from "@layout/Layout";
 import ProtectedRoute from "@components/ProtectedRoute";
 
 export default function App() {
-
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route
-          path="/seller/:id/products/:id"
-          element={
-            <ProtectedRoute>
-              <ViewProductPage />
-            </ProtectedRoute>
-          }
-        />
 
         {/* Rutas con Sidebar */}
-        <Route element={<Layout />}> {/* Aquí usas el Layout con Sidebar */}
+        <Route element={<Layout />}>
+          {" "}
+          {/* Aquí usas el Layout con Sidebar */}
           <Route
             path="/create"
             element={
@@ -48,6 +41,14 @@ export default function App() {
             }
           />
           <Route
+            path="/seller/:id/products/:id"
+            element={
+              <ProtectedRoute>
+                <ViewProductPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/seller/:id/products/:id/edit"
             element={
               <ProtectedRoute>
@@ -55,7 +56,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
         </Route>
 
         <Route path="/register" element={<RegisterSeller />} />
@@ -63,6 +63,5 @@ export default function App() {
         <Route path="/registerinversor" element={<Register />} />
       </Routes>
     </Router>
-  )
+  );
 }
-
