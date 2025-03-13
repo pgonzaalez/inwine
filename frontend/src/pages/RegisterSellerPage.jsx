@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, IdCard, Mail, Lock, Home, Phone, CreditCard, Landmark } from 'lucide-react';
+import { User, IdCard, Mail, Lock, Home, Phone, BookUser, Landmark, CornerDownLeft } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 const AddSellerForm = () => {
@@ -28,7 +28,7 @@ const AddSellerForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
-    
+
         try {
             const response = await fetch(`${apiUrl}/v1/seller`, {
                 method: 'POST',
@@ -38,9 +38,9 @@ const AddSellerForm = () => {
                 },
                 body: JSON.stringify(formData),
             });
-    
+
             const data = await response.json();
-    
+
             if (!response.ok) {
                 if (response.status === 422) {
                     setErrors(data.errors || {}); // Asegúrate de que data.errors no sea undefined
@@ -60,7 +60,7 @@ const AddSellerForm = () => {
                     bank_account: '',
                     balance: '',
                 });
-    
+
                 setTimeout(() => {
                     navigate("/");
                 }, 1000);
@@ -75,17 +75,26 @@ const AddSellerForm = () => {
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl flex flex-col md:flex-row">
                 <div className="w-full md:w-1/2">
                     <div className="text-center mb-6">
-                        <h1 className="text-2xl font-bold">Crear compte d'usuari productor</h1>
-                        <h4 className="text-gray-600">
-                            Tens un compte? <a href="#" className="text-[#800020]">Inicia sessió</a>
+                        <div className="flex items-center justify-between mb-2">
+                            <button
+                                onClick={() => navigate(-1)}
+                                className="border-2 rounded-lg p-2 hover:bg-gray-200 transition-colors duration-200"
+                            >
+                                <CornerDownLeft size={20} className="cursor-pointer" />
+                            </button>
+                            <h1 className="text-2xl font-bold text-center w-full">Crear compte d'usuari productor</h1>
+                        </div>
+                        <h4 className="text-gray-600 text-center">
+                            Tens un compte? <a href="/login" className="text-[#800020]">Inicia sessió</a>
                         </h4>
                     </div>
+
                     {message && <p className="text-center text-green-500 mb-4">{message}</p>}
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <h2 className="text-lg font-semibold mb-2">Informació dades personals</h2>
-                                <div className="space-y-3">
+                                <h2 className="text-lg font-semibold mb-4">Informació dades personals</h2>
+                                <div className="space-y-2">
                                     {/* Nombre */}
                                     <div className="relative">
                                         <div className="flex items-center">
@@ -107,11 +116,13 @@ const AddSellerForm = () => {
                                                 Nom usuari
                                             </label>
                                         </div>
+                                    </div>
+                                    <div className="h-6">
                                         {errors.name && (
-                                        <span className="text-red-500 text-xs mt-1">
-                                            {errors.name[0]}
-                                        </span>
-                                    )}
+                                            <span className="text-red-500 text-xs mt-1">
+                                                {errors.name[0]}
+                                            </span>
+                                        )}
                                     </div>
 
                                     {/* NIF */}
@@ -135,11 +146,13 @@ const AddSellerForm = () => {
                                                 NIF
                                             </label>
                                         </div>
+                                    </div>
+                                    <div className="h-6">
                                         {errors.NIF && (
-                                        <span className="text-red-500 text-xs mt-1">
-                                            {errors.NIF[0]}
-                                        </span>
-                                    )}
+                                            <span className="text-red-500 text-xs mt-1">
+                                                {errors.NIF[0]}
+                                            </span>
+                                        )}
                                     </div>
 
                                     {/* Dirección */}
@@ -162,11 +175,13 @@ const AddSellerForm = () => {
                                                 Adreça
                                             </label>
                                         </div>
+                                    </div>
+                                    <div className="h-6">
                                         {errors.address && (
-                                        <span className="text-red-500 text-xs mt-1">
-                                            {errors.address[0]}
-                                        </span>
-                                    )}
+                                            <span className="text-red-500 text-xs mt-1">
+                                                {errors.address[0]}
+                                            </span>
+                                        )}
                                     </div>
 
                                     {/* Teléfono */}
@@ -189,18 +204,20 @@ const AddSellerForm = () => {
                                                 Telèfon contacte
                                             </label>
                                         </div>
+                                    </div>
+                                    <div className="h-6">
                                         {errors.phone && (
-                                        <span className="text-red-500 text-xs mt-1">
-                                            {errors.phone[0]}
-                                        </span>
-                                    )}
+                                            <span className="text-red-500 text-xs mt-1">
+                                                {errors.phone[0]}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
 
                             <div>
-                                <h2 className="text-lg font-semibold mb-2">Informació inici de sessió</h2>
-                                <div className="space-y-3">
+                                <h2 className="text-lg font-semibold mb-4">Informació inici de sessió</h2>
+                                <div className="space-y-2">
                                     {/* Email */}
                                     <div className="relative">
                                         <div className="flex items-center">
@@ -222,11 +239,13 @@ const AddSellerForm = () => {
                                                 Email
                                             </label>
                                         </div>
+                                    </div>
+                                    <div className="h-6">
                                         {errors.email && (
-                                        <span className="text-red-500 text-xs mt-1">
-                                            {errors.email[0]}
-                                        </span>
-                                    )}
+                                            <span className="text-red-500 text-xs mt-1">
+                                                {errors.email[0]}
+                                            </span>
+                                        )}
                                     </div>
 
                                     {/* Contraseña */}
@@ -250,23 +269,25 @@ const AddSellerForm = () => {
                                                 Contrasenya
                                             </label>
                                         </div>
+                                    </div>
+                                    <div className="h-6">
                                         {errors.password && (
-                                        <span className="text-red-500 text-xs mt-1">
-                                            {errors.password[0]}
-                                        </span>
-                                    )}
+                                            <span className="text-red-500 text-xs mt-1">
+                                                {errors.password[0]}
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <h2 className="text-lg font-semibold mb-2">Informació dades bancàries</h2>
-                            <div className="space-y-3">
+                            <h2 className="text-lg font-semibold mb-4">Informació dades bancàries</h2>
+                            <div className="space-y-2">
                                 {/* Nom de contacto */}
                                 <div className="relative">
                                     <div className="flex items-center">
-                                        <CreditCard className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                        <BookUser className="text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                                         <input
                                             type="text"
                                             name="name_contact"
@@ -283,6 +304,8 @@ const AddSellerForm = () => {
                                             Nom de contacte
                                         </label>
                                     </div>
+                                </div>
+                                <div className="h-6">
                                     {errors.name_contact && (
                                         <span className="text-red-500 text-xs mt-1">
                                             {errors.name_contact[0]}
@@ -310,6 +333,8 @@ const AddSellerForm = () => {
                                             Número compte
                                         </label>
                                     </div>
+                                </div>
+                                <div className="h-6">
                                     {errors.bank_account && (
                                         <span className="text-red-500 text-xs mt-1">
                                             {errors.bank_account[0]}
