@@ -169,7 +169,7 @@ export default function CreateProduct() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div
-              className="bg-purple-600 h-2.5 rounded-full transition-all duration-300"
+              className="bg-[#BE6674] h-2.5 rounded-full transition-all duration-300"
               style={{ width: `${(currentStep / 3) * 100}%` }}
             ></div>
           </div>
@@ -182,8 +182,8 @@ export default function CreateProduct() {
             <div
               className={`flex flex-col justify-between bg-white rounded-lg shadow-md ${currentStep !== 1 ? "hidden" : ""}`}
             >
-              <div className="w-full bg-purple-100 p-4 rounded-t-lg border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-purple-900">Tria la categoria</h2>
+              <div className="w-full bg-[#F3E0D1] p-4 rounded-t-lg border-b border-gray-200">
+                <h2 className="text-lg font-semibold text-[#BE6674]">Tria la categoria</h2>
                 <p className="text-sm text-gray-600">Selecciona una opció d'aquest vins per escollir la categoria</p>
               </div>
               <div className="p-8">
@@ -218,8 +218,8 @@ export default function CreateProduct() {
                 className={`flex flex-col justify-between bg-white rounded-lg shadow-md ${currentStep !== 2 ? "hidden" : ""}`}
               >
                 {/* Header for the form section */}
-                <div className="w-full bg-purple-100 p-4 rounded-t-lg border-b border-gray-200">
-                  <h2 className="text-lg font-semibold text-purple-900">Crea el producte</h2>
+              <div className="w-full bg-[#F3E0D1] p-4 rounded-t-lg border-b border-gray-200">
+                  <h2 className="text-lg font-semibold text-[#BE6674]">Crea el producte</h2>
                   <p className="text-sm text-gray-600">
                     Omple les següents dades per crear el teu producte. Proporciona tota la informació rellevant.
                   </p>
