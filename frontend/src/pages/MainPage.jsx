@@ -93,7 +93,7 @@ export default function App() {
         </motion.div>
       </section>
 
-      <section className="text-center">
+      <section className="bg-gray-50 text-center">
         <motion.div
           className="mx-auto p-8"
           initial="hidden"
