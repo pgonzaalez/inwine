@@ -1,5 +1,3 @@
-"use client"
-
 export const WinePricingForm = ({
   formData,
   onChange,
@@ -31,17 +29,15 @@ export const WinePricingForm = ({
               id="price_demanded"
               value={formData.price_demanded}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
-                hasError("price_demanded") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
-              }`}
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("price_demanded") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+                }`}
               placeholder=" "
               step="0.01"
             />
             <label
               htmlFor="price_demanded"
-              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                hasError("price_demanded") ? "text-red-500" : "text-gray-500"
-              }`}
+              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("price_demanded") ? "text-red-500" : "text-gray-500"
+                }`}
             >
               Preu (€)
             </label>
@@ -58,17 +54,15 @@ export const WinePricingForm = ({
               id="quantity"
               value={formData.quantity}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
-                hasError("quantity") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
-              }`}
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("quantity") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+                }`}
               placeholder=" "
               min="1"
             />
             <label
               htmlFor="quantity"
-              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                hasError("quantity") ? "text-red-500" : "text-gray-500"
-              }`}
+              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("quantity") ? "text-red-500" : "text-gray-500"
+                }`}
             >
               Quantitat disponible
             </label>
@@ -136,11 +130,10 @@ export const WinePricingForm = ({
             </button>
             <button
               type="submit"
-              className={`px-6 py-3 rounded-lg transition-colors shadow-md ${
-                isSubmitEnabled
+              className={`px-6 py-3 rounded-lg transition-colors shadow-md ${isSubmitEnabled
                   ? "bg-[#9A3E50] text-white hover:bg-[#8C2E2E]"
                   : "bg-[#E8D5D5] text-[#8C2E2E] cursor-not-allowed"
-              }`}
+                }`}
               disabled={!isSubmitEnabled}
             >
               Puja el teu vi

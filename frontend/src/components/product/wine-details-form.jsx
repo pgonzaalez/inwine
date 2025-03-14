@@ -1,5 +1,3 @@
-"use client"
-
 export const WineDetailsForm = ({
   formData,
   onChange,
@@ -38,17 +36,15 @@ export const WineDetailsForm = ({
               name="name"
               value={formData.name}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
-                hasError("name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
-              }`}
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+                }`}
               placeholder=" "
               id="name"
             />
             <label
               htmlFor="name"
-              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                hasError("name") ? "text-red-500" : "text-gray-500"
-              }`}
+              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("name") ? "text-red-500" : "text-gray-500"
+                }`}
             >
               Nom del Vi
             </label>
@@ -62,17 +58,15 @@ export const WineDetailsForm = ({
               name="origin"
               value={formData.origin}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
-                hasError("origin") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
-              }`}
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("origin") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+                }`}
               placeholder=" "
               id="origin"
             />
             <label
               htmlFor="origin"
-              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                hasError("origin") ? "text-red-500" : "text-gray-500"
-              }`}
+              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("origin") ? "text-red-500" : "text-gray-500"
+                }`}
             >
               Denominació d'Origen
             </label>
@@ -86,17 +80,15 @@ export const WineDetailsForm = ({
               name="year"
               value={formData.year}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
-                hasError("year") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
-              }`}
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("year") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+                }`}
               placeholder=" "
               id="year"
             />
             <label
               htmlFor="year"
-              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                hasError("year") ? "text-red-500" : "text-gray-500"
-              }`}
+              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("year") ? "text-red-500" : "text-gray-500"
+                }`}
             >
               Any
             </label>
@@ -109,17 +101,15 @@ export const WineDetailsForm = ({
               name="description"
               value={formData.description}
               onChange={onChange}
-              className={`peer w-full h-24 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
-                hasError("description") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
-              }`}
+              className={`peer w-full h-24 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("description") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+                }`}
               placeholder=" "
               id="description"
             />
             <label
               htmlFor="description"
-              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                hasError("description") ? "text-red-500" : "text-gray-500"
-              }`}
+              className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("description") ? "text-red-500" : "text-gray-500"
+                }`}
             >
               Descripció
             </label>
@@ -140,9 +130,8 @@ export const WineDetailsForm = ({
           {/* Imatge */}
           <div className="space-y-4">
             <div
-              className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition-colors ${
-                hasError("image") ? "border-red-300 bg-red-50" : "border-gray-300 hover:border-[#D9A5AD]"
-              }`}
+              className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition-colors ${hasError("image") ? "border-red-300 bg-red-50" : "border-gray-300 hover:border-[#D9A5AD]"
+                }`}
             >
               <div className="space-y-1 text-center">
                 <svg
@@ -162,9 +151,8 @@ export const WineDetailsForm = ({
                 <div className="flex text-sm text-gray-600">
                   <label
                     htmlFor="file-upload"
-                    className={`relative cursor-pointer bg-white rounded-md font-medium focus-within:outline-none ${
-                      hasError("image") ? "text-red-500 hover:text-red-400" : "text-[#9A3E50] hover:text-[#C27D7D]"
-                    }`}
+                    className={`relative cursor-pointer bg-white rounded-md font-medium focus-within:outline-none ${hasError("image") ? "text-red-500 hover:text-red-400" : "text-[#9A3E50] hover:text-[#C27D7D]"
+                      }`}
                   >
                     <span>Puja imatges</span>
                     <input
@@ -250,11 +238,10 @@ export const WineDetailsForm = ({
             <button
               type="button"
               onClick={onNext}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                isNextEnabled
+              className={`px-4 py-2 rounded-lg transition-colors ${isNextEnabled
                   ? "bg-[#9A3E50] text-white hover:bg-[#8C2E2E]"
                   : "bg-[#E8D5D5] text-[#8C2E2E] cursor-not-allowed"
-              }`}
+                }`}
               disabled={!isNextEnabled}
             >
               Següent
