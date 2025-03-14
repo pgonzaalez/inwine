@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "@components/HeaderComponent";
+import Footer from "@components/FooterComponent";
 import LastInteractions from "@components/LastInteractionsComponent";
 import { Check, Handshake } from "lucide-react";
 
@@ -93,187 +94,185 @@ export default function App() {
         </motion.div>
       </section>
 
-      <section className="bg-gray-50 text-center">
+      <section className="bg-gray-50 text-center py-12">
         <motion.div
-          className="mx-auto p-8"
+          className="mx-auto px-4 sm:px-6 lg:px-8"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false }}
           variants={fadeInRight}
         >
-          <div className="max-w-6xl mx-auto py-12 px-6">
-            <div className="flex gap-6">
-              <section className="w-1/3 px-10 py-5">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                  <div className="w-full">
-                    <img
-                      src="https://www.scmlogistica.es/wp-content/uploads/como-poner-en-marcha-un-pequeno-almacen.jpg"
-                      alt="Almacén"
-                      className="w-full h-56 object-cover"
-                      loading="lazy"
-                    />
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Productor Card */}
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                <div className="w-full">
+                  <img
+                    src="https://www.scmlogistica.es/wp-content/uploads/como-poner-en-marcha-un-pequeno-almacen.jpg"
+                    alt="Almacén"
+                    className="w-full h-56 object-cover"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="p-4 sm:p-5">
+                  <div className="flex flex-col gap-3 mb-4">
+                    <h2 className="text-black text-xl sm:text-2xl font-medium">
+                      Usuari Productor
+                    </h2>
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      In cum, incidunt iure dolore soluta facilis blanditiis
+                      quae voluptas praesentium nesciunt labore recusandae nemo
+                      quisquam eveniet, provident illo est, ad ab. Suscipit
+                      dolorem odit voluptates!
+                    </p>
                   </div>
 
-                  <div className="p-5">
-                    <div className="flex flex-col gap-3 mb-4">
-                      <h2 className="text-black text-2xl font-medium">
-                        Usuari Productor
-                      </h2>
-                      <p className="text-gray-700 text-sm leading-relaxed">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. In cum, incidunt iure dolore soluta facilis
-                        blanditiis quae voluptas praesentium nesciunt labore
-                        recusandae nemo quisquam eveniet, provident illo est, ad
-                        ab. Suscipit dolorem odit voluptates!
-                      </p>
+                  <Link href="/register">
+                    <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
+                      <span className="text-white text-sm font-medium">
+                        Comença
+                      </span>
                     </div>
+                  </Link>
 
-                    <Link to="/register">
-                      <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
-                        <span className="text-white text-sm font-medium">
-                          Comença
+                  <div className="mt-6">
+                    <h4 className="text-black text-md font-medium mb-3">
+                      Característiques:
+                    </h4>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-2">
+                        <Check size={18} className="text-red-800" />
+                        <span className="text-gray-800 text-sm">
+                          Lorem ipsum dolor
                         </span>
                       </div>
-                    </Link>
-
-                    <div className="mt-6">
-                      <h4 className="text-black text-md font-medium mb-3">
-                        Característiques:
-                      </h4>
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
-                          <Check size={18} className="text-red-800" />
-                          <span className="text-gray-800 text-sm">
-                            Lorem ipsum dolor
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Check size={18} className="text-red-800" />
-                          <span className="text-gray-800 text-sm">
-                            Lorem ipsum dolor
-                          </span>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <Check size={18} className="text-red-800" />
+                        <span className="text-gray-800 text-sm">
+                          Lorem ipsum dolor
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </section>
+              </div>
 
-              <section className="w-1/3 px-10 py-5">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                  <div className="w-full">
-                    <img
-                      src="https://es.msi.com/frontend/imgs/aboutus/kv-investor-information-xs.jpg"
-                      alt="Almacén"
-                      className="w-full h-56 object-cover"
-                      loading="lazy"
-                    />
+              {/* Inversor Card */}
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                <div className="w-full">
+                  <img
+                    src="https://es.msi.com/frontend/imgs/aboutus/kv-investor-information-xs.jpg"
+                    alt="Inversor"
+                    className="w-full h-56 object-cover"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="p-4 sm:p-5">
+                  <div className="flex flex-col gap-3 mb-4">
+                    <h2 className="text-black text-xl sm:text-2xl font-medium">
+                      Usuari Inversor
+                    </h2>
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      In cum, incidunt iure dolore soluta facilis blanditiis
+                      quae voluptas praesentium nesciunt labore recusandae nemo
+                      quisquam eveniet, provident illo est, ad ab. Suscipit
+                      dolorem odit voluptates!
+                    </p>
                   </div>
 
-                  <div className="p-5">
-                    <div className="flex flex-col gap-3 mb-4">
-                      <h2 className="text-black text-2xl font-medium">
-                        Usuari Inversor
-                      </h2>
-                      <p className="text-gray-700 text-sm leading-relaxed">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. In cum, incidunt iure dolore soluta facilis
-                        blanditiis quae voluptas praesentium nesciunt labore
-                        recusandae nemo quisquam eveniet, provident illo est, ad
-                        ab. Suscipit dolorem odit voluptates!
-                      </p>
+                  <Link href="/registerinversor">
+                    <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
+                      <span className="text-white text-sm font-medium">
+                        Comença
+                      </span>
                     </div>
+                  </Link>
 
-                    <Link href="/registerinversor">
-                      <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
-                        <span className="text-white text-sm font-medium">
-                          Comença
+                  <div className="mt-6">
+                    <h4 className="text-black text-md font-medium mb-3">
+                      Característiques:
+                    </h4>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-2">
+                        <Check size={18} className="text-red-800" />
+                        <span className="text-gray-800 text-sm">
+                          Lorem ipsum dolor
                         </span>
                       </div>
-                    </Link>
-
-                    <div className="mt-6">
-                      <h4 className="text-black text-md font-medium mb-3">
-                        Característiques:
-                      </h4>
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
-                          <Check size={18} className="text-red-800" />
-                          <span className="text-gray-800 text-sm">
-                            Lorem ipsum dolor
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Check size={18} className="text-red-800" />
-                          <span className="text-gray-800 text-sm">
-                            Lorem ipsum dolor
-                          </span>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <Check size={18} className="text-red-800" />
+                        <span className="text-gray-800 text-sm">
+                          Lorem ipsum dolor
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </section>
+              </div>
 
-              <section className="w-1/3 px-10 py-5">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-                  <div className="w-full">
-                    <img
-                      src="https://www.antiguarestaurante.com/es/media/ee367c51f9/ee367c51f659c9963f83cba87c831516.cms.jpg"
-                      alt="Almacén"
-                      className="w-full h-56 object-cover"
-                      loading="lazy"
-                    />
+              {/* Restaurant Card */}
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                <div className="w-full">
+                  <img
+                    src="https://www.antiguarestaurante.com/es/media/ee367c51f9/ee367c51f659c9963f83cba87c831516.cms.jpg"
+                    alt="Restaurant"
+                    className="w-full h-56 object-cover"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="p-4 sm:p-5">
+                  <div className="flex flex-col gap-3 mb-4">
+                    <h2 className="text-black text-xl sm:text-2xl font-medium">
+                      Usuari Restaurant
+                    </h2>
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                      In cum, incidunt iure dolore soluta facilis blanditiis
+                      quae voluptas praesentium nesciunt labore recusandae nemo
+                      quisquam eveniet, provident illo est, ad ab. Suscipit
+                      dolorem odit voluptates!
+                    </p>
                   </div>
 
-                  <div className="p-5">
-                    <div className="flex flex-col gap-3 mb-4">
-                      <h2 className="text-black text-2xl font-medium">
-                        Usuari Restaurant
-                      </h2>
-                      <p className="text-gray-700 text-sm leading-relaxed">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. In cum, incidunt iure dolore soluta facilis
-                        blanditiis quae voluptas praesentium nesciunt labore
-                        recusandae nemo quisquam eveniet, provident illo est, ad
-                        ab. Suscipit dolorem odit voluptates!
-                      </p>
+                  <Link href="/register">
+                    <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
+                      <span className="text-white text-sm font-medium">
+                        Comença
+                      </span>
                     </div>
+                  </Link>
 
-                    <Link href="/register">
-                      <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
-                        <span className="text-white text-sm font-medium">
-                          Comença
+                  <div className="mt-6">
+                    <h4 className="text-black text-md font-medium mb-3">
+                      Característiques:
+                    </h4>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-2">
+                        <Check size={18} className="text-red-800" />
+                        <span className="text-gray-800 text-sm">
+                          Lorem ipsum dolor
                         </span>
                       </div>
-                    </Link>
-
-                    <div className="mt-6">
-                      <h4 className="text-black text-md font-medium mb-3">
-                        Característiques:
-                      </h4>
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
-                          <Check size={18} className="text-red-800" />
-                          <span className="text-gray-800 text-sm">
-                            Lorem ipsum dolor
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Check size={18} className="text-red-800" />
-                          <span className="text-gray-800 text-sm">
-                            Lorem ipsum dolor
-                          </span>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <Check size={18} className="text-red-800" />
+                        <span className="text-gray-800 text-sm">
+                          Lorem ipsum dolor
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </section>
+              </div>
             </div>
           </div>
         </motion.div>
       </section>
+      <Footer />
     </>
   );
 }
