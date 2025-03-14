@@ -1,25 +1,19 @@
-import React from "react";
-import { Avatar, Divider } from "@heroui/react";
-import { Link, useLocation } from "react-router-dom";
-import {
-  LucideShoppingCart,
-  BookmarkPlusIcon,
-  Bell,
-  LogOut,
-} from "lucide-react";
-import { useFetchUser } from "@components/FetchUser"; // Importar el hook
+"use client"
+
+import { Link, useLocation } from "react-router-dom"
+import { LucideShoppingCart, BookmarkPlusIcon, Bell, LogOut, User } from "lucide-react"
+import { useFetchUser } from "@components/FetchUser"
 
 export default function Sidebar() {
-  const location = useLocation();
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const { user, loading, error } = useFetchUser(); // Llamar al hook para obtener el usuario
+  const location = useLocation()
+  const apiUrl = import.meta.env.VITE_API_URL
+  const { user, loading, error } = useFetchUser()
 
   const logout = async () => {
-    const token = localStorage.getItem("token");
-    console.log(token); // Verifica el valor del token
+    const token = localStorage.getItem("token")
     if (!token) {
-      console.log("No hay token de autenticación");
-      return;
+      console.log("No hay token de autenticación")
+      return
     }
 
     try {
@@ -27,131 +21,148 @@ export default function Sidebar() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Asegúrate de usar backticks
+          Authorization: `Bearer ${token}`,
         },
-      });
+      })
 
       if (response.ok) {
-        // Si el logout es exitoso, puedes eliminar el token del localStorage
-        localStorage.removeItem("token");
-        window.location.href = "/";
+        localStorage.removeItem("token")
+        window.location.href = "/"
       } else {
-        console.log("Error al hacer logout");
+        console.log("Error al hacer logout")
       }
     } catch (error) {
-      console.error("Error en la solicitud de logout:", error);
+      console.error("Error en la solicitud de logout:", error)
     }
-  };
+  }
 
-  if (loading) return <div>Loading...</div>; // Mientras carga, puedes mostrar un mensaje
-  if (error) return <div>{error}</div>; // Si hay un error, lo mostramos
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>{error}</div>
 
   return (
     <>
-      {/* Barra lateral per a pantalles grans */}
-      <section className="hidden md:flex flex-col w-[245px] h-screen fixed top-[100px] left-0 bg-white shadow-md p-4 overflow-y-auto">
-        <Link
-          to={`/seller/${user?.id || "usuari"}`}
-          className="flex gap-3 items-center cursor-pointer"
-        >
-          <Avatar className="w-[40px] h-[40px] rounded-full" src="" />
-          <div>
-            <div className="font-extrabold text-black">
-              {user ? user.name : "Usuari Desconegut"}
-            </div>
-            <div className="text-[#91969e] text-xs">
-              {user?.role || "Rol no disponible"}
+      {/* Sidebar solo para desktop */}
+      <aside className="hidden md:block fixed top-[60px] left-0 h-[calc(100vh-60px)] w-64 bg-white shadow-lg z-40">
+        <div className="flex flex-col h-full">
+          <div className="p-4 border-b">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-[#800020] flex items-center justify-center text-white">
+                <User size={20} />
+              </div>
+              <div>
+                <p className="font-medium text-gray-900">{user ? user.name : "Usuari Desconegut"}</p>
+                <p className="text-sm text-gray-500">{user?.email || "email@example.com"}</p>
+              </div>
             </div>
           </div>
-        </Link>
-        <div className="mt-5 space-y-2">
-          <Divider />
-          <Link
-            to="/create"
-            className={`flex items-center gap-4 p-3 rounded-[20px] cursor-pointer ${
-              location.pathname === "/create"
-                ? "bg-[#efefef]"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            <BookmarkPlusIcon size={20} />
-            <span>Pujar Producte</span>
-          </Link>
-          <Link
-            to={`/seller/${user?.id || "usuari"}/products`}
-            className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer ${
-              location.pathname === `/seller/${user?.id}/products`
-                ? "bg-[#efefef]"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            <LucideShoppingCart size={20} />
-            <span>Productes</span>
-          </Link>
-          <Link
-            to={`/seller/${user?.id || "usuari"}/notificacions`}
-            className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer ${
-              location.pathname === `/seller/${user?.id}/notificacions`
-                ? "bg-[#efefef]"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            <Bell size={20} />
-            <span>Notificacions</span>
-          </Link>
-          <Link
-            to="#"
-            onClick={logout}
-            className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer hover:bg-gray-100`}
-          >
-            <LogOut size={20} />
-            <span>Tanca sessió</span>
-          </Link>
-        </div>
-      </section>
 
-      {/* Barra inferior per a mòbils */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow flex justify-around p-2 z-10">
+          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+            <Link
+              to="/create"
+              className={`flex items-center space-x-3 p-3 rounded-lg ${
+                location.pathname === "/create"
+                  ? "bg-gray-100 text-[#800020] font-medium"
+                  : "hover:bg-gray-100 text-gray-700"
+              }`}
+            >
+              <BookmarkPlusIcon size={20} />
+              <span>Pujar Producte</span>
+            </Link>
+
+            <Link
+              to={`/seller/${user?.id || "usuari"}/products`}
+              className={`flex items-center space-x-3 p-3 rounded-lg ${
+                location.pathname === `/seller/${user?.id}/products`
+                  ? "bg-gray-100 text-[#800020] font-medium"
+                  : "hover:bg-gray-100 text-gray-700"
+              }`}
+            >
+              <LucideShoppingCart size={20} />
+              <span>Productes</span>
+            </Link>
+
+            <Link
+              to={`/seller/${user?.id || "usuari"}/notificacions`}
+              className={`flex items-center space-x-3 p-3 rounded-lg ${
+                location.pathname === `/seller/${user?.id}/notificacions`
+                  ? "bg-gray-100 text-[#800020] font-medium"
+                  : "hover:bg-gray-100 text-gray-700"
+              }`}
+            >
+              <Bell size={20} />
+              <span>Notificacions</span>
+            </Link>
+
+            <div className="pt-4 mt-4 border-t border-gray-200">
+              <Link
+                to={`/seller/${user?.id || "usuari"}`}
+                className={`flex items-center space-x-3 p-3 rounded-lg ${
+                  location.pathname === `/seller/${user?.id}`
+                    ? "bg-gray-100 text-[#800020] font-medium"
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <User size={20} />
+                <span>Perfil</span>
+              </Link>
+            </div>
+          </nav>
+
+          <div className="p-4 border-t">
+            <button
+              onClick={logout}
+              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700 w-full"
+            >
+              <LogOut size={20} />
+              <span>Tancar sessió</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Barra inferior para móviles - Enfoque principal en móvil */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around p-3 z-10">
         <Link
           to="/create"
           className={`flex flex-col items-center p-2 ${
-            location.pathname === "/create" ? "text-[#800020]" : "text-gray-500"
+            location.pathname === "/create" ? "text-[#800020] font-medium" : "text-gray-600"
           }`}
         >
           <BookmarkPlusIcon size={20} />
-          <span className="text-xs">Pujar</span>
+          <span className="text-xs mt-1">Pujar</span>
         </Link>
+
         <Link
           to={`/seller/${user?.id || "usuari"}/products`}
           className={`flex flex-col items-center p-2 ${
-            location.pathname === `/seller/${user?.id}/products`
-              ? "text-[#800020]"
-              : "text-gray-500"
+            location.pathname === `/seller/${user?.id}/products` ? "text-[#800020] font-medium" : "text-gray-600"
           }`}
         >
           <LucideShoppingCart size={20} />
-          <span className="text-xs">Productes</span>
+          <span className="text-xs mt-1">Productes</span>
         </Link>
+
+        <Link
+          to={`/seller/${user?.id || "usuari"}`}
+          className={`flex flex-col items-center p-2 ${
+            location.pathname === `/seller/${user?.id}` ? "text-[#800020] font-medium" : "text-gray-600"
+          }`}
+        >
+          <User size={20} />
+          <span className="text-xs mt-1">Perfil</span>
+        </Link>
+
         <Link
           to={`/seller/${user?.id || "usuari"}/notificacions`}
           className={`flex flex-col items-center p-2 ${
-            location.pathname === `/seller/${user?.id}/notificacions`
-              ? "text-[#800020]"
-              : "text-gray-500"
+            location.pathname === `/seller/${user?.id}/notificacions` ? "text-[#800020] font-medium" : "text-gray-600"
           }`}
         >
           <Bell size={20} />
-          <span className="text-xs">Notificacions</span>
-        </Link>
-        <Link
-          to="#"
-          onClick={logout}
-          className={`flex flex-col items-center p-2 text-gray-500`}
-        >
-          <LogOut size={20} />
-          <span className="text-xs">Sortir</span>
+          <span className="text-xs mt-1">Alertes</span>
         </Link>
       </nav>
     </>
-  );
+  )
 }
+
