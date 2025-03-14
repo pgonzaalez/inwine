@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "@components/HeaderComponent";
 import LastInteractions from "@components/LastInteractionsComponent";
+import { Check, Handshake } from "lucide-react";
 
 export default function App() {
   const fadeInLeft = {
@@ -89,6 +90,188 @@ export default function App() {
         >
           <h2 className="text-3xl font-bold">Últimes interaccions</h2>
           <LastInteractions />
+        </motion.div>
+      </section>
+
+      <section className="text-center">
+        <motion.div
+          className="mx-auto p-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false }}
+          variants={fadeInRight}
+        >
+          <div className="max-w-6xl mx-auto py-12 px-6">
+            <div className="flex gap-6">
+              <section className="w-1/3 px-10 py-5">
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                  <div className="w-full">
+                    <img
+                      src="https://www.scmlogistica.es/wp-content/uploads/como-poner-en-marcha-un-pequeno-almacen.jpg"
+                      alt="Almacén"
+                      className="w-full h-56 object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  <div className="p-5">
+                    <div className="flex flex-col gap-3 mb-4">
+                      <h2 className="text-black text-2xl font-medium">
+                        Usuari Productor
+                      </h2>
+                      <p className="text-gray-700 text-sm leading-relaxed">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing
+                        elit. In cum, incidunt iure dolore soluta facilis
+                        blanditiis quae voluptas praesentium nesciunt labore
+                        recusandae nemo quisquam eveniet, provident illo est, ad
+                        ab. Suscipit dolorem odit voluptates!
+                      </p>
+                    </div>
+
+                    <Link to="/register">
+                      <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
+                        <span className="text-white text-sm font-medium">
+                          Comença
+                        </span>
+                      </div>
+                    </Link>
+
+                    <div className="mt-6">
+                      <h4 className="text-black text-md font-medium mb-3">
+                        Característiques:
+                      </h4>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <Check size={18} className="text-red-800" />
+                          <span className="text-gray-800 text-sm">
+                            Lorem ipsum dolor
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check size={18} className="text-red-800" />
+                          <span className="text-gray-800 text-sm">
+                            Lorem ipsum dolor
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="w-1/3 px-10 py-5">
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                  <div className="w-full">
+                    <img
+                      src="https://es.msi.com/frontend/imgs/aboutus/kv-investor-information-xs.jpg"
+                      alt="Almacén"
+                      className="w-full h-56 object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  <div className="p-5">
+                    <div className="flex flex-col gap-3 mb-4">
+                      <h2 className="text-black text-2xl font-medium">
+                        Usuari Inversor
+                      </h2>
+                      <p className="text-gray-700 text-sm leading-relaxed">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing
+                        elit. In cum, incidunt iure dolore soluta facilis
+                        blanditiis quae voluptas praesentium nesciunt labore
+                        recusandae nemo quisquam eveniet, provident illo est, ad
+                        ab. Suscipit dolorem odit voluptates!
+                      </p>
+                    </div>
+
+                    <Link href="/registerinversor">
+                      <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
+                        <span className="text-white text-sm font-medium">
+                          Comença
+                        </span>
+                      </div>
+                    </Link>
+
+                    <div className="mt-6">
+                      <h4 className="text-black text-md font-medium mb-3">
+                        Característiques:
+                      </h4>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <Check size={18} className="text-red-800" />
+                          <span className="text-gray-800 text-sm">
+                            Lorem ipsum dolor
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check size={18} className="text-red-800" />
+                          <span className="text-gray-800 text-sm">
+                            Lorem ipsum dolor
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="w-1/3 px-10 py-5">
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                  <div className="w-full">
+                    <img
+                      src="https://www.antiguarestaurante.com/es/media/ee367c51f9/ee367c51f659c9963f83cba87c831516.cms.jpg"
+                      alt="Almacén"
+                      className="w-full h-56 object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+
+                  <div className="p-5">
+                    <div className="flex flex-col gap-3 mb-4">
+                      <h2 className="text-black text-2xl font-medium">
+                        Usuari Restaurant
+                      </h2>
+                      <p className="text-gray-700 text-sm leading-relaxed">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing
+                        elit. In cum, incidunt iure dolore soluta facilis
+                        blanditiis quae voluptas praesentium nesciunt labore
+                        recusandae nemo quisquam eveniet, provident illo est, ad
+                        ab. Suscipit dolorem odit voluptates!
+                      </p>
+                    </div>
+
+                    <Link href="/register">
+                      <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
+                        <span className="text-white text-sm font-medium">
+                          Comença
+                        </span>
+                      </div>
+                    </Link>
+
+                    <div className="mt-6">
+                      <h4 className="text-black text-md font-medium mb-3">
+                        Característiques:
+                      </h4>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <Check size={18} className="text-red-800" />
+                          <span className="text-gray-800 text-sm">
+                            Lorem ipsum dolor
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check size={18} className="text-red-800" />
+                          <span className="text-gray-800 text-sm">
+                            Lorem ipsum dolor
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
         </motion.div>
       </section>
     </>
