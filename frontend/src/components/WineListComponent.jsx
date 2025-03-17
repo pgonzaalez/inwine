@@ -13,9 +13,9 @@ const WineItem = ({
   create_date,
   update_date,
   onDelete,
-  userId, // Recibimos el userId como prop
+  userId, 
 }) => {
-  const navigate = useNavigate(); // Definim navigate
+  const navigate = useNavigate();
 
   create_date = new Date(create_date).toLocaleDateString("ca-ES", {
     year: "numeric",
