@@ -96,6 +96,7 @@ export default function WineList() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const apiUrl = import.meta.env.VITE_API_URL;
+  const baseUrl = import.meta.env.VITE_URL_BASE;
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentWineId, setCurrentWineId] = useState(null);
   const { user, error } = useFetchUser();
@@ -136,7 +137,7 @@ export default function WineList() {
 
   const handleDeleteWine = async () => {
     try {
-      const response = await fetch(`${apiUrl}/v1/products/${currentWineId}`, {
+      const response = await fetch(`${apiUrl}/v1/${user.id}/products/${currentWineId}`, {
         method: "DELETE",
       });
 
@@ -171,7 +172,7 @@ export default function WineList() {
             <WineItem
               key={wine.id}
               id={wine.id}
-              image={wine.image}
+              image={`${baseUrl}${wine.image}`}
               price={wine.price_demanded}
               name={wine.name}
               year={wine.year}
