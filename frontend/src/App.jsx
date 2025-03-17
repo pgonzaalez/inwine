@@ -7,7 +7,6 @@ import Seller from "@pages/Seller/SellerDashboardPage";
 import Create from "@pages/Seller/CreateProductPage";
 import ViewProductPage from "./pages/Seller/ViewProductPage";
 import EditProductPage from "./pages/Seller/EditProductPage";
-import Register from "@pages/RegisterPage";
 import RegisterSeller from "@pages/RegisterSellerPage";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
@@ -60,7 +59,6 @@ export default function App() {
 
         <Route path="/register" element={<RegisterSeller />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/registerinversor" element={<Register />} />
       </Routes>
     </Router>
   );
