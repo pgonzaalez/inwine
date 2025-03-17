@@ -129,7 +129,7 @@ export default function App() {
                     </p>
                   </div>
 
-                  <Link href="/register">
+                  <Link to="/register/seller">
                     <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
                       <span className="text-white text-sm font-medium">
                         Comença
@@ -184,7 +184,7 @@ export default function App() {
                     </p>
                   </div>
 
-                  <Link href="/registerinversor">
+                  <Link to="/register/inversor">
                     <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
                       <span className="text-white text-sm font-medium">
                         Comença
@@ -239,7 +239,7 @@ export default function App() {
                     </p>
                   </div>
 
-                  <Link href="/register">
+                  <Link to="/register/restaurant">
                     <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
                       <span className="text-white text-sm font-medium">
                         Comença

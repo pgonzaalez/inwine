@@ -559,7 +559,7 @@ const AddRestaurantForm = () => {
         </div>
         <div className="w-full md:w-1/2 md:pl-8 mt-8 md:mt-0">
           <img
-            src="https://media.istockphoto.com/id/1363666079/es/foto/el-propietario-de-la-bodega-y-experto-en-control-de-calidad-comprobando-la-calidad-del-vino-en.jpg?s=612x612&w=0&k=20&c=23hm_w9AIaUJsQyBZd0TmqkWAvk5iglIjZ7Pw_857_8="
+            src="https://images.unsplash.com/photo-1602594905755-1cead51600f4?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Imagen lateral"
             className="w-full h-full object-cover rounded-lg"
           />
