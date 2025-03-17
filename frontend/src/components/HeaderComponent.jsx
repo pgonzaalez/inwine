@@ -1,16 +1,20 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
-import { Search, Menu, X, ChevronDown } from "lucide-react"
+import { Search, Menu, X, ChevronDown, User, Settings, LogOut } from "lucide-react"
+import { useFetchUser } from "@components/FetchUser"
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const mobileMenuRef = useRef(null)
   const searchInputRef = useRef(null)
+  const dropdownRef = useRef(null)
+
+  const user = useFetchUser()
+  console.log(user)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,13 +50,25 @@ export default function Header() {
   }, [isSearchOpen])
 
   useEffect(() => {
-    // Apply dark mode class to body
     if (isDarkMode) {
       document.body.classList.add("dark-mode")
     } else {
       document.body.classList.remove("dark-mode")
     }
   }, [isDarkMode])
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   const navItems = [
     { name: "INICI", href: "/" },
@@ -80,11 +96,7 @@ export default function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-8">
         <div className="flex items-center">
           <Link to="/" className="mr-10">
-            <img
-              src={isDarkMode ? "logo-white.webp" : "logo.webp"}
-              alt="Logo"
-              className="h-8 w-auto transition-transform duration-300 hover:opacity-80"
-            />
+            <img src="logo.webp" alt="Logo" className="h-8 w-auto rounded-full" />
           </Link>
 
           <nav className="hidden md:block">
@@ -183,6 +195,72 @@ export default function Header() {
             </svg>
           </button>
 
+          {/* Avatar con menú desplegable */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 hover:scale-105 ${
+                isDarkMode ? "ring-1 ring-gray-700" : "ring-1 ring-gray-200"
+              }`}
+            >
+              <img src={user.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d"} alt="Usuario" className="h-full w-full object-cover" />
+            </button>
+
+            {isOpen && (
+              <div
+                className={`absolute right-0 mt-2 w-56 origin-top-right rounded-lg shadow-lg transition-all duration-300 ${
+                  isDarkMode ? "bg-gray-900 ring-1 ring-gray-800" : "bg-white ring-1 ring-gray-200"
+                }`}
+                style={{
+                  transformOrigin: "top right",
+                  animation: "dropdownFade 0.2s ease-out forwards",
+                }}
+              >
+                <div className="py-1">
+                  <div
+                    className={`border-b px-4 py-3 text-sm font-medium ${
+                      isDarkMode ? "border-gray-800 text-gray-300" : "border-gray-100 text-gray-700"
+                    }`}
+                  >
+                    El meu compte
+                  </div>
+
+                  <Link
+                    to={`/seller/${user.id}/products`}
+                    className={`flex items-center px-4 py-2.5 text-sm transition-colors ${
+                      isDarkMode ? "text-gray-300 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Perfil
+                  </Link>
+
+                  <Link
+                    to="/settings"
+                    className={`flex items-center px-4 py-2.5 text-sm transition-colors ${
+                      isDarkMode ? "text-gray-300 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    Configuració
+                  </Link>
+
+                  <div className={isDarkMode ? "border-t border-gray-800" : "border-t border-gray-100"}></div>
+
+                  <Link
+                    to="/login"
+                    className={`flex items-center px-4 py-2.5 text-sm transition-colors ${
+                      isDarkMode ? "text-red-400" : "text-red-600"
+                    } ${isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-50"}`}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Tancar sessió
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             type="button"
             className={`flex h-8 w-8 items-center justify-center rounded-full md:hidden ${
@@ -205,7 +283,7 @@ export default function Header() {
       >
         <div className="flex h-16 items-center justify-between px-6">
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
-            <img src={isDarkMode ? "logo-white.webp" : "logo.webp"} alt="Logo" className="h-8 w-auto" />
+            <img src="logo.webp" alt="Logo" className="h-8 w-auto rounded-full" />
           </Link>
           <button
             type="button"
@@ -255,7 +333,41 @@ export default function Header() {
             </ul>
           </nav>
 
-          <div className="mt-auto pt-10">
+          {/* Perfil en menú móvil */}
+          <div className="mt-8 space-y-6">
+            <div className="flex items-center space-x-3 py-2">
+              <img
+                src={user.avatar || "/placeholder.svg"}
+                alt="Usuario"
+                className="h-10 w-10 rounded-full object-cover"
+              />
+              <div>
+                <div className="text-sm font-medium">Mi cuenta</div>
+                <Link
+                  to={`/seller/${user.id}/products`}
+                  className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
+                >
+                  Ver perfil
+                </Link>
+              </div>
+            </div>
+            <div className={`h-px w-full ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`} />
+          </div>
+
+          <div className="mt-auto pt-10 space-y-4">
+            <Link
+              to="/settings"
+              className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${
+                isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"
+              }`}
+            >
+              <span className="flex items-center">
+                <Settings className="mr-2 h-4 w-4" />
+                Configuració
+              </span>
+              <ChevronDown className="h-4 w-4 opacity-50" />
+            </Link>
+
             <button
               onClick={toggleDarkMode}
               className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${
@@ -287,20 +399,41 @@ export default function Header() {
                 )}
               </svg>
             </button>
+
+            <Link
+              to="/login"
+              className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${
+                isDarkMode ? "bg-gray-900 text-red-400" : "bg-gray-50 text-red-600"
+              }`}
+            >
+              <span className="flex items-center">
+                <LogOut className="mr-2 h-4 w-4" />
+                Tancar sessió
+              </span>
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Add global styles for dark mode */}
+      {/* Add global styles for dark mode and animations */}
       <style jsx global>{`
         body.dark-mode {
           background-color: #000;
           color: #fff;
         }
+        
+        @keyframes dropdownFade {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
       `}</style>
     </header>
   )
-  )
 }
-
 
