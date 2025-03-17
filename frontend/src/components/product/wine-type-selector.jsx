@@ -1,5 +1,3 @@
-"use client"
-
 export const WineTypeSelector = ({ wineTypes, selectedTypeId, onSelect, error }) => {
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg shadow-md">
@@ -13,11 +11,10 @@ export const WineTypeSelector = ({ wineTypes, selectedTypeId, onSelect, error })
             <div
               key={wine.id}
               onClick={() => onSelect(wine.id)}
-              className={`cursor-pointer border p-4 rounded-lg transition-all ${
-                selectedTypeId === wine.id.toString()
+              className={`cursor-pointer border p-4 rounded-lg transition-all ${selectedTypeId === wine.id.toString()
                   ? "bg-[#F5E6E8] border-[#9A3E50] shadow-md"
                   : "border-gray-300 hover:border-[#D9A5AD] hover:shadow-sm"
-              }`}
+                }`}
             >
               <div className="relative">
                 <img
