@@ -8,6 +8,8 @@ import Create from "@pages/Seller/CreateProductPage";
 import ViewProductPage from "./pages/Seller/ViewProductPage";
 import EditProductPage from "./pages/Seller/EditProductPage";
 import RegisterSeller from "@pages/RegisterSellerPage";
+import RegisterInversor from "@pages/RegisterInversorPage";
+import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
 
@@ -57,7 +59,9 @@ export default function App() {
           />
         </Route>
 
-        <Route path="/register" element={<RegisterSeller />} />
+        <Route path="/register/seller" element={<RegisterSeller />} />
+        <Route path="/register/inversor" element={<RegisterInversor />} />
+        <Route path="/register/restaurant" element={<RegisterRestaurant />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
