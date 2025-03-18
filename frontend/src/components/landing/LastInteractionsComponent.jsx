@@ -87,7 +87,10 @@ export default function Carousel() {
   }, []);
 
   return (
+    <>
+    <h2 className="text-3xl font-bold">Últimes interaccions</h2>
     <div className="relative w-full flex justify-center items-center overflow-hidden h-96">
+      
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
@@ -135,5 +138,6 @@ export default function Carousel() {
         </motion.div>
       </AnimatePresence>
     </div>
+    </>
   );
 }
