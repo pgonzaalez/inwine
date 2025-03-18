@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Search, Menu, X, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
+import {deleteCookie} from "@/utils/utils"
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -13,7 +14,11 @@ export default function Header() {
   const dropdownRef = useRef(null);
 
   const user = useFetchUser();
-  console.log(user);
+
+  const handleLogout = () => {
+    deleteCookie("token");
+    navigate("/login"); 
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -177,13 +182,13 @@ export default function Header() {
 
                     <div className="border-t border-gray-100"></div>
 
-                    <Link
-                      to="/login"
+                    <button
+                      onClick={handleLogout}
                       className="flex items-center px-4 py-2.5 text-sm transition-colors text-red-600 hover:bg-gray-50"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
                       Tancar sessió
-                    </Link>
+                    </button>
                   </div>
                 </div>
               )}
