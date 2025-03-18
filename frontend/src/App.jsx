@@ -8,12 +8,13 @@ import Create from "@pages/Seller/CreateProductPage";
 import WineManagement from "@pages/Seller/WineManagementPage";
 import ViewProductPage from "./pages/Seller/ViewProductPage";
 import EditProductPage from "./pages/Seller/EditProductPage";
-import Register from "@pages/RegisterPage";
 import RegisterSeller from "@pages/RegisterSellerPage";
+import RegisterInversor from "@pages/RegisterInversorPage";
+import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
 
-import ProtectedRoute from "@components/ProtectedRoute";
+import ProtectedRoute from "@components/auth/ProtectedRoute";
 
 export default function App() {
   return (
@@ -67,9 +68,10 @@ export default function App() {
           />
         </Route>
 
-        <Route path="/register" element={<RegisterSeller />} />
+        <Route path="/register/seller" element={<RegisterSeller />} />
+        <Route path="/register/inversor" element={<RegisterInversor />} />
+        <Route path="/register/restaurant" element={<RegisterRestaurant />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/registerinversor" element={<Register />} />
       </Routes>
     </Router>
   );

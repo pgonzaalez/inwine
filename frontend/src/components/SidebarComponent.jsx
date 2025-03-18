@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom"
 import { BookmarkPlus, ShoppingCart, Bell, LogOut, User, Home, Settings, Wine } from "lucide-react"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
+import {getCookie, deleteCookie} from "@/utils/utils"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -14,7 +15,7 @@ export default function Sidebar() {
   const { user, loading, error } = useFetchUser()
 
   const logout = async () => {
-    const token = localStorage.getItem("token")
+    const token = getCookie("token")
     if (!token) {
       console.log("No hay token de autenticación")
       return
@@ -30,7 +31,7 @@ export default function Sidebar() {
       })
 
       if (response.ok) {
-        localStorage.removeItem("token")
+        deleteCookie("token");
         window.location.href = "/"
       } else {
         console.log("Error al hacer logout")

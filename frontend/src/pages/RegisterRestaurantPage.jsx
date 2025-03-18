@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import {
   User,
   BadgeIcon as IdCard,
@@ -13,12 +13,12 @@ import {
   X,
   CheckCircle,
   Loader2,
-} from "lucide-react"
-import { useNavigate } from "react-router-dom"
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const AddSellerForm = () => {
-  const navigate = useNavigate()
-  const apiUrl = import.meta.env.VITE_API_URL
+const AddRestaurantForm = () => {
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const [formData, setFormData] = useState({
     NIF: "",
@@ -28,118 +28,113 @@ const AddSellerForm = () => {
     address: "",
     phone: "",
     name_contact: "",
-    bank_account: "",
+    credit_card: "",
     balance: "",
-  })
+  });
 
-  const [errors, setErrors] = useState({})
-  const [formErrors, setFormErrors] = useState({})
-  const [message, setMessage] = useState("")
-  const [messageType, setMessageType] = useState("") // 'error' o 'success'
-  const [isLoading, setIsLoading] = useState(false)
-  const [touched, setTouched] = useState({})
+  const [errors, setErrors] = useState({});
+  const [formErrors, setFormErrors] = useState({});
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // 'error' o 'success'
+  const [isLoading, setIsLoading] = useState(false);
+  const [touched, setTouched] = useState({});
 
   // Validación del formulario en el lado del cliente
   const validateForm = () => {
-    const newErrors = {}
+    const newErrors = {};
 
     // Validar NIF (formato español: 8 dígitos y una letra)
     if (formData.NIF && !/^[0-9]{8}[A-Z]$/.test(formData.NIF)) {
-      newErrors.NIF = ["El NIF debe tener 8 dígitos seguidos de una letra mayúscula"]
+      newErrors.NIF = ["El NIF debe tener 8 dígitos seguidos de una letra mayúscula"];
     }
 
     // Validar email
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = ["El formato del correo electrónico no es válido"]
+      newErrors.email = ["El formato del correo electrónico no es válido"];
     }
 
     // Validar contraseña (mínimo 8 caracteres, al menos una letra y un número)
     if (formData.password && !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(formData.password)) {
-      newErrors.password = ["La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número"]
+      newErrors.password = ["La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número"];
     }
 
     // Validar teléfono (formato español)
     if (formData.phone && !/^[6-9]\d{8}$/.test(formData.phone)) {
-      newErrors.phone = ["El número de teléfono debe tener 9 dígitos y empezar por 6, 7, 8 o 9"]
+      newErrors.phone = ["El número de teléfono debe tener 9 dígitos y empezar por 6, 7, 8 o 9"];
     }
 
-    // Validar cuenta bancaria (IBAN español simplificado)
-    if (formData.bank_account && !/^ES\d{22}$/.test(formData.bank_account)) {
-      newErrors.bank_account = ["El número de cuenta debe tener formato IBAN español: ES seguido de 22 dígitos"]
-    }
-
-    setFormErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setFormErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   // Validar en tiempo real cuando cambian los campos
   useEffect(() => {
     if (Object.keys(touched).length > 0) {
-      validateForm()
+      validateForm();
     }
-  }, [formData, touched])
+  }, [formData, touched]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-    setTouched({ ...touched, [name]: true })
-  }
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setTouched({ ...touched, [name]: true });
+  };
 
   const handleBlur = (e) => {
-    const { name } = e.target
-    setTouched({ ...touched, [name]: true })
-  }
+    const { name } = e.target;
+    setTouched({ ...touched, [name]: true });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setMessage("")
-    setMessageType("")
+    e.preventDefault();
+    setMessage("");
+    setMessageType("");
 
     // Marcar todos los campos como tocados para mostrar todos los errores
     const allTouched = Object.keys(formData).reduce((acc, key) => {
-      acc[key] = true
-      return acc
-    }, {})
-    setTouched(allTouched)
+      acc[key] = true;
+      return acc;
+    }, {});
+    setTouched(allTouched);
 
     // Validar formulario antes de enviar
     if (!validateForm()) {
-      setMessage("Por favor, corrige los errores en el formulario antes de continuar.")
-      setMessageType("error")
-      return
+      setMessage("Por favor, corrige los errores en el formulario antes de continuar.");
+      setMessageType("error");
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/v1/seller`, {
+      const response = await fetch(`${apiUrl}/v1/restaurant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify(formData),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
         if (response.status === 422) {
-          setErrors(data.errors || {})
-          setMessage("Hay errores de validación en el formulario. Revisa los campos.")
-          setMessageType("error")
+          setErrors(data.errors || {});
+          setMessage("Hay errores de validación en el formulario. Revisa los campos.");
+          setMessageType("error");
         } else if (response.status === 409) {
-          setMessage("Ya existe un usuario con este email o NIF. Por favor, utiliza datos diferentes.")
-          setMessageType("error")
+          setMessage("Ya existe un usuario con este email o NIF. Por favor, utiliza datos diferentes.");
+          setMessageType("error");
         } else if (response.status === 403) {
-          setMessage("No tienes permisos para realizar esta acción.")
-          setMessageType("error")
+          setMessage("No tienes permisos para realizar esta acción.");
+          setMessageType("error");
         } else {
-          throw new Error(data.message || "Error al crear el productor")
+          throw new Error(data.message || "Error al crear el restaurante");
         }
       } else {
-        setMessage("¡Productor registrado exitosamente! Redirigiendo...")
-        setMessageType("success")
+        setMessage("¡Restaurante registrado exitosamente! Redirigiendo...");
+        setMessageType("success");
         setFormData({
           NIF: "",
           name: "",
@@ -148,41 +143,41 @@ const AddSellerForm = () => {
           address: "",
           phone: "",
           name_contact: "",
-          bank_account: "",
+          credit_card: "",
           balance: "",
-        })
-        setErrors({})
-        setFormErrors({})
+        });
+        setErrors({});
+        setFormErrors({});
 
         setTimeout(() => {
-          navigate("/")
-        }, 2000)
+          navigate("/");
+        }, 2000);
       }
     } catch (error) {
       setMessage(
         `Error: ${error.message || "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde."}`,
-      )
-      setMessageType("error")
+      );
+      setMessageType("error");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const dismissMessage = () => {
-    setMessage("")
-    setMessageType("")
-  }
+    setMessage("");
+    setMessageType("");
+  };
 
   // Combinar errores del servidor y del cliente
   const getFieldErrors = (fieldName) => {
-    const serverErrors = errors[fieldName] || []
-    const clientErrors = formErrors[fieldName] || []
-    return [...serverErrors, ...clientErrors]
-  }
+    const serverErrors = errors[fieldName] || [];
+    const clientErrors = formErrors[fieldName] || [];
+    return [...serverErrors, ...clientErrors];
+  };
 
   const hasError = (fieldName) => {
-    return touched[fieldName] && getFieldErrors(fieldName).length > 0
-  }
+    return touched[fieldName] && getFieldErrors(fieldName).length > 0;
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -196,7 +191,7 @@ const AddSellerForm = () => {
               >
                 <CornerDownLeft size={20} className="cursor-pointer" />
               </button>
-              <h1 className="text-2xl font-bold text-center w-full">Crear compte d'usuari productor</h1>
+              <h1 className="text-2xl font-bold text-center w-full">Crear compte d'usuari restaurant</h1>
             </div>
             <h4 className="text-gray-600 text-center">
               Tens un compte?{" "}
@@ -506,41 +501,41 @@ const AddSellerForm = () => {
                   )}
                 </div>
 
-                {/* Cuenta bancaria */}
+                {/* Tarjeta de crédito */}
                 <div className="relative">
                   <div className="flex items-center">
                     <Landmark
                       className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                        hasError("bank_account") ? "text-red-500" : "text-gray-400"
+                        hasError("credit_card") ? "text-red-500" : "text-gray-400"
                       }`}
                     />
                     <input
                       type="text"
-                      name="bank_account"
-                      value={formData.bank_account}
+                      name="credit_card"
+                      value={formData.credit_card}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                        hasError("bank_account")
+                        hasError("credit_card")
                           ? "border-red-500 focus:ring-red-500"
                           : "border-gray-300 focus:ring-blue-500"
                       }`}
                       placeholder=" "
-                      id="bank_account"
+                      id="credit_card"
                     />
                     <label
-                      htmlFor="bank_account"
+                      htmlFor="credit_card"
                       className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                        hasError("bank_account") ? "text-red-500" : "text-gray-500"
+                        hasError("credit_card") ? "text-red-500" : "text-gray-500"
                       }`}
                     >
-                      Número compte
+                      Tarjeta de crédito
                     </label>
                   </div>
                 </div>
                 <div className="h-6">
-                  {hasError("bank_account") && (
-                    <span className="text-red-500 text-xs mt-1">{getFieldErrors("bank_account")[0]}</span>
+                  {hasError("credit_card") && (
+                    <span className="text-red-500 text-xs mt-1">{getFieldErrors("credit_card")[0]}</span>
                   )}
                 </div>
               </div>
@@ -557,22 +552,21 @@ const AddSellerForm = () => {
                   Procesando...
                 </>
               ) : (
-                "Agregar Productor"
+                "Agregar Restaurante"
               )}
             </button>
           </form>
         </div>
         <div className="w-full md:w-1/2 md:pl-8 mt-8 md:mt-0">
           <img
-            src="https://images.unsplash.com/photo-1730043396901-b775da384e9a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src="https://images.unsplash.com/photo-1602594905755-1cead51600f4?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Imagen lateral"
             className="w-full h-full object-cover rounded-lg"
           />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AddSellerForm
-
+export default AddRestaurantForm;
