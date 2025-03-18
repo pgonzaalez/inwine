@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 const wines = [
@@ -25,9 +25,10 @@ export default function WineShowcase() {
   }, []);
 
   return (
-    <div className="h-screen bg-white relative">
-      <div className="h-screen flex flex-col md:flex-row overflow-hidden">
-        <div className="w-full md:w-1/2 h-screen flex items-center justify-center relative overflow-hidden">
+    <div className="h-screen bg-black">
+      <div className="h-full flex flex-col md:flex-row overflow-hidden">
+        {/* Sección de la imagen */}
+        <div className="w-full md:w-1/2 h-full flex items-center justify-center relative overflow-hidden">
           {wines.map((wine, index) => (
             <motion.div
               key={wine.id}
@@ -43,14 +44,15 @@ export default function WineShowcase() {
           ))}
         </div>
 
-        <div className="w-full md:w-1/2 h-screen flex items-center justify-center p-8">
+        {/* Sección del texto */}
+        <div className="w-full md:w-1/2 h-full flex items-center justify-center p-8">
           <div className="max-w-md">
             <motion.h2
               key={`title-${currentWine}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-5xl font-bold text-black mb-4"
+              className="text-5xl font-bold text-white mb-4"
             >
               {wines[currentWine].name}
             </motion.h2>
@@ -59,18 +61,18 @@ export default function WineShowcase() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-2xl text-black/80 mb-8"
+              className="text-2xl text-white/80 mb-8"
             >
               {wines[currentWine].description}
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
-              <h3 className="text-3xl font-medium text-black mb-6">Aconsegueix els millors vins</h3>
-              <p className="text-black/70 mb-8">
+              <h3 className="text-3xl font-medium text-white mb-6">Aconsegueix els millors vins</h3>
+              <p className="text-white/70 mb-8">
                 Descobreix la nostra selecció de vins premium, elaborats amb les millors raïms i tècniques tradicionals.
                 Cada ampolla representa l’excel·lència i passió per la viticultura.
               </p>
-              <button className="px-8 py-3 bg-black/10 hover:bg-black/20 text-black rounded-full transition-colors">
-                Veure col·lecció
+              <button className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors">
+                Veure més
               </button>
             </motion.div>
           </div>
