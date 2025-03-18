@@ -170,62 +170,68 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            // Actualizamos los datos del producto
+            // Crear el producto
             $productData = $request->only([
-                'name',
-                'origin',
-                'year',
-                'wine_type_id',
-                'description',
-                'price_demanded',
-                'quantity',
-                'user_id'
+                'name', 'origin', 'year', 'wine_type_id', 'description', 'price_demanded', 'quantity', 'user_id'
             ]);
 
-            $product->update($productData);
+            $product = Product::create($productData);
 
-            // Procesamos nuevas imágenes si se proporcionan
+            // Procesar imágenes
             if ($request->hasFile('images')) {
-                // Determinamos si ya hay imágenes
-                $hasPrimaryImage = $product->images()->where('is_primary', true)->exists();
-                $isPrimary = !$hasPrimaryImage;
-                $lastOrder = $product->images()->max('order') ?? -1;
+                Log::info('Imágenes recibidas en la solicitud.', ['images_count' => count($request->file('images'))]);
 
-                foreach ($request->file('images') as $imageFile) {
+                $isPrimary = true; // La primera imagen será la principal
+
+                foreach ($request->file('images') as $index => $imageFile) {
+                    Log::info('Procesando imagen.', ['image_index' => $index]);
+
                     $path = $imageFile->store('products', 'public');
-                    $lastOrder++;
 
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'image_path' => $path,
-                        'is_primary' => $isPrimary,
-                        'order' => $lastOrder
-                    ]);
+                    if ($path) {
+                        Log::info('Imagen almacenada correctamente.', ['path' => $path]);
 
-                    // Si es la primera imagen y no había una principal, actualizamos el campo image
-                    if ($isPrimary) {
-                        $product->image = Storage::url($path);
-                        $product->save();
-                        $isPrimary = false;
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image_path' => $path,
+                            'is_primary' => $isPrimary,
+                            'order' => $index
+                        ]);
+
+                        // Si es la primera imagen, también la guardamos en el campo image del producto
+                        if ($isPrimary) {
+                            $product->image = Storage::url($path);
+                            $product->save();
+                            Log::info('Imagen principal asignada al producto.', ['image_url' => Storage::url($path)]);
+                        }
+
+                        $isPrimary = false; // Solo la primera imagen es principal
+                    } else {
+                        Log::error('Error al almacenar la imagen en el disco.', ['index' => $index]);
                     }
                 }
+            } else {
+                Log::warning('No se recibieron imágenes en la solicitud.');
             }
 
             DB::commit();
 
-            // Cargamos las imágenes para la respuesta
+            // Cargar las imágenes para la respuesta
             $product->load('images');
 
             return response()->json([
                 'success' => true,
                 'data' => $product
-            ]);
+            ], 201);
+
         } catch (\Exception $e) {
+            Log::error('Error al crear el producto.', ['error' => $e->getMessage()]);
+
             DB::rollBack();
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error al actualizar el producto: ' . $e->getMessage()
+                'message' => 'Error al crear el producto: ' . $e->getMessage()
             ], 500);
         }
     }
