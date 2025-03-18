@@ -5,7 +5,7 @@ import { useFetchUser } from "@components/auth/FetchUser"
 
 const LoginForm = () => {
   const apiUrl = import.meta.env.VITE_API_URL
-  const {user} = useFetchUser()
+  // const {user} = useFetchUser()
 
   const [formData, setFormData] = useState({
     email: "",
@@ -69,7 +69,8 @@ const LoginForm = () => {
       })
 
       setTimeout(() => {
-        navigate(`/seller/${user.id}/products`)
+        // navigate(`/seller/${user.id}/products`)
+        navigate(`/`)
       }, 1000)
     } catch (error) {
       setMessage(error.message)
