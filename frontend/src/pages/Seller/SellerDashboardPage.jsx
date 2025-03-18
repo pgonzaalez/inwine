@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { BarChart3, Wine, ShoppingBag, TrendingUp, Check } from "lucide-react"
 import Header from "@components/HeaderComponent"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
 
 // Definimos los colores primarios
 const primaryColors = {

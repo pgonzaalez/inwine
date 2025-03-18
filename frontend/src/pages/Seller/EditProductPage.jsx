@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Header from "@components/HeaderComponent";
 import { CornerDownLeft } from "lucide-react";
-import { useFetchUser } from "@components/FetchUser";
+import { useFetchUser } from "@components/auth/FetchUser";
 
 export default function EditProductPage() {
   const { id: productID } = useParams();

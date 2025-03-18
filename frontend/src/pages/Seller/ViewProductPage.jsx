@@ -1,4 +1,4 @@
-import { useFetchUser } from "@components/FetchUser";
+import { useFetchUser } from "@components/auth/FetchUser";
 import Header from "@components/HeaderComponent";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { CircleAlert, CornerDownLeft, Edit, Star, Trash } from "lucide-react";
