@@ -35,7 +35,7 @@ export default function UserCards() {
       imageAlt: "Almacén",
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
-      linkUrl: "/register",
+      linkUrl: "/register/seller",
       features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
     },
     {
@@ -45,7 +45,7 @@ export default function UserCards() {
       imageAlt: "Inversor",
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
-      linkUrl: "/registerinversor",
+      linkUrl: "/register/inversor",
       features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
     },
     {
@@ -55,7 +55,7 @@ export default function UserCards() {
       imageAlt: "Restaurant",
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
-      linkUrl: "/register",
+      linkUrl: "/register/restaurant",
       features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
     },
   ]
