@@ -2,7 +2,7 @@
 
 import { Link, useLocation } from "react-router-dom"
 import { LucideShoppingCart, BookmarkPlusIcon, Bell, LogOut, User } from "lucide-react"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
 
 export default function Sidebar() {
   const location = useLocation()
