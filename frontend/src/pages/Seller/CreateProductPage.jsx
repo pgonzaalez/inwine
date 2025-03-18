@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useFetchUser } from "@components/auth/FetchUser"
-import { ProgressBar } from "@/components/product/progress-bar"
-import { WineTypeSelector } from "@/components/product/wine-type-selector"
-import { WineDetailsForm } from "@/components/product/wine-details-form"
-import { WinePricingForm } from "@/components/product/wine-pricing-form"
+import { ProgressBar } from "@/components/product/ProgressBar"
+import { WineTypeSelector } from "@/components/product/WineTypeSelector"
+import { WineDetailsForm } from "@/components/product/WineDetailsForm"
+import { WinePricingForm } from "@/components/product/WinePricingForm"
 import { validateStep } from "@/utils/form-validation"
 
 export default function CreateProduct() {
