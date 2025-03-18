@@ -2,7 +2,7 @@ import { Trash, Edit, Eye } from 'lucide-react'
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import ConfirmationDialog from "@components/ConfirmationDialogComponent"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
 
 // Definimos los colores rosé para usar en todo el componente
 const roseColors = {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {getCookie} from "@/utils/utils"
 
 export function useFetchUser() {
   const [user, setUser] = useState(null);
@@ -8,7 +9,7 @@ export function useFetchUser() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem('token'); // Obtener el token
+      const token = getCookie("token") // Obtener el token
       if (!token) {
         setError("No token found");
         setLoading(false);
