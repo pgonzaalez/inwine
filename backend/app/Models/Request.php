@@ -6,28 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Request extends Model
 {
+    
+    use HasFactory;
+
     protected $fillable = [
-        'restaurant_id',
-        'inversor_id',
-        'product_id',
-        'quantity',
-        'status',
+        'investor_id',
+        'request_restaurant_id',
     ];
 
-    public function restaurant()
-    {
-        return $this->belongsTo(Restaurant::class);
-    }
-    
-    public function inversor()
+    public function investor()
     {
         return $this->belongsTo(Investor::class);
     }
-  
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
 
-  
+    public function requestRestaurant()
+    {
+        return $this->belongsTo(RequestRestaurant::class);
+    }
 }

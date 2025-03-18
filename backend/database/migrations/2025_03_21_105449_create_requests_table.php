@@ -13,15 +13,9 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('restaurant_id');
-            $table->unsignedBigInteger('inversor_id');
-            $table->unsignedBigInteger('product_id');
-            $table->integer('price_offer');
-            $table->enum('status', ['pending', 'accepted', 'rejected']);
-            $table->foreign('restaurant_id')->references('id')->on('restaurants');
-            $table->foreign('inversor_id')->references('id')->on('investors');
-            $table->foreign('product_id')->references('id')->on('products');
-
+            $table->foreignId('investor_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('request_restaurant_id')->constrained()->cascadeOnDelete();
+            
             $table->timestamps();
         });
     }
