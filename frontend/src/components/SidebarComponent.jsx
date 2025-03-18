@@ -1,8 +1,12 @@
-"use client"
-
 import { Link, useLocation } from "react-router-dom"
-import { LucideShoppingCart, BookmarkPlusIcon, Bell, LogOut, User } from "lucide-react"
+import { BookmarkPlus, ShoppingCart, Bell, LogOut, User, Home, Settings, Wine } from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
+
+// Definimos los colores primarios
+const primaryColors = {
+  dark: "#9A3E50",
+  light: "#C27D7D",
+}
 
 export default function Sidebar() {
   const location = useLocation()
@@ -36,127 +40,188 @@ export default function Sidebar() {
     }
   }
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>{error}</div>
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div
+          className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin"
+          style={{ borderColor: primaryColors.light }}
+        ></div>
+      </div>
+    )
+
+  if (error)
+    return (
+      <div className="p-4" style={{ color: primaryColors.dark }}>
+        {error}
+      </div>
+    )
+
+  const navItems = [
+    {
+      icon: Home,
+      label: "Inici",
+      path: `/seller/${user?.id || "usuari"}/dashboard`,
+    },
+    {
+      icon: BookmarkPlus,
+      label: "Pujar Producte",
+      path: "/create",
+    },
+    {
+      icon: ShoppingCart,
+      label: "Productes",
+      path: `/seller/${user?.id || "usuari"}/products`,
+    },
+    {
+      icon: Wine,
+      label: "Gestió de Vins",
+      path: `/seller/${user?.id || "usuari"}/wine-management`,
+    },
+    {
+      icon: Bell,
+      label: "Notificacions",
+      path: `/seller/${user?.id || "usuari"}/notificacions`,
+    },
+    {
+      icon: User,
+      label: "Perfil",
+      path: `/seller/${user?.id || "usuari"}`,
+      divider: true,
+    },
+    {
+      icon: Settings,
+      label: "Configuració",
+      path: `/seller/${user?.id || "usuari"}/settings`,
+    },
+  ]
+
+  const isActive = (path) => location.pathname === path
 
   return (
     <>
-      {/* Sidebar solo para desktop */}
-      <aside className="hidden md:block fixed top-[60px] left-0 h-[calc(100vh-60px)] w-64 bg-white shadow-lg z-40">
-        <div className="flex flex-col h-full">
-          <div className="p-4 border-b">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-[#800020] flex items-center justify-center text-white">
-                <User size={20} />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">{user ? user.name : "Usuari Desconegut"}</p>
-                <p className="text-sm text-gray-500">{user?.email || "email@example.com"}</p>
-              </div>
+      {/* Desktop sidebar */}
+      <aside
+        className="hidden md:flex fixed top-0 left-0 h-screen w-64 flex-col bg-white shadow-sm z-40 transition-all duration-300"
+        style={{
+          backgroundColor: "white",
+          borderRight: `1px solid ${primaryColors.light}`,
+        }}
+      >
+        {/* User profile section */}
+        <div className="p-6 border-b" style={{ borderColor: primaryColors.light }}>
+          <div className="flex items-center space-x-3">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white"
+              style={{ background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }}
+            >
+              <User size={18} />
+            </div>
+            <div>
+              <p className="font-medium text-gray-900">{user ? user.name : "Usuari Desconegut"}</p>
+              <p className="text-sm text-gray-500">{user?.email || "email@example.com"}</p>
             </div>
           </div>
+        </div>
 
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            <Link
-              to="/create"
-              className={`flex items-center space-x-3 p-3 rounded-lg ${
-                location.pathname === "/create"
-                  ? "bg-gray-100 text-[#800020] font-medium"
-                  : "hover:bg-gray-100 text-gray-700"
-              }`}
-            >
-              <BookmarkPlusIcon size={20} />
-              <span>Pujar Producte</span>
-            </Link>
-
-            <Link
-              to={`/seller/${user?.id || "usuari"}/products`}
-              className={`flex items-center space-x-3 p-3 rounded-lg ${
-                location.pathname === `/seller/${user?.id}/products`
-                  ? "bg-gray-100 text-[#800020] font-medium"
-                  : "hover:bg-gray-100 text-gray-700"
-              }`}
-            >
-              <LucideShoppingCart size={20} />
-              <span>Productes</span>
-            </Link>
-
-            <Link
-              to={`/seller/${user?.id || "usuari"}/notificacions`}
-              className={`flex items-center space-x-3 p-3 rounded-lg ${
-                location.pathname === `/seller/${user?.id}/notificacions`
-                  ? "bg-gray-100 text-[#800020] font-medium"
-                  : "hover:bg-gray-100 text-gray-700"
-              }`}
-            >
-              <Bell size={20} />
-              <span>Notificacions</span>
-            </Link>
-
-            <div className="pt-4 mt-4 border-t border-gray-200">
+        {/* Navigation */}
+        <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+          {navItems.map((item, index) => (
+            <div key={index}>
+              {item.divider && <div className="my-4 border-t mx-2" style={{ borderColor: primaryColors.light }}></div>}
               <Link
-                to={`/seller/${user?.id || "usuari"}`}
-                className={`flex items-center space-x-3 p-3 rounded-lg ${
-                  location.pathname === `/seller/${user?.id}`
-                    ? "bg-gray-100 text-[#800020] font-medium"
-                    : "hover:bg-gray-100 text-gray-700"
+                to={item.path}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                  isActive(item.path) ? "font-medium text-white" : "text-gray-700 hover:bg-gray-50"
                 }`}
+                style={
+                  isActive(item.path)
+                    ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+                    : {}
+                }
               >
-                <User size={20} />
-                <span>Perfil</span>
+                <item.icon size={18} />
+                <span>{item.label}</span>
               </Link>
             </div>
-          </nav>
+          ))}
+        </nav>
 
-          <div className="p-4 border-t">
-            <button
-              onClick={logout}
-              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700 w-full"
-            >
-              <LogOut size={20} />
-              <span>Tancar sessió</span>
-            </button>
-          </div>
+        {/* Logout button */}
+        <div className="p-4 border-t" style={{ borderColor: primaryColors.light }}>
+          <button
+            onClick={logout}
+            className="flex w-full items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
+          >
+            <LogOut size={18} />
+            <span>Tancar sessió</span>
+          </button>
         </div>
       </aside>
 
-      {/* Barra inferior para móviles - Enfoque principal en móvil */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around p-3 z-10">
+      {/* Mobile navigation bar */}
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 shadow-lg flex justify-around z-10 py-2"
+        style={{
+          backgroundColor: "white",
+          borderTop: `1px solid ${primaryColors.light}`,
+        }}
+      >
+        <Link
+          to={`/seller/${user?.id || "usuari"}/dashboard`}
+          className={`flex flex-col items-center p-2 rounded-lg ${
+            location.pathname === `/seller/${user?.id}` ? "text-white" : "text-gray-600"
+          }`}
+          style={
+            location.pathname === `/seller/${user?.id}`
+              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+              : {}
+          }
+        >
+          <Home size={20} />
+          <span className="text-xs mt-1">Inici</span>
+        </Link>
+
         <Link
           to="/create"
-          className={`flex flex-col items-center p-2 ${
-            location.pathname === "/create" ? "text-[#800020] font-medium" : "text-gray-600"
+          className={`flex flex-col items-center p-2 rounded-lg ${
+            location.pathname === "/create" ? "text-white" : "text-gray-600"
           }`}
+          style={
+            location.pathname === "/create"
+              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+              : {}
+          }
         >
-          <BookmarkPlusIcon size={20} />
+          <BookmarkPlus size={20} />
           <span className="text-xs mt-1">Pujar</span>
         </Link>
 
         <Link
           to={`/seller/${user?.id || "usuari"}/products`}
-          className={`flex flex-col items-center p-2 ${
-            location.pathname === `/seller/${user?.id}/products` ? "text-[#800020] font-medium" : "text-gray-600"
+          className={`flex flex-col items-center p-2 rounded-lg ${
+            location.pathname === `/seller/${user?.id}/products` ? "text-white" : "text-gray-600"
           }`}
+          style={
+            location.pathname === `/seller/${user?.id}/products`
+              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+              : {}
+          }
         >
-          <LucideShoppingCart size={20} />
+          <ShoppingCart size={20} />
           <span className="text-xs mt-1">Productes</span>
         </Link>
 
         <Link
-          to={`/seller/${user?.id || "usuari"}`}
-          className={`flex flex-col items-center p-2 ${
-            location.pathname === `/seller/${user?.id}` ? "text-[#800020] font-medium" : "text-gray-600"
-          }`}
-        >
-          <User size={20} />
-          <span className="text-xs mt-1">Perfil</span>
-        </Link>
-
-        <Link
           to={`/seller/${user?.id || "usuari"}/notificacions`}
-          className={`flex flex-col items-center p-2 ${
-            location.pathname === `/seller/${user?.id}/notificacions` ? "text-[#800020] font-medium" : "text-gray-600"
+          className={`flex flex-col items-center p-2 rounded-lg ${
+            location.pathname === `/seller/${user?.id}/notificacions` ? "text-white" : "text-gray-600"
           }`}
+          style={
+            location.pathname === `/seller/${user?.id}/notificacions`
+              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+              : {}
+          }
         >
           <Bell size={20} />
           <span className="text-xs mt-1">Alertes</span>

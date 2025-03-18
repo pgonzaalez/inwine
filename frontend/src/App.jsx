@@ -5,6 +5,7 @@ import "./App.css";
 import Main from "@pages/MainPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
 import Create from "@pages/Seller/CreateProductPage";
+import WineManagement from "@pages/Seller/WineManagementPage";
 import ViewProductPage from "./pages/Seller/ViewProductPage";
 import EditProductPage from "./pages/Seller/EditProductPage";
 import RegisterSeller from "@pages/RegisterSellerPage";
@@ -34,10 +35,18 @@ export default function App() {
             }
           />
           <Route
-            path="/seller/:id/products"
+            path="/seller/:id/dashboard"
             element={
               <ProtectedRoute>
                 <Seller />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/:id/products"
+            element={
+              <ProtectedRoute>
+                <WineManagement />
               </ProtectedRoute>
             }
           />
