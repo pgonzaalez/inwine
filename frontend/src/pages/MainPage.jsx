@@ -43,7 +43,7 @@ export default function App() {
 
       <section className="text-center">
         <motion.div
-          className="mx-auto p-8"
+          className=""
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false }}

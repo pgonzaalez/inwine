@@ -65,8 +65,8 @@ export default function AboutSection() {
         <div className="max-w-6xl mx-auto py-12 px-6">
           <motion.div className="mb-16" variants={leftItemVariants}>
             <div className="flex flex-col items-start">
-              <h2 className="text-[#741C28] text-2xl font-normal mb-2">QUI SOM</h2>
-              <div className="w-full h-1 bg-[#741C28] mb-6"></div>
+              <h2 className="text-[#9A3E50] text-2xl font-normal mb-2">QUI SOM</h2>
+              <div className="w-full h-1 bg-gradient-to-r from-[#9A3E50] mb-6"></div>
             </div>
             <p className="text-black text-lg leading-relaxed text-left">
               Inwine és una plataforma que permet disposar de qualsevol vi a la carta dels restaurants minimitzant el
@@ -76,8 +76,8 @@ export default function AboutSection() {
 
           <motion.div className="mt-16" variants={rightItemVariants}>
             <div className="flex flex-col items-end">
-              <h2 className="text-[#741C28] text-2xl font-normal mb-2 text-right w-full">QUÈ OFERIM</h2>
-              <div className="w-full h-1 bg-[#741C28] mb-6"></div>
+              <h2 className="text-[#9A3E50] text-2xl font-normal mb-2 text-right w-full">QUÈ OFERIM</h2>
+              <div className="w-full h-1 bg-gradient-to-l from-[#C27D7D] mb-6"></div>
             </div>
             <p className="text-black text-lg leading-relaxed text-right">
               Ets un celler? Arriba a més restaurants.
