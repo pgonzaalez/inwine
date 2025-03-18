@@ -1,290 +1,280 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import {
-  BarChart3,
-  Wine,
-  ShoppingBag,
-  TrendingUp,
-  Search,
-  Filter,
-  ArrowUpRight,
-  Calendar,
-  Plus,
-  ArrowDownAZ,
-  ArrowUpAZ,
-} from "lucide-react"
-import WineList from "@components/WineListComponent"
+import { BarChart3, Wine, ShoppingBag, TrendingUp, Check } from "lucide-react"
 import Header from "@components/HeaderComponent"
 import { useFetchUser } from "@components/FetchUser"
 
+// Definimos los colores primarios
+const primaryColors = {
+  dark: "#9A3E50",
+  light: "#C27D7D",
+}
 
 // Componente de tarjeta de estadísticas
-const StatCard = ({ title, value, icon, color, trend, percentage }) => {
+const StatCard = ({ title, value, icon, trend, percentage }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5 flex flex-col">
+    <div className="bg-white rounded-xl p-5 flex flex-col transition-all duration-300 hover:translate-y-[-2px] shadow-sm">
       <div className="flex justify-between items-start mb-3">
-        <div className={`p-2 rounded-lg bg-${color}-light`}>{icon}</div>
+        <div
+          className="p-2 rounded-lg"
+          style={{
+            backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(primaryColors.dark.slice(3, 5), 16)}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
+          }}
+        >
+          {icon}
+        </div>
         {trend && (
           <div className={`flex items-center text-sm ${percentage >= 0 ? "text-green-600" : "text-red-600"}`}>
             {percentage >= 0 ? "+" : ""}
             {percentage}%
-            <ArrowUpRight size={16} className={`ml-1 ${percentage < 0 ? "transform rotate-180" : ""}`} />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={`ml-1 w-4 h-4 ${percentage < 0 ? "transform rotate-180" : ""}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
           </div>
         )}
       </div>
       <div className="text-gray-500 text-sm mb-1">{title}</div>
-      <div className="text-2xl font-bold">{value}</div>
-    </div>
-  )
-}
-
-// Componente de filtro de productos
-const ProductFilter = ({ activeFilter, setActiveFilter, sortOrder, setSortOrder, searchTerm, setSearchTerm }) => {
-  return (
-    <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex gap-4 overflow-x-auto pb-2 md:pb-0">
-          <button
-            className={`whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-colors ${
-              activeFilter === "active" ? "bg-[#800020] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-            onClick={() => setActiveFilter("active")}
-          >
-            Actius
-          </button>
-          <button
-            className={`whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-colors ${
-              activeFilter === "pending" ? "bg-[#800020] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-            onClick={() => setActiveFilter("pending")}
-          >
-            En espera
-          </button>
-          <button
-            className={`whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-colors ${
-              activeFilter === "sold" ? "bg-[#800020] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-            onClick={() => setActiveFilter("sold")}
-          >
-            Venuts
-          </button>
-        </div>
-
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Cerca per nom..."
-              className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#800020] focus:border-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          <button
-            className="flex items-center gap-1 px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-          >
-            {sortOrder === "asc" ? (
-              <>
-                <ArrowUpAZ size={18} />
-                <span className="hidden sm:inline">A-Z</span>
-              </>
-            ) : (
-              <>
-                <ArrowDownAZ size={18} />
-                <span className="hidden sm:inline">Z-A</span>
-              </>
-            )}
-          </button>
-
-          <button className="flex items-center gap-1 px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-            <Filter size={18} />
-            <span className="hidden sm:inline">Filtres</span>
-          </button>
-        </div>
+      <div className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
+        {value}
       </div>
     </div>
   )
 }
 
-// Componente de resumen de ventas recientes
-const RecentSales = () => {
-  // Datos de ejemplo para ventas recientes
-  const recentSales = [
-    { id: 1, name: "Vi Negre Reserva 2018", price: 24.99, date: "2023-11-15", status: "completed" },
-    { id: 2, name: "Cava Brut Nature", price: 18.5, date: "2023-11-12", status: "completed" },
-    { id: 3, name: "Vi Blanc Chardonnay", price: 15.75, date: "2023-11-10", status: "completed" },
-  ]
+// Componente para mostrar los últimos vinos creados
+const LatestWines = ({ wines = [] }) => {
+  const baseUrl = import.meta.env.VITE_URL_BASE
+  const sortedWines = [...wines].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 3)
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
+    <div className="bg-white rounded-xl p-5 transition-all duration-300 hover:translate-y-[-2px] shadow-sm">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold text-lg">Vendes recents</h3>
-        <Link to="/seller/sales" className="text-[#800020] text-sm font-medium hover:underline">
-          Veure totes
-        </Link>
-      </div>
-      <div className="space-y-4">
-        {recentSales.map((sale) => (
-          <div key={sale.id} className="flex items-center justify-between py-2 border-b border-gray-100">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#F5E6E8] flex items-center justify-center">
-                <Wine size={18} className="text-[#9A3E50]" />
-              </div>
-              <div>
-                <p className="font-medium">{sale.name}</p>
-                <p className="text-sm text-gray-500">{new Date(sale.date).toLocaleDateString("ca-ES")}</p>
-              </div>
-            </div>
-            <div className="font-bold">{sale.price.toFixed(2)}€</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Componente de calendario de próximos eventos
-const UpcomingEvents = () => {
-  // Datos de ejemplo para próximos eventos
-  const events = [
-    { id: 1, title: "Fira de vins locals", date: "2023-12-10", location: "Barcelona" },
-    { id: 2, title: "Tast de vins", date: "2023-12-15", location: "Tarragona" },
-  ]
-
-  return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold text-lg">Propers esdeveniments</h3>
-        <Link to="/seller/events" className="text-[#800020] text-sm font-medium hover:underline">
+        <h3 className="font-bold text-lg" style={{ color: primaryColors.dark }}>
+          Últims vins creats
+        </h3>
+        <Link
+          to="/seller/products"
+          className="text-sm font-medium hover:underline"
+          style={{ color: primaryColors.light }}
+        >
           Veure tots
         </Link>
       </div>
       <div className="space-y-4">
-        {events.map((event) => (
-          <div key={event.id} className="flex items-center gap-3 py-2 border-b border-gray-100">
-            <div className="w-10 h-10 rounded-lg bg-[#F9F4E3] flex items-center justify-center">
-              <Calendar size={18} className="text-[#E6C9A8]" />
-            </div>
-            <div>
-              <p className="font-medium">{event.title}</p>
-              <p className="text-sm text-gray-500">
-                {new Date(event.date).toLocaleDateString("ca-ES")} · {event.location}
-              </p>
-            </div>
+        {sortedWines.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+            <Wine size={48} style={{ color: primaryColors.light }} />
+            <p className="mt-4">No hi ha vins creats recentment</p>
           </div>
-        ))}
+        ) : (
+          sortedWines.map((wine) => (
+            <div
+              key={wine.id}
+              className="flex items-center justify-between py-3 border-b"
+              style={{
+                borderColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(primaryColors.dark.slice(3, 5), 16)}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-lg overflow-hidden">
+                  <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <p className="font-medium">{wine.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {wine.year} · {wine.type || "Vi"} ·{new Date(wine.created_at).toLocaleDateString("ca-ES")}
+                  </p>
+                </div>
+              </div>
+              <div className="font-bold" style={{ color: primaryColors.dark }}>
+                {wine.price_demanded}€
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   )
 }
 
-export default function SellerDashboardPage() {
-  const [activeFilter, setActiveFilter] = useState("active")
-  const [sortOrder, setSortOrder] = useState("asc")
-  const [searchTerm, setSearchTerm] = useState("")
-  const { user, loading } = useFetchUser()
+// Componente para mostrar los últimos vinos vendidos
+const LatestSoldWines = ({ wines = [] }) => {
+  const baseUrl = import.meta.env.VITE_URL_BASE
+  const soldWines = wines
+    .filter((wine) => wine.status === "sold")
+    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+    .slice(0, 5)
 
-  // Datos de ejemplo para las estadísticas
-  const stats = {
-    totalProducts: 12,
-    activeProducts: 8,
-    totalSales: 24,
-    revenue: 1250.75,
-  }
-
-  if (loading) {
-    return (
-      <div className="fixed inset-0 bg-white bg-opacity-80 flex justify-center items-center z-50">
-        <div className="w-10 h-10 border-4 border-gray-300 border-t-[#800020] rounded-full animate-spin"></div>
+  return (
+    <div className="bg-white rounded-xl p-5 transition-all duration-300 hover:translate-y-[-2px] shadow-sm">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-bold text-lg" style={{ color: primaryColors.dark }}>
+          Últims vins venuts
+        </h3>
+        <Link
+          to="/seller/wine-management"
+          className="text-sm font-medium hover:underline"
+          style={{ color: primaryColors.light }}
+        >
+          Veure tots
+        </Link>
       </div>
-    )
+      <div className="space-y-4">
+        {soldWines.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+            <Check size={48} style={{ color: primaryColors.light }} />
+            <p className="mt-4">No hi ha vins venuts recentment</p>
+          </div>
+        ) : (
+          soldWines.map((wine) => (
+            <div
+              key={wine.id}
+              className="flex items-center justify-between py-3 border-b"
+              style={{
+                borderColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(primaryColors.dark.slice(3, 5), 16)}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-lg overflow-hidden">
+                  <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <p className="font-medium">{wine.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {wine.year} · {wine.type || "Vi"} ·{new Date(wine.updated_at).toLocaleDateString("ca-ES")}
+                  </p>
+                </div>
+              </div>
+              <div className="font-bold" style={{ color: primaryColors.dark }}>
+                {wine.price_demanded}€
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Componente principal del Dashboard
+const SellerDashboardContent = () => {
+  const [wines, setWines] = useState([])
+  const { user } = useFetchUser()
+  const apiUrl = import.meta.env.VITE_API_URL
+
+  useEffect(() => {
+    const fetchWines = async () => {
+      if (!user) return
+      try {
+        const response = await fetch(`${apiUrl}/v1/${user.id}/products`)
+        if (!response.ok) {
+          throw new Error("No s'ha pogut connectar amb el servidor")
+        }
+        const data = await response.json()
+        if (data) {
+          setWines(Array.isArray(data) ? data : [data])
+        } else {
+          setWines([])
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    fetchWines()
+  }, [user])
+
+  // Calcular estadísticas basadas en datos reales
+  const stats = {
+    totalProducts: wines.length,
+    activeProducts: wines.filter((wine) => wine.status === "active").length || 0,
+    totalSales: wines.filter((wine) => wine.status === "sold").length || 0,
+    revenue: wines.filter((wine) => wine.status === "sold").reduce((sum, wine) => sum + (wine.price_demanded || 0), 0),
   }
+
+  return (
+    <>
+      {/* Cabecera del dashboard */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
+          Benvingut, {user?.name || "Venedor"}
+        </h1>
+        <p className="text-gray-600">Gestiona els teus productes i segueix les teves vendes</p>
+      </div>
+
+      {/* Tarjetas de estadísticas */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <StatCard
+          title="Total Productes"
+          value={stats.totalProducts}
+          icon={<Wine size={20} style={{ color: primaryColors.dark }} />}
+          trend={true}
+          percentage={5}
+        />
+        <StatCard
+          title="Productes Actius"
+          value={stats.activeProducts}
+          icon={<ShoppingBag size={20} style={{ color: primaryColors.dark }} />}
+          trend={true}
+          percentage={2}
+        />
+        <StatCard
+          title="Total Vendes"
+          value={stats.totalSales}
+          icon={<BarChart3 size={20} style={{ color: primaryColors.dark }} />}
+          trend={true}
+          percentage={12}
+        />
+        <StatCard
+          title="Ingressos (€)"
+          value={stats.revenue.toFixed(2)}
+          icon={<TrendingUp size={20} style={{ color: primaryColors.dark }} />}
+          trend={true}
+          percentage={8}
+        />
+      </div>
+
+      {/* Sección con últimos vinos creados y vendidos */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <LatestWines wines={wines} />
+        <LatestSoldWines wines={wines} />
+      </div>
+    </>
+  )
+}
+
+export default function SellerDashboardPage() {
+  const { loading } = useFetchUser()
 
   return (
     <>
       <Header />
       <div className="flex flex-col mt-[60px] min-h-[calc(100vh-60px)]">
         <div className="flex flex-1">
-          <div className="flex-1 md:ml-[245px] p-4 md:p-6 bg-gray-50 overflow-y-auto pb-16">
-            {/* Cabecera del dashboard */}
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Benvingut, {user?.name || "Venedor"}</h1>
-              <p className="text-gray-600">Gestiona els teus productes i segueix les teves vendes</p>
-            </div>
-
-            {/* Tarjetas de estadísticas */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <StatCard
-                title="Total Productes"
-                value={stats.totalProducts}
-                icon={<Wine size={20} className="text-[#9A3E50]" />}
-                color="burgundy"
-                trend={true}
-                percentage={5}
-              />
-              <StatCard
-                title="Productes Actius"
-                value={stats.activeProducts}
-                icon={<ShoppingBag size={20} className="text-[#E6C9A8]" />}
-                color="champagne"
-                trend={true}
-                percentage={2}
-              />
-              <StatCard
-                title="Total Vendes"
-                value={stats.totalSales}
-                icon={<BarChart3 size={20} className="text-[#8C2E2E]" />}
-                color="merlot"
-                trend={true}
-                percentage={12}
-              />
-              <StatCard
-                title="Ingressos (€)"
-                value={stats.revenue.toFixed(2)}
-                icon={<TrendingUp size={20} className="text-[#E79FB3]" />}
-                color="rosé"
-                trend={true}
-                percentage={8}
-              />
-            </div>
-
-            {/* Botón de añadir producto */}
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Els teus productes</h2>
-              <Link
-                to="/create"
-                className="flex items-center gap-2 px-4 py-2 bg-[#800020] text-white rounded-lg hover:bg-[#600010] transition-colors"
-              >
-                <Plus size={18} />
-                <span>Afegir producte</span>
-              </Link>
-            </div>
-
-            {/* Filtros de productos */}
-            <ProductFilter
-              activeFilter={activeFilter}
-              setActiveFilter={setActiveFilter}
-              sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-            />
-
-            {/* Lista de productos */}
-            <div className="mb-8">
-              <WineList />
-            </div>
-
-            {/* Sección inferior con ventas recientes y eventos */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <RecentSales />
-              <UpcomingEvents />
-            </div>
+          <div className="flex-1 md:ml-64 p-4 md:p-6 overflow-y-auto pb-16" style={{ backgroundColor: "#F9F9F9" }}>
+            {loading ? (
+              <div className="flex justify-center items-center h-64">
+                <div
+                  className="w-10 h-10 rounded-full animate-spin"
+                  style={{
+                    borderWidth: "3px",
+                    borderStyle: "solid",
+                    borderColor: primaryColors.light,
+                    borderTopColor: primaryColors.dark,
+                  }}
+                ></div>
+              </div>
+            ) : (
+              <SellerDashboardContent />
+            )}
           </div>
         </div>
       </div>
