@@ -73,7 +73,6 @@ export default function Header() {
   const navItems = [
     { name: "INICI", href: "/" },
     { name: "PRODUCTES", href: "/productes" },
-    { name: "SERVEIS", href: "/serveis" },
     { name: "CONTACTE", href: "/contacte" },
   ]
 
@@ -195,7 +194,6 @@ export default function Header() {
             </svg>
           </button>
 
-          {/* Avatar con menú desplegable */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -203,7 +201,7 @@ export default function Header() {
                 isDarkMode ? "ring-1 ring-gray-700" : "ring-1 ring-gray-200"
               }`}
             >
-              <img src={user.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d"} alt="Usuario" className="h-full w-full object-cover" />
+              <img src={user.avatar || "https://www.transparentpng.com/thumb/user/gray-user-profile-icon-png-fP8Q1P.png" } alt="Usuario" className="h-full w-full object-cover" />
             </button>
 
             {isOpen && (
@@ -274,7 +272,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu - Apple/Tesla Style */}
       <div
         ref={mobileMenuRef}
         className={`fixed inset-0 z-50 transform transition-all duration-500 ${
