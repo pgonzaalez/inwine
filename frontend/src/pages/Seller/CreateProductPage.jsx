@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
 import { ProgressBar } from "@/components/product/progress-bar"
 import { WineTypeSelector } from "@/components/product/wine-type-selector"
 import { WineDetailsForm } from "@/components/product/wine-details-form"

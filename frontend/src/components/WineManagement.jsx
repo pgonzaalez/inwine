@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
 import { Wine, Check, Clock, BarChart3, Filter } from "lucide-react"
 
 // Definimos los colores primarios

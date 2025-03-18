@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import { Search, Menu, X, ChevronDown, User, Settings, LogOut } from "lucide-react"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
@@ -82,15 +82,14 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ${
-        scrolled
+      className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ${scrolled
           ? isDarkMode
             ? "bg-black/80 backdrop-blur-md"
             : "bg-white/80 backdrop-blur-md"
           : isDarkMode
             ? "bg-black/20 backdrop-blur-sm"
             : "bg-white/20 backdrop-blur-sm"
-      } ${isDarkMode ? "text-white" : "text-black"}`}
+        } ${isDarkMode ? "text-white" : "text-black"}`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-8">
         <div className="flex items-center">
@@ -104,9 +103,8 @@ export default function Header() {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className={`text-sm font-light tracking-wide transition-colors duration-300 ${
-                      isDarkMode ? "hover:text-gray-300" : "hover:text-gray-600"
-                    }`}
+                    className={`text-sm font-light tracking-wide transition-colors duration-300 ${isDarkMode ? "hover:text-gray-300" : "hover:text-gray-600"
+                      }`}
                   >
                     {item.name}
                   </Link>
@@ -124,11 +122,10 @@ export default function Header() {
                 ref={searchInputRef}
                 type="search"
                 placeholder="Buscar..."
-                className={`w-[200px] rounded-full border-0 bg-transparent py-2 pl-10 pr-4 text-sm outline-none ring-1 transition-all duration-300 focus:w-[240px] md:w-[220px] md:focus:w-[280px] ${
-                  isDarkMode
+                className={`w-[200px] rounded-full border-0 bg-transparent py-2 pl-10 pr-4 text-sm outline-none ring-1 transition-all duration-300 focus:w-[240px] md:w-[220px] md:focus:w-[280px] ${isDarkMode
                     ? "ring-gray-700 focus:ring-gray-500 placeholder:text-gray-500"
                     : "ring-gray-200 focus:ring-gray-400 placeholder:text-gray-400"
-                }`}
+                  }`}
                 onBlur={() => {
                   if (!searchInputRef.current.value) {
                     setIsSearchOpen(false)
@@ -149,9 +146,8 @@ export default function Header() {
           ) : (
             <button
               type="button"
-              className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ${
-                isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
-              }`}
+              className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ${isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
+                }`}
               onClick={() => setIsSearchOpen(true)}
             >
               <Search className="h-4 w-4" />
@@ -161,9 +157,8 @@ export default function Header() {
 
           <button
             type="button"
-            className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ${
-              isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
-            }`}
+            className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ${isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
+              }`}
             onClick={toggleDarkMode}
           >
             <span className="sr-only">{isDarkMode ? "Modo claro" : "Modo oscuro"}</span>
@@ -194,76 +189,81 @@ export default function Header() {
             </svg>
           </button>
 
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 hover:scale-105 ${
-                isDarkMode ? "ring-1 ring-gray-700" : "ring-1 ring-gray-200"
-              }`}
-            >
-              <img src={user.avatar || "https://www.transparentpng.com/thumb/user/gray-user-profile-icon-png-fP8Q1P.png" } alt="Usuario" className="h-full w-full object-cover" />
-            </button>
-
-            {isOpen && (
-              <div
-                className={`absolute right-0 mt-2 w-56 origin-top-right rounded-lg shadow-lg transition-all duration-300 ${
-                  isDarkMode ? "bg-gray-900 ring-1 ring-gray-800" : "bg-white ring-1 ring-gray-200"
-                }`}
-                style={{
-                  transformOrigin: "top right",
-                  animation: "dropdownFade 0.2s ease-out forwards",
-                }}
+          {/* Mostrar botón de login si no hay usuario, o el avatar con menú desplegable si hay usuario */}
+          {user.user ? (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 hover:scale-105 ${isDarkMode ? "ring-1 ring-gray-700" : "ring-1 ring-gray-200"
+                  }`}
               >
-                <div className="py-1">
-                  <div
-                    className={`border-b px-4 py-3 text-sm font-medium ${
-                      isDarkMode ? "border-gray-800 text-gray-300" : "border-gray-100 text-gray-700"
+                <img src={user.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d"} alt="Usuario" className="h-full w-full object-cover" />
+              </button>
+
+              {isOpen && (
+                <div
+                  className={`absolute right-0 mt-2 w-56 origin-top-right rounded-lg shadow-lg transition-all duration-300 ${isDarkMode ? "bg-gray-900 ring-1 ring-gray-800" : "bg-white ring-1 ring-gray-200"
                     }`}
-                  >
-                    El meu compte
+                  style={{
+                    transformOrigin: "top right",
+                    animation: "dropdownFade 0.2s ease-out forwards",
+                  }}
+                >
+                  <div className="py-1">
+                    <div
+                      className={`border-b px-4 py-3 text-sm font-medium ${isDarkMode ? "border-gray-800 text-gray-300" : "border-gray-100 text-gray-700"
+                        }`}
+                    >
+                      El meu compte
+                    </div>
+
+                    <Link
+                      to={`/seller/${user.id}/products`}
+                      className={`flex items-center px-4 py-2.5 text-sm transition-colors ${isDarkMode ? "text-gray-300 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Perfil
+                    </Link>
+
+                    <Link
+                      to="/settings"
+                      className={`flex items-center px-4 py-2.5 text-sm transition-colors ${isDarkMode ? "text-gray-300 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                    >
+                      <Settings className="mr-2 h-4 w-4" />
+                      Configuració
+                    </Link>
+
+                    <div className={isDarkMode ? "border-t border-gray-800" : "border-t border-gray-100"}></div>
+
+                    <Link
+                      to="/login"
+                      className={`flex items-center px-4 py-2.5 text-sm transition-colors ${isDarkMode ? "text-red-400" : "text-red-600"
+                        } ${isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-50"}`}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Tancar sessió
+                    </Link>
                   </div>
-
-                  <Link
-                    to={`/seller/${user.id}/products`}
-                    className={`flex items-center px-4 py-2.5 text-sm transition-colors ${
-                      isDarkMode ? "text-gray-300 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    Perfil
-                  </Link>
-
-                  <Link
-                    to="/settings"
-                    className={`flex items-center px-4 py-2.5 text-sm transition-colors ${
-                      isDarkMode ? "text-gray-300 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    Configuració
-                  </Link>
-
-                  <div className={isDarkMode ? "border-t border-gray-800" : "border-t border-gray-100"}></div>
-
-                  <Link
-                    to="/login"
-                    className={`flex items-center px-4 py-2.5 text-sm transition-colors ${
-                      isDarkMode ? "text-red-400" : "text-red-600"
-                    } ${isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-50"}`}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Tancar sessió
-                  </Link>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 ${isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
+                }`}
+            >
+              <User className="h-4 w-4" />
+              <span className="sr-only">Iniciar sesión</span>
+            </Link>
+          )}
 
           <button
             type="button"
-            className={`flex h-8 w-8 items-center justify-center rounded-full md:hidden ${
-              isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
-            }`}
+            className={`flex h-8 w-8 items-center justify-center rounded-full md:hidden ${isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
+              }`}
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <Menu className="h-5 w-5" />
@@ -274,9 +274,8 @@ export default function Header() {
 
       <div
         ref={mobileMenuRef}
-        className={`fixed inset-0 z-50 transform transition-all duration-500 ${
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        } ${isDarkMode ? "bg-black" : "bg-white"}`}
+        className={`fixed inset-0 z-50 transform transition-all duration-500 ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          } ${isDarkMode ? "bg-black" : "bg-white"}`}
       >
         <div className="flex h-16 items-center justify-between px-6">
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
@@ -284,9 +283,8 @@ export default function Header() {
           </Link>
           <button
             type="button"
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${
-              isDarkMode ? "hover:bg-gray-900" : "hover:bg-gray-100"
-            }`}
+            className={`flex h-10 w-10 items-center justify-center rounded-full ${isDarkMode ? "hover:bg-gray-900" : "hover:bg-gray-100"
+              }`}
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <X className="h-5 w-5" />
@@ -297,18 +295,16 @@ export default function Header() {
         <div className="mt-8 px-6">
           <div className="relative mb-8">
             <Search
-              className={`absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 transform ${
-                isDarkMode ? "text-gray-500" : "text-gray-400"
-              }`}
+              className={`absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 transform ${isDarkMode ? "text-gray-500" : "text-gray-400"
+                }`}
             />
             <input
               type="search"
               placeholder="Buscar..."
-              className={`w-full rounded-full border-0 py-3 pl-12 pr-4 text-base outline-none ring-1 ${
-                isDarkMode
+              className={`w-full rounded-full border-0 py-3 pl-12 pr-4 text-base outline-none ring-1 ${isDarkMode
                   ? "bg-gray-900 ring-gray-800 focus:ring-gray-700 placeholder:text-gray-600"
                   : "bg-gray-50 ring-gray-200 focus:ring-gray-300 placeholder:text-gray-400"
-              }`}
+                }`}
             />
           </div>
 
@@ -354,9 +350,8 @@ export default function Header() {
           <div className="mt-auto pt-10 space-y-4">
             <Link
               to="/settings"
-              className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${
-                isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"
-              }`}
+              className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"
+                }`}
             >
               <span className="flex items-center">
                 <Settings className="mr-2 h-4 w-4" />
@@ -367,9 +362,8 @@ export default function Header() {
 
             <button
               onClick={toggleDarkMode}
-              className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${
-                isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"
-              }`}
+              className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"
+                }`}
             >
               <span>{isDarkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}</span>
               <svg
@@ -399,9 +393,8 @@ export default function Header() {
 
             <Link
               to="/login"
-              className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${
-                isDarkMode ? "bg-gray-900 text-red-400" : "bg-gray-50 text-red-600"
-              }`}
+              className={`flex w-full items-center justify-between rounded-lg py-3 px-4 ${isDarkMode ? "bg-gray-900 text-red-400" : "bg-gray-50 text-red-600"
+                }`}
             >
               <span className="flex items-center">
                 <LogOut className="mr-2 h-4 w-4" />

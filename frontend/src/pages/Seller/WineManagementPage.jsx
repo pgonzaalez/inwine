@@ -2,7 +2,7 @@
 
 import Header from "@components/HeaderComponent"
 import WineManagement from "@components/WineManagement"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
 
 // Definimos los colores primarios
 const primaryColors = {
