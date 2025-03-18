@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { User, Lock, CornerDownLeft, AlertCircle, X } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { useFetchUser } from "@components/FetchUser"
+import { useFetchUser } from "@components/auth/FetchUser"
 
 const LoginForm = () => {
   const apiUrl = import.meta.env.VITE_API_URL

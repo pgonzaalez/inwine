@@ -13,7 +13,7 @@ import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
 
-import ProtectedRoute from "@components/ProtectedRoute";
+import ProtectedRoute from "@components/auth/ProtectedRoute";
 
 export default function App() {
   return (
