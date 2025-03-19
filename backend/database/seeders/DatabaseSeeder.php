@@ -7,6 +7,7 @@ use App\Models\WineType;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,8 +20,15 @@ class DatabaseSeeder extends Seeder
             $this->command->call('migrate:fresh');
 
             // Elimina el directorio 'products' del disco 'public' y lo vuelve a crear
-            Storage::disk('public')->deleteDirectory('products');
-            Storage::disk('public')->makeDirectory('products');
+            $files = Storage::disk('public')->files('products');
+
+            foreach ($files as $file) {
+                Storage::disk('public')->delete($file);
+            }
+            
+            $this->command->info("Se han eliminado todas las imágenes del directorio 'products'.");
+
+            Log::info('Se ejecutó makeDirectory');
 
             $this->command->info("S'ha eliminat el directori 'products' del disc 'public'");
             $this->command->info("S'ha reconstruït la base de dades");
