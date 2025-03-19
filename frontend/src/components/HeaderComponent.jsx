@@ -10,9 +10,11 @@ import {
   User,
   Settings,
   LogOut,
+  AlertTriangle
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
-import {deleteCookie} from "@/utils/utils"
+import {getCookie, deleteCookie} from "@/utils/utils"
+import Modal from "@components/Modal";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -22,12 +24,36 @@ export default function Header() {
   const mobileMenuRef = useRef(null);
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false)
+  const apiUrl = import.meta.env.VITE_API_URL
 
   const user = useFetchUser();
 
-  const handleLogout = () => {
-    deleteCookie("token");
-    navigate("/login"); 
+  const handleLogout = async () => {
+    const token = getCookie("token")
+    if (!token) {
+      console.log("No hay token de autenticación")
+      return
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (response.ok) {
+        deleteCookie("token");
+        window.location.href = "/"
+      } else {
+        console.log("Error al hacer logout")
+      }
+    } catch (error) {
+      console.error("Error en la solicitud de logout:", error)
+    }
   };
 
   useEffect(() => {
@@ -87,11 +113,10 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ${
-        scrolled
-          ? "bg-white/80 backdrop-blur-md"
-          : "bg-white/20 backdrop-blur-sm"
-      } text-black ${scrolled ? "translate-y-0" : "-translate-y-full"}`}
+      className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ${scrolled
+        ? "bg-white/80 backdrop-blur-md"
+        : "bg-white/20 backdrop-blur-sm"
+        } text-black ${scrolled ? "translate-y-0" : "-translate-y-full"}`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-8">
         <div className="flex items-center">
@@ -205,7 +230,7 @@ export default function Header() {
                     <div className="border-t border-gray-100"></div>
 
                     <button
-                      onClick={handleLogout}
+                      onClick={() => setIsLogoutOpen(true)}
                       className="flex items-center px-4 py-2.5 text-sm transition-colors text-red-600 hover:bg-gray-50"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
@@ -344,22 +369,55 @@ export default function Header() {
                     </span>
                     <ChevronDown className="h-4 w-4 opacity-50" />
                   </Link>
-
-                  <Link
-                    to="/login"
+                  <button
+                    onClick={() => setIsLogoutOpen(true)}
                     className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-red-600"
                   >
                     <span className="flex items-center">
                       <LogOut className="mr-2 h-4 w-4" />
                       Tancar sessió
                     </span>
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
           </Transition.Child>
         </Dialog>
       </Transition>
+
+      {/* Modal de Cierre de Sesión */}
+      <Modal
+        isOpen={isLogoutOpen}
+        onClose={() => setIsLogoutOpen(false)}
+        title="Tancar sessió?"
+        description="Estàs segur que vols tancar la teva sessió actual?"
+        icon={<LogOut className="h-8 w-8" />}
+        variant="danger"
+        size="md"
+        footer={
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setIsLogoutOpen(false)}
+              className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancel·lar
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2.5 text-sm font-medium text-white hover:from-red-600 hover:to-red-700"
+            >
+              Tancar sessió
+            </button>
+          </div>
+        }
+      >
+        <div className="flex items-start rounded-lg bg-amber-50 p-4">
+          <AlertTriangle className="mr-3 h-5 w-5 text-amber-500" />
+          <p className="text-sm text-amber-700">
+            Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al teu compte.
+          </p>
+        </div>
+      </Modal>
 
       {/* Add global styles for animations */}
       <style jsx global>{`
