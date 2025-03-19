@@ -35,7 +35,7 @@ export default function App() {
             }
           />
           <Route
-            path="/seller/:id/dashboard"
+            path="/seller/dashboard"
             element={
               <ProtectedRoute>
                 <Seller />
@@ -43,7 +43,7 @@ export default function App() {
             }
           />
           <Route
-            path="/seller/:id/products"
+            path="/seller/products"
             element={
               <ProtectedRoute>
                 <WineManagement />
@@ -51,7 +51,7 @@ export default function App() {
             }
           />
           <Route
-            path="/seller/:id/products/:id"
+            path="/seller/products/:id"
             element={
               <ProtectedRoute>
                 <ViewProductPage />
@@ -59,7 +59,7 @@ export default function App() {
             }
           />
           <Route
-            path="/seller/:id/products/:id/edit"
+            path="/seller/products/:id/edit"
             element={
               <ProtectedRoute>
                 <EditProductPage />
