@@ -18,8 +18,46 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('images')->get();
-        return response()->json($products);
+        $products = Product::with('wineType')->get();
+
+        $response = $products->map(function ($product) {
+            return [
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type' => $product->wineType->name,
+                'price_demanded' => $product->price_demanded,
+                'quantity' => $product->quantity,
+                'image' => $product->image,
+                'user_id' => $product->user_id,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at
+            ];
+        });
+
+        return response()->json($response);
+    }
+
+    public function showForUser(string $userId)
+    {
+        $products = Product::where('user_id', $userId)->get();
+
+        $response = $products->map(function ($product) {
+            return [
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type' => $product->wineType->name,
+                'price_demanded' => $product->price_demanded,
+                'quantity' => $product->quantity,
+                'image' => $product->image,
+                'user_id' => $product->user_id,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at
+            ];
+        });
+
+        return response()->json($response);
     }
 
     /**
@@ -66,13 +104,13 @@ class ProductController extends Controller
 
             // Después procesamos las imágenes
             if ($request->hasFile('images')) {
-             
+
                 Log::info('Se encontraron imágenes para almacenar');
-             
+
                 $isPrimary = true; // La primera imagen será la principal
 
                 foreach ($request->file('images') as $index => $imageFile) {
-             
+
                     $path = $imageFile->store('products', 'public');
                     Log::info('Procesando imagen', ['index' => $index]);
                     ProductImage::create([
