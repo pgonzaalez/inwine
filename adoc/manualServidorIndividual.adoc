@@ -57,6 +57,13 @@
    ```bash
    sudo chown -R www-data:www-data /var/www/inwine/
    sudo chmod -R 755 /var/www/inwine/
+
+   sudo chown -R www-data:www-data /var/www/inwine/backend/storage /var/www/inwine/backend/public/storage
+   
+   sudo chmod -R 775 /var/www/inwine/backend/storage /var/www/inwine/backend/bootstrap/cache
+
+
+
    ```
 
 == Pas 3: Configuració d'Apache
