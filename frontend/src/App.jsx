@@ -1,61 +1,78 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router";
-import "./App.css"
+import "./App.css";
 
 // Pages
 import Main from "@pages/MainPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
-import Create from "@pages/CreatePage";
+import Create from "@pages/Seller/CreateProductPage";
+import WineManagement from "@pages/Seller/WineManagementPage";
 import ViewProductPage from "./pages/Seller/ViewProductPage";
 import EditProductPage from "./pages/Seller/EditProductPage";
-import Register from "@pages/RegisterPage";
 import RegisterSeller from "@pages/RegisterSellerPage";
+import RegisterInversor from "@pages/RegisterInversorPage";
+import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Login from "@pages/LoginPage";
+import Layout from "@layout/Layout";
 
-import ProtectedRoute from "@components/ProtectedRoute";
+import ProtectedRoute from "@components/auth/ProtectedRoute";
 
 export default function App() {
-
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route
-          path="/seller/:id/products"
-          element={
-            <ProtectedRoute>
-              <Seller />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/seller/:id/products/:id"
-          element={
-            <ProtectedRoute>
-              <ViewProductPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/seller/:id/products/:id/edit"
-          element={
-            <ProtectedRoute>
-              <EditProductPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/create"
-          element={
-            <ProtectedRoute>
-              <Create />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/register" element={<RegisterSeller />} />
+
+        {/* Rutas con Sidebar */}
+        <Route element={<Layout />}>
+          {" "}
+          {/* Aquí usas el Layout con Sidebar */}
+          <Route
+            path="/create"
+            element={
+              <ProtectedRoute>
+                <Create />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/dashboard"
+            element={
+              <ProtectedRoute>
+                <Seller />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/products"
+            element={
+              <ProtectedRoute>
+                <WineManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/products/:id"
+            element={
+              <ProtectedRoute>
+                <ViewProductPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/products/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EditProductPage />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+
+        <Route path="/register/seller" element={<RegisterSeller />} />
+        <Route path="/register/inversor" element={<RegisterInversor />} />
+        <Route path="/register/restaurant" element={<RegisterRestaurant />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/registerinversor" element={<Register />} />
       </Routes>
     </Router>
-  )
+  );
 }
-

@@ -1,36 +1,80 @@
-import { Link } from "react-router-dom";
+
+import { motion } from "framer-motion";
+import Header from "@components/HeaderComponent";
+import Footer from "@components/FooterComponent";
+import AboutSection from "@components/landing/AboutComponent";
+import CarouselComponent from "@components/landing/CarouselComponent";
+import UserCards from "@components/landing/UserCardsComponent";
+import LastInteractions from "@components/landing/LastInteractionsComponent";
+
 
 export default function App() {
-  return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Hello</h1>
-        <Link
-          to="/seller/123/products"
-          className="block bg-blue-500 text-white py-2 px-4 rounded-md my-2 transition duration-300 hover:bg-blue-700"
-        >
-          Go to seller
-        </Link>
-        <Link
-          to="/create"
-          className="block bg-green-500 text-white py-2 px-4 rounded-md my-2 transition duration-300 hover:bg-green-700"
-        >
-          Create a product
-        </Link>
-        <Link
-          to="/register"
-          className="block bg-purple-500 text-white py-2 px-4 rounded-md my-2 transition duration-300 hover:bg-purple-700"
-        >
-          Registra un Productor
-        </Link>
 
-        <Link
-          to="/login"
-          className="block bg-yellow-500 text-white py-2 px-4 rounded-md my-2 transition duration-300 hover:bg-yellow-700"
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
+  return (
+    <>
+      <Header />
+      <div className="relative w-full h-screen overflow-hidden">
+        {/* Fons de vídeo */}
+        <video
+          loop
+          autoPlay
+          muted
+          className="absolute top-0 left-0 w-full h-full object-cover"
         >
-          Login
-        </Link>
+          <source src="hero.mp4" type="video/mp4" />
+        </video>
       </div>
-    </div>
+
+      <section className="text-center">
+        <motion.div
+          className="mx-auto p-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false }}
+        >
+          <AboutSection />
+        </motion.div>
+      </section>
+
+      <section className="text-center">
+        <motion.div
+          className=""
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false }}
+        >
+          <CarouselComponent />
+        </motion.div>
+      </section>
+
+      <section className=" text-center">
+        <motion.div
+          className=" mx-auto p-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false }}
+          variants={fadeInUp}
+        >
+          <LastInteractions />
+        </motion.div>
+      </section>
+
+      <section className=" text-center py-12">
+        <motion.div
+          className="mx-auto px-4 sm:px-6 lg:px-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false }}
+        >
+          <UserCards />
+        </motion.div>
+      </section>
+      <Footer />
+    </>
   );
 }

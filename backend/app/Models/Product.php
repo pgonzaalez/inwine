@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+
 class Product extends Model
 {
     use HasFactory, Notifiable;
@@ -18,7 +19,7 @@ class Product extends Model
         "price_demanded",
         "quantity",
         "image",
-        "seller_id",
+        "user_id",
     ];
 
     public function wineType()
@@ -28,7 +29,16 @@ class Product extends Model
 
     public function seller()
     {
-        return $this->belongsTo(Seller::class, "seller_id");
+        return $this->belongsTo(User::class, "user_id");
     }
 
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function primaryImage()
+    {
+        return $this->hasMany(ProductImage::class)->where('is_primary', true)->first();
+    }
 }

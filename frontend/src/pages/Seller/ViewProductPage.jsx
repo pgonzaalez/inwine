@@ -1,15 +1,15 @@
-import { useFetchUser } from "@components/FetchApiUsersComponent";
+import { useFetchUser } from "@components/auth/FetchUser";
 import Header from "@components/HeaderComponent";
-import Sidebar from "@components/SidebarComponent";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { CircleAlert, CornerDownLeft, Edit, Star, Trash } from "lucide-react";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { useEffect, useState } from "react";
-import ConfirmationDialog from "@components/ConfirmationDialogComponent"; // Importar el diàleg
+import ConfirmationDialog from "@components/ConfirmationDialogComponent";
 
 export default function ViewProductPage() {
   const { id: productID } = useParams();
+  const { user, error } = useFetchUser();
   const [wines, setWines] = useState({});
   const [typeWines, setTypeWines] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,6 @@ export default function ViewProductPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // Estat per al diàleg
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
-
 
   useEffect(() => {
     if (location.state?.successMessage) {
@@ -33,9 +32,7 @@ export default function ViewProductPage() {
     }
     const fetchWines = async () => {
       try {
-        const response = await fetch(
-          `${apiUrl}/v1/products/${productID}`
-        );
+        const response = await fetch(`${apiUrl}/v1/products/${productID}`);
         if (!response.ok) {
           throw new Error("No s'ha pogut connectar amb el servidor");
         }
@@ -99,19 +96,16 @@ export default function ViewProductPage() {
   // Funció per eliminar el producte
   const handleDeleteProduct = async () => {
     try {
-      const response = await fetch(
-        `${ap}/v1/products/${productID}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${apiUrl}/v1/products/${productID}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         throw new Error("No s'ha pogut eliminar el producte");
       }
 
       // Redirigir a la llista de productes amb un missatge d'èxit
-      navigate("/seller/123/products", {
+      navigate(`/seller/products`, {
         state: { successMessage: "Producte eliminat correctament ✅" },
       });
     } catch (error) {
@@ -136,21 +130,6 @@ export default function ViewProductPage() {
 
   const images = wines.image ? [{ original: wines.image }] : [];
 
-  const images2 = [
-    {
-      original: "https://picsum.photos/id/1018/1000/600/",
-      thumbnail: "https://picsum.photos/id/1018/1000/600/",
-      originalHeight: 800,
-      originalWidth: 500,
-    },
-    {
-      original: "https://picsum.photos/id/1015/1000/600/",
-      thumbnail: "https://picsum.photos/id/1015/250/150/",
-      originalHeight: "400px",
-      originalWidth: "600px",
-    },
-  ];
-
   return (
     <>
       {errorMessage ? (
@@ -161,7 +140,6 @@ export default function ViewProductPage() {
           <div className="flex flex-col mt-[60px] h-[calc(100vh-60px)]">
             {/* Envoltem el contingut amb flex-col per a mòbil i en fila en desktop */}
             <div className="flex flex-1 flex-col md:flex-row">
-              <Sidebar />
               {/* El marge esquerre només s'aplica en desktop i afegim padding-bottom per a mòbil */}
               <main className="flex-1 md:ml-[245px] p-6 pb-20 bg-gray-100 overflow-y-auto">
                 {showSuccessNotification && (
@@ -179,14 +157,14 @@ export default function ViewProductPage() {
                 />
                 <div className="bg-white rounded-t-lg shadow-sm p-4 flex justify-between items-center">
                   <Link
-                    to="/seller/123/products"
+                    to={`/seller/products`}
                     className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
                   >
                     <CornerDownLeft size={20} className="cursor-pointer" />
                   </Link>
                   <div className="flex gap-2 items-center">
                     <Link
-                      to={`/seller/123/products/${productID}/edit`}
+                      to={`/seller/products/${productID}/edit`}
                       className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
                     >
                       <Edit size={20} className="cursor-pointer" />
@@ -195,7 +173,10 @@ export default function ViewProductPage() {
                       onClick={openDeleteDialog}
                       className="border-2 border-red-500 rounded-lg p-1 hover:bg-red-100 transition-colors duration-200"
                     >
-                      <Trash size={20} className="text-red-500 cursor-pointer" />
+                      <Trash
+                        size={20}
+                        className="text-red-500 cursor-pointer"
+                      />
                     </button>
                   </div>
                 </div>
@@ -203,14 +184,28 @@ export default function ViewProductPage() {
                   <div className="flex flex-col gap-4 md:w-1/2">
                     <div className="w-full flex justify-center items-center h-[400px]">
                       <div className="w-full max-w-lg object-cover">
-                        <ImageGallery
-                          className="object-contain rounded-lg"
-                          items={images2}
-                          disableKeyDown={true}
-                          showNav={false}
-                          showPlayButton={false}
-                          showFullscreenButton={false}
-                        />
+                        <div className="w-full max-w-md mx-auto">
+                          {images.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-4">
+                              {images.map((img, index) => (
+                                <div
+                                  key={index}
+                                  className="relative w-full h-[400px] flex justify-center items-center"
+                                >
+                                  <img
+                                    src={img.original}
+                                    alt={wines.name}
+                                    className="max-w-full max-h-full object-contain "
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="w-full h-[300px] flex items-center justify-center bg-gray-200 text-gray-500 rounded-lg">
+                              No hi ha imatges disponibles
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -219,17 +214,15 @@ export default function ViewProductPage() {
                       <div className="flex flex-col justify-between text-gray-500 text-sm">
                         <div className="flex justify-between gap-2 items-center">
                           <span>Vi {typeWines.name}</span>
-                          <span>
-                            Productor:{" "}
-                            {sellerLoading ? "Carregant..." : seller?.name || "Desconegut"}
-                          </span>
                         </div>
                       </div>
                       <h2 className="text-black text-2xl font-semibold mt-2">
                         {wines.name} {wines.year}
                       </h2>
                       <div className="flex gap-2 items-center mt-2">
-                        <span className="text-gray-500 text-sm">{wines.origin}</span>
+                        <span className="text-gray-500 text-sm">
+                          {wines.origin}
+                        </span>
                       </div>
                       <div className="flex gap-2 items-center mt-2">
                         <span className="text-black text-xl font-bold">
@@ -239,7 +232,9 @@ export default function ViewProductPage() {
                       <div className="flex gap-2 items-center mt-2">
                         <span
                           className={`text-sm ${
-                            wines.quantity <= 10 ? "text-red-500" : "text-gray-500"
+                            wines.quantity <= 10
+                              ? "text-red-500"
+                              : "text-gray-500"
                           }`}
                         >
                           {wines.quantity} en stock
@@ -263,7 +258,9 @@ export default function ViewProductPage() {
                         <span className="text-black text-xs">1,3k Reseñas</span>
                       </div>
                       <div className="mt-4">
-                        <h3 className="text-black text-lg font-bold">Descripció</h3>
+                        <h3 className="text-black text-lg font-bold">
+                          Descripció
+                        </h3>
                         <p className="text-gray-500 text-base leading-6 mt-1">
                           {wines.description}
                         </p>
