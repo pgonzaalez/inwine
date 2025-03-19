@@ -1,127 +1,234 @@
-import React from "react";
-import { Avatar, Divider } from "@heroui/react";
-import { Link, useLocation } from "react-router-dom";
-import {
-  LucideShoppingCart,
-  BookmarkPlusIcon,
-  Bell,
-  LogOut,
-} from "lucide-react";
-import { useFetchUser } from '@components/FetchApiUsersComponent'; // Importar el hook
+import { Link, useLocation } from "react-router-dom"
+import { BookmarkPlus, ShoppingCart, Bell, LogOut, User, Home, Settings, Wine } from "lucide-react"
+import { useFetchUser } from "@components/auth/FetchUser"
+import {getCookie, deleteCookie} from "@/utils/utils"
+
+// Definimos los colores primarios
+const primaryColors = {
+  dark: "#9A3E50",
+  light: "#C27D7D",
+}
 
 export default function Sidebar() {
-  const location = useLocation();
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const { user, loading, error } = useFetchUser(); // Llamar al hook para obtener el usuario
+  const location = useLocation()
+  const apiUrl = import.meta.env.VITE_API_URL
+  const { user, loading, error } = useFetchUser()
 
   const logout = async () => {
-    const token = localStorage.getItem('token');
-    console.log(token); // Verifica el valor del token
+    const token = getCookie("token")
     if (!token) {
-      console.log("No hay token de autenticación");
-      return;
+      console.log("No hay token de autenticación")
+      return
     }
 
     try {
       const response = await fetch(`${apiUrl}/logout`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Asegúrate de usar backticks
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      });
+      })
 
       if (response.ok) {
-        // Si el logout es exitoso, puedes eliminar el token del localStorage
-        localStorage.removeItem('token');
-        window.location.href = "/";
+        deleteCookie("token");
+        window.location.href = "/"
       } else {
-        console.log("Error al hacer logout");
+        console.log("Error al hacer logout")
       }
     } catch (error) {
-      console.error("Error en la solicitud de logout:", error);
+      console.error("Error en la solicitud de logout:", error)
     }
-  };
+  }
 
-  if (loading) return <div>Loading...</div>; // Mientras carga, puedes mostrar un mensaje
-  if (error) return <div>{error}</div>; // Si hay un error, lo mostramos
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div
+          className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin"
+          style={{ borderColor: primaryColors.light }}
+        ></div>
+      </div>
+    )
+
+  if (error)
+    return (
+      <div className="p-4" style={{ color: primaryColors.dark }}>
+        {error}
+      </div>
+    )
+
+  const navItems = [
+    {
+      icon: Home,
+      label: "Inici",
+      path: `/seller/dashboard`,
+    },
+    {
+      icon: BookmarkPlus,
+      label: "Pujar Producte",
+      path: "/create",
+    },
+    {
+      icon: ShoppingCart,
+      label: "Productes",
+      path: `/seller/products`,
+    },
+    {
+      icon: Wine,
+      label: "Gestió de Vins",
+      path: `/seller/wine-management`,
+    },
+    {
+      icon: Bell,
+      label: "Notificacions",
+      path: `/seller/notificacions`,
+    },
+    {
+      icon: User,
+      label: "Perfil",
+      path: `/seller/${user?.id || "usuari"}`,
+      divider: true,
+    },
+    {
+      icon: Settings,
+      label: "Configuració",
+      path: `/seller/settings`,
+    },
+  ]
+
+  const isActive = (path) => location.pathname === path
 
   return (
     <>
-      {/* Barra lateral per a pantalles grans */}
-      <section className="hidden md:flex flex-col w-[245px] h-screen fixed top-[100px] left-0 bg-white shadow-md p-4 overflow-y-auto">
-        <Link to="/seller/123/" className="flex gap-3 items-center cursor-pointer">
-          <Avatar className="w-[40px] h-[40px] rounded-full" src="" />
-          <div>
-            <div className="font-extrabold text-black">{user ? user.name : 'Usuari Desconegut'}</div> {/* Mostrar el nombre del usuario */}
-            <div className="text-[#91969e] text-xs">Rol del Usuari</div>
+      {/* Desktop sidebar */}
+      <aside
+        className="hidden md:flex fixed top-0 left-0 h-screen w-64 flex-col bg-white shadow-sm z-40 transition-all duration-300"
+        style={{
+          backgroundColor: "white",
+          borderRight: `1px solid ${primaryColors.light}`,
+        }}
+      >
+        {/* User profile section */}
+        <div className="p-6 border-b" style={{ borderColor: primaryColors.light }}>
+          <div className="flex items-center space-x-3">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white"
+              style={{ background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }}
+            >
+              <User size={18} />
+            </div>
+            <div>
+              <p className="font-medium text-gray-900">{user ? user.name : "Usuari Desconegut"}</p>
+              <p className="text-sm text-gray-500">{user?.email || "email@example.com"}</p>
+            </div>
           </div>
-        </Link>
-        <div className="mt-5 space-y-2">
-          <Divider />
-          <Link
-            to="/create"
-            className={`flex items-center gap-4 p-3 rounded-[20px] cursor-pointer ${location.pathname === "/create" ? "bg-[#efefef]" : "hover:bg-gray-100"}`}
-          >
-            <BookmarkPlusIcon size={20} />
-            <span>Pujar Producte</span>
-          </Link>
-          <Link
-            to="/seller/123/products"
-            className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer ${location.pathname === "/seller/123/products" ? "bg-[#efefef]" : "hover:bg-gray-100"}`}
-          >
-            <LucideShoppingCart size={20} />
-            <span>Productes</span>
-          </Link>
-          <Link
-            to="/seller/123/notificacions"
-            className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer ${location.pathname === "/seller/123/notificacions" ? "bg-[#efefef]" : "hover:bg-gray-100"}`}
-          >
-            <Bell size={20} />
-            <span>Notificacions</span>
-          </Link>
-          <Link
-            to="#"
-            onClick={logout}
-            className={`p-3 flex items-center gap-4 rounded-[20px] cursor-pointer ${location.pathname === "/logout" ? "bg-[#efefef]" : "hover:bg-gray-100"}`}
-          >
-            <LogOut size={20} />
-            <span>Tanca sessió</span>
-          </Link>
         </div>
-      </section>
 
-      {/* Barra inferior per a mòbils */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow flex justify-around p-2 z-10">
+        {/* Navigation */}
+        <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+          {navItems.map((item, index) => (
+            <div key={index}>
+              {item.divider && <div className="my-4 border-t mx-2" style={{ borderColor: primaryColors.light }}></div>}
+              <Link
+                to={item.path}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                  isActive(item.path) ? "font-medium text-white" : "text-gray-700 hover:bg-gray-50"
+                }`}
+                style={
+                  isActive(item.path)
+                    ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+                    : {}
+                }
+              >
+                <item.icon size={18} />
+                <span>{item.label}</span>
+              </Link>
+            </div>
+          ))}
+        </nav>
+
+        {/* Logout button */}
+        <div className="p-4 border-t" style={{ borderColor: primaryColors.light }}>
+          <button
+            onClick={logout}
+            className="flex w-full items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
+          >
+            <LogOut size={18} />
+            <span>Tancar sessió</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Mobile navigation bar */}
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 shadow-lg flex justify-around z-10 py-2"
+        style={{
+          backgroundColor: "white",
+          borderTop: `1px solid ${primaryColors.light}`,
+        }}
+      >
+        <Link
+          to={`/seller/dashboard`}
+          className={`flex flex-col items-center p-2 rounded-lg ${
+            location.pathname === `/seller/${user?.id}` ? "text-white" : "text-gray-600"
+          }`}
+          style={
+            location.pathname === `/seller/${user?.id}`
+              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+              : {}
+          }
+        >
+          <Home size={20} />
+          <span className="text-xs mt-1">Inici</span>
+        </Link>
+
         <Link
           to="/create"
-          className={`flex flex-col items-center p-2 ${location.pathname === "/create" ? "text-[#800020]" : "text-gray-500"}`}
+          className={`flex flex-col items-center p-2 rounded-lg ${
+            location.pathname === "/create" ? "text-white" : "text-gray-600"
+          }`}
+          style={
+            location.pathname === "/create"
+              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+              : {}
+          }
         >
-          <BookmarkPlusIcon size={20} />
-          <span className="text-xs">Pujar</span>
+          <BookmarkPlus size={20} />
+          <span className="text-xs mt-1">Pujar</span>
         </Link>
+
         <Link
-          to="/seller/123/products"
-          className={`flex flex-col items-center p-2 ${location.pathname === "/seller/123/products" ? "text-[#800020]" : "text-gray-500"}`}
+          to={`/seller/products`}
+          className={`flex flex-col items-center p-2 rounded-lg ${
+            location.pathname === `/seller/products` ? "text-white" : "text-gray-600"
+          }`}
+          style={
+            location.pathname === `/seller/products`
+              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+              : {}
+          }
         >
-          <LucideShoppingCart size={20} />
-          <span className="text-xs">Productes</span>
+          <ShoppingCart size={20} />
+          <span className="text-xs mt-1">Productes</span>
         </Link>
+
         <Link
-          to="/seller/123/notificacions"
-          className={`flex flex-col items-center p-2 ${location.pathname === "/seller/123/notificacions" ? "text-[#800020]" : "text-gray-500"}`}
+          to={`/seller/notificacions`}
+          className={`flex flex-col items-center p-2 rounded-lg ${
+            location.pathname === `/seller/notificacions` ? "text-white" : "text-gray-600"
+          }`}
+          style={
+            location.pathname === `/seller/notificacions`
+              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+              : {}
+          }
         >
           <Bell size={20} />
-          <span className="text-xs">Notificacions</span>
-        </Link>
-        <Link
-          to="/logout"
-          className={`flex flex-col items-center p-2 ${location.pathname === "/logout" ? "text-[#800020]" : "text-gray-500"}`}
-        >
-          <LogOut size={20} />
-          <span className="text-xs">Sortir</span>
+          <span className="text-xs mt-1">Alertes</span>
         </Link>
       </nav>
     </>
-  );
+  )
 }
+
