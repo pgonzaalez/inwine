@@ -105,7 +105,7 @@ export default function ViewProductPage() {
       }
 
       // Redirigir a la llista de productes amb un missatge d'èxit
-      navigate(`/seller/${user?.id || "usuari"}/products`, {
+      navigate(`/seller/products`, {
         state: { successMessage: "Producte eliminat correctament ✅" },
       });
     } catch (error) {
@@ -157,14 +157,14 @@ export default function ViewProductPage() {
                 />
                 <div className="bg-white rounded-t-lg shadow-sm p-4 flex justify-between items-center">
                   <Link
-                    to={`/seller/${user?.id || "usuari"}/products`}
+                    to={`/seller/products`}
                     className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
                   >
                     <CornerDownLeft size={20} className="cursor-pointer" />
                   </Link>
                   <div className="flex gap-2 items-center">
                     <Link
-                      to={`/seller/${user?.id || "usuari"}/products/${productID}/edit`}
+                      to={`/seller/products/${productID}/edit`}
                       className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
                     >
                       <Edit size={20} className="cursor-pointer" />

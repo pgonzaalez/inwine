@@ -62,7 +62,7 @@ export default function Sidebar() {
     {
       icon: Home,
       label: "Inici",
-      path: `/seller/${user?.id || "usuari"}/dashboard`,
+      path: `/seller/dashboard`,
     },
     {
       icon: BookmarkPlus,
@@ -72,17 +72,17 @@ export default function Sidebar() {
     {
       icon: ShoppingCart,
       label: "Productes",
-      path: `/seller/${user?.id || "usuari"}/products`,
+      path: `/seller/products`,
     },
     {
       icon: Wine,
       label: "Gestió de Vins",
-      path: `/seller/${user?.id || "usuari"}/wine-management`,
+      path: `/seller/wine-management`,
     },
     {
       icon: Bell,
       label: "Notificacions",
-      path: `/seller/${user?.id || "usuari"}/notificacions`,
+      path: `/seller/notificacions`,
     },
     {
       icon: User,
@@ -93,7 +93,7 @@ export default function Sidebar() {
     {
       icon: Settings,
       label: "Configuració",
-      path: `/seller/${user?.id || "usuari"}/settings`,
+      path: `/seller/settings`,
     },
   ]
 
@@ -169,7 +169,7 @@ export default function Sidebar() {
         }}
       >
         <Link
-          to={`/seller/${user?.id || "usuari"}/dashboard`}
+          to={`/seller/dashboard`}
           className={`flex flex-col items-center p-2 rounded-lg ${
             location.pathname === `/seller/${user?.id}` ? "text-white" : "text-gray-600"
           }`}
@@ -199,12 +199,12 @@ export default function Sidebar() {
         </Link>
 
         <Link
-          to={`/seller/${user?.id || "usuari"}/products`}
+          to={`/seller/products`}
           className={`flex flex-col items-center p-2 rounded-lg ${
-            location.pathname === `/seller/${user?.id}/products` ? "text-white" : "text-gray-600"
+            location.pathname === `/seller/products` ? "text-white" : "text-gray-600"
           }`}
           style={
-            location.pathname === `/seller/${user?.id}/products`
+            location.pathname === `/seller/products`
               ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
               : {}
           }
@@ -214,12 +214,12 @@ export default function Sidebar() {
         </Link>
 
         <Link
-          to={`/seller/${user?.id || "usuari"}/notificacions`}
+          to={`/seller/notificacions`}
           className={`flex flex-col items-center p-2 rounded-lg ${
-            location.pathname === `/seller/${user?.id}/notificacions` ? "text-white" : "text-gray-600"
+            location.pathname === `/seller/notificacions` ? "text-white" : "text-gray-600"
           }`}
           style={
-            location.pathname === `/seller/${user?.id}/notificacions`
+            location.pathname === `/seller/notificacions`
               ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
               : {}
           }

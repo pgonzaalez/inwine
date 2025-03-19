@@ -170,7 +170,7 @@ const WineCard = ({ wine, user, baseUrl }) => {
   return (
     <div
       className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transition-all hover:shadow-md"
-      onClick={() => (window.location.href = `/seller/${user?.id}/products/${wine.id}`)}
+      onClick={() => (window.location.href = `/seller/products/${wine.id}`)}
     >
       <div className="flex items-center p-4">
         <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
