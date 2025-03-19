@@ -78,7 +78,7 @@ export default function EditProductPage() {
           throw new Error("Error updating product");
         }
       } else {
-        navigate(`/seller/${user?.id || "usuari"}/products/${productID}`, {
+        navigate(`/seller/products/${productID}`, {
           state: { successMessage: "Producte modificat correctament ✅" },
         });
       }
@@ -95,7 +95,7 @@ export default function EditProductPage() {
           <main className="flex-1 ml-[245px] p-6 bg-gray-100 overflow-y-auto">
             <div className="bg-white rounded-t-lg shadow-sm p-4 flex justify-between items-center">
               <Link
-                to={`/seller/${user?.id || "usuari"}/products/${productID}`}
+                to={`/seller/products/${productID}`}
                 className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
               >
                 <CornerDownLeft size={20} className="cursor-pointer" />
