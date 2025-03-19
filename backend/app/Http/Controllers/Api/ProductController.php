@@ -66,11 +66,15 @@ class ProductController extends Controller
 
             // Después procesamos las imágenes
             if ($request->hasFile('images')) {
+             
+                Log::info('Se encontraron imágenes para almacenar');
+             
                 $isPrimary = true; // La primera imagen será la principal
 
                 foreach ($request->file('images') as $index => $imageFile) {
+             
                     $path = $imageFile->store('products', 'public');
-
+                    Log::info('Procesando imagen', ['index' => $index]);
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_path' => $path,
@@ -84,6 +88,9 @@ class ProductController extends Controller
                         $product->image = Storage::url($path);
                         $product->save();
                     }
+
+                    Log::info('Imagen almacenada correctamente', ['path' => $path]);
+
 
                     $isPrimary = false; // Solo la primera imagen es principal
                 }
@@ -170,68 +177,62 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         try {
-            // Crear el producto
+            // Actualizamos los datos del producto
             $productData = $request->only([
-                'name', 'origin', 'year', 'wine_type_id', 'description', 'price_demanded', 'quantity', 'user_id'
+                'name',
+                'origin',
+                'year',
+                'wine_type_id',
+                'description',
+                'price_demanded',
+                'quantity',
+                'user_id'
             ]);
 
-            $product = Product::create($productData);
+            $product->update($productData);
 
-            // Procesar imágenes
+            // Procesamos nuevas imágenes si se proporcionan
             if ($request->hasFile('images')) {
-                Log::info('Imágenes recibidas en la solicitud.', ['images_count' => count($request->file('images'))]);
+                // Determinamos si ya hay imágenes
+                $hasPrimaryImage = $product->images()->where('is_primary', true)->exists();
+                $isPrimary = !$hasPrimaryImage;
+                $lastOrder = $product->images()->max('order') ?? -1;
 
-                $isPrimary = true; // La primera imagen será la principal
-
-                foreach ($request->file('images') as $index => $imageFile) {
-                    Log::info('Procesando imagen.', ['image_index' => $index]);
-
+                foreach ($request->file('images') as $imageFile) {
                     $path = $imageFile->store('products', 'public');
+                    $lastOrder++;
 
-                    if ($path) {
-                        Log::info('Imagen almacenada correctamente.', ['path' => $path]);
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_path' => $path,
+                        'is_primary' => $isPrimary,
+                        'order' => $lastOrder
+                    ]);
 
-                        ProductImage::create([
-                            'product_id' => $product->id,
-                            'image_path' => $path,
-                            'is_primary' => $isPrimary,
-                            'order' => $index
-                        ]);
-
-                        // Si es la primera imagen, también la guardamos en el campo image del producto
-                        if ($isPrimary) {
-                            $product->image = Storage::url($path);
-                            $product->save();
-                            Log::info('Imagen principal asignada al producto.', ['image_url' => Storage::url($path)]);
-                        }
-
-                        $isPrimary = false; // Solo la primera imagen es principal
-                    } else {
-                        Log::error('Error al almacenar la imagen en el disco.', ['index' => $index]);
+                    // Si es la primera imagen y no había una principal, actualizamos el campo image
+                    if ($isPrimary) {
+                        $product->image = Storage::url($path);
+                        $product->save();
+                        $isPrimary = false;
                     }
                 }
-            } else {
-                Log::warning('No se recibieron imágenes en la solicitud.');
             }
 
             DB::commit();
 
-            // Cargar las imágenes para la respuesta
+            // Cargamos las imágenes para la respuesta
             $product->load('images');
 
             return response()->json([
                 'success' => true,
                 'data' => $product
-            ], 201);
-
+            ]);
         } catch (\Exception $e) {
-            Log::error('Error al crear el producto.', ['error' => $e->getMessage()]);
-
             DB::rollBack();
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error al crear el producto: ' . $e->getMessage()
+                'message' => 'Error al actualizar el producto: ' . $e->getMessage()
             ], 500);
         }
     }
