@@ -38,7 +38,10 @@ class ProductController extends Controller
         return response()->json($response);
     }
 
-    public function showForUser(string $userId)
+    /**
+     * Display all products by user.
+     */
+    public function indexByUser(string $userId)
     {
         $products = Product::where('user_id', $userId)->get();
 
@@ -319,13 +322,6 @@ class ProductController extends Controller
                 'message' => 'Error al eliminar el producto: ' . $e->getMessage()
             ], 500);
         }
-    }
-
-    public function indexByUser(string $userId)
-    {
-        $products = Product::with('images')->where('user_id', $userId)->get();
-
-        return response()->json($products);
     }
 
     /**
