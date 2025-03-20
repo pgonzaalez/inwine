@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { User, Lock, CornerDownLeft, AlertCircle, X } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import {setCookie} from "@/utils/utils"
 // import { useFetchUser } from "@components/auth/FetchUser"
 
 const LoginForm = () => {
@@ -21,13 +22,6 @@ const LoginForm = () => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
-
-  const setCookie = (name, value, days) => {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault()
