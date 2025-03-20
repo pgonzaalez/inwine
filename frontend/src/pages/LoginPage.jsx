@@ -64,7 +64,7 @@ const LoginForm = () => {
 
       setTimeout(() => {
         // navigate(`/seller/${user.id}/products`)
-        navigate(`/`)
+        navigate(`/seller/dashboard`)
       }, 1000)
     } catch (error) {
       setMessage(error.message)

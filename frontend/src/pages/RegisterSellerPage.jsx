@@ -109,7 +109,7 @@ const AddSellerForm = () => {
       }
 
       setCookie("token", result.token, 7);
-      navigate("/");
+
     } catch (error) {
       setMessage(error.message);
       setMessageType("error");
@@ -185,7 +185,7 @@ const AddSellerForm = () => {
         setFormErrors({})
 
         setTimeout(() => {
-          navigate("/")
+          navigate("/seller/dashboard");
         }, 2000)
       }
     } catch (error) {
