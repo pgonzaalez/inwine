@@ -18,8 +18,49 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('images')->get();
-        return response()->json($products);
+        $products = Product::with('wineType')->get();
+
+        $response = $products->map(function ($product) {
+            return [
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type' => $product->wineType->name,
+                'price_demanded' => $product->price_demanded,
+                'quantity' => $product->quantity,
+                'image' => $product->image,
+                'user_id' => $product->user_id,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at
+            ];
+        });
+
+        return response()->json($response);
+    }
+
+    /**
+     * Display all products by user.
+     */
+    public function indexByUser(string $userId)
+    {
+        $products = Product::where('user_id', $userId)->get();
+
+        $response = $products->map(function ($product) {
+            return [
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type' => $product->wineType->name,
+                'price_demanded' => $product->price_demanded,
+                'quantity' => $product->quantity,
+                'image' => $product->image,
+                'user_id' => $product->user_id,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at
+            ];
+        });
+
+        return response()->json($response);
     }
 
     /**
@@ -66,11 +107,15 @@ class ProductController extends Controller
 
             // Después procesamos las imágenes
             if ($request->hasFile('images')) {
+
+                Log::info('Se encontraron imágenes para almacenar');
+
                 $isPrimary = true; // La primera imagen será la principal
 
                 foreach ($request->file('images') as $index => $imageFile) {
-                    $path = $imageFile->store('products', 'public');
 
+                    $path = $imageFile->store('products', 'public');
+                    Log::info('Procesando imagen', ['index' => $index]);
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_path' => $path,
@@ -84,6 +129,9 @@ class ProductController extends Controller
                         $product->image = Storage::url($path);
                         $product->save();
                     }
+
+                    Log::info('Imagen almacenada correctamente', ['path' => $path]);
+
 
                     $isPrimary = false; // Solo la primera imagen es principal
                 }
@@ -274,13 +322,6 @@ class ProductController extends Controller
                 'message' => 'Error al eliminar el producto: ' . $e->getMessage()
             ], 500);
         }
-    }
-
-    public function indexByUser(string $userId)
-    {
-        $products = Product::with('images')->where('user_id', $userId)->get();
-
-        return response()->json($products);
     }
 
     /**

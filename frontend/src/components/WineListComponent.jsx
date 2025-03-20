@@ -71,7 +71,7 @@ const WineItem = ({
   return (
     <div 
       className="group w-full transition-all duration-300 hover:translate-y-[-2px]"
-      onClick={() => navigate(`/seller/${userId}/products/${id}`)}
+      onClick={() => navigate(`/seller/products/${id}`)}
     >
       <div className="p-2">
         <div 
@@ -126,7 +126,7 @@ const WineItem = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation()
-                  navigate(`/seller/${userId}/products/${id}`)
+                  navigate(`/seller/products/${id}`)
                 }}
                 className="p-2 rounded-lg transition-colors cursor-pointer opacity-70 hover:opacity-100"
                 style={{ 
@@ -137,7 +137,7 @@ const WineItem = ({
                 <Eye size={18} />
               </button>
               <Link
-                to={`/seller/${userId}/products/${id}/edit`}
+                to={`/seller/products/${id}/edit`}
                 className="p-2 rounded-lg transition-colors cursor-pointer opacity-70 hover:opacity-100"
                 style={{ 
                   backgroundColor: roseColors.light,
