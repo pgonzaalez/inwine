@@ -217,7 +217,7 @@ export default function CreateProduct() {
           throw new Error("Error en crear el producto")
         }
       } else {
-        navigate(`/seller/${user.id}/dashboard`)
+        navigate(`/seller/dashboard`)
       }
     } catch (error) {
       // console.error("Error:", error)

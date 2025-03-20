@@ -212,7 +212,7 @@ export default function Header() {
                     </div>
 
                     <Link
-                      to={`/seller/${user.id}/products`}
+                      to={`/seller/products`}
                       className="flex items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
                     >
                       <User className="mr-2 h-4 w-4" />
@@ -348,7 +348,7 @@ export default function Header() {
                     <div>
                       <div className="text-sm font-medium">Mi cuenta</div>
                       <Link
-                        to={`/seller/${user.id}/products`}
+                        to={`/seller/dashboard`}
                         className="text-xs text-gray-500"
                       >
                         Ver perfil
