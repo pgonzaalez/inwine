@@ -2,19 +2,24 @@ import { BrowserRouter as Router, Route, Routes } from "react-router";
 import "./App.css";
 
 // Pages
+// Pages Landing
 import Main from "@pages/MainPage";
+import Login from "@pages/LoginPage";
+import Layout from "@layout/Layout";
+import ProtectedRoute from "@components/auth/ProtectedRoute";
+// Pages Seller
+import RegisterSeller from "@pages/RegisterSellerPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
 import Create from "@pages/Seller/CreateProductPage";
 import WineManagement from "@pages/Seller/WineManagementPage";
-import ViewProductPage from "./pages/Seller/ViewProductPage";
-import EditProductPage from "./pages/Seller/EditProductPage";
-import RegisterSeller from "@pages/RegisterSellerPage";
+import ViewProductPage from "@pages/Seller/ViewProductPage";
+import EditProductPage from "@pages/Seller/EditProductPage";
+// Pages Inversor
 import RegisterInversor from "@pages/RegisterInversorPage";
+// Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
-import Login from "@pages/LoginPage";
-import Layout from "@layout/Layout";
+import Restaurant from "@pages/Restaurant/RestaurantDashboard";
 
-import ProtectedRoute from "@components/auth/ProtectedRoute";
 
 export default function App() {
   return (
@@ -25,7 +30,10 @@ export default function App() {
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
           {" "}
+
           {/* Aquí usas el Layout con Sidebar */}
+          
+          {/* Rutas protegidas para Seller */}
           <Route
             path="/create"
             element={
@@ -65,6 +73,16 @@ export default function App() {
                 <EditProductPage />
               </ProtectedRoute>
             }
+            />
+
+            {/* Rutas protegidas para Restaurant */}
+            <Route
+              path="/restaurant/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Restaurant />
+                </ProtectedRoute>
+              }
           />
         </Route>
 
