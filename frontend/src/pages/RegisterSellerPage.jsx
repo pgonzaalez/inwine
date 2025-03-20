@@ -15,6 +15,7 @@ import {
   Loader2,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { setCookie } from "@/utils/utils"
 
 const AddSellerForm = () => {
   const navigate = useNavigate()
@@ -90,6 +91,31 @@ const AddSellerForm = () => {
     setTouched({ ...touched, [name]: true })
   }
 
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await fetch(`${apiUrl}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Error al iniciar sessió");
+      }
+
+      setCookie("token", result.token, 7);
+      navigate("/");
+    } catch (error) {
+      setMessage(error.message);
+      setMessageType("error");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setMessage("")
@@ -140,6 +166,10 @@ const AddSellerForm = () => {
       } else {
         setMessage("Productor registrat exitosament! Redirigint...")
         setMessageType("success")
+
+        //Realizar login una vez registrado
+        await handleLogin(formData.email, formData.password);
+
         setFormData({
           NIF: "",
           name: "",
