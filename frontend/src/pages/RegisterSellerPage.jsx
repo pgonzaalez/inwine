@@ -45,27 +45,27 @@ const AddSellerForm = () => {
 
     // Validar NIF (formato español: 8 dígitos y una letra)
     if (formData.NIF && !/^[0-9]{8}[A-Z]$/.test(formData.NIF)) {
-      newErrors.NIF = ["El NIF debe tener 8 dígitos seguidos de una letra mayúscula"]
+      newErrors.NIF = ["El NIF ha de ser 8 dígits seguits d'una lletra majúscula"]
     }
 
     // Validar email
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = ["El formato del correo electrónico no es válido"]
+      newErrors.email = ["El format del correu electrònic no és vàlid"]
     }
 
     // Validar contraseña (mínimo 8 caracteres, al menos una letra y un número)
     if (formData.password && !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(formData.password)) {
-      newErrors.password = ["La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número"]
+      newErrors.password = ["La contrasenya ha de ser mínim 8 caràcters, inclòs una lletra i un número"]
     }
 
     // Validar teléfono (formato español)
     if (formData.phone && !/^[6-9]\d{8}$/.test(formData.phone)) {
-      newErrors.phone = ["El número de teléfono debe tener 9 dígitos y empezar por 6, 7, 8 o 9"]
+      newErrors.phone = ["El número de telèfon ha de ser 9 dígits i començar per 6, 7, 8 o 9"]
     }
 
     // Validar cuenta bancaria (IBAN español simplificado)
     if (formData.bank_account && !/^ES\d{22}$/.test(formData.bank_account)) {
-      newErrors.bank_account = ["El número de cuenta debe tener formato IBAN español: ES seguido de 22 dígitos"]
+      newErrors.bank_account = ["El número de compte debe ser format IBAN espanyol: ES seguit de 22 dígits"]
     }
 
     setFormErrors(newErrors)
@@ -104,7 +104,7 @@ const AddSellerForm = () => {
 
     // Validar formulario antes de enviar
     if (!validateForm()) {
-      setMessage("Por favor, corrige los errores en el formulario antes de continuar.")
+      setMessage("Si us plau, corregeix els errors en el formulari abans de continuar.")
       setMessageType("error")
       return
     }
@@ -126,19 +126,19 @@ const AddSellerForm = () => {
       if (!response.ok) {
         if (response.status === 422) {
           setErrors(data.errors || {})
-          setMessage("Hay errores de validación en el formulario. Revisa los campos.")
+          setMessage("Hi ha errors de validació en el formulari. Revisa els camps.")
           setMessageType("error")
         } else if (response.status === 409) {
-          setMessage("Ya existe un usuario con este email o NIF. Por favor, utiliza datos diferentes.")
+          setMessage("Ja existeix un usuari amb aquest email o NIF. Si us plau, utilitza dades diferents.")
           setMessageType("error")
         } else if (response.status === 403) {
-          setMessage("No tienes permisos para realizar esta acción.")
+          setMessage("No teniu permissos per realitzar aquesta acció.")
           setMessageType("error")
         } else {
           throw new Error(data.message || "Error al crear el productor")
         }
       } else {
-        setMessage("¡Productor registrado exitosamente! Redirigiendo...")
+        setMessage("Productor registrat exitosament! Redirigint...")
         setMessageType("success")
         setFormData({
           NIF: "",
@@ -160,7 +160,7 @@ const AddSellerForm = () => {
       }
     } catch (error) {
       setMessage(
-        `Error: ${error.message || "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde."}`,
+        `Error: ${error.message || "Ha ocurregut un error inesperat. Si us plau, intentau de nou més tard."}`,
       )
       setMessageType("error")
     } finally {

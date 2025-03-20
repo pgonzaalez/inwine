@@ -17,7 +17,7 @@ export default function Sidebar() {
   const logout = async () => {
     const token = getCookie("token")
     if (!token) {
-      console.log("No hay token de autenticación")
+      // console.log("No hay token de autenticación")
       return
     }
 
@@ -34,10 +34,10 @@ export default function Sidebar() {
         deleteCookie("token");
         window.location.href = "/"
       } else {
-        console.log("Error al hacer logout")
+        // console.log("Error al hacer logout")
       }
     } catch (error) {
-      console.error("Error en la solicitud de logout:", error)
+      // console.error("Error en la solicitud de logout:", error)
     }
   }
 

@@ -53,7 +53,7 @@ class AuthController extends Controller
 
     public function storeSeller(Request $request)
     {
-        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
+        Log::info('Solicitud recibida para crear un productor', ['data' => $request->all()]);
 
         try {
             // Validar los datos de entrada
@@ -105,19 +105,19 @@ class AuthController extends Controller
                 'balance' => $validatedData['balance'] ?? 0.00,
             ]);
 
-            Log::info('Inversor creado exitosamente', ['seller_id' => $seller->id]);
+            Log::info('Productor creado exitosamente', ['seller_id' => $seller->id]);
 
             DB::commit();
 
             return response()->json([
-                'message' => 'Inversor creado exitosamente',
+                'message' => 'Productor creado exitosamente',
                 'seller' => $seller,
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
+            Log::error('Error al crear productor', ['error' => $e->getMessage()]);
             return response()->json([
-                'message' => 'Error al crear inversor',
+                'message' => 'Error al crear productor',
                 'error' => $e->getMessage(),
             ], 500);
         }
