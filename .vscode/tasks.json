@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Servidor Backend",
+            "type": "shell",
+            "command": "php artisan serve",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Frontend",
+            "type": "shell",
+            "command": "npm run dev",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
