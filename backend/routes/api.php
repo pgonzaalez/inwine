@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/winetypes', WineTypeController::class);
     Route::apiResource('/investor', InvestorController::class);
     Route::post('/seller', [AuthController::class, 'storeSeller']);
+    Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
 
 
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
