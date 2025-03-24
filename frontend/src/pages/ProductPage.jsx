@@ -359,25 +359,27 @@ export default function PopularProducts() {
                           {wineTypes.map((type) => (
                             <div
                               key={type.id}
-                              className="rounded-lg p-4 relative bg-cover bg-center bg-no-repeat"
-                              style={{
-                                backgroundImage: `url(${
-                                  type.image || "/placeholder.svg"
-                                })`,
-                                minHeight: "80px",
-                              }}
+                              className="relative rounded-lg overflow-hidden" // Contenedor relativo
                             >
-                              <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
+                              {/* Imagen de fondo */}
+                              <img
+                                src={type.image || "/placeholder.svg"}
+                                alt={type.name}
+                                className="absolute inset-0 w-full h-full object-cover"
+                              />
 
+                              {/* Botón que ocupa todo el espacio */}
                               <button
-                                className={`w-full relative z-10 ${
+                                className={`w-full h-full relative ${
                                   selectedType === type.name
-                                    ? "bg-[#800020]/80 text-white font-medium"
-                                    : "bg-white/70 hover:bg-white"
-                                } rounded-lg p-2 flex items-center gap-3 transition-colors`}
+                                    ? "bg-[#800020]/70 text-white font-medium"
+                                    : "bg-white/30 hover:bg-white/50"
+                                } p-4 flex items-center justify-center transition-all duration-300`}
                                 onClick={() => setSelectedType(type.name)}
                               >
-                                <span className="text-sm">{type.name}</span>
+                                <span className="text-sm font-medium backdrop-blur-sm px-2 py-1 rounded">
+                                  {type.name}
+                                </span>
                               </button>
                             </div>
                           ))}
