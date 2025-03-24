@@ -43,8 +43,8 @@ class UserSeeder extends Seeder
         }
 
         $testSeller = User::factory()->create([
-            'name' => 'Usuario de Prueba',
-            'email' => 'prueba@gmail.com',
+            'name' => 'Bodega de Proba',
+            'email' => 'bodega@gmail.com',
             'password' => Hash::make('1234'),
             'role' => 'seller',
         ]);

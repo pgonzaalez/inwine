@@ -18,8 +18,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('wineType')->get();
-
+        $products = Product::all();
+        
         $response = $products->map(function ($product) {
             return [
                 'name' => $product->name,
@@ -29,7 +29,7 @@ class ProductController extends Controller
                 'price_demanded' => $product->price_demanded,
                 'quantity' => $product->quantity,
                 'image' => $product->image,
-                'user_id' => $product->user_id,
+                'user_id' => $product->seller->name,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at
             ];
