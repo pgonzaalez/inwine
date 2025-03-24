@@ -1,7 +1,19 @@
 import { Link, useLocation } from "react-router-dom"
-import { BookmarkPlus, ShoppingCart, Bell, LogOut, User, Home, Settings, Wine } from "lucide-react"
+import {
+  BookmarkPlus,
+  ShoppingCart,
+  Bell,
+  LogOut,
+  User,
+  Home,
+  Settings,
+  Wine,
+  Clock,
+  ShoppingBag,
+  FileQuestion,
+} from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
-import {getCookie, deleteCookie} from "@/utils/utils"
+import { getCookie, deleteCookie } from "@/utils/utils"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -31,7 +43,7 @@ export default function Sidebar() {
       })
 
       if (response.ok) {
-        deleteCookie("token");
+        deleteCookie("token")
         window.location.href = "/"
       } else {
         // console.log("Error al hacer logout")
@@ -58,44 +70,152 @@ export default function Sidebar() {
       </div>
     )
 
-  const navItems = [
-    {
-      icon: Home,
-      label: "Inici",
-      path: `/seller/dashboard`,
-    },
-    {
-      icon: BookmarkPlus,
-      label: "Pujar Producte",
-      path: "/create",
-    },
-    {
-      icon: ShoppingCart,
-      label: "Productes",
-      path: `/seller/products`,
-    },
-    {
-      icon: Wine,
-      label: "Gestió de Vins",
-      path: `/seller/wine-management`,
-    },
-    {
-      icon: Bell,
-      label: "Notificacions",
-      path: `/seller/notificacions`,
-    },
-    {
-      icon: User,
-      label: "Perfil",
-      path: `/seller/${user?.id || "usuari"}`,
-      divider: true,
-    },
-    {
-      icon: Settings,
-      label: "Configuració",
-      path: `/seller/settings`,
-    },
-  ]
+  // Determinar los elementos de navegación según el rol del usuario
+  let navItems = []
+  let mobileNavItems = []
+
+  // Comprobar el rol del usuario
+  const userRole = user?.role || "seller" // Por defecto, asumimos rol de vendedor si no hay información
+
+  if (userRole === "restaurant") {
+    // Navegación para restaurantes
+    navItems = [
+      {
+        icon: Home,
+        label: "Inici",
+        path: `/restaurant/dashboard`,
+      },
+      {
+        icon: FileQuestion,
+        label: "Peticions",
+        path: "/restaurant/peticions",
+      },
+      {
+        icon: ShoppingBag,
+        label: "Compres",
+        path: `/restaurant/compres`,
+      },
+      {
+        icon: Clock,
+        label: "En espera",
+        path: `/restaurant/espera`,
+      },
+      {
+        icon: Bell,
+        label: "Notificacions",
+        path: `/restaurant/notificacions`,
+      },
+      {
+        icon: User,
+        label: "Perfil",
+        path: `/restaurant/${user?.id || "usuari"}`,
+        divider: true,
+      },
+      {
+        icon: Settings,
+        label: "Configuració",
+        path: `/restaurant/settings`,
+      },
+    ]
+
+    // Navegación móvil para restaurantes
+    mobileNavItems = [
+      {
+        icon: Home,
+        label: "Inici",
+        path: `/restaurant/dashboard`,
+      },
+      {
+        icon: FileQuestion,
+        label: "Peticions",
+        path: "/restaurant/peticions",
+      },
+      {
+        icon: ShoppingBag,
+        label: "Compres",
+        path: `/restaurant/compres`,
+      },
+      {
+        icon: Bell,
+        label: "Alertes",
+        path: `/restaurant/notificacions`,
+      },
+      {
+        icon: LogOut,
+        label: "Sortir",
+        action: logout,
+      },
+    ]
+  } else {
+    // Navegación para vendedores (seller)
+    navItems = [
+      {
+        icon: Home,
+        label: "Inici",
+        path: `/seller/dashboard`,
+      },
+      {
+        icon: BookmarkPlus,
+        label: "Pujar Producte",
+        path: "/create",
+      },
+      {
+        icon: ShoppingCart,
+        label: "Productes",
+        path: `/seller/products`,
+      },
+      {
+        icon: Wine,
+        label: "Gestió de Vins",
+        path: `/seller/wine-management`,
+      },
+      {
+        icon: Bell,
+        label: "Notificacions",
+        path: `/seller/notificacions`,
+      },
+      {
+        icon: User,
+        label: "Perfil",
+        path: `/seller/${user?.id || "usuari"}`,
+        divider: true,
+      },
+      {
+        icon: Settings,
+        label: "Configuració",
+        path: `/seller/settings`,
+      },
+    ]
+
+    // Navegación móvil para vendedores
+    mobileNavItems = [
+      {
+        icon: Home,
+        label: "Inici",
+        path: `/seller/dashboard`,
+      },
+      {
+        icon: BookmarkPlus,
+        label: "Pujar",
+        path: "/create",
+      },
+      {
+        icon: ShoppingCart,
+        label: "Productes",
+        path: `/seller/products`,
+      },
+      {
+        icon: Bell,
+        label: "Alertes",
+        path: `/seller/notificacions`,
+      },
+      {
+        icon: LogOut,
+        label: "Sortir",
+        action: logout,
+      },
+    ]
+  }
 
   const isActive = (path) => location.pathname === path
 
@@ -168,65 +288,34 @@ export default function Sidebar() {
           borderTop: `1px solid ${primaryColors.light}`,
         }}
       >
-        <Link
-          to={`/seller/dashboard`}
-          className={`flex flex-col items-center p-2 rounded-lg ${
-            location.pathname === `/seller/${user?.id}` ? "text-white" : "text-gray-600"
-          }`}
-          style={
-            location.pathname === `/seller/${user?.id}`
-              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
-              : {}
-          }
-        >
-          <Home size={20} />
-          <span className="text-xs mt-1">Inici</span>
-        </Link>
-
-        <Link
-          to="/create"
-          className={`flex flex-col items-center p-2 rounded-lg ${
-            location.pathname === "/create" ? "text-white" : "text-gray-600"
-          }`}
-          style={
-            location.pathname === "/create"
-              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
-              : {}
-          }
-        >
-          <BookmarkPlus size={20} />
-          <span className="text-xs mt-1">Pujar</span>
-        </Link>
-
-        <Link
-          to={`/seller/products`}
-          className={`flex flex-col items-center p-2 rounded-lg ${
-            location.pathname === `/seller/products` ? "text-white" : "text-gray-600"
-          }`}
-          style={
-            location.pathname === `/seller/products`
-              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
-              : {}
-          }
-        >
-          <ShoppingCart size={20} />
-          <span className="text-xs mt-1">Productes</span>
-        </Link>
-
-        <Link
-          to={`/seller/notificacions`}
-          className={`flex flex-col items-center p-2 rounded-lg ${
-            location.pathname === `/seller/notificacions` ? "text-white" : "text-gray-600"
-          }`}
-          style={
-            location.pathname === `/seller/notificacions`
-              ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
-              : {}
-          }
-        >
-          <Bell size={20} />
-          <span className="text-xs mt-1">Alertes</span>
-        </Link>
+        {mobileNavItems.map((item, index) =>
+          item.action ? (
+            <button
+              key={index}
+              onClick={item.action}
+              className="flex flex-col items-center p-2 rounded-lg text-gray-600"
+            >
+              <item.icon size={20} />
+              <span className="text-xs mt-1">{item.label}</span>
+            </button>
+          ) : (
+            <Link
+              key={index}
+              to={item.path}
+              className={`flex flex-col items-center p-2 rounded-lg ${
+                isActive(item.path) ? "text-white" : "text-gray-600"
+              }`}
+              style={
+                isActive(item.path)
+                  ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
+                  : {}
+              }
+            >
+              <item.icon size={20} />
+              <span className="text-xs mt-1">{item.label}</span>
+            </Link>
+          ),
+        )}
       </nav>
     </>
   )
