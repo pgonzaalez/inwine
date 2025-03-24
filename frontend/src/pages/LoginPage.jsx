@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { User, Lock, CornerDownLeft, AlertCircle, X } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import {setCookie} from "@/utils/utils"
+import { setCookie } from "@/utils/utils"
 // import { useFetchUser } from "@components/auth/FetchUser"
 
 const LoginForm = () => {
@@ -57,14 +57,26 @@ const LoginForm = () => {
 
       setCookie("token", result.token, 7);
 
+
       setFormData({
         email: "",
         password: "",
       })
 
+      //Redireccio segons el rol 
+
+      const role = result.user?.role
+
       setTimeout(() => {
-        // navigate(`/seller/${user.id}/products`)
-        navigate(`/seller/dashboard`)
+        if (role === "seller") {
+          navigate("/seller/dashboard")
+        } else if (role === "restaurant") {
+          navigate("/restaurant/dashboard")
+        } else if (role === "investor") {
+          navigate("/investor/dashboard")
+        } else {
+          navigate("/login")
+        }
       }, 1000)
     } catch (error) {
       setMessage(error.message)
@@ -95,11 +107,10 @@ const LoginForm = () => {
 
         {message && (
           <div
-            className={`mb-6 p-4 rounded-lg relative ${
-              messageType === "error"
+            className={`mb-6 p-4 rounded-lg relative ${messageType === "error"
                 ? "bg-red-50 border border-red-200 text-red-700"
                 : "bg-green-50 border border-green-200 text-green-700"
-            }`}
+              }`}
           >
             <div className="flex items-start">
               {messageType === "error" && <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />}
@@ -121,9 +132,8 @@ const LoginForm = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                messageType === "error" ? "border-red-300" : "border-gray-300"
-              }`}
+              className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${messageType === "error" ? "border-red-300" : "border-gray-300"
+                }`}
               placeholder="Correu electrònic"
               required
             />
@@ -138,9 +148,8 @@ const LoginForm = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                messageType === "error" ? "border-red-300" : "border-gray-300"
-              }`}
+              className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${messageType === "error" ? "border-red-300" : "border-gray-300"
+                }`}
               placeholder="Contrasenya"
               required
             />
