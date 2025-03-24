@@ -30,6 +30,17 @@ export default function App() {
         </video>
       </div>
 
+      <section className=" text-center py-12">
+        <motion.div
+          className="mx-auto px-4 sm:px-6 lg:px-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false }}
+        >
+          <UserCards />
+        </motion.div>
+      </section>
+
       <section className="text-center">
         <motion.div
           className="mx-auto p-8"
@@ -64,16 +75,7 @@ export default function App() {
         </motion.div>
       </section>
 
-      <section className=" text-center py-12">
-        <motion.div
-          className="mx-auto px-4 sm:px-6 lg:px-8"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false }}
-        >
-          <UserCards />
-        </motion.div>
-      </section>
+      
       <Footer />
     </>
   );

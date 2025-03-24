@@ -3,6 +3,7 @@ import "./App.css";
 
 // Pages
 import Main from "@pages/MainPage";
+import ProductPage from "@pages/ProductPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
 import Create from "@pages/Seller/CreateProductPage";
 import WineManagement from "@pages/Seller/WineManagementPage";
@@ -21,6 +22,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/productes" element={<ProductPage />} />
 
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
