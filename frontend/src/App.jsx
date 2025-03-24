@@ -4,6 +4,7 @@ import "./App.css";
 // Pages
 // Pages Landing
 import Main from "@pages/MainPage";
+import ProductPage from "@pages/ProductPage";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
 import ProtectedRoute from "@components/auth/ProtectedRoute";
@@ -26,6 +27,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/productes" element={<ProductPage />} />
 
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>

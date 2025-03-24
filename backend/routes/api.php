@@ -29,8 +29,10 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/restaurants', RestaurantController::class);
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
-    Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
     Route::get('/{userId}/restaurant', [RestaurantController::class, 'indexByRestaurant']);
+    Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
+
+
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
     Route::put('products/{productId}/images/{imageId}/primary', [ProductController::class, 'setPrimaryImage']);
 });
