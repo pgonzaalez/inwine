@@ -41,4 +41,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class)->where('is_primary', true)->first();
     }
+
+    public function requestsRestaurant()
+    {
+        return $this->hasMany(RequestRestaurant::class);
+    }
 }
