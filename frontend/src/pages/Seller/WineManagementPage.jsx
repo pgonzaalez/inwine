@@ -1,7 +1,9 @@
 "use client"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { useState, useEffect } from "react"
-import { Wine, Check, Clock, BarChart3, Filter } from "lucide-react"
+import { Filter } from "lucide-react"
+import { WineCard } from "@components/seller/WineCard"
+import { WineStats } from "@components/seller/WineStats"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -29,89 +31,6 @@ const getWineTypeColor = (type) => {
         16,
       )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)` // Color por defecto
   }
-}
-
-// Componente para mostrar el estado del vino
-const StatusBadge = ({ status }) => {
-  let icon, text, bgColor, textColor
-
-  switch (status) {
-    case "sold":
-      icon = <Check size={14} />
-      text = "Venut"
-      bgColor = "#D1E7DD"
-      textColor = "#0F5132"
-      break
-    case "process":
-      icon = <Clock size={14} />
-      text = "En procés"
-      bgColor = "#FFF3CD"
-      textColor = "#856404"
-      break
-    case "active":
-    default:
-      icon = <Wine size={14} />
-      text = "Actiu"
-      bgColor = `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
-        primaryColors.dark.slice(3, 5),
-        16,
-      )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`
-      textColor = primaryColors.dark
-  }
-
-  return (
-    <div
-      className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-      style={{ backgroundColor: bgColor, color: textColor }}
-    >
-      {icon}
-      <span>{text}</span>
-    </div>
-  )
-}
-
-// Componente para mostrar estadísticas de vinos
-const WineStats = ({ stats }) => {
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <div className="bg-white rounded-xl p-4 shadow-sm">
-        <div className="flex items-center gap-2 mb-2">
-          <BarChart3 size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">Total</p>
-        </div>
-        <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          {stats.total}
-        </p>
-      </div>
-      <div className="bg-white rounded-xl p-4 shadow-sm">
-        <div className="flex items-center gap-2 mb-2">
-          <Wine size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">Actius</p>
-        </div>
-        <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          {stats.active}
-        </p>
-      </div>
-      <div className="bg-white rounded-xl p-4 shadow-sm">
-        <div className="flex items-center gap-2 mb-2">
-          <Clock size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">En procés</p>
-        </div>
-        <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          {stats.process}
-        </p>
-      </div>
-      <div className="bg-white rounded-xl p-4 shadow-sm">
-        <div className="flex items-center gap-2 mb-2">
-          <Check size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">Venuts</p>
-        </div>
-        <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          {stats.sold}
-        </p>
-      </div>
-    </div>
-  )
 }
 
 // Componente para mostrar la distribución de vinos por tipo
@@ -173,70 +92,6 @@ const WineTypeDistribution = ({ wines = [] }) => {
   )
 }
 
-// Modify the WineCard component to be more modern and visually distinctive
-const WineCard = ({ wine, user, baseUrl }) => {
-  return (
-    <div
-      className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transition-all hover:shadow-md hover:translate-y-[-2px]"
-      onClick={() => (window.location.href = `/seller/products/${wine.id}`)}
-    >
-      <div className="relative">
-        <div className="aspect-[4/3] overflow-hidden">
-          <img
-            src={`${baseUrl}${wine.image}`}
-            alt={wine.name}
-            className="w-full h-full object-contain transition-transform hover:scale-105"
-          />
-        </div>
-        <div
-          className="absolute top-0 left-0 w-2 h-full"
-          style={{
-            backgroundColor: getWineTypeColor(wine.wine_type?.toLowerCase()),
-          }}
-        ></div>
-        <div
-          className="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium"
-          style={{
-            backgroundColor: getWineTypeColor(wine.wine_type?.toLowerCase()),
-            color:
-              wine.wine_type?.toLowerCase() === "blanc" || wine.wine_type?.toLowerCase() === "espumós"
-                ? "#333"
-                : "white",
-          }}
-        >
-          {wine.wine_type || "Vi"}
-        </div>
-      </div>
-      <div className="p-4">
-        <h3 className="font-medium text-lg truncate">{wine.name}</h3>
-        <div className="flex justify-between items-center mt-2">
-          <p className="text-sm text-gray-500">
-            {wine.year} · {wine.origin}
-          </p>
-          <StatusBadge status={wine.status || "active"} />
-        </div>
-        <div className="mt-3 flex justify-between items-center">
-          <p className="text-xl font-bold" style={{ color: primaryColors.dark }}>
-            {wine.price_demanded}€
-          </p>
-          <button
-            className="text-xs font-medium px-3 py-1 rounded-full transition-colors"
-            style={{
-              backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
-                primaryColors.dark.slice(3, 5),
-                16,
-              )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
-              color: primaryColors.dark,
-            }}
-          >
-            Detalls
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 function WineManagementComponent() {
   const [wines, setWines] = useState([])
   const [error, setError] = useState(null)
@@ -270,24 +125,6 @@ function WineManagementComponent() {
   // Filtrar vinos según el estado seleccionado
   const filteredWines = activeFilter === "all" ? wines : wines.filter((wine) => wine.status === activeFilter)
 
-  // Agrupar vinos por tipo
-  const winesByType = filteredWines.reduce((acc, wine) => {
-    const type = wine.wine_type || "Altres"
-    if (!acc[type]) {
-      acc[type] = []
-    }
-    acc[type].push(wine)
-    return acc
-  }, {})
-
-  // Estadísticas de vinos
-  const stats = {
-    total: wines.length,
-    active: wines.filter((wine) => wine.status === "active").length,
-    process: wines.filter((wine) => wine.status === "process").length,
-    sold: wines.filter((wine) => wine.status === "sold").length,
-  }
-
   if (error) {
     return (
       <div
@@ -302,8 +139,6 @@ function WineManagementComponent() {
     )
   }
 
-  // Modify the main component's return to use a grid layout instead of grouping by type
-  // Replace the content section in the return statement
   return (
     <div>
       <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
@@ -313,7 +148,7 @@ function WineManagementComponent() {
       </div>
 
       {/* Estadísticas */}
-      <WineStats stats={stats} />
+      <WineStats wines={wines} />
 
       {/* Filtros */}
       <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
@@ -325,13 +160,14 @@ function WineManagementComponent() {
         </div>
         <div className="flex flex-wrap gap-2">
           <button
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeFilter === "all" ? "text-white" : "text-gray-700 hover:bg-gray-100"
-              }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              activeFilter === "all" ? "text-white" : "text-gray-700 hover:bg-gray-100"
+            }`}
             style={
               activeFilter === "all"
                 ? {
-                  background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
-                }
+                    background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                  }
                 : {}
             }
             onClick={() => setActiveFilter("all")}
@@ -339,13 +175,14 @@ function WineManagementComponent() {
             Tots
           </button>
           <button
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeFilter === "active" ? "text-white" : "text-gray-700 hover:bg-gray-100"
-              }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              activeFilter === "active" ? "text-white" : "text-gray-700 hover:bg-gray-100"
+            }`}
             style={
               activeFilter === "active"
                 ? {
-                  background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
-                }
+                    background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                  }
                 : {}
             }
             onClick={() => setActiveFilter("active")}
@@ -353,27 +190,29 @@ function WineManagementComponent() {
             Actius
           </button>
           <button
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeFilter === "process" ? "text-white" : "text-gray-700 hover:bg-gray-100"
-              }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              activeFilter === "waiting" ? "text-white" : "text-gray-700 hover:bg-gray-100"
+            }`}
             style={
-              activeFilter === "process"
+              activeFilter === "waiting"
                 ? {
-                  background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
-                }
+                    background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                  }
                 : {}
             }
-            onClick={() => setActiveFilter("process")}
+            onClick={() => setActiveFilter("waiting")}
           >
-            En procés
+            En espera
           </button>
           <button
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeFilter === "sold" ? "text-white" : "text-gray-700 hover:bg-gray-100"
-              }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              activeFilter === "sold" ? "text-white" : "text-gray-700 hover:bg-gray-100"
+            }`}
             style={
               activeFilter === "sold"
                 ? {
-                  background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
-                }
+                    background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                  }
                 : {}
             }
             onClick={() => setActiveFilter("sold")}

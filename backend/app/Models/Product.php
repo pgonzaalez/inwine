@@ -19,6 +19,7 @@ class Product extends Model
         "price_demanded",
         "quantity",
         "image",
+        'status',
         "user_id",
     ];
 

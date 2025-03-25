@@ -29,6 +29,7 @@ class ProductController extends Controller
                 'price_demanded' => $product->price_demanded,
                 'quantity' => $product->quantity,
                 'image' => $product->image,
+                'status' => $product->status,
                 'user_id' => $product->seller->name,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at
@@ -54,6 +55,7 @@ class ProductController extends Controller
                 'price_demanded' => $product->price_demanded,
                 'quantity' => $product->quantity,
                 'image' => $product->image,
+                'status' => $product->status,
                 'user_id' => $product->user_id,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at
