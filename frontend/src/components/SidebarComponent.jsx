@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom"
 import {
   BookmarkPlus,
@@ -11,9 +12,11 @@ import {
   Clock,
   ShoppingBag,
   FileQuestion,
+  AlertTriangle
 } from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { getCookie, deleteCookie } from "@/utils/utils"
+import Modal from "@components/Modal";
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -26,7 +29,9 @@ export default function Sidebar() {
   const apiUrl = import.meta.env.VITE_API_URL
   const { user, loading, error } = useFetchUser()
 
-  const logout = async () => {
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false)
+  
+  const handleLogout = async () => {
     const token = getCookie("token")
     if (!token) {
       // console.log("No hay token de autenticación")
@@ -43,7 +48,7 @@ export default function Sidebar() {
       })
 
       if (response.ok) {
-        deleteCookie("token")
+        deleteCookie("token");
         window.location.href = "/"
       } else {
         // console.log("Error al hacer logout")
@@ -51,7 +56,7 @@ export default function Sidebar() {
     } catch (error) {
       // console.error("Error en la solicitud de logout:", error)
     }
-  }
+  };
 
   if (loading)
     return (
@@ -140,11 +145,6 @@ export default function Sidebar() {
         label: "Alertes",
         path: `/restaurant/notificacions`,
       },
-      {
-        icon: LogOut,
-        label: "Sortir",
-        action: logout,
-      },
     ]
   } else {
     // Navegación para vendedores (seller)
@@ -209,11 +209,6 @@ export default function Sidebar() {
         label: "Alertes",
         path: `/seller/notificacions`,
       },
-      {
-        icon: LogOut,
-        label: "Sortir",
-        action: logout,
-      },
     ]
   }
 
@@ -252,9 +247,8 @@ export default function Sidebar() {
               {item.divider && <div className="my-4 border-t mx-2" style={{ borderColor: primaryColors.light }}></div>}
               <Link
                 to={item.path}
-                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  isActive(item.path) ? "font-medium text-white" : "text-gray-700 hover:bg-gray-50"
-                }`}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive(item.path) ? "font-medium text-white" : "text-gray-700 hover:bg-gray-50"
+                  }`}
                 style={
                   isActive(item.path)
                     ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
@@ -271,7 +265,7 @@ export default function Sidebar() {
         {/* Logout button */}
         <div className="p-4 border-t" style={{ borderColor: primaryColors.light }}>
           <button
-            onClick={logout}
+            onClick={() => setIsLogoutOpen(true)}
             className="flex w-full items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
           >
             <LogOut size={18} />
@@ -302,9 +296,8 @@ export default function Sidebar() {
             <Link
               key={index}
               to={item.path}
-              className={`flex flex-col items-center p-2 rounded-lg ${
-                isActive(item.path) ? "text-white" : "text-gray-600"
-              }`}
+              className={`flex flex-col items-center p-2 rounded-lg ${isActive(item.path) ? "text-white" : "text-gray-600"
+                }`}
               style={
                 isActive(item.path)
                   ? { background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})` }
@@ -317,6 +310,40 @@ export default function Sidebar() {
           ),
         )}
       </nav>
+
+      {/* Modal de Cierre de Sesión */}
+      <Modal
+        isOpen={isLogoutOpen}
+        onClose={() => setIsLogoutOpen(false)}
+        title="Tancar sessió?"
+        description="Estàs segur que vols tancar la teva sessió actual?"
+        icon={<LogOut className="h-8 w-8" />}
+        variant="danger"
+        size="md"
+        footer={
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setIsLogoutOpen(false)}
+              className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancel·lar
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2.5 text-sm font-medium text-white hover:from-red-600 hover:to-red-700"
+            >
+              Tancar sessió
+            </button>
+          </div>
+        }
+      >
+        <div className="flex items-start rounded-lg bg-amber-50 p-4">
+          <AlertTriangle className="mr-3 h-5 w-5 text-amber-500" />
+          <p className="text-sm text-amber-700">
+            Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al teu compte.
+          </p>
+        </div>
+      </Modal>
     </>
   )
 }
