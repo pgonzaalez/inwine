@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { BarChart3, Wine, ShoppingBag, TrendingUp, Check } from "lucide-react"
-import Header from "@components/HeaderComponent"
 import { useFetchUser } from "@components/auth/FetchUser"
 
 // Definimos los colores primarios
@@ -203,7 +202,7 @@ const SellerDashboardContent = () => {
   return (
     <>
       {/* Cabecera del dashboard */}
-      <div className="mb-6">
+      <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
           Benvingut, {user?.name || "Venedor"}
         </h1>
@@ -255,30 +254,27 @@ export default function SellerDashboardPage() {
   const { loading } = useFetchUser()
 
   return (
-    <>
-      <Header />
-      <div className="flex flex-col mt-[60px] min-h-[calc(100vh-60px)]">
-        <div className="flex flex-1">
-          <div className="flex-1 md:ml-64 p-4 md:p-6 overflow-y-auto pb-16" style={{ backgroundColor: "#F9F9F9" }}>
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div
-                  className="w-10 h-10 rounded-full animate-spin"
-                  style={{
-                    borderWidth: "3px",
-                    borderStyle: "solid",
-                    borderColor: primaryColors.light,
-                    borderTopColor: primaryColors.dark,
-                  }}
-                ></div>
-              </div>
-            ) : (
-              <SellerDashboardContent />
-            )}
-          </div>
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-1">
+        <div className="flex-1 md:ml-64 p-4 md:p-6 overflow-y-auto pb-16" style={{ backgroundColor: "#F9F9F9" }}>
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div
+                className="w-10 h-10 rounded-full animate-spin"
+                style={{
+                  borderWidth: "3px",
+                  borderStyle: "solid",
+                  borderColor: primaryColors.light,
+                  borderTopColor: primaryColors.dark,
+                }}
+              ></div>
+            </div>
+          ) : (
+            <SellerDashboardContent />
+          )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
