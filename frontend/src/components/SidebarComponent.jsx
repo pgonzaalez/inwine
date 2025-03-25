@@ -75,7 +75,7 @@ export default function Sidebar() {
   let mobileNavItems = []
 
   // Comprobar el rol del usuario
-  const userRole = user?.role || "seller" // Por defecto, asumimos rol de vendedor si no hay información
+  const userRole = user?.role || "seller" 
 
   if (userRole === "restaurant") {
     // Navegación para restaurantes
