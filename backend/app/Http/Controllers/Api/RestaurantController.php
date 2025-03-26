@@ -34,7 +34,7 @@ class RestaurantController extends Controller
                         'year' => $request->product->year,
                         'wine_type' => $request->product->wineType->name ?? null,
                         'price_demanded' => $request->product->price_demanded,
-                        'quantity' => $request->product->quantity,
+                        'quantity' => $request->quantity,
                         'image' => $request->product->image,
                     ],
                 ];

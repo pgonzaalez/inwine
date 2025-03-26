@@ -6,8 +6,9 @@ use App\Http\Controllers\Api\InvestorController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RequestController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RestaurantController;
+use App\Http\Controllers\Api\LogisticController;
+use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -35,4 +36,11 @@ Route::prefix('v1')->group(function () {
 
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
     Route::put('products/{productId}/images/{imageId}/primary', [ProductController::class, 'setPrimaryImage']);
+
+    Route::prefix('logistic')->group(function () {
+        Route::post('/{productId}/approve', [LogisticController::class, 'approve']);
+        Route::post('/{productId}/send', [LogisticController::class, 'send']);
+        Route::post('/{productId}/deliver', [LogisticController::class, 'deliver']);
+        Route::post('/{productId}/sell', [LogisticController::class, 'sell']);
+    });
 });

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->float('price_demanded');
             $table->integer('quantity');
             $table->string('image')->nullable();
-            $table->enum('status', ['active','waiting','sold'])->default('active');
+            $table->enum('status', ['in_stock','requested','in_transit','in_local', 'sold'])->default('in_stock');
             $table->unsignedBigInteger('user_id');
 
             $table->foreign('wine_type_id')->references('id')->on('wine_types');

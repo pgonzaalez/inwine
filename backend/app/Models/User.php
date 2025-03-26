@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(RequestRestaurant::class);
     }
+
+    public function requests()
+    {
+        return $this->hasMany(Request::class);
+    }
 }
