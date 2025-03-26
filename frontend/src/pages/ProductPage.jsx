@@ -1,6 +1,8 @@
 
 import { useEffect, useState } from "react"
 import { Filter, X } from "lucide-react"
+import Header from "@/components/HeaderComponent"
+import Footer from "@/components/FooterComponent"
 import HeroSection from "@/components/landing/products/HeroSection"
 import FilterSidebar from "@/components/landing/products/FilterSection"
 import ProductGrid from "@/components/landing/products/ProductGrid"
@@ -306,6 +308,7 @@ export default function PopularProducts() {
 
   return (
     <>
+    <Header />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <HeroSection activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
@@ -380,6 +383,7 @@ export default function PopularProducts() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   )
 }
