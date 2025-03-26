@@ -25,16 +25,18 @@ class RestaurantController extends Controller
             ->get()
             ->map(function ($request) {
                 return [
-                    'name' => $request->product->name,
-                    'origin' => $request->product->origin,
-                    'year' => $request->product->year,
-                    'wine_type' => $request->product->wineType->name ?? null,
-                    'price_demanded' => $request->product->price_demanded,
-                    'quantity' => $request->product->quantity,
-                    'image' => $request->product->image,
                     'price_restaurant' => $request->price_restaurant,
                     'status' => $request->status,
                     'created_at' => $request->created_at,
+                    'product' => [
+                        'name' => $request->product->name,
+                        'origin' => $request->product->origin,
+                        'year' => $request->product->year,
+                        'wine_type' => $request->product->wineType->name ?? null,
+                        'price_demanded' => $request->product->price_demanded,
+                        'quantity' => $request->quantity,
+                        'image' => $request->product->image,
+                    ],
                 ];
             });
 

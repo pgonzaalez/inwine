@@ -13,6 +13,7 @@ class RequestRestaurant extends Model
     protected $fillable = [
         'user_id',
         'product_id',
+        'quantity',
         'price_restaurant',
         'status'
     ];

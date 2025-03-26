@@ -26,6 +26,7 @@ class RequestController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
             'price_restaurant' => 'required|numeric|min:0',
         ]);
 
