@@ -8,6 +8,7 @@ use App\Models\RequestRestaurant;
 use App\Models\Request;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class LogisticController extends Controller
 {
@@ -82,6 +83,15 @@ class LogisticController extends Controller
         try {
             // 1) Obtenemos el producto
             $product = Product::findOrFail($productId);
+
+            // Verificar que el usuario es el propietario (si es necesario)
+            if (Auth::check() && $product->user_id !== Auth::id()) {
+                return response()->json(['error' => 'No tienes permiso para enviar este producto.'], 403);
+            }
+
+            if ($product->status !== 'requested') {
+                return response()->json(['error' => 'El producto no está en estado requested.'], 422);
+            }
 
             if ($product->status !== 'requested') {
                 return response()->json(['error' => 'El producto no está en estado requested.'], 422);
@@ -167,7 +177,7 @@ class LogisticController extends Controller
             // Actualizamos estados
             $product->update(['status' => 'sold']);
             $restaurantRequest->update(['status' => 'in_my_local']);
-            $investorRequest->update(['status' => 'completed']);
+            $investorRequest->update(['status' => 'waiting']);
 
             DB::commit();
 
@@ -189,7 +199,7 @@ class LogisticController extends Controller
      * 4) Marcar el producto como vendido (cliente final compra el vino en el restaurante)
      *    - Pasa de:
      *        RequestRestaurant: in_my_local --> sold
-     *        Request: completed     --> completed (sin cambio)
+     *        Request: waiting     --> completed (sin cambio)
      */
     public function sell(HttpRequest $request, $productId)
     {
@@ -217,7 +227,7 @@ class LogisticController extends Controller
 
             // En la tabla requests, "completed" no cambia, pero si deseas
             // dejarlo explícito, lo puedes volver a asignar:
-            if ($investorRequest && $investorRequest->status === 'completed') {
+            if ($investorRequest && $investorRequest->status === 'waiting') {
                 $investorRequest->update(['status' => 'completed']);
             }
 
