@@ -8,16 +8,17 @@ const primaryColors = {
 }
 
 export const WineStats = ({ wines = [] }) => {
-  // Calcular estadísticas
+  // Calcular estadísticas actualizadas según los nuevos estados
   const stats = {
     total: wines.length,
-    active: wines.filter((wine) => wine.status === "active").length,
-    waiting: wines.filter((wine) => wine.status === "waiting").length,
+    in_stock: wines.filter((wine) => wine.status === "in_stock").length,
+    requested: wines.filter((wine) => wine.status === "requested").length,
+    in_transit: wines.filter((wine) => wine.status === "in_transit").length,
     sold: wines.filter((wine) => wine.status === "sold").length,
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <BarChart3 size={18} style={{ color: primaryColors.dark }} />
@@ -30,19 +31,28 @@ export const WineStats = ({ wines = [] }) => {
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <Wine size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">Actius</p>
+          <p className="text-sm text-gray-600">En Stock</p>
         </div>
         <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          {stats.active}
+          {stats.in_stock}
         </p>
       </div>
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <Clock size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">En espera</p>
+          <p className="text-sm text-gray-600">Sol·licitats</p>
         </div>
         <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          {stats.waiting}
+          {stats.requested}
+        </p>
+      </div>
+      <div className="bg-white rounded-xl p-4 shadow-sm">
+        <div className="flex items-center gap-2 mb-2">
+          <Clock size={18} style={{ color: primaryColors.dark }} />
+          <p className="text-sm text-gray-600">En Trànsit</p>
+        </div>
+        <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
+          {stats.in_transit}
         </p>
       </div>
       <div className="bg-white rounded-xl p-4 shadow-sm">
