@@ -220,7 +220,7 @@ export default function CreateProduct() {
         navigate(`/seller/dashboard`)
       }
     } catch (error) {
-      console.error("Error:", error)
+      // console.error("Error:", error)
     }
   }
 

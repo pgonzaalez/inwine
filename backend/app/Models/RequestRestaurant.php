@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class RequestRestaurant extends Model
 {
@@ -10,20 +11,20 @@ class RequestRestaurant extends Model
     use HasFactory;
 
     protected $fillable = [
-        'restaurant_id',
+        'user_id',
         'product_id',
+        'quantity',
         'price_restaurant',
         'status'
     ];
 
-    public function restaurant()
+    public function user()
     {
-        return $this->belongsTo(Restaurant::class);
+        return $this->belongsTo(User::class)->where('role', 'restaurant');
     }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
-
 }

@@ -15,6 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { setCookie } from "@/utils/utils"
 
 const AddRestaurantForm = () => {
   const navigate = useNavigate();
@@ -85,6 +86,31 @@ const AddRestaurantForm = () => {
     setTouched({ ...touched, [name]: true });
   };
 
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await fetch(`${apiUrl}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Error al iniciar sessió");
+      }
+
+      setCookie("token", result.token, 7);
+
+    } catch (error) {
+      setMessage(error.message);
+      setMessageType("error");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -135,6 +161,10 @@ const AddRestaurantForm = () => {
       } else {
         setMessage("¡Restaurante registrado exitosamente! Redirigiendo...");
         setMessageType("success");
+
+        //Realizar login una vez registrado
+        await handleLogin(formData.email, formData.password);
+
         setFormData({
           NIF: "",
           name: "",
@@ -150,7 +180,7 @@ const AddRestaurantForm = () => {
         setFormErrors({});
 
         setTimeout(() => {
-          navigate("/");
+          navigate("/restaurant/dashboard");
         }, 2000);
       }
     } catch (error) {
@@ -203,11 +233,10 @@ const AddRestaurantForm = () => {
 
           {message && (
             <div
-              className={`mb-6 p-4 rounded-lg relative ${
-                messageType === "error"
-                  ? "bg-red-50 border border-red-200 text-red-700"
-                  : "bg-green-50 border border-green-200 text-green-700"
-              }`}
+              className={`mb-6 p-4 rounded-lg relative ${messageType === "error"
+                ? "bg-red-50 border border-red-200 text-red-700"
+                : "bg-green-50 border border-green-200 text-green-700"
+                }`}
             >
               <div className="flex items-start">
                 {messageType === "error" ? (
@@ -232,9 +261,8 @@ const AddRestaurantForm = () => {
                   <div className="relative">
                     <div className="flex items-center">
                       <User
-                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                          hasError("name") ? "text-red-500" : "text-gray-400"
-                        }`}
+                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("name") ? "text-red-500" : "text-gray-400"
+                          }`}
                       />
                       <input
                         type="text"
@@ -242,18 +270,16 @@ const AddRestaurantForm = () => {
                         value={formData.name}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                          hasError("name") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
-                        }`}
+                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("name") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+                          }`}
                         placeholder=" "
                         id="name"
                         required
                       />
                       <label
                         htmlFor="name"
-                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                          hasError("name") ? "text-red-500" : "text-gray-500"
-                        }`}
+                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("name") ? "text-red-500" : "text-gray-500"
+                          }`}
                       >
                         Nom usuari
                       </label>
@@ -267,9 +293,8 @@ const AddRestaurantForm = () => {
                   <div className="relative">
                     <div className="flex items-center">
                       <IdCard
-                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                          hasError("NIF") ? "text-red-500" : "text-gray-400"
-                        }`}
+                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("NIF") ? "text-red-500" : "text-gray-400"
+                          }`}
                       />
                       <input
                         type="text"
@@ -277,18 +302,16 @@ const AddRestaurantForm = () => {
                         value={formData.NIF}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                          hasError("NIF") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
-                        }`}
+                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("NIF") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+                          }`}
                         placeholder=" "
                         id="NIF"
                         required
                       />
                       <label
                         htmlFor="NIF"
-                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                          hasError("NIF") ? "text-red-500" : "text-gray-500"
-                        }`}
+                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("NIF") ? "text-red-500" : "text-gray-500"
+                          }`}
                       >
                         NIF
                       </label>
@@ -302,9 +325,8 @@ const AddRestaurantForm = () => {
                   <div className="relative">
                     <div className="flex items-center">
                       <Home
-                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                          hasError("address") ? "text-red-500" : "text-gray-400"
-                        }`}
+                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("address") ? "text-red-500" : "text-gray-400"
+                          }`}
                       />
                       <input
                         type="text"
@@ -312,19 +334,17 @@ const AddRestaurantForm = () => {
                         value={formData.address}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                          hasError("address")
-                            ? "border-red-500 focus:ring-red-500"
-                            : "border-gray-300 focus:ring-blue-500"
-                        }`}
+                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("address")
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-blue-500"
+                          }`}
                         placeholder=" "
                         id="address"
                       />
                       <label
                         htmlFor="address"
-                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                          hasError("address") ? "text-red-500" : "text-gray-500"
-                        }`}
+                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("address") ? "text-red-500" : "text-gray-500"
+                          }`}
                       >
                         Adreça
                       </label>
@@ -340,9 +360,8 @@ const AddRestaurantForm = () => {
                   <div className="relative">
                     <div className="flex items-center">
                       <Phone
-                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                          hasError("phone") ? "text-red-500" : "text-gray-400"
-                        }`}
+                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("phone") ? "text-red-500" : "text-gray-400"
+                          }`}
                       />
                       <input
                         type="text"
@@ -350,19 +369,17 @@ const AddRestaurantForm = () => {
                         value={formData.phone}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                          hasError("phone")
-                            ? "border-red-500 focus:ring-red-500"
-                            : "border-gray-300 focus:ring-blue-500"
-                        }`}
+                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("phone")
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-blue-500"
+                          }`}
                         placeholder=" "
                         id="phone"
                       />
                       <label
                         htmlFor="phone"
-                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                          hasError("phone") ? "text-red-500" : "text-gray-500"
-                        }`}
+                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("phone") ? "text-red-500" : "text-gray-500"
+                          }`}
                       >
                         Telèfon contacte
                       </label>
@@ -383,9 +400,8 @@ const AddRestaurantForm = () => {
                   <div className="relative">
                     <div className="flex items-center">
                       <Mail
-                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                          hasError("email") ? "text-red-500" : "text-gray-400"
-                        }`}
+                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("email") ? "text-red-500" : "text-gray-400"
+                          }`}
                       />
                       <input
                         type="email"
@@ -393,20 +409,18 @@ const AddRestaurantForm = () => {
                         value={formData.email}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                          hasError("email")
-                            ? "border-red-500 focus:ring-red-500"
-                            : "border-gray-300 focus:ring-blue-500"
-                        }`}
+                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("email")
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-blue-500"
+                          }`}
                         placeholder=" "
                         id="email"
                         required
                       />
                       <label
                         htmlFor="email"
-                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                          hasError("email") ? "text-red-500" : "text-gray-500"
-                        }`}
+                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("email") ? "text-red-500" : "text-gray-500"
+                          }`}
                       >
                         Email
                       </label>
@@ -422,9 +436,8 @@ const AddRestaurantForm = () => {
                   <div className="relative">
                     <div className="flex items-center">
                       <Lock
-                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                          hasError("password") ? "text-red-500" : "text-gray-400"
-                        }`}
+                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("password") ? "text-red-500" : "text-gray-400"
+                          }`}
                       />
                       <input
                         type="password"
@@ -432,20 +445,18 @@ const AddRestaurantForm = () => {
                         value={formData.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                          hasError("password")
-                            ? "border-red-500 focus:ring-red-500"
-                            : "border-gray-300 focus:ring-blue-500"
-                        }`}
+                        className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("password")
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-blue-500"
+                          }`}
                         placeholder=" "
                         id="password"
                         required
                       />
                       <label
                         htmlFor="password"
-                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                          hasError("password") ? "text-red-500" : "text-gray-500"
-                        }`}
+                        className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("password") ? "text-red-500" : "text-gray-500"
+                          }`}
                       >
                         Contrasenya
                       </label>
@@ -467,9 +478,8 @@ const AddRestaurantForm = () => {
                 <div className="relative">
                   <div className="flex items-center">
                     <BookUser
-                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                        hasError("name_contact") ? "text-red-500" : "text-gray-400"
-                      }`}
+                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("name_contact") ? "text-red-500" : "text-gray-400"
+                        }`}
                     />
                     <input
                       type="text"
@@ -477,19 +487,17 @@ const AddRestaurantForm = () => {
                       value={formData.name_contact}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                        hasError("name_contact")
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
+                      className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("name_contact")
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-500"
+                        }`}
                       placeholder=" "
                       id="name_contact"
                     />
                     <label
                       htmlFor="name_contact"
-                      className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                        hasError("name_contact") ? "text-red-500" : "text-gray-500"
-                      }`}
+                      className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("name_contact") ? "text-red-500" : "text-gray-500"
+                        }`}
                     >
                       Nom de contacte
                     </label>
@@ -505,9 +513,8 @@ const AddRestaurantForm = () => {
                 <div className="relative">
                   <div className="flex items-center">
                     <Landmark
-                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                        hasError("credit_card") ? "text-red-500" : "text-gray-400"
-                      }`}
+                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("credit_card") ? "text-red-500" : "text-gray-400"
+                        }`}
                     />
                     <input
                       type="text"
@@ -515,19 +522,17 @@ const AddRestaurantForm = () => {
                       value={formData.credit_card}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
-                        hasError("credit_card")
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
+                      className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("credit_card")
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-500"
+                        }`}
                       placeholder=" "
                       id="credit_card"
                     />
                     <label
                       htmlFor="credit_card"
-                      className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-                        hasError("credit_card") ? "text-red-500" : "text-gray-500"
-                      }`}
+                      className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("credit_card") ? "text-red-500" : "text-gray-500"
+                        }`}
                     >
                       Tarjeta de crédito
                     </label>
