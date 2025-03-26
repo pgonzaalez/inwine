@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity');
             $table->integer('price_restaurant');
-            $table->enum('status', ['pending', 'accepted', 'in_transit','in_my_local'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'in_transit','in_my_local','sold'])->default('pending');
             $table->timestamps();
         });
     }

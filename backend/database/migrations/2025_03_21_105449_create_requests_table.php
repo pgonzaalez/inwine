@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('request_restaurant_id')->constrained()->cascadeOnDelete();
             
-            $table->enum('status', ['paid', 'shipped', 'completed'])->default('paid');
+            $table->enum('status', ['paid', 'shipped', 'waiting','completed'])->default('paid');
             
             $table->timestamps();
         });
