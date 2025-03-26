@@ -2,7 +2,6 @@ import { Heart, Store } from "lucide-react"
 
 export default function ProductCard({ producto, esFavorito, onToggleFavorito }) {
   const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000"
-
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-md group hover:shadow-lg transition-all duration-300">
       <div className="relative h-48 sm:h-56">
