@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Seller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Models\UserRole;
 
 class AuthController extends Controller
 {
@@ -36,6 +37,10 @@ class AuthController extends Controller
             ]);
         }
 
+        // Obtener el rol del usuario desde la tabla user_roles
+        $userRole = UserRole::where('user_id', $user->id)->first();
+        $role = $userRole ? $userRole->role : null;
+
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
@@ -44,7 +49,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->role,
+                'role' => $role,
             ],
         ]);
     }
@@ -96,19 +101,24 @@ class AuthController extends Controller
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'password' => Hash::make($validatedData['password']),
-                'address' => $validatedData['address'],
-                'phone_contact' => $validatedData['phone'],
-                'role' => 'seller',
                 'email_verified_at' => now(),
             ]);
 
             Log::info('Usuario creado correctamente', ['user_id' => $user->id]);
 
-            // Crear inversor
+            // Asignar rol de seller
+            UserRole::create([
+                'user_id' => $user->id,
+                'role' => 'seller'
+            ]);
+
+            // Crear seller con todos los campos requeridos
             $seller = Seller::create([
                 'user_id' => $user->id,
+                'address' => $validatedData['address'],
+                'phone_contact' => $validatedData['phone'],
                 'name_contact' => $validatedData['name_contact'],
-                'bank_account' => $validatedData['bank_account'],
+                'bank_account' => $validatedData['bank_account'] ?? null,
                 'balance' => $validatedData['balance'] ?? 0.00,
             ]);
 
@@ -168,19 +178,24 @@ class AuthController extends Controller
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'password' => Hash::make($validatedData['password']),
-                'address' => $validatedData['address'],
-                'phone_contact' => $validatedData['phone'],
-                'role' => 'restaurant',
                 'email_verified_at' => now(),
             ]);
 
             Log::info('Usuario creado correctamente', ['user_id' => $user->id]);
 
-            // Crear restaurante
+            // Asignar rol de restaurant
+            UserRole::create([
+                'user_id' => $user->id,
+                'role' => 'restaurant'
+            ]);
+
+            // Crear restaurante con todos los campos requeridos
             $restaurant = Restaurant::create([
                 'user_id' => $user->id,
+                'address' => $validatedData['address'],
+                'phone_contact' => $validatedData['phone'],
                 'name_contact' => $validatedData['name_contact'],
-                'credit_card' => $validatedData['credit_card'],
+                'credit_card' => $validatedData['credit_card'] ?? null,
                 'balance' => $validatedData['balance'] ?? 0.00,
             ]);
 
