@@ -3,20 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Seller extends Model
+class UserRole extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'address',
-        'phone_contact',
-        'name_contact',
-        'bank_account',
-        'balance',
+        'role',
     ];
 
     public function user()

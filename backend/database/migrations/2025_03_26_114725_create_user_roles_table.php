@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sellers', function (Blueprint $table) {
+        Schema::create('user_roles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('address');
-            $table->integer('phone_contact');
-            $table->string('name_contact');
-            $table->string('bank_account')->nullable();
-            $table->decimal('balance', 10, 2)->nullable();
-            $table->rememberToken();
+            $table->enum('role', ['seller', 'investor', 'restaurant']);
             $table->timestamps();
         });
     }
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sellers');
+        Schema::dropIfExists('user_roles');
     }
 };

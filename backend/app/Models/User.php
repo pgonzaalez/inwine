@@ -23,9 +23,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'address',
-        'phone_contact',
-        'role',
 
     ];
 
@@ -71,5 +68,10 @@ class User extends Authenticatable
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function roles()
+    {
+        return $this->hasMany(UserRole::class);
     }
 }

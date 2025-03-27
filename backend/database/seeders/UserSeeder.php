@@ -8,6 +8,7 @@ use App\Models\Restaurant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\UserRole;
 use App\Models\Product;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -42,11 +43,17 @@ class UserSeeder extends Seeder
             }
         }
 
+        // Crear usuario específico de prueba (Seller)
         $testSeller = User::factory()->create([
             'name' => 'Bodega de Proba',
             'email' => 'bodega@gmail.com',
             'password' => Hash::make('1234'),
-            'role' => 'seller',
+        ]);
+
+        // Asignar rol de seller
+        UserRole::create([
+            'user_id' => $testSeller->id,
+            'role' => 'seller'
         ]);
 
         // Crear usuario específico de prueba (Restaurant)
@@ -54,19 +61,29 @@ class UserSeeder extends Seeder
             'name' => 'Restaurante de Prueba',
             'email' => 'restaurant@gmail.com', // Corregido el punto
             'password' => Hash::make('1234'),
-            'role' => 'restaurant',
+        ]);
+
+        // Asignar rol de restaurant
+        UserRole::create([
+            'user_id' => $testRestaurant->id,
+            'role' => 'restaurant'
         ]);
 
         $testInvestor = User::factory()->create([
             'name' => 'Inversor de Prueba',
             'email' => 'inversor@gmai.com',
             'password' => Hash::make('1234'),
-            'role' => 'investor',
         ]);
 
-        function associateUserRole(User $user)
+        // Asignar rol de investor
+        UserRole::create([
+            'user_id' => $testInvestor->id,
+            'role' => 'investor'
+        ]);
+
+        function createProfiles(User $user, string $role): void
         {
-            switch ($user->role) {
+            switch ($role) {
                 case 'seller':
                     Seller::factory()->create(['user_id' => $user->id]);
                     break;
@@ -79,9 +96,10 @@ class UserSeeder extends Seeder
             }
         }
 
-        associateUserRole($testSeller);
-        associateUserRole($testRestaurant);
-        associateUserRole($testInvestor);
+        // Crear perfiles usando factories
+        createProfiles($testSeller, 'seller');
+        createProfiles($testRestaurant, 'restaurant');
+        createProfiles($testInvestor, 'investor');
 
         // Crear productos de prueba
         $products = [
