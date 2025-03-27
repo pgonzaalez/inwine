@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             WineTypeSeeder::class,
             UserSeeder::class,
+            RequestSeeder::class,
         ]);
     }
 }

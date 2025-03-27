@@ -70,6 +70,16 @@ class User extends Authenticatable
         return $this->hasMany(Product::class);
     }
 
+    public function requestRestaurant()
+    {
+        return $this->hasOne(RequestRestaurant::class);
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(Request::class);
+    }
+
     public function roles()
     {
         return $this->hasMany(UserRole::class);
