@@ -1,76 +1,65 @@
-import { Heart, MapPin, Clock, Package, Wine, TrendingDown } from "lucide-react"
+import { Heart, MapPin, Clock, Package, Wine, TrendingUp, TrendingDown } from "lucide-react"
 
 export default function RestaurantCard({ restaurante, esFavorito, onToggleFavorito }) {
   return (
-    <div className="bg-gradient-to-br from-white to-gray-50 overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-md h-full flex flex-col">
-      <div className="relative">
+    <div className="bg-white rounded-xl overflow-hidden shadow-md group hover:shadow-lg transition-all duration-300">
+      <div className="relative h-48 sm:h-56">
         <img
           src={restaurante.imagen || "/placeholder.svg"}
           alt={restaurante.nombre}
-          className="w-full h-60 object-cover"
+          className="w-full h-full object-cover"
         />
         <button
-          className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow flex items-center justify-center hover:bg-white transition-colors"
+          className="absolute top-4 right-4 w-9 h-9 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
           onClick={(e) => {
             e.preventDefault()
             onToggleFavorito(restaurante.id)
           }}
         >
-          <Heart
-            size={20}
-            className={`transition-transform duration-300 ${esFavorito ? "fill-[#9A3E50] text-[#9A3E50] scale-110" : "text-gray-600"}`}
-          />
+          <Heart size={20} className={`${esFavorito ? "fill-[#9A3E50] text-[#9A3E50]" : "text-gray-600"}`} />
         </button>
-
-        {/* Price Tag */}
-        <div className="absolute -bottom-5 right-4 flex gap-2">
-          <div className="bg-[#9A3E50] text-white px-4 py-2 rounded-full shadow-md flex items-center">
-            <span className="text-xs mr-1 uppercase tracking-wide">Venda</span>
-            <span className="font-bold text-lg">{restaurante.solicitud.precioVenta}€</span>
-          </div>
-        </div>
       </div>
+      <div className="p-6">
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">{restaurante.nombre}</h3>
+        <p className="text-gray-600 mb-4">{restaurante.descripcion}</p>
 
-      <div className="p-6 pt-8 flex-grow flex flex-col">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-xl font-bold text-gray-800 line-clamp-1">{restaurante.nombre}</h3>
-          <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm flex items-center flex-shrink-0 ml-2">
-            <span className="font-medium">{restaurante.solicitud.precioCompra}€</span>
-            <TrendingDown size={14} className="ml-1 text-[#9A3E50]" />
-          </div>
-        </div>
+        {/* Detalles de la solicitud */}
+        <div className="bg-gray-50 rounded-lg p-4 mb-4">
+          <h4 className="font-medium text-[#9A3E50] mb-2">Sol·licitud de producte</h4>
+          <p className="text-gray-700 font-medium mb-1">{restaurante.solicitud.nombre}</p>
+          <p className="text-gray-600 text-sm mb-3">{restaurante.solicitud.descripcion}</p>
 
-        <div className="flex items-center text-sm text-gray-500 mb-4">
-          <MapPin size={16} className="text-[#9A3E50] mr-1 flex-shrink-0" />
-          <span className="line-clamp-1">{restaurante.zona}</span>
-          <span className="mx-2 flex-shrink-0">•</span>
-          <Clock size={16} className="text-[#9A3E50] mr-1 flex-shrink-0" />
-          <span className="line-clamp-1">{restaurante.solicitud.tiempoRespuesta}</span>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-4 flex-grow">
-          <div className="flex items-center gap-2 mb-3">
-            <Wine size={18} className="text-[#9A3E50] flex-shrink-0" />
-            <span className="text-base font-medium line-clamp-1">{restaurante.solicitud.nombre}</span>
-          </div>
-          <p className="text-sm text-gray-600 mb-4 line-clamp-2">{restaurante.solicitud.descripcion}</p>
-
-          <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-            <div className="text-sm text-gray-500 flex items-center">
-              <span className="line-clamp-1">{restaurante.solicitud.tipo}</span>
-              <span className="mx-2 flex-shrink-0">•</span>
-              <Package size={16} className="text-[#9A3E50] mr-1 flex-shrink-0" />
-              <span>{restaurante.solicitud.cantidadSolicitada}</span>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="flex items-center gap-1">
+              <Wine size={16} className="text-[#9A3E50]" />
+              <span className="text-gray-600">{restaurante.solicitud.tipo}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Package size={16} className="text-[#9A3E50]" />
+              <span className="text-gray-600">{restaurante.solicitud.cantidadSolicitada}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <TrendingDown size={16} className="text-[#9A3E50]" />
+              <span className="text-gray-600">Compra: {restaurante.solicitud.precioCompra},00 €</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <TrendingUp size={16} className="text-[#9A3E50]" />
+              <span className="text-gray-600">Venda: {restaurante.solicitud.precioVenta},00 €</span>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-between items-center text-sm mt-auto">
-          <p className="text-gray-500 italic">Ref: #{restaurante.id || "12345"}</p>
-          <div className="text-[#9A3E50] font-medium hover:underline cursor-pointer">Veure detalls</div>
+        <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+          <div className="flex items-center gap-1">
+            <MapPin size={16} className="text-[#9A3E50]" />
+            {restaurante.zona}
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock size={16} className="text-[#9A3E50]" />
+            {restaurante.solicitud.tiempoRespuesta}
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

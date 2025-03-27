@@ -14,4 +14,3 @@ export default function ProductGrid({ products, favorites, toggleFavorite }) {
     </div>
   )
 }
-
