@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState } from "react"
 import { Filter, X, Search } from "lucide-react"
 import Header from "@/components/HeaderComponent"
@@ -10,7 +9,7 @@ import ProductGrid from "@/components/landing/products/ProductGrid"
 import RestaurantGrid from "@/components/landing/products/RestaurantGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
 
-export default function PopularProducts() {
+export default function ProductPage() {
   // State for filters and tabs
   const [selectedType, setSelectedType] = useState("")
   const [priceRange, setPriceRange] = useState([0, 10000])
@@ -80,8 +79,15 @@ export default function PopularProducts() {
         const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
         const response = await fetch(`${apiUrl}/v1/products`)
         const data = await response.json()
-        console.log("Products from API:", data)
-        setProducts(data)
+        
+        // Asegurarse de que cada producto tenga un ID y que sea un número
+        const productsWithId = data.map((product) => ({
+          ...product,
+          id: Number(product.id) // Convertir el ID a número
+        }))
+
+        console.log('Productos recibidos:', productsWithId) // Agregado para debug
+        setProducts(productsWithId)
       } catch (error) {
         console.error("Error fetching products:", error)
         // Fallback data for testing
@@ -289,6 +295,12 @@ export default function PopularProducts() {
 
   // Filter products
   const filteredProducts = products.filter((product) => {
+    // Verificar que el producto tenga un ID válido
+    if (!product.id || typeof product.id !== 'number') {
+      console.warn('Producto sin ID válido:', product)
+      return false
+    }
+
     // Search filter
     if (
       searchTerm &&
@@ -496,4 +508,3 @@ export default function PopularProducts() {
     </>
   )
 }
-
