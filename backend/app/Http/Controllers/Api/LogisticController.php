@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\RequestRestaurant;
 use App\Models\Request;
-use Illuminate\Http\Request as HttpRequest;
+use App\Models\RequestRestaurant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request as HttpRequest;
 
 class LogisticController extends Controller
 {
@@ -27,9 +28,9 @@ class LogisticController extends Controller
             // 1) Obtenemos el producto
             $product = Product::findOrFail($productId);
 
-            // Validamos que esté en el estado correcto para aprobar
-            if ($product->status !== 'in_stock') {
-                return response()->json(['error' => 'El producto no está en estado in_stock.'], 422);
+            if (trim(strtolower($product->status)) !== 'in_stock') {
+                Log::info("Estado del producto ID: {$product->id} -> '{$product->status}'");
+                return response()->json(['error' => "El producto no está in_stock. Estado actual: '{$product->status}'"], 422);
             }
 
             // 2) Obtenemos la solicitud de restaurante relacionada
