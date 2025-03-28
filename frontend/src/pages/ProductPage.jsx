@@ -1,166 +1,288 @@
-import { useEffect, useState } from "react";
-import {
-  Heart,
-  Star,
-  MapPin,
-  Clock,
-  Filter,
-  ChevronDown,
-  ChevronUp,
-  X,
-} from "lucide-react";
-import Header from "@/components/HeaderComponent";
-import Footer from "@/components/FooterComponent";
+"use client"
+import { useEffect, useState } from "react"
+import { Filter, X, Search } from "lucide-react"
+import Header from "@/components/HeaderComponent"
+import Footer from "@/components/FooterComponent"
+import HeroSection from "@/components/landing/products/HeroSection"
+import FilterSidebar from "@/components/landing/products/FilterSection"
+import ProductGrid from "@/components/landing/products/ProductGrid"
+import RestaurantGrid from "@/components/landing/products/RestaurantGrid"
+import EmptyState from "@/components/landing/products/EmptyState"
 
-export default function PopularProducts() {
+export default function ProductPage() {
   // State for filters and tabs
-  const [selectedType, setSelectedType] = useState("Negre");
-  const [priceRange, setPriceRange] = useState([5, 2000]);
-  const [selectedWineries, setSelectedWineries] = useState([]);
-  const [selectedRestaurantType, setSelectedRestaurantType] =
-    useState("Mediterrani");
-  const [selectedZones, setSelectedZones] = useState(["Barcelona", "Girona"]);
-  const [activeFilter, setActiveFilter] = useState("Productors");
+  const [selectedType, setSelectedType] = useState("")
+  const [priceRange, setPriceRange] = useState([0, 10000])
+  const [selectedWineries, setSelectedWineries] = useState([])
+  const [selectedZones, setSelectedZones] = useState([])
+  const [activeFilter, setActiveFilter] = useState("Productors")
   const [openAccordion, setOpenAccordion] = useState({
     tipo: true,
     precio: true,
-    bodega: true,
     zona: true,
-    cocina: true,
-  });
-  const [favorites, setFavorites] = useState([]);
-  const [showFilters, setShowFilters] = useState(true);
-  const [products, setProducts] = useState([]);
-  const [wineTypes, setWineTypes] = useState([]);
-  const apiUrl = import.meta.env.VITE_API_URL;
+  })
+  const [favorites, setFavorites] = useState([])
+  const [searchTerm, setSearchTerm] = useState("")
+
+  // Detectar si es móvil al inicio y manejar cambios de tamaño
+  const [isMobile, setIsMobile] = useState(false)
+  const [showFilters, setShowFilters] = useState(true)
+  const [products, setProducts] = useState([])
+  const [wineTypes, setWineTypes] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  // Cargar favoritos desde cookies al iniciar
+  useEffect(() => {
+    // Set initial mobile state
+    setIsMobile(window.innerWidth < 768)
+    setShowFilters(window.innerWidth >= 768)
+
+    const savedFavorites = document.cookie.split("; ").find((row) => row.startsWith("favorites="))
+
+    if (savedFavorites) {
+      try {
+        const parsedFavorites = JSON.parse(savedFavorites.split("=")[1])
+        setFavorites(parsedFavorites)
+      } catch (error) {
+        console.error("Error parsing favorites from cookie:", error)
+      }
+    }
+  }, [])
+
+  // Guardar favoritos en cookies cuando cambien
+  useEffect(() => {
+    if (favorites.length > 0) {
+      const expiryDate = new Date()
+      expiryDate.setMonth(expiryDate.getMonth() + 1) // Cookie válida por 1 mes
+      document.cookie = `favorites=${JSON.stringify(favorites)}; expires=${expiryDate.toUTCString()}; path=/`
+    } else {
+      document.cookie = "favorites=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+    }
+  }, [favorites])
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      setShowFilters(!mobile)
+    }
+
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   // Product data with real images
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true)
       try {
-        const response = await fetch(`${apiUrl}/v1/products`);
-        const data = await response.json();
-        setProducts(data);
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+        const response = await fetch(`${apiUrl}/v1/products`)
+        const data = await response.json()
+        
+        // Asegurarse de que cada producto tenga un ID y que sea un número
+        const productsWithId = data.map((product) => ({
+          ...product,
+          id: Number(product.id) // Convertir el ID a número
+        }))
+
+        console.log('Productos recibidos:', productsWithId) // Agregado para debug
+        setProducts(productsWithId)
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching products:", error)
+        // Fallback data for testing
+        setProducts([
+          {
+            name: "Vi Criança",
+            origin: "Catalunya",
+            year: 2020,
+            wine_type: "Negre",
+            price_demanded: 1000,
+            quantity: 1,
+            image: "/storage/proba/caja-de-vino-tinto-toro-vinas-elias-mora-6-botellas.jpg",
+            status: "requested",
+            user_id: "Bodega de Proba",
+          },
+          {
+            name: "Vi i sen va",
+            origin: "Madrid",
+            year: 2018,
+            wine_type: "Blanc",
+            price_demanded: 100,
+            quantity: 1,
+            image: "/storage/proba/botella-rioja-enamorados.jpg",
+            status: "in_stock",
+            user_id: "Bodega de Proba",
+          },
+          {
+            name: "Vi no vi",
+            origin: "França",
+            year: 2017,
+            wine_type: "Rossat",
+            price_demanded: 9900,
+            quantity: 1,
+            image: "/storage/proba/Botella-vino.jpeg",
+            status: "in_stock",
+            user_id: "Bodega de Proba",
+          },
+        ])
+      } finally {
+        setLoading(false)
       }
-    };
-    fetchProducts();
-  }, []);
-  const allProducts = products;
+    }
+    fetchProducts()
+  }, [])
+
+  // Fetch wine types from API
+  useEffect(() => {
+    const fetchWineTypes = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+        const response = await fetch(`${apiUrl}/v1/winetypes`)
+        const data = await response.json()
+        console.log("Wine types from API:", data)
+        setWineTypes(data)
+      } catch (error) {
+        console.error("Error fetching wine types:", error)
+        // Fallback data for testing
+        setWineTypes([
+          { id: 1, name: "Negre", image: "https://www.elpationeiva.co/wp-content/uploads/2021/06/COPA-DE-VINO.jpg" },
+          {
+            id: 2,
+            name: "Blanc",
+            image: "https://www.blasbermejo.com/wp-content/uploads/2023/06/tipos-vino-blanco.webp",
+          },
+          {
+            id: 3,
+            name: "Rossat",
+            image: "https://s1.elespanol.com/2024/06/13/cocinillas/vinos/862673986_243984786_1706x1280.jpg",
+          },
+          {
+            id: 4,
+            name: "Espumós",
+            image: "https://media.scoolinary.app/blog/images/2022/05/como-servir-un-vino-espumoso.jpg",
+          },
+          {
+            id: 5,
+            name: "Dolç",
+            image:
+              "https://us.123rf.com/450wm/serezniy/serezniy1411/serezniy141101636/33498791-vino-que-vierte-en-la-copa-de-vino-primer-plano.jpg",
+          },
+        ])
+      }
+    }
+    fetchWineTypes()
+  }, [])
 
   // Restaurant data
   const allRestaurants = [
     {
-      id: 101,
-      nombre: "La Vinya",
-      tipo: "Mediterrani",
-      zona: "Barcelona",
-      precio: "€€",
-      valoracion: 4.7,
-      imagen:
-        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      horario: "12:00 - 23:00",
-      especialidad: "Arrossos",
-    },
-    {
-      id: 102,
-      nombre: "El Celler",
-      tipo: "Català",
-      zona: "Girona",
-      precio: "€€€",
-      valoracion: 4.9,
-      imagen:
-        "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      horario: "13:00 - 22:30",
-      especialidad: "Alta cuina",
-    },
-    {
-      id: 103,
-      nombre: "Taverna del Mar",
-      tipo: "Mediterrani",
-      zona: "Costa Brava",
-      precio: "€€",
-      valoracion: 4.5,
-      imagen:
-        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1474&q=80",
-      horario: "12:30 - 23:30",
-      especialidad: "Peix fresc",
-    },
-    {
-      id: 104,
-      nombre: "Can Roca",
-      tipo: "Català",
-      zona: "Girona",
-      precio: "€€€€",
-      valoracion: 5.0,
-      imagen:
-        "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-      horario: "13:00 - 15:30, 20:00 - 22:30",
-      especialidad: "Cuina d'autor",
-    },
-    {
-      id: 105,
-      nombre: "La Boqueria",
-      tipo: "Tapes",
-      zona: "Barcelona",
-      precio: "€€",
-      valoracion: 4.6,
-      imagen:
-        "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80",
-      horario: "09:00 - 23:00",
-      especialidad: "Tapes variades",
-    },
-    {
-      id: 106,
-      nombre: "Montserrat",
-      tipo: "Tradicional",
-      zona: "Barcelona",
-      precio: "€€",
-      valoracion: 4.4,
-      imagen:
-        "https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80",
-      horario: "12:00 - 22:00",
-      especialidad: "Cuina tradicional",
-    },
-  ];
-
-  useEffect(() => {
-    const fetchWineTypes = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/v1/winetypes`);
-        const data = await response.json();
-        setWineTypes(data);
-      } catch (error) {
-        console.error("Error fetching wine types:", error);
-      }
-    };
-    fetchWineTypes();
-  }, []);
-
-  // Cuisine types data
-  const cuisineTypes = [
-    {
       id: 1,
-      nombre: "Mediterrani",
-      imagen: "https://cdn-icons-png.flaticon.com/512/3511/3511307.png",
+      nombre: "Ca l'Isidre",
+      descripcion: "Restaurant d'alta cuina catalana amb més de 50 anys d'història",
+      imagen: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
+      zona: "Barcelona",
+      solicitud: {
+        tipo: "Vi negre",
+        nombre: "Priorat Reserva 2019",
+        descripcion: "Vi negre amb cos, anyada 2019-2020, D.O.Q. Priorat",
+        precioCompra: 25,
+        precioVenta: 45,
+        cantidadSolicitada: "120 botellas",
+        tiempoRespuesta: "24-48h",
+      },
     },
     {
       id: 2,
-      nombre: "Català",
-      imagen: "https://cdn-icons-png.flaticon.com/512/2252/2252075.png",
+      nombre: "Botafumeiro",
+      descripcion: "Restaurant especialitzat en peix i marisc de primera qualitat",
+      imagen: "https://images.unsplash.com/photo-1514933651103-005eec06c04b",
+      zona: "Barcelona",
+      solicitud: {
+        tipo: "Vi blanc",
+        nombre: "Blanc de blancs Penedès",
+        descripcion: "Vi blanc sec i fresc, D.O. Penedès, ideal per marisc",
+        precioCompra: 18,
+        precioVenta: 35,
+        cantidadSolicitada: "200 botellas",
+        tiempoRespuesta: "24h",
+      },
     },
     {
       id: 3,
-      nombre: "Tapes",
-      imagen: "https://cdn-icons-png.flaticon.com/512/1046/1046769.png",
+      nombre: "El Celler de Can Roca",
+      descripcion: "Restaurant amb tres estrelles Michelin, referent de la gastronomia catalana",
+      imagen: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
+      zona: "Girona",
+      solicitud: {
+        tipo: "Cava",
+        nombre: "Gran Reserva Brut Nature",
+        descripcion: "Cava Gran Reserva, mínim 30 mesos de criança",
+        precioCompra: 35,
+        precioVenta: 85,
+        cantidadSolicitada: "150 botellas",
+        tiempoRespuesta: "48h",
+      },
     },
     {
       id: 4,
-      nombre: "Tradicional",
-      imagen: "https://cdn-icons-png.flaticon.com/512/1147/1147805.png",
+      nombre: "Can Jubany",
+      descripcion: "Restaurant amb una estrella Michelin, cuina d'autor amb arrels tradicionals",
+      imagen: "https://images.unsplash.com/photo-1515669097368-22e68427d265",
+      zona: "Vic",
+      solicitud: {
+        tipo: "Vi rosat",
+        nombre: "Rosat Empordà",
+        descripcion: "Vi rosat fresc i afruitat, D.O. Empordà",
+        precioCompra: 15,
+        precioVenta: 32,
+        cantidadSolicitada: "180 botellas",
+        tiempoRespuesta: "24-48h",
+      },
     },
-  ];
+    {
+      id: 5,
+      nombre: "Via Veneto",
+      descripcion: "Restaurant clàssic amb una estrella Michelin, referent de la cuina mediterrània",
+      imagen: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c",
+      zona: "Barcelona",
+      solicitud: {
+        tipo: "Vi negre",
+        nombre: "Ribera del Duero Criança",
+        descripcion: "Vi negre amb 12 mesos de criança en roure francès",
+        precioCompra: 22,
+        precioVenta: 48,
+        cantidadSolicitada: "100 botellas",
+        tiempoRespuesta: "24h",
+      },
+    },
+    {
+      id: 6,
+      nombre: "Les Cols",
+      descripcion: "Restaurant amb dues estrelles Michelin, cuina d'avantguarda amb producte local",
+      imagen: "https://images.unsplash.com/photo-1552566626-52f8b828add9",
+      zona: "Girona",
+      solicitud: {
+        tipo: "Vi blanc",
+        nombre: "Blanc Terra Alta",
+        descripcion: "Vi blanc amb criança sobre lies, D.O. Terra Alta",
+        precioCompra: 20,
+        precioVenta: 42,
+        cantidadSolicitada: "150 botellas",
+        tiempoRespuesta: "48h",
+      },
+    },
+  ]
+
+  // Zonas disponibles
+  const zones = [
+    { id: 1, nombre: "Barcelona" },
+    { id: 2, nombre: "Girona" },
+    { id: 3, nombre: "Tarragona" },
+    { id: 4, nombre: "Lleida" },
+    { id: 5, nombre: "Costa Brava" },
+    { id: 6, nombre: "Penedès" },
+  ]
 
   // Wineries data
   const wineries = [
@@ -169,465 +291,214 @@ export default function PopularProducts() {
     { id: 3, nombre: "Nom Marca 3" },
     { id: 4, nombre: "Nom Marca 4" },
     { id: 5, nombre: "Nom Marca 5" },
-  ];
-
-  // Zones data
-  const zones = [
-    { id: 1, nombre: "Barcelona" },
-    { id: 2, nombre: "Girona" },
-    { id: 3, nombre: "Costa Brava" },
-    { id: 4, nombre: "Tarragona" },
-    { id: 5, nombre: "Lleida" },
-  ];
+  ]
 
   // Filter products
-  const filteredProducts = allProducts.filter((product) => {
-    // Filter by wine type
-    if (selectedType && product.wine_type !== selectedType) {
-      // Cambiado a 'wine_type'
-      return false;
+  const filteredProducts = products.filter((product) => {
+    // Verificar que el producto tenga un ID válido
+    if (!product.id || typeof product.id !== 'number') {
+      console.warn('Producto sin ID válido:', product)
+      return false
     }
 
-    // Filter by price range
+    // Search filter
     if (
-      product.price_demanded < priceRange[0] ||
-      product.price_demanded > priceRange[1]
+      searchTerm &&
+      !product.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !product.origin?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !product.wine_type?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !product.user_id?.toLowerCase().includes(searchTerm.toLowerCase())
     ) {
-      // Cambiado a 'price_demanded'
-      return false;
+      return false
     }
 
-    // Filter by winery (usaremos origin como bodega)
-    if (
-      selectedWineries.length > 0 &&
-      !selectedWineries.includes(product.origin)
-    ) {
-      // Cambiado a 'origin'
-      return false;
+    // Filter by wine type - case insensitive comparison
+    if (selectedType && selectedType !== "") {
+      // Normalize both strings for comparison (lowercase and trim)
+      const normalizedSelectedType = selectedType.toLowerCase().trim()
+      const normalizedProductType = (product.wine_type || "").toLowerCase().trim()
+
+      if (normalizedProductType !== normalizedSelectedType) {
+        return false
+      }
     }
 
-    return true;
-  });
+    // Filter by price range - check if price_demanded exists and is a number
+    const price = Number(product.price_demanded)
+    if (!isNaN(price) && (price < priceRange[0] || price > priceRange[1])) {
+      return false
+    }
+
+    // Filter by winery (using origin as bodega)
+    // Only apply if wineries are selected
+    if (selectedWineries.length > 0 && !selectedWineries.includes(product.origin)) {
+      return false
+    }
+
+    return true
+  })
 
   // Filter restaurants
   const filteredRestaurants = allRestaurants.filter((restaurant) => {
-    // Filter by cuisine type
-    if (selectedRestaurantType && restaurant.tipo !== selectedRestaurantType) {
-      return false;
+    // Search filter
+    if (
+      searchTerm &&
+      !restaurant.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !restaurant.zona?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !restaurant.solicitud?.tipo?.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
+      return false
+    }
+
+    // Filter by wine type
+    if (selectedType && restaurant.solicitud.tipo !== selectedType) {
+      return false
+    }
+
+    // Filter by price range
+    if (restaurant.solicitud.precioCompra < priceRange[0] || restaurant.solicitud.precioCompra > priceRange[1]) {
+      return false
     }
 
     // Filter by zone
     if (selectedZones.length > 0 && !selectedZones.includes(restaurant.zona)) {
-      return false;
+      return false
     }
 
-    return true;
-  });
+    return true
+  })
 
   // Handle accordion toggle
   const toggleAccordion = (section) => {
     setOpenAccordion({
       ...openAccordion,
       [section]: !openAccordion[section],
-    });
-  };
+    })
+  }
 
   // Handle favorites toggle
-  const toggleFavorite = (id) => {
-    if (favorites.includes(id)) {
-      setFavorites(favorites.filter((favId) => favId !== id));
-    } else {
-      setFavorites([...favorites, id]);
-    }
-  };
+  const toggleFavorite = (name) => {
+    setFavorites((prevFavorites) => {
+      if (prevFavorites.includes(name)) {
+        return prevFavorites.filter((favName) => favName !== name)
+      } else {
+        return [...prevFavorites, name]
+      }
+    })
+  }
 
   // Handle winery toggle
   const toggleWinery = (name) => {
     if (selectedWineries.includes(name)) {
-      setSelectedWineries(selectedWineries.filter((b) => b !== name));
+      setSelectedWineries(selectedWineries.filter((b) => b !== name))
     } else {
-      setSelectedWineries([...selectedWineries, name]);
+      setSelectedWineries([...selectedWineries, name])
     }
-  };
+  }
 
   // Handle zone toggle
   const toggleZone = (name) => {
     if (selectedZones.includes(name)) {
-      setSelectedZones(selectedZones.filter((z) => z !== name));
+      setSelectedZones(selectedZones.filter((z) => z !== name))
     } else {
-      setSelectedZones([...selectedZones, name]);
+      setSelectedZones([...selectedZones, name])
     }
-  };
+  }
+
+  // Reset filters
+  const resetFilters = () => {
+    setSelectedType("")
+    setPriceRange([0, 10000])
+    setSelectedWineries([])
+    setSelectedZones([])
+    setSearchTerm("")
+  }
 
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Hero section with background image */}
-          <div className="relative mb-12 rounded-2xl overflow-hidden shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#800020]/90 to-black/70 z-10"></div>
-            <img
-              src="https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-              alt="Wine background"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="relative z-20 flex flex-col md:flex-row items-center justify-between p-8 md:p-12">
-              <div className="text-white mb-6 md:mb-0 md:w-1/2">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                  Descobreix els millors productes
-                </h1>
-                <p className="text-gray-200 text-lg max-w-xl">
-                  Explora la nostra selecció de vins i restaurants de qualitat
-                  superior. Filtres personalitzats per trobar exactament el que
-                  busques.
-                </p>
-              </div>
-              <div className="flex flex-col space-y-4 md:w-1/3">
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold text-white">
-                      Selecciona categoria
-                    </h2>
-                  </div>
-                  <div className="flex gap-3">
-                    <button
-                      className={`flex-1 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300 ${
-                        activeFilter === "Productors"
-                          ? "bg-white text-[#800020] shadow-lg"
-                          : "bg-white/20 text-white hover:bg-white/30"
-                      }`}
-                      onClick={() => setActiveFilter("Productors")}
-                    >
-                      Productors
-                    </button>
-                    <button
-                      className={`flex-1 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300 ${
-                        activeFilter === "Restaurants"
-                          ? "bg-white text-[#800020] shadow-lg"
-                          : "bg-white/20 text-white hover:bg-white/30"
-                      }`}
-                      onClick={() => setActiveFilter("Restaurants")}
-                    >
-                      Restaurants
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <HeroSection activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
 
           <div className="flex flex-col md:flex-row gap-6">
             {/* Filters sidebar */}
-            <div
-              className={`md:w-72 transition-all duration-300 ${
-                showFilters
-                  ? "opacity-100"
-                  : "opacity-0 md:opacity-100 h-0 md:h-auto overflow-hidden"
-              }`}
-            >
-              <div className="sticky top-4 bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="p-4 bg-[#800020] text-white flex justify-between items-center">
-                  <h3 className="font-medium">Filtres</h3>
-                  <button
-                    className="md:hidden"
-                    onClick={() => setShowFilters(false)}
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-
-                {activeFilter === "Productors" ? (
-                  <div className="p-4 space-y-4">
-                    {/* Product types */}
-                    <div className="border-b border-gray-100 pb-4">
-                      <button
-                        className="w-full flex justify-between items-center mb-2"
-                        onClick={() => toggleAccordion("tipo")}
-                      >
-                        <h3 className="font-medium text-gray-800">
-                          Tipus de producte
-                        </h3>
-                        {openAccordion.tipo ? (
-                          <ChevronUp size={16} />
-                        ) : (
-                          <ChevronDown size={16} />
-                        )}
-                      </button>
-                      {openAccordion.tipo && (
-                        <div className="space-y-2 mt-3">
-                          {wineTypes.map((type) => (
-                            <div
-                              key={type.id}
-                              className="relative rounded-lg overflow-hidden" // Contenedor relativo
-                            >
-                              {/* Imagen de fondo */}
-                              <img
-                                src={type.image || "/placeholder.svg"}
-                                alt={type.name}
-                                className="absolute inset-0 w-full h-full object-cover"
-                              />
-
-                              {/* Botón que ocupa todo el espacio */}
-                              <button
-                                className={`w-full h-full relative ${
-                                  selectedType === type.name
-                                    ? "bg-[#800020]/70 text-white font-medium"
-                                    : "bg-white/30 hover:bg-white/50"
-                                } p-4 flex items-center justify-center transition-all duration-300`}
-                                onClick={() => setSelectedType(type.name)}
-                              >
-                                <span className="text-sm font-medium backdrop-blur-sm px-2 py-1 rounded">
-                                  {type.name}
-                                </span>
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Price */}
-                    <div className="border-b border-gray-100 pb-4">
-                      <button
-                        className="w-full flex justify-between items-center mb-2"
-                        onClick={() => toggleAccordion("precio")}
-                      >
-                        <h3 className="font-medium text-gray-800">Preu</h3>
-                        {openAccordion.precio ? (
-                          <ChevronUp size={16} />
-                        ) : (
-                          <ChevronDown size={16} />
-                        )}
-                      </button>
-                      {openAccordion.precio && (
-                        <div className="px-1 pt-4">
-                          <div className="relative">
-                            <input
-                              type="range"
-                              min="0"
-                              max="200"
-                              value={priceRange[1]}
-                              onChange={(e) =>
-                                setPriceRange([
-                                  priceRange[0],
-                                  Number.parseInt(e.target.value),
-                                ])
-                              }
-                              className="w-full h-1 bg-gray-200 rounded-full appearance-none cursor-pointer accent-[#800020]"
-                            />
-                            <div className="flex justify-between mt-2 text-xs text-gray-500">
-                              <span>{priceRange[0]},00 €</span>
-                              <span>{priceRange[1]},00 € o més</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Winery */}
-                    <div>
-                      <button
-                        className="w-full flex justify-between items-center mb-2"
-                        onClick={() => toggleAccordion("bodega")}
-                      >
-                        <h3 className="font-medium text-gray-800">Bodega</h3>
-                        {openAccordion.bodega ? (
-                          <ChevronUp size={16} />
-                        ) : (
-                          <ChevronDown size={16} />
-                        )}
-                      </button>
-                      {openAccordion.bodega && (
-                        <div className="space-y-2 mt-2">
-                          {wineries.map((winery) => (
-                            <label
-                              key={winery.id}
-                              className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={selectedWineries.includes(
-                                  winery.nombre
-                                )}
-                                onChange={() => toggleWinery(winery.nombre)}
-                                className="w-4 h-4 rounded border-gray-300 text-[#800020] focus:ring-[#800020]"
-                              />
-                              <span className="text-sm text-gray-700">
-                                {winery.nombre}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-4 space-y-4">
-                    {/* Cuisine types */}
-                    <div className="border-b border-gray-100 pb-4">
-                      <button
-                        className="w-full flex justify-between items-center mb-2"
-                        onClick={() => toggleAccordion("cocina")}
-                      >
-                        <h3 className="font-medium text-gray-800">
-                          Tipus de cuina
-                        </h3>
-                        {openAccordion.cocina ? (
-                          <ChevronUp size={16} />
-                        ) : (
-                          <ChevronDown size={16} />
-                        )}
-                      </button>
-                      {openAccordion.cocina && (
-                        <div className="space-y-2 mt-3">
-                          {cuisineTypes.map((type) => (
-                            <button
-                              key={type.id}
-                              className={`w-full ${
-                                selectedRestaurantType === type.nombre
-                                  ? "bg-[#800020]/10 text-[#800020] font-medium"
-                                  : "hover:bg-gray-50"
-                              } rounded-lg p-2 flex items-center gap-3 transition-colors`}
-                              onClick={() =>
-                                setSelectedRestaurantType(type.nombre)
-                              }
-                            >
-                              <div className="w-8 h-8 relative flex-shrink-0">
-                                <img
-                                  src={type.imagen || "/placeholder.svg"}
-                                  alt={type.nombre}
-                                  className="w-8 h-8 object-contain"
-                                />
-                              </div>
-                              <span className="text-sm">{type.nombre}</span>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Zone */}
-                    <div>
-                      <button
-                        className="w-full flex justify-between items-center mb-2"
-                        onClick={() => toggleAccordion("zona")}
-                      >
-                        <h3 className="font-medium text-gray-800">Zona</h3>
-                        {openAccordion.zona ? (
-                          <ChevronUp size={16} />
-                        ) : (
-                          <ChevronDown size={16} />
-                        )}
-                      </button>
-                      {openAccordion.zona && (
-                        <div className="space-y-2 mt-2">
-                          {zones.map((zone) => (
-                            <label
-                              key={zone.id}
-                              className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={selectedZones.includes(zone.nombre)}
-                                onChange={() => toggleZone(zone.nombre)}
-                                className="w-4 h-4 rounded border-gray-300 text-[#800020] focus:ring-[#800020]"
-                              />
-                              <span className="text-sm text-gray-700">
-                                {zone.nombre}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            <FilterSidebar
+              showFilters={showFilters}
+              setShowFilters={setShowFilters}
+              openAccordion={openAccordion}
+              toggleAccordion={toggleAccordion}
+              wineTypes={wineTypes}
+              selectedType={selectedType}
+              setSelectedType={setSelectedType}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              activeFilter={activeFilter}
+              wineries={wineries}
+              zones={zones}
+              selectedWineries={selectedWineries}
+              selectedZones={selectedZones}
+              toggleWinery={toggleWinery}
+              toggleZone={toggleZone}
+            />
 
             {/* Products/Restaurants Grid */}
             <div className="flex-1">
               <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                   <h2 className="text-2xl font-bold text-gray-800">
-                    {activeFilter === "Productors"
-                      ? "Productes Populars"
-                      : "Restaurants Recomanats"}
+                    {activeFilter === "Productors" ? "Vins disponibles" : "Demandes de restaurants"}
                   </h2>
-                  <button
-                    className="md:hidden flex items-center gap-2 text-sm font-medium text-[#800020] bg-[#800020]/10 px-4 py-2 rounded-lg"
-                    onClick={() => setShowFilters(true)}
-                  >
-                    <Filter size={16} />
-                    Filtres
-                  </button>
+                  <div className="flex items-center gap-4 w-full sm:w-auto">
+                    {/* Search input */}
+                    <div className="relative flex-1 sm:w-64">
+                      <input
+                        type="text"
+                        placeholder="Cerca per nom, tipus..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full py-2 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9A3E50] focus:border-transparent"
+                      />
+                      <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    </div>
+                    <button
+                      className="md:hidden flex items-center gap-2 text-sm font-medium text-white bg-[#9A3E50] px-4 py-2 rounded-lg shadow-sm"
+                      onClick={() => setShowFilters(true)}
+                    >
+                      <Filter size={16} />
+                      Filtres
+                    </button>
+                    <button
+                      onClick={resetFilters}
+                      className="flex-none text-[#9A3E50] font-medium text-sm bg-[#9A3E50]/5 hover:bg-[#9A3E50]/10 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
+                    >
+                      <X size={16} />
+                      Restablir
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {activeFilter === "Productors" ? (
+              {loading ? (
+                <div className="flex justify-center items-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#9A3E50]"></div>
+                </div>
+              ) : activeFilter === "Productors" ? (
                 // Products
                 filteredProducts.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredProducts.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        producto={product}
-                        esFavorito={favorites.includes(product.id)}
-                        onToggleFavorito={() => toggleFavorite(product.id)}
-                      />
-                    ))}
-                  </div>
+                  <ProductGrid products={filteredProducts} favorites={favorites} toggleFavorite={toggleFavorite} />
                 ) : (
-                  <div className="bg-white rounded-xl shadow-md p-8 text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                      <X size={24} className="text-gray-400" />
-                    </div>
-                    <p className="text-gray-500 mb-4">
-                      No s'han trobat productes amb els filtres seleccionats.
-                    </p>
-                    <button
-                      className="text-[#800020] font-medium hover:underline"
-                      onClick={() => {
-                        setSelectedType("Vi negre");
-                        setPriceRange([5, 200]);
-                        setSelectedWineries(["Nom Marca 2", "Nom Marca 5"]);
-                      }}
-                    >
-                      Restablir filtres
-                    </button>
-                  </div>
+                  <EmptyState type="products" resetFilters={resetFilters} />
                 )
               ) : // Restaurants
               filteredRestaurants.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredRestaurants.map((restaurant) => (
-                    <RestaurantCard
-                      key={restaurant.id}
-                      restaurante={restaurant}
-                      esFavorito={favorites.includes(restaurant.id)}
-                      onToggleFavorito={() => toggleFavorite(restaurant.id)}
-                    />
-                  ))}
-                </div>
+                <RestaurantGrid
+                  restaurants={filteredRestaurants}
+                  favorites={favorites}
+                  toggleFavorite={toggleFavorite}
+                />
               ) : (
-                <div className="bg-white rounded-xl shadow-md p-8 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                    <X size={24} className="text-gray-400" />
-                  </div>
-                  <p className="text-gray-500 mb-4">
-                    No s'han trobat restaurants amb els filtres seleccionats.
-                  </p>
-                  <button
-                    className="text-[#800020] font-medium hover:underline"
-                    onClick={() => {
-                      setSelectedRestaurantType("Mediterrani");
-                      setSelectedZones(["Barcelona", "Girona"]);
-                    }}
-                  >
-                    Restablir filtres
-                  </button>
-                </div>
+                <EmptyState type="restaurants" resetFilters={resetFilters} />
               )}
             </div>
           </div>
@@ -635,132 +506,5 @@ export default function PopularProducts() {
       </div>
       <Footer />
     </>
-  );
-}
-
-// Product card component
-function ProductCard({ producto, esFavorito, onToggleFavorito }) {
-  const baseUrl = import.meta.env.VITE_URL_BASE;
-  return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-md group hover:shadow-lg transition-all duration-300">
-      <div className="relative h-56">
-        <img
-          src={`${baseUrl}${producto.image}` || "/placeholder.svg"}
-          alt={producto.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute top-3 right-3">
-          <button
-            className="w-9 h-9 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              onToggleFavorito();
-            }}
-          >
-            <Heart
-              className={`w-5 h-5 ${
-                esFavorito ? "fill-[#800020] text-[#800020]" : "text-gray-400"
-              }`}
-            />
-          </button>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-          <div className="text-white font-medium">
-            €{producto.price_demanded}
-          </div>
-        </div>
-      </div>
-      <div className="p-5">
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <h3 className="font-bold text-gray-800 mb-1">{producto.name}</h3>
-            <p className="text-gray-500 text-sm">{producto.origin}</p>
-          </div>
-          <div className="bg-[#800020]/10 text-[#800020] text-xs font-medium px-2 py-1 rounded">
-            {producto.year}
-          </div>
-        </div>
-        <div className="flex items-center text-xs text-gray-500 mt-3">
-          <span className="inline-block px-2 py-1 bg-gray-100 rounded-full mr-2">
-            {producto.wine_type}
-          </span>
-          <span className="inline-block px-2 py-1 bg-gray-100 rounded-full">
-            {producto.origin}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Restaurant card component
-function RestaurantCard({ restaurante, esFavorito, onToggleFavorito }) {
-  return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-md group hover:shadow-lg transition-all duration-300">
-      <div className="relative h-56">
-        <img
-          src={restaurante.imagen || "/placeholder.svg"}
-          alt={restaurante.nombre}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute top-3 right-3">
-          <button
-            className="w-9 h-9 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              onToggleFavorito();
-            }}
-          >
-            <Heart
-              className={`w-5 h-5 ${
-                esFavorito ? "fill-[#800020] text-[#800020]" : "text-gray-400"
-              }`}
-            />
-          </button>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-3 h-3 ${
-                  i < Math.floor(restaurante.valoracion)
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "text-gray-300"
-                }`}
-              />
-            ))}
-            <span className="text-white text-xs ml-1">
-              {restaurante.valoracion}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="p-5">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="font-bold text-gray-800">{restaurante.nombre}</h3>
-          <div className="text-gray-500 text-sm">{restaurante.precio}</div>
-        </div>
-        <p className="text-[#800020] text-sm font-medium mb-3">
-          {restaurante.tipo}
-        </p>
-        <div className="flex items-center justify-between text-xs text-gray-500 mt-3">
-          <div className="flex items-center gap-1">
-            <MapPin className="w-3 h-3" />
-            <span>{restaurante.zona}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            <span>{restaurante.horario}</span>
-          </div>
-        </div>
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <p className="text-xs font-medium text-gray-700">
-            Especialitat:{" "}
-            <span className="text-[#800020]">{restaurante.especialidad}</span>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  )
 }

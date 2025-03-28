@@ -22,6 +22,7 @@ class ProductController extends Controller
         
         $response = $products->map(function ($product) {
             return [
+                "id"=> $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,
@@ -48,6 +49,7 @@ class ProductController extends Controller
 
         $response = $products->map(function ($product) {
             return [
+                'id'=> $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,

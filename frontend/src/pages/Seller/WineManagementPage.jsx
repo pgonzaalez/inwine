@@ -53,59 +53,48 @@ function WineManagementComponent() {
   }
 
   const handleSendProduct = async (productId) => {
-  if (!productId) {
-    console.error("No se proporcionó ID de producto");
-    return;
-  }
+    // Verificación simple del ID
+    if (!productId) {
+      setNotification({ type: "error", message: "ID de producto no válido" })
+      setTimeout(() => setNotification(null), 3000)
+      return
+    }
 
-  console.log("Enviando producto con ID:", productId);
-
-  try {
-    setSendingProduct(productId);
-
-    // Construir la URL completa
-    const url = `${apiUrl}/v1/logistic/${productId}/send`;
-    console.log("URL de la petición:", url);
-    // Hacer la petición directamente con fetch
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-
-    console.log("Respuesta recibida:", response);
-
-    // Intentar parsear la respuesta como JSON
-    let data;
     try {
-      data = await response.json();
-      console.log("Datos de respuesta:", data);
-    } catch (parseError) {
-      console.error("Error al parsear la respuesta:", parseError);
-      throw new Error("Error al procesar la respuesta del servidor");
+      // Marcar como enviando
+      setSendingProduct(productId)
+
+      // URL del endpoint
+      const url = `${apiUrl}/v1/logistic/${productId}/send`
+
+      // Realizar la petición POST
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+
+      // Procesar la respuesta
+      if (!response.ok) {
+        throw new Error("Error al entregar el producto")
+      }
+
+      // Actualizar el estado local
+      setWines(wines.map((wine) => (wine.id === productId ? { ...wine, status: "in_transit" } : wine)))
+
+      // Mostrar notificación de éxito
+      setNotification({ type: "success", message: "Producte enviat correctament" })
+      setTimeout(() => setNotification(null), 3000)
+    } catch (error) {
+      console.error("Error:", error)
+      setNotification({ type: "error", message: error.message })
+      setTimeout(() => setNotification(null), 3000)
+    } finally {
+      setSendingProduct(null)
     }
-
-    // Verificar si la respuesta fue exitosa
-    if (!response.ok) {
-      throw new Error(data.error || "Error al enviar el producto");
-    }
-
-    // Actualizar el estado local
-    setWines(wines.map((wine) => (wine.id === productId ? { ...wine, status: "in_transit" } : wine)));
-
-    // Mostrar notificación de éxito
-    setNotification({ type: "success", message: "Producte enviat correctament" });
-    setTimeout(() => setNotification(null), 3000);
-  } catch (error) {
-    console.error("Error en la petición:", error);
-    setNotification({ type: "error", message: error.message || "Error al enviar el producto" });
-    setTimeout(() => setNotification(null), 3000);
-  } finally {
-    setSendingProduct(null);
   }
-};
 
   // Filtrar vinos según el estado seleccionado
   const filteredWines = activeFilter === "all" ? wines : wines.filter((wine) => wine.status === activeFilter)
