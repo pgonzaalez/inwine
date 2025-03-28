@@ -22,34 +22,33 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+    
         $user = User::where('email', $request->email)->first();
-
+    
         if (!$user) {
             throw ValidationException::withMessages([
                 'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
-
+    
         if (!Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
-
-        // Obtener el rol del usuario desde la tabla user_roles
-        $userRole = UserRole::where('user_id', $user->id)->first();
-        $role = $userRole ? $userRole->role : null;
-
+    
+        // Obtener todos los roles del usuario
+        $roles = UserRole::where('user_id', $user->id)->pluck('role')->toArray();
+    
         $token = $user->createToken('api-token')->plainTextToken;
-
+    
         return response()->json([
             'token' => $token,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $role,
+                'roles' => $roles, // Ahora devolvemos un array de roles
             ],
         ]);
     }

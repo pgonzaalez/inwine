@@ -26,26 +26,42 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
-    {
-        $user = $request->user();
+public function show(Request $request)
+{
+    $user = $request->user()->load('roles');
+    
+    $responseData = [
+        'id' => $user->id,
+        'NIF' => $user->NIF,
+        'name' => $user->name,
+        'email' => $user->email,
 
-        $role = $user->role;
+        // Agrega otros campos básicos del usuario que necesites
+        'roles' => $user->roles->pluck('role'),
+        
+        //Devuelve la informacion de los campos especificos de cada rol
+        'details' => []
+    ];
 
-        switch ($role) {
+    // Cargar relaciones según los roles que tenga el usuario
+    foreach ($user->roles as $role) {
+        switch ($role->role) {
             case 'restaurant':
-                return response()->json($user->load('restaurants'));
-
+                $responseData['details']['restaurant'] = $user->restaurants;
+                break;
+                
             case 'seller':
-                return response()->json($user->load('sellers'));
-
+                $responseData['details']['seller'] = $user->sellers;
+                break;
+                
             case 'investor':
-                return response()->json($user->load('investors'));
-
-            default:
-                return response()->json($user);
+                $responseData['details']['investor'] = $user->investors;
+                break;
         }
     }
+
+    return response()->json($responseData);
+}
 
     /**
      * Update the specified resource in storage.

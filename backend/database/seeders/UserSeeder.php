@@ -56,6 +56,12 @@ class UserSeeder extends Seeder
             'role' => 'seller'
         ]);
 
+        // Asignar rol de seller
+        UserRole::create([
+            'user_id' => $testSeller->id,
+            'role' => 'restaurant'
+        ]);
+
         // Crear usuario específico de prueba (Restaurant)
         $testRestaurant = User::factory()->create([
             'name' => 'Restaurante de Prueba',
@@ -98,6 +104,7 @@ class UserSeeder extends Seeder
 
         // Crear perfiles usando factories
         createProfiles($testSeller, 'seller');
+        createProfiles($testSeller, 'restaurant');
         createProfiles($testRestaurant, 'restaurant');
         createProfiles($testInvestor, 'investor');
 
