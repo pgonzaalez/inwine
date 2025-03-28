@@ -15,12 +15,13 @@ import Create from "@pages/Seller/CreateProductPage";
 import WineManagement from "@pages/Seller/WineManagementPage";
 import ViewProductPage from "@pages/Seller/ViewProductPage";
 import EditProductPage from "@pages/Seller/EditProductPage";
+import ProductDetails from "@pages/ViewProductsRequest";
+import ViewProductsRequest from "@pages/ViewProductsRequest"; // Import ViewProductsRequest
 // Pages Inversor
 import RegisterInversor from "@pages/RegisterInversorPage";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
-
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/productes" element={<ProductPage />} />
+        <Route path="/productes/:id" element={<ViewProductsRequest />} />
 
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
