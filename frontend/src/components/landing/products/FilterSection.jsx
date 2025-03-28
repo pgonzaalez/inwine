@@ -1,3 +1,5 @@
+"use client"
+
 import { ChevronDown, ChevronUp, X } from "lucide-react"
 
 export default function FilterSidebar({
@@ -41,6 +43,16 @@ export default function FilterSidebar({
             </button>
             {openAccordion.tipo && (
               <div className="space-y-2 mt-3">
+                <div className="relative rounded-lg overflow-hidden mb-2">
+                  <button
+                    className={`w-full relative ${
+                      selectedType === "" ? "bg-[#9A3E50]/70 text-white font-medium" : "bg-gray-100 hover:bg-gray-200"
+                    } p-3 flex items-center justify-center transition-all duration-300`}
+                    onClick={() => setSelectedType("")}
+                  >
+                    <span className="text-sm font-medium">Tots els tipus</span>
+                  </button>
+                </div>
                 {wineTypes.map((type) => (
                   <div key={type.id} className="relative rounded-lg overflow-hidden">
                     <img
@@ -126,3 +138,4 @@ export default function FilterSidebar({
     </div>
   )
 }
+
