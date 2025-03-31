@@ -1,4 +1,4 @@
-import { Check, Clock, ShoppingBag, Store } from "lucide-react"
+import { Check, Clock, ShoppingBag, Store, Truck } from "lucide-react"
 import { getStatusColor, getStatusTextColor } from "./utils/colors"
 
 export const StatusBadge = ({ status }) => {
@@ -16,6 +16,12 @@ export const StatusBadge = ({ status }) => {
       text = "En el local"
       bgColor = getStatusColor("in_my_local")
       textColor = getStatusTextColor("in_my_local")
+      break
+    case "in_transit":
+      icon = <Truck size={14} />
+      text = "En trànsit"
+      bgColor = getStatusColor("in_transit")
+      textColor = getStatusTextColor("in_transit")
       break
     case "accepted":
       icon = <ShoppingBag size={14} />

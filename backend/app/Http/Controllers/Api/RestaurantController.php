@@ -29,6 +29,7 @@ class RestaurantController extends Controller
                     'status' => $request->status,
                     'created_at' => $request->created_at,
                     'product' => [
+                        'id' => $request->product->id,
                         'name' => $request->product->name,
                         'origin' => $request->product->origin,
                         'year' => $request->product->year,
