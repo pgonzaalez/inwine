@@ -77,7 +77,7 @@ class UserSeeder extends Seeder
 
         $testInvestor = User::factory()->create([
             'name' => 'Inversor de Prueba',
-            'email' => 'inversor@gmai.com',
+            'email' => 'inversor@gmail.com',
             'password' => Hash::make('1234'),
         ]);
 
