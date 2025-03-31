@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router";
 import "./App.css";
 
 // Pages
+import Profile from "@pages/Profile/ProfilePage";
 // Pages Landing
 import Main from "@pages/MainPage";
 import ProductPage from "@pages/ProductPage";
@@ -78,6 +79,14 @@ export default function App() {
               </ProtectedRoute>
             }
             />
+            <Route
+            path="/seller/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
 
             {/* Rutas protegidas para Restaurant */}
             <Route
@@ -87,6 +96,14 @@ export default function App() {
                   <Restaurant />
                 </ProtectedRoute>
               }
+          />
+          <Route
+            path="/restaurant/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
           />
         </Route>
 

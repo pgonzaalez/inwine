@@ -113,7 +113,7 @@ export default function Sidebar() {
       {
         icon: User,
         label: "Perfil",
-        path: `/restaurant/${user?.id || "usuari"}`,
+        path: `/restaurant/profile`,
         divider: true,
       },
       {
@@ -177,7 +177,7 @@ export default function Sidebar() {
       {
         icon: User,
         label: "Perfil",
-        path: `/seller/${user?.id || "usuari"}`,
+        path: `/seller/profile`,
         divider: true,
       },
       {
