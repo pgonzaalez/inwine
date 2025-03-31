@@ -36,7 +36,7 @@ class RequestController extends Controller
         return response()->json([
             'message' => 'Solicitud del restaurante creada con éxito.',
             'data' => $requestRestaurant
-        ], 201);
+        ], status: 201);
     }
 
     /**
