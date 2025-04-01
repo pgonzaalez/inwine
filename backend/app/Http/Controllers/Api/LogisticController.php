@@ -19,6 +19,7 @@ class LogisticController extends Controller
      *        Product: in_stock  --> requested
      *        RequestRestaurant: pending    --> accepted
      *        Request:           null/???   --> paid
+     *    - Esta peticion la hace el usuario con rol 'investor'
      */
     public function approve(HttpRequest $request, $productId)
     {
@@ -76,6 +77,7 @@ class LogisticController extends Controller
      *        Product: requested   --> in_transit
      *        RequestRestaurant: accepted   --> in_transit
      *        Request: paid       --> shipped
+     *   - Esta peticion la hace el usuario con rol 'seller'
      */
     public function send(HttpRequest $request, $productId)
     {
@@ -145,6 +147,7 @@ class LogisticController extends Controller
      *        Product: in_transit   --> sold
      *        RequestRestaurant: in_transit  --> in_my_local
      *        Request: shipped      --> completed
+     *   - Esta peticion la hace el usuario con rol 'restaurant'
      */
     public function deliver(HttpRequest $request, $productId)
     {
@@ -201,6 +204,7 @@ class LogisticController extends Controller
      *    - Pasa de:
      *        RequestRestaurant: in_my_local --> sold
      *        Request: waiting     --> completed (sin cambio)
+     *   - Esta peticion la hace el usuario con rol 'investor'
      */
     public function sell(HttpRequest $request, $productId)
     {

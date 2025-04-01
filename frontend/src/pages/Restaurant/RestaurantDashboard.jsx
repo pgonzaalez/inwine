@@ -5,14 +5,18 @@ import { useFetchUser } from "@components/auth/FetchUser"
 import { primaryColors } from "@/components/restaurant/utils/colors"
 import { RequestStats } from "@/components/restaurant/RequestStats"
 import { FilterButtons } from "@/components/restaurant/FilterButtons"
-import { RequestCard } from "@/components/restaurant/RequestCard"
+import { RestaurantTable } from "@/components/restaurant/RestaurantTable"
 import { WineTypeDistribution } from "@/components/restaurant/WineTypeDistribution"
+import { Notification } from "@/components/restaurant/Notification"
 
 function RestaurantDashboardComponent() {
   const [requests, setRequests] = useState([])
   const [activeFilter, setActiveFilter] = useState("all")
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [receivingProduct, setReceivingProduct] = useState(null)
+  const [sellingProduct, setSellingProduct] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   const apiUrl = import.meta.env.VITE_API_URL
   const baseUrl = import.meta.env.VITE_URL_BASE
@@ -20,28 +24,28 @@ function RestaurantDashboardComponent() {
   const { user, loading: userLoading } = useFetchUser()
 
   useEffect(() => {
-    const fetchRequests = async () => {
-      if (userLoading || !user) return // Wait until user is loaded
-
-      try {
-        setIsLoading(true)
-        const response = await fetch(`${apiUrl}/v1/${user.id}/restaurant`)
-
-        if (!response.ok) {
-          throw new Error("No s'ha pogut connectar amb el servidor")
-        }
-
-        const data = await response.json()
-        setRequests(Array.isArray(data) ? data : [data])
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconegut")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     fetchRequests()
-  }, [user, userLoading, apiUrl])
+  }, [user])
+
+  const fetchRequests = async () => {
+    if (userLoading || !user) return // Wait until user is loaded
+
+    try {
+      setIsLoading(true)
+      const response = await fetch(`${apiUrl}/v1/${user.id}/restaurant`)
+
+      if (!response.ok) {
+        throw new Error("No s'ha pogut connectar amb el servidor")
+      }
+
+      const data = await response.json()
+      setRequests(Array.isArray(data) ? data : [data])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error desconegut")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   // Handle request deletion
   const handleDeleteRequest = async (id) => {
@@ -59,9 +63,108 @@ function RestaurantDashboardComponent() {
 
       // Remove the deleted request from state
       setRequests(requests.filter((request) => request.id !== id))
+
+      // Mostrar notificación de éxito
+      setNotification({ type: "success", message: "Sol·licitud eliminada correctament" })
+      setTimeout(() => setNotification(null), 3000)
     } catch (err) {
       console.error("Error eliminant la sol·licitud:", err)
-      alert("No s'ha pogut eliminar la sol·licitud")
+      setNotification({ type: "error", message: err.message })
+      setTimeout(() => setNotification(null), 3000)
+    }
+  }
+
+  // Handle receiving product
+  const handleReceiveProduct = async (productId) => {
+    // Verificación simple del ID
+    if (!productId) {
+      setNotification({ type: "error", message: "ID de producto no válido" })
+      setTimeout(() => setNotification(null), 3000)
+      return
+    }
+
+    try {
+      // Marcar como recibiendo
+      setReceivingProduct(productId)
+
+      // URL del endpoint
+      const url = `${apiUrl}/v1/logistic/${productId}/deliver`
+
+      // Realizar la petición POST
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+
+      // Procesar la respuesta
+      if (!response.ok) {
+        throw new Error("Error al marcar com rebut")
+      }
+
+      // Actualizar el estado local
+      setRequests(
+        requests.map((request) => (request.product.id === productId ? { ...request, status: "in_my_local" } : request)),
+      )
+
+      // Mostrar notificación de éxito
+      setNotification({ type: "success", message: "Producte rebut correctament" })
+      setTimeout(() => setNotification(null), 3000)
+    } catch (error) {
+      console.error("Error:", error)
+      setNotification({ type: "error", message: error.message })
+      setTimeout(() => setNotification(null), 3000)
+    } finally {
+      setReceivingProduct(null)
+    }
+  }
+
+  // Handle selling product
+  const handleSellProduct = async (productId) => {
+    // Verificación simple del ID
+    if (!productId) {
+      setNotification({ type: "error", message: "ID de producto no válido" })
+      setTimeout(() => setNotification(null), 3000)
+      return
+    }
+
+    try {
+      // Marcar como vendiendo
+      setSellingProduct(productId)
+
+      // URL del endpoint
+      const url = `${apiUrl}/v1/logistic/${productId}/sell`
+
+      // Realizar la petición POST
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+
+      // Procesar la respuesta
+      if (!response.ok) {
+        throw new Error("Error al marcar com venut")
+      }
+
+      // Actualizar el estado local
+      setRequests(
+        requests.map((request) => (request.product.id === productId ? { ...request, status: "sold" } : request)),
+      )
+
+      // Mostrar notificación de éxito
+      setNotification({ type: "success", message: "Producte venut correctament" })
+      setTimeout(() => setNotification(null), 3000)
+    } catch (error) {
+      console.error("Error:", error)
+      setNotification({ type: "error", message: error.message })
+      setTimeout(() => setNotification(null), 3000)
+    } finally {
+      setSellingProduct(null)
     }
   }
 
@@ -73,7 +176,8 @@ function RestaurantDashboardComponent() {
   const stats = {
     total: requests.length,
     pending: requests.filter((request) => request.status === "pending").length,
-    accepted: requests.filter((request) => request.status === "accepted" || request.status === "in_my_local").length,
+    accepted: requests.filter((request) => request.status === "accepted" || request.status === "in_transit").length,
+    in_my_local: requests.filter((request) => request.status === "in_my_local").length,
     sold: requests.filter((request) => request.status === "sold").length,
   }
 
@@ -109,6 +213,8 @@ function RestaurantDashboardComponent() {
 
   return (
     <div>
+      <Notification notification={notification} />
+
       <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
           Gestiona les teves Sol·licituds
@@ -123,29 +229,17 @@ function RestaurantDashboardComponent() {
 
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Request cards */}
+        {/* Request table */}
         <div className="lg:col-span-3">
-          {filteredRequests.length === 0 ? (
-            <div className="bg-white text-center p-8 rounded-xl shadow-sm">
-              No hi ha sol·licituds disponibles amb aquest filtre
-            </div>
-          ) : (
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
-                  Les teves sol·licituds
-                </h2>
-                <span className="text-sm text-gray-500">
-                  {filteredRequests.length} {filteredRequests.length === 1 ? "sol·licitud" : "sol·licituds"}
-                </span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredRequests.map((request) => (
-                  <RequestCard key={request.id} request={request} baseUrl={baseUrl} onDelete={handleDeleteRequest} />
-                ))}
-              </div>
-            </div>
-          )}
+          <RestaurantTable
+            requests={filteredRequests}
+            baseUrl={baseUrl}
+            onDelete={handleDeleteRequest}
+            handleReceiveProduct={handleReceiveProduct}
+            handleSellProduct={handleSellProduct}
+            receivingProduct={receivingProduct}
+            sellingProduct={sellingProduct}
+          />
         </div>
 
         {/* Wine type distribution */}
