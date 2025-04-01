@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\ProductStatusUpdated;
+use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 
 class LogisticController extends Controller
@@ -56,6 +58,17 @@ class LogisticController extends Controller
             $restaurantRequest->update(['status' => 'accepted']);
 
             DB::commit();
+
+            // Notificar al vendedor
+            $sellerUser = User::find($product->user_id);
+            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'),);
+            // Notificar al restaurante
+            $restaurantUser = User::find($restaurantRequest->user_id);
+            $restaurantUser->notify(new ProductStatusUpdated($product, 'requested'));
+            // Notificar al inversor
+            $investorUser = User::find($investorRequest->user_id);
+            $investorUser->notify(new ProductStatusUpdated($product, 'requested'));
+
 
             return response()->json([
                 'message' => 'Solicitud aprobada correctamente.',
