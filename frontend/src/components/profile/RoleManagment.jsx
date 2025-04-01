@@ -37,7 +37,7 @@ export default function RoleManagement({ userRoles, onAddRole, primaryColors }) 
   ]
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-4">
       {roles.map((role) => (
         <div key={role.id} className="border border-gray-200 rounded-lg p-4 flex flex-col">
           <div className="flex items-center justify-between mb-4">
