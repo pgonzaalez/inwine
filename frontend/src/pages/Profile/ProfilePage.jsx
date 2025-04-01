@@ -21,9 +21,8 @@ export default function ProfilePage() {
 
   // Efecto para cargar los roles del usuario cuando se obtienen los datos
   useEffect(() => {
-    if (user && user.role) {
-      // Asumiendo que el usuario ya tiene un rol asignado
-      setUserRoles([user.role])
+    if (user && user.roles) {
+      setUserRoles(user.roles)
     }
   }, [user])
 
@@ -194,4 +193,3 @@ export default function ProfilePage() {
     </div>
   )
 }
-
