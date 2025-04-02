@@ -50,7 +50,8 @@ class LogisticController extends Controller
             $investorRequest = Request::create([
                 'user_id' => 3,
                 'request_restaurant_id' => 1,
-                'status' => 'paid'
+                'quantity' => 1,
+                'status' => 'paid',
             ]);
 
             // Actualizamos estados

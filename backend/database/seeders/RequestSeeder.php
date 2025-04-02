@@ -60,9 +60,10 @@ class RequestSeeder extends Seeder
             );
 
             // 3) Crear una solicitud de inversor en estado 'paid'
-            $investorRequest = Request::create([
+            Request::create([
                 'user_id' => 3,
                 'request_restaurant_id' => $restaurantRequest->id,
+                'quantity' => 1,
                 'status' => 'paid'
             ]);
 

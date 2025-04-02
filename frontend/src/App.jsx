@@ -8,6 +8,7 @@ import Notifications from "@pages/Notification/NotificationsPage";
 import Main from "@pages/MainPage";
 import ProductPage from "@pages/ProductPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
+import OrderCart from "@pages/OrderCartPage";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
 import ProtectedRoute from "@components/auth/ProtectedRoute";
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="/" element={<Main />} />
         <Route path="/productes" element={<ProductPage />} />
         <Route path="/productes/:id" element={<ViewProductsRequest />} />
+        <Route path="/cistella" element={<OrderCart />} />
 
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
