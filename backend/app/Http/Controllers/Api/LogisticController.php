@@ -140,6 +140,17 @@ class LogisticController extends Controller
 
             DB::commit();
 
+            // Notificar al vendedor
+            $sellerUser = User::find($product->user_id);
+            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'),);
+            // Notificar al restaurante
+            $restaurantUser = User::find($restaurantRequest->user_id);
+            $restaurantUser->notify(new ProductStatusUpdated($product, 'requested'));
+            // Notificar al inversor
+            $investorUser = User::find($investorRequest->user_id);
+            $investorUser->notify(new ProductStatusUpdated($product, 'requested'));
+
+
             return response()->json([
                 'message' => 'Producto enviado y en tránsito.',
                 'product_status' => $product->status,
@@ -197,6 +208,15 @@ class LogisticController extends Controller
             $investorRequest->update(['status' => 'waiting']);
 
             DB::commit();
+
+            $sellerUser = User::find($product->user_id);
+            $sellerUser->notify(new ProductStatusUpdated($product, 'sold'),);
+            // Notificar al restaurante
+            $restaurantUser = User::find($restaurantRequest->user_id);
+            $restaurantUser->notify(new ProductStatusUpdated($restaurantRequest, 'en mi local'));
+            // Notificar al inversor
+            $investorUser = User::find($investorRequest->user_id);
+            $investorUser->notify(new ProductStatusUpdated($product, 'sold'));
 
             return response()->json([
                 'message' => 'Producto entregado al restaurante.',

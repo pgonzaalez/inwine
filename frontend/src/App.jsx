@@ -3,10 +3,11 @@ import "./App.css";
 
 // Pages
 import Profile from "@pages/Profile/ProfilePage";
+import Notifications from "@pages/Notification/NotificationsPage";
 // Pages Landing
 import Main from "@pages/MainPage";
 import ProductPage from "@pages/ProductPage";
-import ViewProductsRequest from "@pages/ViewProductsRequest"; 
+import ViewProductsRequest from "@pages/ViewProductsRequest";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
 import ProtectedRoute from "@components/auth/ProtectedRoute";
@@ -23,7 +24,6 @@ import RegisterInversor from "@pages/RegisterInversorPage";
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
 
-
 export default function App() {
   return (
     <Router>
@@ -35,9 +35,7 @@ export default function App() {
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
           {" "}
-
           {/* Aquí usas el Layout con Sidebar */}
-          
           {/* Rutas protegidas para Seller */}
           <Route
             path="/create"
@@ -78,8 +76,8 @@ export default function App() {
                 <EditProductPage />
               </ProtectedRoute>
             }
-            />
-            <Route
+          />
+          <Route
             path="/seller/profile"
             element={
               <ProtectedRoute>
@@ -87,15 +85,22 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
-            {/* Rutas protegidas para Restaurant */}
-            <Route
-              path="/restaurant/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Restaurant />
-                </ProtectedRoute>
-              }
+          <Route
+            path="/seller/notificacions"
+            element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          {/* Rutas protegidas para Restaurant */}
+          <Route
+            path="/restaurant/dashboard"
+            element={
+              <ProtectedRoute>
+                <Restaurant />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/restaurant/profile"
