@@ -244,9 +244,7 @@ class LogisticController extends Controller
         DB::beginTransaction();
 
         try {
-            $product = Product::findOrFail($productId);
-
-
+            Product::findOrFail($productId);
             $restaurantRequest = RequestRestaurant::where('product_id', $productId)
                 ->where('status', 'in_my_local')
                 ->orderBy('created_at', 'desc')
