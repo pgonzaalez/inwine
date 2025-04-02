@@ -18,10 +18,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('wineType')->get();
-
+        $products = Product::all();
+        
         $response = $products->map(function ($product) {
             return [
+                "id"=> $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,
@@ -29,7 +30,8 @@ class ProductController extends Controller
                 'price_demanded' => $product->price_demanded,
                 'quantity' => $product->quantity,
                 'image' => $product->image,
-                'user_id' => $product->user_id,
+                'status' => $product->status,
+                'user_id' => $product->seller->name,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at
             ];
@@ -47,6 +49,7 @@ class ProductController extends Controller
 
         $response = $products->map(function ($product) {
             return [
+                'id'=> $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,
@@ -54,6 +57,7 @@ class ProductController extends Controller
                 'price_demanded' => $product->price_demanded,
                 'quantity' => $product->quantity,
                 'image' => $product->image,
+                'status' => $product->status,
                 'user_id' => $product->user_id,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at

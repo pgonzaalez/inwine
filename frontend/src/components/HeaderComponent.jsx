@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
   Menu,
@@ -10,30 +10,44 @@ import {
   User,
   Settings,
   LogOut,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
-import {getCookie, deleteCookie} from "@/utils/utils"
+import { getCookie, deleteCookie } from "@/utils/utils";
 import Modal from "@components/Modal";
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
+  // const [scrolled, setScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const mobileMenuRef = useRef(null);
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
-  const [isLogoutOpen, setIsLogoutOpen] = useState(false)
-  const apiUrl = import.meta.env.VITE_API_URL
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
 
   const user = useFetchUser();
+  const role = user.user?.role;
+
+  const handleProfile = () => {
+    if (role === "seller") {
+      navigate("/seller/dashboard");
+    } else if (role === "restaurant") {
+      navigate("/restaurant/dashboard");
+    } else if (role === "investor") {
+      navigate("/investor/dashboard");
+    } else {
+      navigate("/login");
+    }
+  };
 
   const handleLogout = async () => {
-    const token = getCookie("token")
+    const token = getCookie("token");
     if (!token) {
-      console.log("No hay token de autenticación")
-      return
+      // console.log("No hay token de autenticación")
+      return;
     }
 
     try {
@@ -43,30 +57,30 @@ export default function Header() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      })
+      });
 
       if (response.ok) {
         deleteCookie("token");
-        window.location.href = "/"
+        window.location.href = "/";
       } else {
-        console.log("Error al hacer logout")
+        // console.log("Error al hacer logout")
       }
     } catch (error) {
-      console.error("Error en la solicitud de logout:", error)
+      // console.error("Error en la solicitud de logout:", error)
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const isScrolled = window.scrollY > 10;
+  //     if (isScrolled !== scrolled) {
+  //       setScrolled(isScrolled);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrolled]);
+  //   window.addEventListener("scroll", handleScroll, { passive: true });
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [scrolled]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -112,12 +126,14 @@ export default function Header() {
   ];
 
   return (
-    <header
-      className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ${scrolled
-        ? "bg-white/80 backdrop-blur-md"
-        : "bg-white/20 backdrop-blur-sm"
-        } text-black ${scrolled ? "translate-y-0" : "-translate-y-full"}`}
-    >
+    // <header
+    //   className={`bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full transition-all duration-500 ${scrolled
+    //     ? "bg-white/80 backdrop-blur-md"
+    //     : "bg-white/20 backdrop-blur-sm"
+    //     } text-black ${scrolled ? "translate-y-0" : "-translate-y-full"}`}
+    // >
+
+    <header className="bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-8">
         <div className="flex items-center">
           <Link to="/" className="mr-10">
@@ -211,13 +227,13 @@ export default function Header() {
                       El meu compte
                     </div>
 
-                    <Link
-                      to={`/seller/products`}
-                      className="flex items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
+                    <button
+                      onClick={handleProfile}
+                      className="flex w-full items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
                     >
                       <User className="mr-2 h-4 w-4" />
                       Perfil
-                    </Link>
+                    </button>
 
                     <Link
                       to="/settings"
@@ -231,7 +247,7 @@ export default function Header() {
 
                     <button
                       onClick={() => setIsLogoutOpen(true)}
-                      className="flex items-center px-4 py-2.5 text-sm transition-colors text-red-600 hover:bg-gray-50"
+                      className="flex w-full items-center px-4 py-2.5 text-sm transition-colors text-red-600 hover:bg-gray-50"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
                       Tancar sessió
@@ -348,7 +364,7 @@ export default function Header() {
                     <div>
                       <div className="text-sm font-medium">Mi cuenta</div>
                       <Link
-                        to={`/seller/dashboard`}
+                        onClick={handleProfile}
                         className="text-xs text-gray-500"
                       >
                         Ver perfil
@@ -414,24 +430,24 @@ export default function Header() {
         <div className="flex items-start rounded-lg bg-amber-50 p-4">
           <AlertTriangle className="mr-3 h-5 w-5 text-amber-500" />
           <p className="text-sm text-amber-700">
-            Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al teu compte.
+            Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al
+            teu compte.
           </p>
         </div>
       </Modal>
 
-      {/* Add global styles for animations */}
-      <style jsx global>{`
-        @keyframes dropdownFade {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
+      <style>{`
+  @keyframes dropdownFade {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`}</style>
     </header>
   );
 }

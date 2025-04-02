@@ -27,6 +27,7 @@ class ProductFactory extends Factory
             'quantity' => $this->faker->numberBetween(1, 100),
             'image' => $this->faker->imageUrl(),
             'user_id' => Seller::factory(),
+            'status' => $this->faker->randomElement(['in_stock']),
         ];
     }
 }

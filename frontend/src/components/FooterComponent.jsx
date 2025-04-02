@@ -11,7 +11,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <img
-                src="logo.webp"
+                src="/logo.webp"
                 alt="INWINE"
                 className="w-12 h-12 object-cover object-center rounded-full"
               />
@@ -66,10 +66,9 @@ export default function Footer() {
               </Link>
             </div>
           </div>
-
-          {/* Community column */}
+          {/* Columna de comunitat */}
           <div>
-            <h3 className="font-bold text-lg mb-4">COMMUNITY</h3>
+            <h3 className="font-bold text-lg mb-4">COMUNITAT</h3>
             <ul className="space-y-3">
               <li>
                 <Link
@@ -84,7 +83,7 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Community
+                  Comunitat
                 </Link>
               </li>
               <li>
@@ -92,7 +91,7 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Ideas
+                  Idees
                 </Link>
               </li>
               <li>
@@ -100,15 +99,15 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Developers
+                  Desenvolupadors
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Company column */}
+          {/* Columna d'empresa */}
           <div>
-            <h3 className="font-bold text-lg mb-4">COMPANY</h3>
+            <h3 className="font-bold text-lg mb-4">EMPRESA</h3>
             <ul className="space-y-3">
               <li>
                 <Link
@@ -123,7 +122,7 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Team
+                  Equip
                 </Link>
               </li>
               <li>
@@ -147,7 +146,7 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Media
+                  Mitjans
                 </Link>
               </li>
               <li>
@@ -161,16 +160,16 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Useful links column */}
+          {/* Columna d'enllaços útils */}
           <div>
-            <h3 className="font-bold text-lg mb-4">USEFUL LINKS</h3>
+            <h3 className="font-bold text-lg mb-4">ENLLAÇOS ÚTILS</h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Warranty
+                  Garantia
                 </Link>
               </li>
               <li>
@@ -178,7 +177,7 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Product Declarations
+                  Declaracions de producte
                 </Link>
               </li>
               <li>
@@ -186,7 +185,7 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Terms of Use
+                  Condicions d'ús
                 </Link>
               </li>
               <li>
@@ -194,7 +193,7 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Politica de Privacidad
+                  Política de privacitat
                 </Link>
               </li>
               <li>
@@ -202,17 +201,16 @@ export default function Footer() {
                   href="#"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Politica de Cookies
+                  Política de cookies
                 </Link>
               </li>
-              
             </ul>
           </div>
         </div>
 
         {/* Copyright */}
         <div className="mt-12 text-center text-sm text-gray-500">
-          <p>© INWINE {new Date().getFullYear()}</p>
+          <p> INWINE {new Date().getFullYear()}. Tots els drets reservats.</p>
           <p className="mt-1">Carrer del Sol, 1, 08201 Sabadell, Barcelona</p>
         </div>
       </div>

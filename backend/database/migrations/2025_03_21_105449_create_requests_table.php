@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('investor_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('request_restaurant_id')->constrained()->cascadeOnDelete();
+            
+            $table->enum('status', ['paid', 'shipped', 'waiting','completed'])->default('paid');
             
             $table->timestamps();
         });

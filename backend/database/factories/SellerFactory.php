@@ -17,11 +17,12 @@ class SellerFactory extends Factory
      */
     public function definition(): array
     {
+        $phone = '6' . $this->faker->numberBetween(10000000, 99999999);
+
         return [
-            'user_id' => User::factory()->state([
-                'role' => 'seller',
-                'name' => $this->faker->company // Asegurar que sea una empresa
-            ]),
+            'user_id' => User::factory(),
+            'address' => $this->faker->address,
+            'phone_contact' => $phone,
             'name_contact' => $this->faker->name,
             'bank_account' => $this->faker->bankAccountNumber,
             'balance' => $this->faker->randomFloat(2, 0, 100000),

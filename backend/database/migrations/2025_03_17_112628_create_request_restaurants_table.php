@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('request_restaurants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('restaurant_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->integer('quantity');
             $table->integer('price_restaurant');
-            $table->enum('status', ['pending', 'accepted', 'rejected']);
+            $table->enum('status', ['pending', 'accepted', 'in_transit','in_my_local','sold'])->default('pending');
             $table->timestamps();
         });
     }

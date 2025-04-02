@@ -1,134 +1,129 @@
-import { useFetchUser } from "@components/auth/FetchUser";
-import Header from "@components/HeaderComponent";
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
-import { CircleAlert, CornerDownLeft, Edit, Star, Trash } from "lucide-react";
-import ImageGallery from "react-image-gallery";
-import "react-image-gallery/styles/css/image-gallery.css";
-import { useEffect, useState } from "react";
-import ConfirmationDialog from "@components/ConfirmationDialogComponent";
+"use client"
+
+import { useFetchUser } from "@components/auth/FetchUser"
+import Header from "@components/HeaderComponent"
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
+import { CircleAlert, CornerDownLeft, Edit, Star, Trash } from "lucide-react"
+import { useEffect, useState } from "react"
+import ConfirmationDialog from "@components/ConfirmationDialogComponent"
+import { StatusBadge } from "@components/seller/StatusBadge"
 
 export default function ViewProductPage() {
-  const { id: productID } = useParams();
-  const { user, error } = useFetchUser();
-  const [wines, setWines] = useState({});
-  const [typeWines, setTypeWines] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const location = useLocation();
-  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // Estat per al diàleg
-  const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const { id: productID } = useParams()
+  const { user, error } = useFetchUser()
+  const [wines, setWines] = useState({})
+  const [typeWines, setTypeWines] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState("")
+  const location = useLocation()
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false) // Estat per al diàleg
+  const navigate = useNavigate()
+  const apiUrl = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     if (location.state?.successMessage) {
-      setSuccessMessage(location.state.successMessage);
-      setShowSuccessNotification(true);
+      setSuccessMessage(location.state.successMessage)
+      setShowSuccessNotification(true)
 
       setTimeout(() => {
-        setShowSuccessNotification(false);
-      }, 3000);
+        setShowSuccessNotification(false)
+      }, 3000)
     }
     const fetchWines = async () => {
       try {
-        const response = await fetch(`${apiUrl}/v1/products/${productID}`);
+        const response = await fetch(`${apiUrl}/v1/products/${productID}`)
         if (!response.ok) {
-          throw new Error("No s'ha pogut connectar amb el servidor");
+          throw new Error("No s'ha pogut connectar amb el servidor")
         }
-        const data = await response.json();
+        const data = await response.json()
         if (!data) {
-          setErrorMessage("No s'ha trobat el producte.");
+          setErrorMessage("No s'ha trobat el producte.")
         } else {
-          setWines(data);
+          setWines(data)
         }
       } catch (error) {
-        setErrorMessage(error.message);
+        setErrorMessage(error.message)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchWines();
-  }, [productID, location.state]);
+    fetchWines()
+  }, [productID, location.state])
 
   useEffect(() => {
-    if (!wines.wine_type_id) return;
+    if (!wines.wine_type_id) return
 
     const fetchTypeWines = async () => {
       try {
-        const response = await fetch(
-          `${apiUrl}/v1/winetypes/${wines.wine_type_id}`
-        );
+        const response = await fetch(`${apiUrl}/v1/winetypes/${wines.wine_type_id}`)
         if (!response.ok) {
-          throw new Error("No s'ha pogut connectar amb el servidor");
+          throw new Error("No s'ha pogut connectar amb el servidor")
         }
-        const data = await response.json();
+        const data = await response.json()
         if (!data) {
-          setErrorMessage("No s'ha trobat el tipus de vi.");
+          setErrorMessage("No s'ha trobat el tipus de vi.")
         } else {
-          setTypeWines(data);
+          setTypeWines(data)
         }
       } catch (error) {
-        setErrorMessage(error.message);
+        setErrorMessage(error.message)
       }
-    };
+    }
 
-    fetchTypeWines();
-  }, [wines.wine_type_id]);
+    fetchTypeWines()
+  }, [wines.wine_type_id])
 
-  const {
-    user: seller,
-    loading: sellerLoading,
-    error: sellerError,
-  } = useFetchUser(wines.user_id);
+  const { user: seller, loading: sellerLoading, error: sellerError } = useFetchUser(wines.user_id)
 
   // Funció per obrir el diàleg de confirmació
   const openDeleteDialog = () => {
-    setIsDeleteDialogOpen(true);
-  };
+    setIsDeleteDialogOpen(true)
+  }
 
   // Funció per tancar el diàleg de confirmació
   const closeDeleteDialog = () => {
-    setIsDeleteDialogOpen(false);
-  };
+    setIsDeleteDialogOpen(false)
+  }
 
   // Funció per eliminar el producte
   const handleDeleteProduct = async () => {
     try {
       const response = await fetch(`${apiUrl}/v1/products/${productID}`, {
         method: "DELETE",
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut eliminar el producte");
+        throw new Error("No s'ha pogut eliminar el producte")
       }
 
       // Redirigir a la llista de productes amb un missatge d'èxit
       navigate(`/seller/products`, {
         state: { successMessage: "Producte eliminat correctament ✅" },
-      });
+      })
     } catch (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(error.message)
     } finally {
-      closeDeleteDialog(); // Tancar el diàleg després de l'acció
+      closeDeleteDialog() // Tancar el diàleg després de l'acció
     }
-  };
+  }
 
   const formatDates = (data) => {
-    const date = new Date(data);
-    return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
-  };
+    const date = new Date(data)
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+  }
 
   if (loading) {
     return (
       <div className="fixed inset-0 bg-white bg-opacity-80 flex justify-center items-center z-50">
         <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
       </div>
-    );
+    )
   }
 
-  const images = wines.image ? [{ original: wines.image }] : [];
+  const images = wines.image ? [{ original: wines.image }] : []
 
   return (
     <>
@@ -173,10 +168,7 @@ export default function ViewProductPage() {
                       onClick={openDeleteDialog}
                       className="border-2 border-red-500 rounded-lg p-1 hover:bg-red-100 transition-colors duration-200"
                     >
-                      <Trash
-                        size={20}
-                        className="text-red-500 cursor-pointer"
-                      />
+                      <Trash size={20} className="text-red-500 cursor-pointer" />
                     </button>
                   </div>
                 </div>
@@ -188,12 +180,9 @@ export default function ViewProductPage() {
                           {images.length > 0 ? (
                             <div className="grid grid-cols-1 gap-4">
                               {images.map((img, index) => (
-                                <div
-                                  key={index}
-                                  className="relative w-full h-[400px] flex justify-center items-center"
-                                >
+                                <div key={index} className="relative w-full h-[400px] flex justify-center items-center">
                                   <img
-                                    src={img.original}
+                                    src={img.original || "/placeholder.svg"}
                                     alt={wines.name}
                                     className="max-w-full max-h-full object-contain "
                                   />
@@ -214,29 +203,21 @@ export default function ViewProductPage() {
                       <div className="flex flex-col justify-between text-gray-500 text-sm">
                         <div className="flex justify-between gap-2 items-center">
                           <span>Vi {typeWines.name}</span>
+                          {/* Mostrar el estado del vino */}
+                          {wines.status && <StatusBadge status={wines.status} />}
                         </div>
                       </div>
                       <h2 className="text-black text-2xl font-semibold mt-2">
                         {wines.name} {wines.year}
                       </h2>
                       <div className="flex gap-2 items-center mt-2">
-                        <span className="text-gray-500 text-sm">
-                          {wines.origin}
-                        </span>
+                        <span className="text-gray-500 text-sm">{wines.origin}</span>
                       </div>
                       <div className="flex gap-2 items-center mt-2">
-                        <span className="text-black text-xl font-bold">
-                          {wines.price_demanded}€
-                        </span>
+                        <span className="text-black text-xl font-bold">{wines.price_demanded}€</span>
                       </div>
                       <div className="flex gap-2 items-center mt-2">
-                        <span
-                          className={`text-sm ${
-                            wines.quantity <= 10
-                              ? "text-red-500"
-                              : "text-gray-500"
-                          }`}
-                        >
+                        <span className={`text-sm ${wines.quantity <= 10 ? "text-red-500" : "text-gray-500"}`}>
                           {wines.quantity} en stock
                         </span>
                         {wines.quantity <= 10 && (
@@ -258,12 +239,8 @@ export default function ViewProductPage() {
                         <span className="text-black text-xs">1,3k Reseñas</span>
                       </div>
                       <div className="mt-4">
-                        <h3 className="text-black text-lg font-bold">
-                          Descripció
-                        </h3>
-                        <p className="text-gray-500 text-base leading-6 mt-1">
-                          {wines.description}
-                        </p>
+                        <h3 className="text-black text-lg font-bold">Descripció</h3>
+                        <p className="text-gray-500 text-base leading-6 mt-1">{wines.description}</p>
                       </div>
                     </div>
                     <div className="flex justify-end gap-2 items-center text-gray-500 mt-4">
@@ -278,5 +255,6 @@ export default function ViewProductPage() {
         </>
       )}
     </>
-  );
+  )
 }
+

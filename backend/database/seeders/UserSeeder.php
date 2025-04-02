@@ -8,6 +8,7 @@ use App\Models\Restaurant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\UserRole;
 use App\Models\Product;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -42,26 +43,70 @@ class UserSeeder extends Seeder
             }
         }
 
-        // Crear usuario específico de prueba
-        $testUser = User::factory()->create([
-            'name' => 'Usuario de Prueba',
-            'email' => 'prueba@gmail.com',
+        // Crear usuario específico de prueba (Seller)
+        $testSeller = User::factory()->create([
+            'name' => 'Bodega de Proba',
+            'email' => 'bodega@gmail.com',
             'password' => Hash::make('1234'),
-            'role' => 'seller',
         ]);
 
-        // Asociar el usuario a su tabla correspondiente según el rol
-        switch ($testUser->role) {
-            case 'seller':
-                $seller = Seller::factory()->create(['user_id' => $testUser->id]);
-                break;
-            case 'investor':
-                Investor::factory()->create(['user_id' => $testUser->id]);
-                break;
-            case 'restaurant':
-                Restaurant::factory()->create(['user_id' => $testUser->id]);
-                break;
+        // Asignar rol de seller
+        UserRole::create([
+            'user_id' => $testSeller->id,
+            'role' => 'seller'
+        ]);
+
+        // Asignar rol de seller
+        UserRole::create([
+            'user_id' => $testSeller->id,
+            'role' => 'restaurant'
+        ]);
+
+        // Crear usuario específico de prueba (Restaurant)
+        $testRestaurant = User::factory()->create([
+            'name' => 'Restaurante de Prueba',
+            'email' => 'restaurant@gmail.com', // Corregido el punto
+            'password' => Hash::make('1234'),
+        ]);
+
+        // Asignar rol de restaurant
+        UserRole::create([
+            'user_id' => $testRestaurant->id,
+            'role' => 'restaurant'
+        ]);
+
+        $testInvestor = User::factory()->create([
+            'name' => 'Inversor de Prueba',
+            'email' => 'inversor@gmail.com',
+            'password' => Hash::make('1234'),
+        ]);
+
+        // Asignar rol de investor
+        UserRole::create([
+            'user_id' => $testInvestor->id,
+            'role' => 'investor'
+        ]);
+
+        function createProfiles(User $user, string $role): void
+        {
+            switch ($role) {
+                case 'seller':
+                    Seller::factory()->create(['user_id' => $user->id]);
+                    break;
+                case 'restaurant':
+                    Restaurant::factory()->create(['user_id' => $user->id]);
+                    break;
+                case 'investor':
+                    Investor::factory()->create(['user_id' => $user->id]);
+                    break;
+            }
         }
+
+        // Crear perfiles usando factories
+        createProfiles($testSeller, 'seller');
+        createProfiles($testSeller, 'restaurant');
+        createProfiles($testRestaurant, 'restaurant');
+        createProfiles($testInvestor, 'investor');
 
         // Crear productos de prueba
         $products = [
@@ -99,13 +144,13 @@ class UserSeeder extends Seeder
 
         foreach ($products as $product) {
             Product::factory()->create(array_merge($product, [
-                'user_id' => $seller->id,
+                'user_id' => $testSeller->id,
             ]));
         }
 
-        // Crear usuarios aleatorios
-        Investor::factory()->count(10)->create();
-        Seller::factory()->count(9)->create();
-        Restaurant::factory()->count(10)->create();
+        // // Crear usuarios aleatorios
+        // Investor::factory()->count(10)->create();
+        // Seller::factory()->count(9)->create();
+        // Restaurant::factory()->count(10)->create();
     }
 }

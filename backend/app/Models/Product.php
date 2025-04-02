@@ -19,6 +19,7 @@ class Product extends Model
         "price_demanded",
         "quantity",
         "image",
+        'status',
         "user_id",
     ];
 
@@ -40,5 +41,10 @@ class Product extends Model
     public function primaryImage()
     {
         return $this->hasMany(ProductImage::class)->where('is_primary', true)->first();
+    }
+
+    public function requestsRestaurant()
+    {
+        return $this->hasMany(RequestRestaurant::class);
     }
 }
