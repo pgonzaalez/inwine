@@ -27,9 +27,19 @@ class OrderController extends Controller
             'request_restaurant_id' => 'required|exists:request_restaurants,id',
         ]);
 
+        $existOrder = Order::where('user_id', $validated['user_id'])
+            ->where('request_restaurant_id', $validated['request_restaurant_id'])
+            ->first();
+        if ($existOrder) {
+            return response()->json([
+                'message' => 'Ja existeix una petició feta per aquest restaurant.',
+                'data' => $existOrder
+            ], 409);
+        }
+
         $order = Order::create($validated);
         return response()->json([
-            'message' => 'Order created successfully.',
+            'message' => 'Orden creada exitosament.',
             'data' => $order
         ], 201);
     }
@@ -58,7 +68,6 @@ class OrderController extends Controller
         $validated = $request->validate([
             'user_id' => 'sometimes|required|exists:users,id',
             'request_restaurant_id' => 'sometimes|required|exists:request_restaurants,id',
-            'quantity' => 'sometimes|required|integer|min:1',
         ]);
         $order->update($validated);
     }
