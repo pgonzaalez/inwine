@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import Header from "../components/HeaderComponent"
@@ -27,9 +29,11 @@ export default function ProductDetail() {
           return
         }
 
+        console.log("Fetching product with ID:", id)
+
         const [productResponse, requestsResponse] = await Promise.all([
           fetch(`${apiUrl}/v1/products/${id}`),
-          fetch(`${apiUrl}/v1/request/${id}`),
+          fetch(`${apiUrl}/v1/request-product/${id}`),
         ])
 
         if (!productResponse.ok || !requestsResponse.ok) {

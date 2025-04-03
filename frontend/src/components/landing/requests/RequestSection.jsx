@@ -219,6 +219,16 @@ export default function RequestsSection({ requests, productPrice }) {
                     </div>
                   </div>
 
+                  {/* Table header */}
+                  <div className="bg-white rounded-t-lg border border-gray-200 shadow-sm p-3 text-sm font-medium text-gray-500 hidden md:grid md:grid-cols-6 gap-4">
+                    <div>Restaurant</div>
+                    <div>Quantitat</div>
+                    <div>Preu sol·licitat</div>
+                    <div>Preu vi</div>
+                    <div>Benefici</div>
+                    <div></div>
+                  </div>
+
                   <div className="space-y-2">
                     {filteredRequests.map((request, index) => (
                       <RequestCard
