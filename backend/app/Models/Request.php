@@ -13,7 +13,6 @@ class Request extends Model
     protected $fillable = [
         'user_id',
         'request_restaurant_id',
-        'quantity',
         'status',
     ];
 

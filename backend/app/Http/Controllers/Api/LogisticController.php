@@ -20,7 +20,7 @@ class LogisticController extends Controller
      *    - Pasa de:
      *        Product: in_stock  --> requested
      *        RequestRestaurant: pending    --> accepted
-     *        Request:           null/???   --> paid
+     *        Request:                      --> paid
      *    - Esta peticion la hace el usuario con rol 'investor'
      */
     public function approve(HttpRequest $request, $productId)
@@ -50,7 +50,6 @@ class LogisticController extends Controller
             $investorRequest = Request::create([
                 'user_id' => 3,
                 'request_restaurant_id' => 1,
-                'quantity' => 1,
                 'status' => 'paid',
             ]);
 

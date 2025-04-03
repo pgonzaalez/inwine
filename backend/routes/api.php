@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RequestRestaurantController;
 use App\Http\Controllers\Api\LogisticController;
+use App\Http\Controllers\Api\OrderController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -43,6 +44,8 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/investor', InvestorController::class);
     Route::get('/request-product/{id}', [RequestRestaurantController::class, 'searchByProduct']);
     Route::apiResource('/restaurants', RequestRestaurantController::class);
+    Route::apiResource('/orders', OrderController::class);
+    Route::get('/{userId}/orders', [OrderController::class, 'indexByUser']);
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);

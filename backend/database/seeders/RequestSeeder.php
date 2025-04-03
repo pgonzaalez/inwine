@@ -63,7 +63,6 @@ class RequestSeeder extends Seeder
             Request::create([
                 'user_id' => 3,
                 'request_restaurant_id' => $restaurantRequest->id,
-                'quantity' => 1,
                 'status' => 'paid'
             ]);
 

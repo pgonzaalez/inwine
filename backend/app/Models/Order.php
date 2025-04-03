@@ -13,7 +13,6 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'request_restaurant_id',
-        'quantity',
     ];
     
     public function investor()
@@ -23,9 +22,5 @@ class Order extends Model
     public function requestRestaurant()
     {
         return $this->belongsTo(RequestRestaurant::class);
-    }
-    public function request()
-    {
-        return $this->hasMany(Request::class);
     }
 }
