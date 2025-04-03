@@ -1,7 +1,5 @@
-"use client"
-
 import { useState, useRef, useEffect } from "react"
-import { ShoppingCart, ChevronUp, ChevronDown, Filter } from "lucide-react"
+import { ShoppingCart, ChevronUp, ChevronDown, Filter, Plus } from "lucide-react"
 import RequestCard from "./RequestCard"
 
 export default function RequestsSection({ requests, productPrice }) {
@@ -13,9 +11,11 @@ export default function RequestsSection({ requests, productPrice }) {
     maxQuantity: "",
   })
   const [filteredRequests, setFilteredRequests] = useState([])
+  const [visibleRequestsCount, setVisibleRequestsCount] = useState(5) // Número de solicitudes visibles inicialmente
 
   // Refs for scroll animation
   const requestsSectionRef = useRef(null)
+  const loadMoreButtonRef = useRef(null)
 
   // Filter requests based on filter options
   useEffect(() => {
@@ -44,6 +44,8 @@ export default function RequestsSection({ requests, productPrice }) {
     }
 
     setFilteredRequests(filtered)
+    // Resetear el contador de solicitudes visibles cuando cambian los filtros
+    setVisibleRequestsCount(5)
   }, [requests, filterOptions])
 
   // Toggle requests section and scroll to it if expanding
@@ -78,8 +80,29 @@ export default function RequestsSection({ requests, productPrice }) {
     })
   }
 
+  // Función para cargar más solicitudes
+  const loadMoreRequests = () => {
+    setVisibleRequestsCount((prev) => prev + 5)
+
+    // Scroll al botón de cargar más para que el usuario vea las nuevas solicitudes
+    setTimeout(() => {
+      if (loadMoreButtonRef.current) {
+        loadMoreButtonRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        })
+      }
+    }, 100)
+  }
+
   // Contar solo las solicitudes pendientes para el contador
   const pendingRequestsCount = requests.filter((request) => request.status === "pending").length
+
+  // Obtener solo las solicitudes visibles
+  const visibleRequests = filteredRequests.slice(0, visibleRequestsCount)
+
+  // Determinar si hay más solicitudes para cargar
+  const hasMoreRequests = visibleRequestsCount < filteredRequests.length
 
   if (pendingRequestsCount === 0) {
     return null
@@ -112,7 +135,7 @@ export default function RequestsSection({ requests, productPrice }) {
       <div
         ref={requestsSectionRef}
         className={`bg-gray-50 rounded-b-xl overflow-hidden transition-all duration-500 ease-in-out ${
-          isRequestsExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+          isRequestsExpanded ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="p-6">
@@ -214,23 +237,13 @@ export default function RequestsSection({ requests, productPrice }) {
                           : "pendents"}
                       </h3>
                       <div className="text-sm text-gray-500">
-                        Mostrant {filteredRequests.length} de {pendingRequestsCount}
+                        Mostrant {Math.min(visibleRequestsCount, filteredRequests.length)} de {filteredRequests.length}
                       </div>
                     </div>
                   </div>
 
-                  {/* Table header */}
-                  <div className="bg-white rounded-t-lg border border-gray-200 shadow-sm p-3 text-sm font-medium text-gray-500 hidden md:grid md:grid-cols-6 gap-4">
-                    <div>Restaurant</div>
-                    <div>Quantitat</div>
-                    <div>Preu sol·licitat</div>
-                    <div>Preu vi</div>
-                    <div>Benefici</div>
-                    <div></div>
-                  </div>
-
                   <div className="space-y-2">
-                    {filteredRequests.map((request, index) => (
+                    {visibleRequests.map((request, index) => (
                       <RequestCard
                         key={request.id}
                         request={request}
@@ -240,6 +253,19 @@ export default function RequestsSection({ requests, productPrice }) {
                       />
                     ))}
                   </div>
+
+                  {/* Botón de cargar más */}
+                  {hasMoreRequests && (
+                    <div ref={loadMoreButtonRef} className="flex justify-center mt-6">
+                      <button
+                        onClick={loadMoreRequests}
+                        className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2 px-4 rounded-md font-medium flex items-center transition-colors"
+                      >
+                        <Plus className="h-4 w-4 mr-2 text-[#9A3E50]" />
+                        Carregar més
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 text-center">
