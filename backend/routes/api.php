@@ -42,7 +42,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/products', ProductController::class);
     Route::apiResource('/winetypes', WineTypeController::class);
     Route::apiResource('/investor', InvestorController::class);
-    Route::get('/request/{id}', [RequestController::class, 'searchByProduct']);
+    Route::get('/request-product/{id}', [RestaurantController::class, 'searchByProduct']);
     Route::apiResource('/request', RequestController::class);
     Route::apiResource('/restaurants', RestaurantController::class);
 

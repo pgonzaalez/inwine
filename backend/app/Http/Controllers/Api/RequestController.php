@@ -68,12 +68,4 @@ class RequestController extends Controller
         return response()->json($request);
     }
 
-
-    public function searchByProduct(string $id)
-    {
-        $request = RequestRestaurant::where('product_id', $id)
-            ->where('status', 'pending')
-            ->get();
-        return response()->json($request);
-    }
 }
