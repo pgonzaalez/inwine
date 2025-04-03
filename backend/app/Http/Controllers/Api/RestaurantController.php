@@ -81,4 +81,12 @@ class RestaurantController extends Controller
         $restaurant->delete();
         return response()->json($restaurant);
     }
+
+    public function searchByProduct(string $id)
+    {
+        $request = RequestRestaurant::where('product_id', $id)
+            ->where('status', 'pending')
+            ->get();
+        return response()->json($request);
+    }
 }

@@ -14,10 +14,26 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::get('/user', [UserController::class, 'show'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [UserController::class, 'show']);
+    Route::put('/user', [UserController::class, 'update']);
+});
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->get('/notifications', function () {
+    return auth()->user()->notifications;
+});
+
+Route::middleware('auth:sanctum')->get('/notifications/unread', function () {
+    return auth()->user()->unreadNotifications;
+});
+
+Route::middleware('auth:sanctum')->post('/notifications/mark-all', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return response()->json(['message' => 'Notificaciones marcadas como leídas']);
+});
 
 Route::prefix('v1')->group(function () {
     // Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
@@ -26,7 +42,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/products', ProductController::class);
     Route::apiResource('/winetypes', WineTypeController::class);
     Route::apiResource('/investor', InvestorController::class);
-    Route::get('/request/{id}', [RequestController::class, 'searchByProduct']);
+    Route::get('/request-product/{id}', [RestaurantController::class, 'searchByProduct']);
     Route::apiResource('/request', RequestController::class);
     Route::apiResource('/restaurants', RestaurantController::class);
 
