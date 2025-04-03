@@ -20,7 +20,7 @@ class RequestSeeder extends Seeder
                 'user_id' => 2,
                 'product_id' => 1,
                 'quantity' => 1,
-                'price_restaurant' => 100,
+                'price_restaurant' => 1500,
             ]
         ];
 

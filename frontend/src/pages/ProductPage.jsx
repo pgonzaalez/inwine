@@ -86,7 +86,6 @@ export default function ProductPage() {
           id: Number(product.id) // Convertir el ID a número
         }))
 
-        console.log('Productos recibidos:', productsWithId) // Agregado para debug
         setProducts(productsWithId)
       } catch (error) {
         console.error("Error fetching products:", error)
@@ -140,7 +139,6 @@ export default function ProductPage() {
         const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
         const response = await fetch(`${apiUrl}/v1/winetypes`)
         const data = await response.json()
-        console.log("Wine types from API:", data)
         setWineTypes(data)
       } catch (error) {
         console.error("Error fetching wine types:", error)
