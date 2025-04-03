@@ -1,14 +1,51 @@
-import { Home, ShoppingCart } from "lucide-react";
+"use client";
 
-export default function RequestCard({
-  request,
-  index,
-  productPrice,
-  isRequestsExpanded,
-}) {
+import { useState } from "react";
+import { Home, ShoppingCart } from "lucide-react";
+import { useFetchUser } from "@components/auth/FetchUser";
+
+export default function RequestCard({ request, index, productPrice, isRequestsExpanded }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  
+  // Llamada al hook en el nivel superior del componente
+  const { user, loading: userLoading } = useFetchUser();
+
   // Calcular el benefici
   const profit = request.price_restaurant - productPrice;
   const profitPercentage = ((profit / request.price_restaurant) * 100).toFixed(1);
+
+  const handleAddToOrder = async () => {
+    try {
+      setIsLoading(true);
+
+      if (!user || userLoading) {
+        throw new Error("El usuario no está cargado");
+      }
+
+      // Realizar la petición POST a la API
+      const response = await fetch("http://localhost:8000/api/v1/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          request_restaurant_id: request.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al crear la comanda");
+      }
+
+      setIsSuccess(true); 
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div
@@ -40,11 +77,9 @@ export default function RequestCard({
             </div>
             <p className="font-medium">Restaurant {request.user_id}</p>
           </div>
-          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-            Pendent
-          </span>
+          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pendent</span>
         </div>
-      
+
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div>
             <p className="font-medium">{request.quantity} uds.</p>
@@ -61,9 +96,18 @@ export default function RequestCard({
             </p>
           </div>
         </div>
+
+        <button
+          onClick={handleAddToOrder}
+          disabled={isLoading || isSuccess}
+          className={`w-full bg-[#9A3E50] hover:bg-[#7e3241] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
+        >
+          <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
+          {isLoading ? "Processant..." : isSuccess ? "Afegit!" : "Afegir"}
+        </button>
       </div>
-      
-      {/* Versió escriptori - amb capçalera petita per als preus */}
+
+      {/* Versió escriptori */}
       <div className="hidden md:block">
         <div className="grid grid-cols-6 gap-4 items-center text-gray-500 text-xs uppercase font-medium pb-1">
           <div></div>
@@ -87,9 +131,13 @@ export default function RequestCard({
             €{profit} ({profitPercentage}%)
           </div>
           <div className="text-right">
-            <button className="bg-[#9A3E50] hover:bg-[#7e3241] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ml-auto">
+            <button
+              onClick={handleAddToOrder}
+              disabled={isLoading || isSuccess}
+              className={`bg-[#9A3E50] hover:bg-[#7e3241] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ml-auto ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
+            >
               <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
-              Afegir
+              {isLoading ? "Processant..." : isSuccess ? "Afegit!" : "Afegir"}
             </button>
           </div>
         </div>
