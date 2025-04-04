@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\OrderRequest;
+
 
 class OrderController extends Controller
 {
@@ -85,6 +87,10 @@ class OrderController extends Controller
         return response()->json(['message' => 'Order deleted successfully.']);
     }
 
+    /**
+     * Display a listing of the resource by user.
+     */
+
     public function showOrderByUser($userId)
     {
         $orders = Order::where('user_id', $userId)
@@ -92,5 +98,25 @@ class OrderController extends Controller
             ->get();
 
         return response()->json($orders);
+    }
+
+    public function completed($orderId)
+    {
+        $order = Order::where('order_id', $orderId)
+            ->first();
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        }
+
+        OrderRequest::create([
+            'user_id' => $order->user_id,
+            'request_restaurant_id' => $order->request_restaurant_id,
+            'status' => 'paid',
+        ]);
+
+
+
+        return response()->json(['message' => 'Order marked as completed.']);
     }
 }

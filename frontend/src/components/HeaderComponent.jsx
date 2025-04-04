@@ -11,6 +11,7 @@ import {
   Settings,
   LogOut,
   AlertTriangle,
+  ShoppingCart,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie, deleteCookie } from "@/utils/utils";
@@ -196,6 +197,15 @@ export default function Header() {
               <span className="sr-only">Buscar</span>
             </button>
           )}
+
+          {/* Cistella / Carrito de compras */}
+          <Link
+            to="/cistella"
+            className="flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            <span className="sr-only">Cistella</span>
+          </Link>
 
           {/* Mostrar botón de login si no hay usuario, o el avatar con menú desplegable si hay usuario */}
           {user.user ? (

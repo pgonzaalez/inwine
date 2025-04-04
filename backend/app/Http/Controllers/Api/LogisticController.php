@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Product;
-use App\Models\Request;
 use App\Models\RequestRestaurant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\OrderRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\ProductStatusUpdated;
 use App\Models\User;
@@ -47,7 +47,7 @@ class LogisticController extends Controller
             }
 
             // 3) Crear una nueva solicitud del inversor con estado 'paid'
-            $investorRequest = Request::create([
+            $investorRequest = OrderRequest::create([
                 'user_id' => 3,
                 'request_restaurant_id' => 1,
                 'status' => 'paid',
@@ -124,7 +124,7 @@ class LogisticController extends Controller
             }
 
             // 3) Obtenemos la solicitud del inversor
-            $investorRequest = Request::where('request_restaurant_id', $restaurantRequest->id)
+            $investorRequest = OrderRequest::where('request_restaurant_id', $restaurantRequest->id)
                 ->where('status', 'paid')
                 ->orderBy('created_at', 'desc')
                 ->first();
@@ -193,7 +193,7 @@ class LogisticController extends Controller
                 return response()->json(['error' => 'No se encontró una solicitud de restaurante en estado in_transit.'], 404);
             }
 
-            $investorRequest = Request::where('request_restaurant_id', $restaurantRequest->id)
+            $investorRequest = OrderRequest::where('request_restaurant_id', $restaurantRequest->id)
                 ->where('status', 'shipped')
                 ->orderBy('created_at', 'desc')
                 ->first();
@@ -254,7 +254,7 @@ class LogisticController extends Controller
                 return response()->json(['error' => 'No se encontró una solicitud de restaurante en estado in_my_local.'], 404);
             }
 
-            $investorRequest = Request::where('request_restaurant_id', $restaurantRequest->id)
+            $investorRequest = OrderRequest::where('request_restaurant_id', $restaurantRequest->id)
                 ->orderBy('created_at', 'desc')
                 ->first();
 

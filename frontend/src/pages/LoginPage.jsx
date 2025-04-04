@@ -90,7 +90,7 @@ const LoginForm = () => {
           navigate("/restaurant/dashboard")
           break
         case "investor":
-          navigate("/investor/dashboard")
+          navigate(-1)
           break
         default:
           navigate("/login")
