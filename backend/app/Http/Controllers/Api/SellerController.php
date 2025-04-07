@@ -4,49 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Restaurant;
-use App\Models\RequestRestaurant;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use App\Models\Seller;
 use App\Models\UserRole;
 
-class RestaurantController extends Controller
+class SellerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $restaurant = Restaurant::all();
-        return response()->json($restaurant);
-    }
-
-    public function indexByRestaurant($userId)
-    {
-        $products = RequestRestaurant::where('user_id', $userId)
-            ->with('product')
-            ->get()
-            ->map(function ($request) {
-                return [
-                    'price_restaurant' => $request->price_restaurant,
-                    'status' => $request->status,
-                    'created_at' => $request->created_at,
-                    'product' => [
-                        'id' => $request->product->id,
-                        'name' => $request->product->name,
-                        'origin' => $request->product->origin,
-                        'year' => $request->product->year,
-                        'wine_type' => $request->product->wineType->name ?? null,
-                        'price_demanded' => $request->product->price_demanded,
-                        'quantity' => $request->quantity,
-                        'image' => $request->product->image,
-                    ],
-                ];
-            });
-
-        return response()->json($products);
+        //
     }
 
     /**
@@ -54,8 +26,7 @@ class RestaurantController extends Controller
      */
     public function store(Request $request)
     {
-        $restaurant = Restaurant::create($request->all());
-        return response()->json($restaurant);
+        //
     }
 
     /**
@@ -63,8 +34,7 @@ class RestaurantController extends Controller
      */
     public function show(string $id)
     {
-        $restaurant = Restaurant::find($id);
-        return response()->json($restaurant);
+        //
     }
 
     /**
@@ -72,7 +42,7 @@ class RestaurantController extends Controller
      */
     public function update(Request $request)
     {
-        Log::info('Solicitud recibida para crear un restaurante', ['data' => $request->all()]);
+        Log::info('Solicitud recibida para crear un productor', ['data' => $request->all()]);
 
         $user = Auth::user();
 
@@ -87,7 +57,7 @@ class RestaurantController extends Controller
             'address' => 'required|string|min:5',
             'phone_contact' => 'required|min:9',
             'name_contact' => 'required|string|min:2',
-            'credit_card' => 'nullable|string',
+            'bank_account' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -100,7 +70,7 @@ class RestaurantController extends Controller
         try {
             DB::beginTransaction();
 
-            Log::info('Verificando si el usuario ya tiene rol de restaurante');
+            Log::info('Verificando si el usuario ya tiene rol de vendedor');
 
             $sellerRole = UserRole::where('user_id', $user->id)
                 ->where('role', 'seller')
@@ -116,18 +86,18 @@ class RestaurantController extends Controller
                 Log::info('Usuario ya tiene rol de vendedor');
             }
 
-            $restaurantData = [
+            $sellerData = [
                 'address' => $request->address,
                 'phone_contact' => $request->phone_contact,
                 'name_contact' => $request->name_contact,
                 'bank_account' => $request->bank_account,
             ];
 
-            Log::info('Creando o actualizando datos del vendedor', ['restaurantData' => $restaurantData]);
+            Log::info('Creando o actualizando datos del vendedor', ['sellerData' => $sellerData]);
 
-            Restaurant::updateOrCreate(
+            Seller::updateOrCreate(
                 ['user_id' => $user->id],
-                $restaurantData
+                $sellerData
             );
 
             DB::commit();
@@ -136,7 +106,7 @@ class RestaurantController extends Controller
 
             return response()->json([
                 'message' => 'Información de vendedor actualizada correctamente',
-                'seller' => $restaurantData
+                'seller' => $sellerData
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -151,13 +121,12 @@ class RestaurantController extends Controller
         }
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        $restaurant = Restaurant::find($id);
-        $restaurant->delete();
-        return response()->json($restaurant);
+        //
     }
 }

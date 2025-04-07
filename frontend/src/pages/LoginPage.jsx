@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { User, Lock, CornerDownLeft, AlertCircle, X, ShoppingBag, Utensils, TrendingUp } from "lucide-react"
 import { useNavigate } from "react-router-dom"
@@ -90,7 +88,7 @@ const LoginForm = () => {
           navigate("/restaurant/dashboard")
           break
         case "investor":
-          navigate("/investor/dashboard")
+          navigate(-1)
           break
         default:
           navigate("/login")

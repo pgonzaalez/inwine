@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\WineTypeController;
-use App\Http\Controllers\Api\InvestorController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RequestController;
+use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\RestaurantController;
+use App\Http\Controllers\Api\InvestorController;
 use App\Http\Controllers\Api\LogisticController;
+use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -17,6 +19,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
+
+    Route::put('/seller', [SellerController::class, 'update']);
+    Route::put('/restaurant', [RestaurantController::class, 'update']);
+    Route::put('/investor', [InvestorController::class, 'update']);
 });
 
 Route::post('/login', [AuthController::class, 'login']);
