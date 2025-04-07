@@ -47,13 +47,13 @@ Route::prefix('v1')->group(function () {
     Route::get('{userId}/products/', [ProductController::class, 'indexByUser']); // Todos los productos de un usuario
     Route::apiResource('/products', ProductController::class);
     Route::apiResource('/winetypes', WineTypeController::class);
-    Route::apiResource('/investor', InvestorController::class);
     Route::apiResource('/request', RequestController::class);
     Route::apiResource('/restaurants', RestaurantController::class);
 
-    Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::get('/{userId}/restaurant', [RestaurantController::class, 'indexByRestaurant']);
+    Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
+    Route::post('/investor', [AuthController::class, 'storeInvestor']);
 
 
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
