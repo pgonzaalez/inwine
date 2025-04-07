@@ -1,126 +1,162 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import {
-  Trash2,
-  ShoppingBag,
-  ChevronRight,
-  Minus,
-  Plus,
-  X,
-  Check,
-  ArrowLeft,
-  CreditCard,
-  Truck,
-  Shield,
-  AlertTriangle,
-} from "lucide-react";
-import Header from "@/components/HeaderComponent";
-import Footer from "@/components/FooterComponent";
-import Modal from "@components/Modal";
+import { useState, useEffect } from "react"
+import { Trash2, ShoppingBag, ChevronRight, Minus, Plus, X, Check, ArrowLeft, CreditCard, Truck, Shield, AlertTriangle } from 'lucide-react'
+import Header from "@/components/HeaderComponent"
+import Footer from "@/components/FooterComponent"
+import Modal from "@components/Modal"
+import { useFetchUser } from "@/components/auth/FetchUser"
+import { getCookie } from "@/utils/utils"
 
 export default function ShoppingCartPage() {
-  const [cartItems, setCartItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [showAddedMessage, setShowAddedMessage] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([])
+  const [selectedItems, setSelectedItems] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [showAddedMessage, setShowAddedMessage] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000"
+
+  const { user, loading: userLoading, error: userError } = useFetchUser()
 
   useEffect(() => {
-    // Simular la obtención de datos del carrito
-    setTimeout(() => {
-      const items = [
-        {
-          id: 1,
-          name: "Vi Criança 2020",
-          price: 37.0,
-          quantity: 2,
-          image: "/placeholder.svg",
-          producer: "Celler Pinord",
-          restaurant: "Restaurant La Vinya",
-          type: "Negre",
-          origin: "D.O. Catalunya",
-        },
-        {
-          id: 2,
-          name: "Vi Blanc Chardonnay",
-          price: 37.0,
-          quantity: 1,
-          image: "/placeholder.svg",
-          producer: "Celler Torres",
-          restaurant: "Restaurant El Racó",
-          type: "Blanc",
-          origin: "D.O. Penedès",
-        },
-        {
-          id: 3,
-          name: "Vi Negre Reserva",
-          price: 37.0,
-          quantity: 3,
-          image: "/placeholder.svg",
-          producer: "Celler Freixenet",
-          restaurant: "Restaurant Can Roca",
-          type: "Negre",
-          origin: "D.O. Rioja",
-        },
-      ];
+    const fetchCartItems = async () => {
+      if (!user) return
 
-      setCartItems(items);
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+        const response = await fetch(`${apiUrl}/v1/${user.id}/orders`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        })
 
-      // Inicializar todos los items como seleccionados
-      const initialSelected = {};
-      items.forEach((item) => {
-        initialSelected[item.id] = true;
-      });
-      setSelectedItems(initialSelected);
+        if (!response.ok) {
+          throw new Error("Failed to fetch cart items")
+        }
 
-      setLoading(false);
-    }, 800);
-  }, []);
+        const data = await response.json()
+        setCartItems(data)
+
+        // Inicializar todos los items como seleccionados
+        const initialSelected = {}
+        data.forEach((item) => {
+          initialSelected[item.order_id] = true
+        })
+        setSelectedItems(initialSelected)
+      } catch (error) {
+        console.error("Error fetching cart items:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (user) {
+      fetchCartItems()
+    }
+  }, [user])
 
   const toggleSelectItem = (id) => {
     setSelectedItems((prev) => ({
       ...prev,
       [id]: !prev[id],
-    }));
-  };
+    }))
+  }
 
-  const clearCart = () => {
-    setCartItems([]);
-    setSelectedItems({});
-  };
+  const clearCart = async () => {
+    if (!user) return
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      await fetch(`${apiUrl}/v1/${user.id}/orders/clear`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      })
+
+      setCartItems([])
+      setSelectedItems({})
+    } catch (error) {
+      console.error("Error clearing cart:", error)
+    }
+  }
 
   const clearCartAndCloseModal = () => {
-    clearCart(); // Limpia el carrito
-    setIsDeleteOpen(false); // Cierra el modal
-  };
+    clearCart()
+    setIsDeleteOpen(false)
+  }
 
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return;
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
+  const updateQuantity = async (orderId, requestId, newQuantity) => {
+    if (newQuantity < 1) return
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      await fetch(`${apiUrl}/v1/request-restaurants/${requestId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify({ quantity: newQuantity }),
+      })
+
+      // Update local state
+      setCartItems(
+        cartItems.map((item) =>
+          item.order_id === orderId
+            ? { ...item, quantity: newQuantity }
+            : item
+        )
       )
-    );
 
-    // Mostrar mensaje de actualización
-    setShowAddedMessage(true);
-    setTimeout(() => setShowAddedMessage(false), 2000);
-  };
+      // Mostrar mensaje de actualización
+      setShowAddedMessage(true)
+      setTimeout(() => setShowAddedMessage(false), 2000)
+    } catch (error) {
+      console.error("Error updating quantity:", error)
+    }
+  }
 
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
+  const removeItem = async (orderId) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      await fetch(`${apiUrl}/v1/orders/${orderId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      })
+
+      // Update local state
+      setCartItems(cartItems.filter((item) => item.order_id !== orderId))
+    } catch (error) {
+      console.error("Error removing item:", error)
+    }
+  }
+
+  // Función para obtener la URL completa de la imagen
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return "/placeholder.svg?height=80&width=80"
+    if (imagePath.startsWith('http')) return imagePath
+    return `${baseUrl}${imagePath}`
+  }
 
   // Calcular subtotal basado en items seleccionados
   const subtotal = cartItems
-    .filter((item) => selectedItems[item.id])
-    .reduce((sum, item) => sum + item.price * item.quantity, 0);
+    .filter((item) => selectedItems[item.order_id])
+    .reduce((sum, item) => {
+      const priceInEuros = item.price_restaurant / 100 // Assuming price is in cents
+      return sum + priceInEuros * item.quantity
+    }, 0)
 
-  const shippingCost = 5.0;
-  const total = subtotal + shippingCost;
+  const shippingCost = 5.0
+  const total = subtotal + shippingCost
 
-  if (loading) {
+  if (loading || userLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="animate-pulse flex flex-col items-center">
@@ -129,26 +165,31 @@ export default function ShoppingCartPage() {
           <div className="h-4 w-64 bg-gray-200 rounded"></div>
         </div>
       </div>
-    );
+    )
+  }
+
+  if (userError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Error de autenticación</h2>
+          <p className="text-gray-600 mb-6">
+            No se pudo cargar la información del usuario. Por favor, inicia sesión nuevamente.
+          </p>
+          <a href="/login">
+            <button className="bg-[#9A3E50] hover:bg-[#7e3241] text-white py-3 px-6 rounded-md font-medium transition-colors shadow-sm hover:shadow">
+              Iniciar sesión
+            </button>
+          </a>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-
-      {/* Breadcrumb */}
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-2">
-          <div className="flex items-center text-sm text-gray-500">
-            <a href="/" className="hover:text-[#9A3E50] transition-colors">
-              Inici
-            </a>
-            <ChevronRight className="h-4 w-4 mx-1" />
-            <span className="text-gray-700 font-medium">Cistella</span>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         {/* Page Title */}
@@ -190,12 +231,9 @@ export default function ShoppingCartPage() {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
               <ShoppingBag className="h-10 w-10 text-gray-400" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-3">
-              El teu carret està buit
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">El teu carret està buit</h2>
             <p className="text-gray-500 mb-8 max-w-md mx-auto">
-              Sembla que encara no has afegit cap producte al carret. Torna a la
-              botiga per explorar els nostres vins.
+              Sembla que encara no has afegit cap producte al carret. Torna a la botiga per explorar els nostres vins.
             </p>
             <a href="/">
               <button className="bg-[#9A3E50] hover:bg-[#7e3241] text-white py-3 px-6 rounded-md font-medium transition-colors shadow-sm hover:shadow">
@@ -209,108 +247,94 @@ export default function ShoppingCartPage() {
             <div className="flex-1">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                 <div className="p-6 border-b">
-                  <h2 className="text-xl font-bold text-gray-800">
-                    Productes seleccionats
-                  </h2>
+                  <h2 className="text-xl font-bold text-gray-800">Productes seleccionats</h2>
                 </div>
 
-                <div className="border-b py-4 hidden md:flex text-sm text-gray-600 px-6">
-                  <div className="w-8"></div>
-                  <div className="w-24"></div>
-                  <div className="flex-1 font-medium">Productes</div>
-                  <div className="w-32 font-medium">Productor</div>
-                  <div className="w-32 font-medium">Restaurant</div>
-                  <div className="w-24 text-center font-medium">Quantitat</div>
-                  <div className="w-24 text-right font-medium">Preu</div>
-                </div>
-
+                {/* Minimalist cart design */}
                 <div className="divide-y">
-                  {cartItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="py-6 px-6 flex items-center hover:bg-gray-50 transition-colors group"
-                    >
-                      <div className="w-8">
-                        <input
-                          type="checkbox"
-                          checked={selectedItems[item.id] || false}
-                          onChange={() => toggleSelectItem(item.id)}
-                          className="h-4 w-4 rounded border-gray-300 text-[#9A3E50] focus:ring-[#9A3E50]"
-                        />
-                      </div>
-                      <div className="w-24">
-                        <div className="relative w-16 h-16 rounded-md overflow-hidden border border-gray-200 group-hover:shadow-md transition-all">
-                          <img
-                            src={item.image || "/placeholder.svg"}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
+                  {cartItems.map((item) => {
+
+                    return (
+                      <div key={item.order_id} className="p-4 hover:bg-gray-50 transition-all duration-200">
+                        <div className="flex items-center gap-4">
+                          <input
+                            type="checkbox"
+                            checked={selectedItems[item.order_id] || false}
+                            onChange={() => toggleSelectItem(item.order_id)}
+                            className="h-5 w-5 rounded-full border-gray-300 text-[#9A3E50] focus:ring-[#9A3E50]"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                          <div className="h-20 w-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                            <img
+                              src={getImageUrl(item.product.image) || "/placeholder.svg"}
+                              alt={item.product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 items-center">
+                            <div className="md:col-span-1">
+                              <h3 className="font-bold text-lg text-gray-900">{item.product.name}</h3>
+                              <p className="text-sm text-gray-500">{item.product.origin} · {item.product.year}</p>
+                            </div>
+
+                            <div className="hidden md:block">
+                              <p className="text-sm text-gray-500">Productor</p>
+                              <p className="text-sm font-medium">{item.seller_name}</p>
+                            </div>
+
+                            <div className="hidden md:block">
+                              <p className="text-sm text-gray-500">Restaurant</p>
+                              <p className="text-sm font-medium">{item.restaurant_name}</p>
+                            </div>
+
+                            <div className="flex items-center justify-end md:justify-center">
+                              <div className="flex items-center bg-gray-100 rounded-full px-2 py-1">
+                                <button
+                                  onClick={() => updateQuantity(
+                                    item.order_id,
+                                    item.request_restaurant_id,
+                                    item.quantity - 1
+                                  )}
+                                  className="text-gray-500 hover:text-[#9A3E50] transition-colors p-1"
+                                  aria-label="Disminuir quantitat"
+                                >
+                                  <Minus className="h-4 w-4" />
+                                </button>
+                                <span className="mx-3 font-medium text-gray-700">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => updateQuantity(
+                                    item.order_id,
+                                    item.request_restaurant_id,
+                                    item.quantity + 1
+                                  )}
+                                  className="text-gray-500 hover:text-[#9A3E50] transition-colors p-1"
+                                  aria-label="Augmentar quantitat"
+                                >
+                                  <Plus className="h-4 w-4" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col items-end gap-2">
+                            <span className="font-bold text-xl text-[#9A3E50]">
+                              {item.price_restaurant} €
+                            </span>
+                            <button
+                              onClick={() => removeItem(item.order_id)}
+                              className="text-gray-400 hover:text-red-500 transition-colors text-sm flex items-center"
+                            >
+                              <X className="h-4 w-4 mr-1" />
+                              Eliminar
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium text-gray-800 group-hover:text-[#9A3E50] transition-colors">
-                          {item.name}
-                        </h3>
-                        <div className="flex items-center mt-1">
-                          <span className="inline-block px-2 py-0.5 bg-red-100 text-red-800 rounded-full text-xs font-medium mr-2">
-                            {item.type}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {item.origin}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-500 md:hidden mt-1">
-                          {item.producer} · {item.restaurant}
-                        </p>
-                      </div>
-                      <div className="w-32 hidden md:block text-sm text-gray-600">
-                        {item.producer}
-                      </div>
-                      <div className="w-32 hidden md:block text-sm text-gray-600">
-                        {item.restaurant}
-                      </div>
-                      <div className="w-24 text-center">
-                        <div className="flex items-center justify-center">
-                          <button
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity - 1)
-                            }
-                            className="text-gray-500 hover:text-[#9A3E50] transition-colors"
-                            aria-label="Disminuir quantitat"
-                          >
-                            <Minus className="h-4 w-4" />
-                          </button>
-                          <span className="mx-2 font-medium text-gray-700 w-6 text-center">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
-                            }
-                            className="text-gray-500 hover:text-[#9A3E50] transition-colors"
-                            aria-label="Augmentar quantitat"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
-                      <div className="w-24 text-right font-medium">
-                        <div className="flex flex-col items-end">
-                          <span>
-                            {(item.price * item.quantity).toFixed(2)} €
-                          </span>
-                          <button
-                            onClick={() => removeItem(item.id)}
-                            className="text-gray-400 hover:text-red-500 transition-colors mt-1 text-xs flex items-center opacity-0 group-hover:opacity-100"
-                          >
-                            <X className="h-3 w-3 mr-1" />
-                            Eliminar
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
 
@@ -321,12 +345,8 @@ export default function ShoppingCartPage() {
                     <Truck className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800 mb-1">
-                      Enviament gratuït
-                    </h3>
-                    <p className="text-xs text-gray-500">
-                      Per a comandes superiors a 100€
-                    </p>
+                    <h3 className="font-medium text-gray-800 mb-1">Enviament gratuït</h3>
+                    <p className="text-xs text-gray-500">Per a comandes superiors a 100€</p>
                   </div>
                 </div>
                 <div className="bg-white rounded-lg shadow-sm p-4 flex items-start">
@@ -334,12 +354,8 @@ export default function ShoppingCartPage() {
                     <CreditCard className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800 mb-1">
-                      Pagament segur
-                    </h3>
-                    <p className="text-xs text-gray-500">
-                      Transaccions encriptades
-                    </p>
+                    <h3 className="font-medium text-gray-800 mb-1">Pagament segur</h3>
+                    <p className="text-xs text-gray-500">Transaccions encriptades</p>
                   </div>
                 </div>
                 <div className="bg-white rounded-lg shadow-sm p-4 flex items-start">
@@ -347,12 +363,8 @@ export default function ShoppingCartPage() {
                     <Shield className="h-5 w-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-800 mb-1">
-                      Garantia de qualitat
-                    </h3>
-                    <p className="text-xs text-gray-500">
-                      Tots els vins verificats
-                    </p>
+                    <h3 className="font-medium text-gray-800 mb-1">Garantia de qualitat</h3>
+                    <p className="text-xs text-gray-500">Tots els vins verificats</p>
                   </div>
                 </div>
               </div>
@@ -362,9 +374,7 @@ export default function ShoppingCartPage() {
             <div className="lg:w-96">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden sticky top-24">
                 <div className="p-6 border-b">
-                  <h2 className="text-xl font-bold text-gray-800">
-                    Resum de la comanda
-                  </h2>
+                  <h2 className="text-xl font-bold text-gray-800">Resum de la comanda</h2>
                 </div>
 
                 <div className="p-6 space-y-4">
@@ -374,20 +384,14 @@ export default function ShoppingCartPage() {
                   </div>
 
                   <div className="flex justify-between items-start">
-                    <span className="text-gray-600">
-                      Despeses d'enviament i gestió estimats
-                    </span>
-                    <span className="font-medium">
-                      {shippingCost.toFixed(2)} €
-                    </span>
+                    <span className="text-gray-600">Despeses d'enviament i gestió estimats</span>
+                    <span className="font-medium">{shippingCost.toFixed(2)} €</span>
                   </div>
 
                   <div className="border-t pt-4 mt-4">
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-lg">Total</span>
-                      <span className="font-bold text-lg text-[#9A3E50]">
-                        {total.toFixed(2)} €
-                      </span>
+                      <span className="font-bold text-lg text-[#9A3E50]">{total.toFixed(2)} €</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">IVA inclòs</p>
                   </div>
@@ -395,11 +399,10 @@ export default function ShoppingCartPage() {
 
                 <div className="p-6 bg-gray-50 border-t">
                   <button
-                    className={`w-full py-3 px-4 rounded-md font-medium transition-all ${
-                      cartItems.length === 0 || subtotal === 0
+                    className={`w-full py-3 px-4 rounded-md font-medium transition-all ${cartItems.length === 0 || subtotal === 0
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-[#9A3E50] hover:bg-[#7e3241] text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                    }`}
+                      }`}
                     disabled={cartItems.length === 0 || subtotal === 0}
                   >
                     Pasar al checkout
@@ -424,7 +427,7 @@ export default function ShoppingCartPage() {
                     </div>
                     <span className="font-medium">
                       {cartItems
-                        .filter((item) => selectedItems[item.id])
+                        .filter((item) => selectedItems[item.order_id])
                         .reduce((sum, item) => sum + item.quantity, 0)}
                     </span>
                   </div>
@@ -433,9 +436,7 @@ export default function ShoppingCartPage() {
 
               {/* Promo Code */}
               <div className="mt-4 bg-white rounded-lg shadow-sm p-6">
-                <h3 className="font-medium text-gray-800 mb-3">
-                  Codi promocional
-                </h3>
+                <h3 className="font-medium text-gray-800 mb-3">Codi promocional</h3>
                 <div className="flex">
                   <input
                     type="text"
@@ -467,30 +468,12 @@ export default function ShoppingCartPage() {
                   </svg>
                   <span className="font-medium">Pagament segur</span>
                 </div>
-                <p className="text-xs text-gray-500">
-                  Totes les transaccions estan protegides amb encriptació SSL
-                </p>
+                <p className="text-xs text-gray-500">Totes les transaccions estan protegides amb encriptació SSL</p>
                 <div className="mt-3 flex items-center justify-between">
-                  <img
-                    src="/placeholder.svg?height=20&width=40"
-                    alt="Visa"
-                    className="h-6"
-                  />
-                  <img
-                    src="/placeholder.svg?height=20&width=40"
-                    alt="Mastercard"
-                    className="h-6"
-                  />
-                  <img
-                    src="/placeholder.svg?height=20&width=40"
-                    alt="American Express"
-                    className="h-6"
-                  />
-                  <img
-                    src="/placeholder.svg?height=20&width=40"
-                    alt="PayPal"
-                    className="h-6"
-                  />
+                  <img src="/placeholder.svg?height=20&width=40" alt="Visa" className="h-6" />
+                  <img src="/placeholder.svg?height=20&width=40" alt="Mastercard" className="h-6" />
+                  <img src="/placeholder.svg?height=20&width=40" alt="American Express" className="h-6" />
+                  <img src="/placeholder.svg?height=20&width=40" alt="PayPal" className="h-6" />
                 </div>
               </div>
             </div>
@@ -527,8 +510,7 @@ export default function ShoppingCartPage() {
         <div className="flex items-start rounded-lg bg-amber-50 p-4">
           <AlertTriangle className="mr-3 h-5 w-5 text-amber-500" />
           <p className="text-sm text-amber-700">
-            Al esborrar la cistella, tindràs que tornar a afegir totes les
-            sol·licituds dels restaurants.
+            Al esborrar la cistella, tindràs que tornar a afegir totes les sol·licituds dels restaurants.
           </p>
         </div>
       </Modal>
@@ -566,5 +548,5 @@ export default function ShoppingCartPage() {
         }
       `}</style>
     </div>
-  );
+  )
 }
