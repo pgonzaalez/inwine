@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\OrderRequest;
+use App\Models\OrderRequested;
 
 
 class OrderController extends Controller
@@ -109,7 +109,7 @@ class OrderController extends Controller
             return response()->json(['message' => 'Order not found.'], 404);
         }
 
-        OrderRequest::create([
+        OrderRequested::create([
             'user_id' => $order->user_id,
             'request_restaurant_id' => $order->request_restaurant_id,
             'status' => 'paid',
