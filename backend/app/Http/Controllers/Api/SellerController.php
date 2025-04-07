@@ -3,35 +3,38 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Investor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use App\Models\Seller;
 use App\Models\UserRole;
 
-class InvestorController extends Controller
+class SellerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index() {}
+    public function index()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) 
+    public function store(Request $request)
     {
-
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id) 
+    public function show(string $id)
     {
-
+        //
     }
 
     /**
@@ -39,7 +42,7 @@ class InvestorController extends Controller
      */
     public function update(Request $request)
     {
-        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
+        Log::info('Solicitud recibida para crear un productor', ['data' => $request->all()]);
 
         $user = Auth::user();
 
@@ -53,7 +56,7 @@ class InvestorController extends Controller
         $validator = Validator::make($request->all(), [
             'address' => 'required|string|min:5',
             'phone_contact' => 'required|min:9',
-            'credit_card' => 'nullable|string',
+            'name_contact' => 'required|string|min:2',
             'bank_account' => 'nullable|string',
         ]);
 
@@ -67,62 +70,63 @@ class InvestorController extends Controller
         try {
             DB::beginTransaction();
 
-            Log::info('Verificando si el usuario ya tiene rol de inversor');
+            Log::info('Verificando si el usuario ya tiene rol de vendedor');
 
-            $investorRole = UserRole::where('user_id', $user->id)
-                ->where('role', 'investor')
+            $sellerRole = UserRole::where('user_id', $user->id)
+                ->where('role', 'seller')
                 ->first();
 
-            if (!$investorRole) {
-                Log::info('Usuario no tiene rol de inversor. Asignando rol...');
+            if (!$sellerRole) {
+                Log::info('Usuario no tiene rol de vendedor. Asignando rol...');
                 UserRole::create([
                     'user_id' => $user->id,
-                    'role' => 'investor'
+                    'role' => 'seller'
                 ]);
             } else {
-                Log::info('Usuario ya tiene rol de inversor');
+                Log::info('Usuario ya tiene rol de vendedor');
             }
 
-            $inversorData = [
+            $sellerData = [
                 'address' => $request->address,
                 'phone_contact' => $request->phone_contact,
-                'credit_card' => $request->credit_card,
+                'name_contact' => $request->name_contact,
                 'bank_account' => $request->bank_account,
             ];
 
-            Log::info('Creando o actualizando datos del inversor', ['inversorData' => $inversorData]);
+            Log::info('Creando o actualizando datos del vendedor', ['sellerData' => $sellerData]);
 
-            Investor::updateOrCreate(
+            Seller::updateOrCreate(
                 ['user_id' => $user->id],
-                $inversorData
+                $sellerData
             );
 
             DB::commit();
 
-            Log::info('Información de inversor guardada correctamente');
+            Log::info('Información de vendedor guardada correctamente');
 
             return response()->json([
-                'message' => 'Información de inversor actualizada correctamente',
-                'seller' => $inversorData
+                'message' => 'Información de vendedor actualizada correctamente',
+                'seller' => $sellerData
             ], 200);
         } catch (\Exception $e) {
-            // DB::rollBack();
-            Log::error('Error al guardar la información del inversor', [
+            DB::rollBack();
+            Log::error('Error al guardar la información del vendedor', [
                 'exception' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             return response()->json([
-                'message' => 'Error al actualizar la información de inversor',
+                'message' => 'Error al actualizar la información de vendedor',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id) 
+    public function destroy(string $id)
     {
-
+        //
     }
 }

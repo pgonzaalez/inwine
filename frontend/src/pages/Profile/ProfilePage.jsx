@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import UserProfileForm from "@/components/profile/UserProfileForm";
 import RoleManagement from "@/components/profile/RoleManagment";
@@ -32,6 +30,12 @@ export default function ProfilePage() {
     if (!userRoles.includes(role)) {
       setUserRoles([...userRoles, role]);
     }
+  };
+
+  // Función para manejar cuando se añade un nuevo rol
+  const handleRoleAdded = (role) => {
+    // Redirigir a la pestaña del nuevo rol
+    setActiveTab(role);
   };
 
   if (loading) {
@@ -71,10 +75,10 @@ export default function ProfilePage() {
               className="text-2xl font-bold"
               style={{ color: primaryColors.dark }}
             >
-              Mi Perfil
+              El Meu Perfil
             </h1>
             <p className="text-gray-500">
-              Gestiona tu información personal y roles en la plataforma
+              Gestiona la teva informació personal i rols en la plataforma
             </p>
           </div>
 
@@ -115,7 +119,7 @@ export default function ProfilePage() {
                       : {}
                   }
                 >
-                  Restaurante
+                  Restaurant
                 </button>
               )}
 
@@ -155,7 +159,7 @@ export default function ProfilePage() {
                       : {}
                   }
                 >
-                  Vendedor
+                  Productor
                 </button>
               )}
             </div>
@@ -171,10 +175,10 @@ export default function ProfilePage() {
                       className="text-xl font-bold"
                       style={{ color: primaryColors.dark }}
                     >
-                      Información Personal
+                      Informació Personal
                     </h2>
                     <p className="text-gray-500 text-sm">
-                      Actualiza tus datos personales y credenciales
+                      Actualitza les teves dades personals i credencials
                     </p>
                   </div>
                   <UserProfileForm primaryColors={primaryColors} />
@@ -187,15 +191,16 @@ export default function ProfilePage() {
                       className="text-xl font-bold"
                       style={{ color: primaryColors.dark }}
                     >
-                      Gestión de Roles
+                      Gestió de Rols
                     </h2>
                     <p className="text-gray-500 text-sm">
-                      Añade roles adicionales a tu cuenta
+                      Afegeix rols adicionals al teu compte
                     </p>
                   </div>
                   <RoleManagement
                     userRoles={userRoles}
                     onAddRole={addRole}
+                    onRoleAdded={handleRoleAdded}
                     primaryColors={primaryColors}
                   />
                 </div>
@@ -210,10 +215,10 @@ export default function ProfilePage() {
                   className="text-xl font-bold"
                   style={{ color: primaryColors.dark }}
                 >
-                  Datos de Restaurante
+                  Dades de Restaurant
                 </h2>
                 <p className="text-gray-500 text-sm">
-                  Gestiona la información de tu restaurante
+                  Gestiona la informació del teu restaurant
                 </p>
               </div>
               <RestaurantForm primaryColors={primaryColors} />
@@ -227,10 +232,10 @@ export default function ProfilePage() {
                   className="text-xl font-bold"
                   style={{ color: primaryColors.dark }}
                 >
-                  Datos de Inversor
+                  Dades d'Inversor
                 </h2>
                 <p className="text-gray-500 text-sm">
-                  Gestiona la información de tu perfil de inversor
+                  Gestiona la informació del teu perfil d'inversor
                 </p>
               </div>
               <InvestorForm primaryColors={primaryColors} />
@@ -244,10 +249,10 @@ export default function ProfilePage() {
                   className="text-xl font-bold"
                   style={{ color: primaryColors.dark }}
                 >
-                  Datos de Vendedor
+                  Dades de Productor
                 </h2>
                 <p className="text-gray-500 text-sm">
-                  Gestiona la información de tu perfil de vendedor
+                  Gestiona la informació del teu perfil de productor
                 </p>
               </div>
               <SellerForm primaryColors={primaryColors} />
