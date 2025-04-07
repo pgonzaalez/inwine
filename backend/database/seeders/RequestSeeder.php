@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\OrderRequested;
 use Illuminate\Database\Seeder;
 use App\Models\RequestRestaurant;
 use App\Models\Product;
@@ -60,7 +61,7 @@ class RequestSeeder extends Seeder
             );
 
             // 3) Crear una solicitud de inversor en estado 'paid'
-            Request::create([
+            OrderRequested::create([
                 'user_id' => 3,
                 'request_restaurant_id' => $restaurantRequest->id,
                 'status' => 'paid'
