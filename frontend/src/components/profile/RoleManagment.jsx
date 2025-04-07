@@ -1,8 +1,6 @@
-"use client"
-
 import { useState } from "react"
 
-export default function RoleManagement({ userRoles, onAddRole, primaryColors }) {
+export default function RoleManagement({ userRoles, onAddRole, primaryColors, onRoleAdded }) {
   const [isLoading, setIsLoading] = useState(null)
 
   const handleAddRole = (role) => {
@@ -12,26 +10,29 @@ export default function RoleManagement({ userRoles, onAddRole, primaryColors }) 
     setTimeout(() => {
       onAddRole(role)
       setIsLoading(null)
+      if (onRoleAdded) {
+        onRoleAdded(role)
+      }
     }, 1000)
   }
 
   const roles = [
     {
       id: "restaurant",
-      name: "Restaurante",
-      description: "Gestiona tu restaurante, recibe pedidos y más",
+      name: "Restaurant",
+      description: "Gestiona els vis del teu restaurant, rep comandes i més",
       icon: "🍽️",
     },
     {
       id: "investor",
       name: "Inversor",
-      description: "Invierte en proyectos y gestiona tus inversiones",
+      description: "Inverteix en vi i gestiona les teves inversiones",
       icon: "💼",
     },
     {
       id: "seller",
-      name: "Vendedor",
-      description: "Vende productos y servicios en la plataforma",
+      name: "Productor",
+      description: "Ven els teus productes en la plataforma",
       icon: "🛒",
     },
   ]
@@ -47,7 +48,7 @@ export default function RoleManagement({ userRoles, onAddRole, primaryColors }) 
                 className="px-2 py-1 text-xs font-medium rounded-full text-white"
                 style={{ backgroundColor: primaryColors.dark }}
               >
-                Activo
+                Actiu
               </span>
             )}
           </div>
@@ -61,7 +62,7 @@ export default function RoleManagement({ userRoles, onAddRole, primaryColors }) 
                 className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed"
                 disabled
               >
-                Rol activo
+                Rol actiu
               </button>
             ) : (
               <button
@@ -74,7 +75,7 @@ export default function RoleManagement({ userRoles, onAddRole, primaryColors }) 
                 onClick={() => handleAddRole(role.id)}
                 disabled={isLoading === role.id}
               >
-                {isLoading === role.id ? "Añadiendo..." : "Añadir rol"}
+                {isLoading === role.id ? "Afegint..." : "Afegir rol"}
               </button>
             )}
           </div>

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { User, Lock, CornerDownLeft, AlertCircle, X, ShoppingBag, Utensils, TrendingUp } from "lucide-react"
 import { useNavigate } from "react-router-dom"

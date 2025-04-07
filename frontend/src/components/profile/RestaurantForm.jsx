@@ -1,8 +1,10 @@
-"use client"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useFetchUser } from "@/components/auth/FetchUser"
+import { getCookie } from "@/utils/utils"
 
 export default function RestaurantForm({ primaryColors }) {
+  const { user } = useFetchUser()
+  const apiUrl = import.meta.env.VITE_API_URL
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     address: "",
@@ -11,18 +13,27 @@ export default function RestaurantForm({ primaryColors }) {
     credit_card: "",
   })
   const [errors, setErrors] = useState({})
+  const [successMessage, setSuccessMessage] = useState("")
+
+  // Sincronizar datos del restaurante al formulario
+  useEffect(() => {
+    if (user && user.details && user.details.restaurant) {
+      const restaurantData = user.details.restaurant
+      setFormData({
+        address: restaurantData.address || "",
+        phone_contact: restaurantData.phone_contact || "",
+        name_contact: restaurantData.name_contact || "",
+        credit_card: restaurantData.credit_card || "",
+      })
+    }
+  }, [user])
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
 
-    // Limpiar error al cambiar el valor
     if (errors[name]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev }
-        delete newErrors[name]
-        return newErrors
-      })
+      setErrors(prev => ({ ...prev, [name]: undefined }))
     }
   }
 
@@ -41,30 +52,66 @@ export default function RestaurantForm({ primaryColors }) {
       newErrors.name_contact = "El nombre de contacto debe tener al menos 2 caracteres"
     }
 
+    if (!formData.credit_card || formData.credit_card.length < 16) {
+      newErrors.credit_card = "La tarjeta de crédito debe tener al menos 16 dígitos"
+    }
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setSuccessMessage("")
 
     if (!validateForm()) return
 
     setIsLoading(true)
 
-    // Simular llamada a API
-    setTimeout(() => {
+    try {
+      const token = getCookie("token")
+      const response = await fetch(`${apiUrl}/restaurant`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Error al actualizar los datos del restaurante")
+      }
+
+      setSuccessMessage("Datos del restaurante actualizados correctamente")
+    } catch (error) {
+      setErrors({
+        submit: error.message || "Ha ocurrido un error al guardar los cambios"
+      })
+    } finally {
       setIsLoading(false)
-      alert("Datos de restaurante actualizados correctamente")
-      console.log(formData)
-    }, 1000)
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Mensajes de feedback */}
+      {successMessage && (
+        <div className="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">
+          {successMessage}
+        </div>
+      )}
+
+      {errors.submit && (
+        <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+          {errors.submit}
+        </div>
+      )}
+
       <div className="space-y-2">
         <label htmlFor="address" className="block text-sm font-medium">
-          Dirección
+          Direcció
         </label>
         <input
           id="address"
@@ -79,7 +126,7 @@ export default function RestaurantForm({ primaryColors }) {
 
       <div className="space-y-2">
         <label htmlFor="phone_contact" className="block text-sm font-medium">
-          Teléfono de contacto
+          Telèfon de contacte
         </label>
         <input
           id="phone_contact"
@@ -96,7 +143,7 @@ export default function RestaurantForm({ primaryColors }) {
 
       <div className="space-y-2">
         <label htmlFor="name_contact" className="block text-sm font-medium">
-          Nombre de contacto
+          Nom de contacte
         </label>
         <input
           id="name_contact"
@@ -111,7 +158,7 @@ export default function RestaurantForm({ primaryColors }) {
 
       <div className="space-y-2">
         <label htmlFor="credit_card" className="block text-sm font-medium">
-          Tarjeta de crédito (opcional)
+          Targeta de crèdit
         </label>
         <input
           id="credit_card"
@@ -119,9 +166,12 @@ export default function RestaurantForm({ primaryColors }) {
           type="text"
           value={formData.credit_card}
           onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          className={`w-full px-3 py-2 border rounded-md ${
+            errors.credit_card ? "border-red-500" : "border-gray-300"
+          }`}
         />
-        <p className="text-sm text-gray-500">Información de tarjeta para pagos y cobros</p>
+        {errors.credit_card && <p className="text-sm text-red-500">{errors.credit_card}</p>}
+        <p className="text-sm text-gray-500">Informació de targeta per a pagaments</p>
       </div>
 
       <button
@@ -134,9 +184,8 @@ export default function RestaurantForm({ primaryColors }) {
           background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
         }}
       >
-        {isLoading ? "Guardando..." : "Guardar cambios"}
+        {isLoading ? "Guardant..." : "Guardar canvis"}
       </button>
     </form>
   )
 }
-

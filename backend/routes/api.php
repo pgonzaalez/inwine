@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\WineTypeController;
-use App\Http\Controllers\Api\InvestorController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RequestRestaurantController;
 use App\Http\Controllers\Api\LogisticController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\SellerController;
+use App\Http\Controllers\Api\RestaurantController;
+use App\Http\Controllers\Api\InvestorController;
+use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -17,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
+
+    Route::put('/seller', [SellerController::class, 'update']);
+    Route::put('/restaurant', [RestaurantController::class, 'update']);
+    Route::put('/investor', [InvestorController::class, 'update']);
 });
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -50,7 +57,11 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
+
+    Route::get('/{userId}/restaurant', [RestaurantController::class, 'indexByRestaurant']);
+    Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
+    Route::post('/investor', [AuthController::class, 'storeInvestor']);
 
 
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
