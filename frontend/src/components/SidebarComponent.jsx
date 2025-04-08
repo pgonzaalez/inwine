@@ -80,7 +80,7 @@ export default function Sidebar() {
   let mobileNavItems = []
 
   // Comprobar el rol del usuario
-  const userRole = user?.role || "seller" 
+  const userRole = user?.active_role?.[0] || "seller";
 
   if (userRole === "restaurant") {
     // Navegación para restaurantes
