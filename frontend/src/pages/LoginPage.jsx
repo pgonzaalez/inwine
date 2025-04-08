@@ -1,28 +1,46 @@
 import { useState } from "react"
-import { User, Lock, CornerDownLeft, AlertCircle, X, ShoppingBag, Utensils, TrendingUp } from "lucide-react"
+import {
+  User,
+  Lock,
+  CornerDownLeft,
+  AlertCircle,
+  X,
+} from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { setCookie } from "@/utils/utils"
+import RoleSelector from "@/components/RoleSelector" // Componente extraído para selección de rol
 
 const LoginForm = () => {
   const apiUrl = import.meta.env.VITE_API_URL
+
+  // Estado para controlar formulario
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   })
+
+  // Estado para mostrar mensajes (error o éxito)
   const [message, setMessage] = useState("")
   const [messageType, setMessageType] = useState("")
+
+  // Cargando mientras se hace la petición
   const [isLoading, setIsLoading] = useState(false)
+
+  // Estados relacionados con la selección de rol
   const [showRoleSelection, setShowRoleSelection] = useState(false)
   const [availableRoles, setAvailableRoles] = useState([])
-  const [userData, setUserData] = useState(null)
   const [selectedRole, setSelectedRole] = useState(null)
+  const [userData, setUserData] = useState(null)
+
   const navigate = useNavigate()
 
+  // Actualiza los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
 
+  // Lógica al enviar el formulario
   const handleSubmit = async (e) => {
     e.preventDefault()
     setMessage("")
@@ -30,6 +48,7 @@ const LoginForm = () => {
     setIsLoading(true)
 
     try {
+      // Petición al backend
       const response = await fetch(`${apiUrl}/login`, {
         method: "POST",
         headers: {
@@ -41,6 +60,7 @@ const LoginForm = () => {
 
       const result = await response.json()
 
+      // Manejo de errores
       if (!response.ok) {
         if (response.status === 401) {
           throw new Error("Credencials incorrectes. Comprova el teu correu i contrasenya.")
@@ -51,22 +71,18 @@ const LoginForm = () => {
         }
       }
 
+      // Guardar token, resetear form, guardar usuario
       setMessage("Inici de sessió correcte")
       setMessageType("success")
       setCookie("token", result.token, 7)
       setUserData(result.user)
+      setFormData({ email: "", password: "" })
 
-      setFormData({
-        email: "",
-        password: "",
-      })
-
-      // Verificar si tiene múltiples roles
+      // Si tiene varios roles, mostrar selector. Si no, redirigir.
       if (result.user?.roles?.length > 1) {
         setAvailableRoles(result.user.roles)
         setShowRoleSelection(true)
       } else {
-        // Si solo tiene un rol, redirigir directamente
         const role = result.user?.roles?.[0]
         redirectToDashboard(role)
       }
@@ -78,6 +94,7 @@ const LoginForm = () => {
     }
   }
 
+  // Redirige según el rol del usuario
   const redirectToDashboard = (role) => {
     setTimeout(() => {
       switch (role) {
@@ -88,7 +105,7 @@ const LoginForm = () => {
           navigate("/restaurant/dashboard")
           break
         case "investor":
-          navigate(-1)
+          navigate(-1) // Redirige hacia atrás
           break
         default:
           navigate("/login")
@@ -96,130 +113,46 @@ const LoginForm = () => {
     }, 500)
   }
 
+  // Cierra el mensaje de error o éxito
   const dismissMessage = () => {
     setMessage("")
     setMessageType("")
   }
 
-  // Get role info
-  const getRoleInfo = (role) => {
-    switch (role) {
-      case "seller":
-        return {
-          icon: <ShoppingBag size={32} />,
-          label: "Venedor",
-          description: "Gestiona els teus productes i vendes",
-        }
-      case "restaurant":
-        return {
-          icon: <Utensils size={32} />,
-          label: "Restaurant",
-          description: "Administra el teu restaurant",
-        }
-      case "investor":
-        return {
-          icon: <TrendingUp size={32} />,
-          label: "Inversor",
-          description: "Segueix les teves inversions",
-        }
-      default:
-        return {
-          icon: <User size={32} />,
-          label: role,
-          description: "Accedeix al teu compte",
-        }
-    }
-  }
-
-  // Vista de selección de roles
+  // Si debe seleccionar un rol, mostrar la vista de roles
   if (showRoleSelection) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-800">Selecciona el teu rol</h1>
-            <p className="text-gray-500 mt-2">Escull com vols accedir al sistema</p>
-          </div>
-
-          <div className="grid gap-4">
-            {availableRoles.map((role, index) => {
-              const { icon, label, description } = getRoleInfo(role)
-              const isSelected = selectedRole === role
-
-              return (
-                <div
-                  key={index}
-                  onClick={() => setSelectedRole(role)}
-                  className={`border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 ${
-                    isSelected
-                      ? "border-[#BE6674] bg-[#BE6674]/5"
-                      : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <div
-                      className={`p-3 rounded-lg ${isSelected ? "bg-[#BE6674]/10 text-[#BE6674]" : "bg-gray-100 text-gray-600"}`}
-                    >
-                      {icon}
-                    </div>
-                    <div className="ml-4">
-                      <h3 className={`font-medium ${isSelected ? "text-[#BE6674]" : "text-gray-800"}`}>{label}</h3>
-                      <p className="text-sm text-gray-500">{description}</p>
-                    </div>
-                    <div className="ml-auto">
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          isSelected ? "border-[#BE6674] bg-[#BE6674]" : "border-gray-300"
-                        }`}
-                      >
-                        {isSelected && (
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="mt-8 flex justify-between">
-            <button
-              onClick={() => selectedRole && redirectToDashboard(selectedRole)}
-              disabled={!selectedRole}
-              className={`px-6 py-2 rounded-lg text-white transition-all duration-200 ${
-                selectedRole ? "bg-[#BE6674] hover:bg-[#741C28]" : "bg-gray-300 cursor-not-allowed"
-              }`}
-            >
-              Continuar
-            </button>
-          </div>
-        </div>
-      </div>
+      <RoleSelector
+        roles={availableRoles}
+        onSelect={(role) => {
+          setSelectedRole(role)
+          redirectToDashboard(role)
+        }}
+      />
     )
   }
 
-  // Vista normal de login
+  // Vista normal del login
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md">
+        {/* Botón para volver atrás */}
         <button
           onClick={() => navigate(-1)}
           className="border-2 rounded-lg p-2 hover:bg-gray-200 transition-colors duration-200"
         >
           <CornerDownLeft size={20} className="cursor-pointer" />
         </button>
+
+        {/* Título */}
         <div className="mb-6 text-center">
           <h1 className="text-3xl font-bold text-gray-800">Inicia sessió</h1>
-          <p className="mt-2 text-sm text-gray-600">Introdueix les teves credencials per accedir</p>
+          <p className="mt-2 text-sm text-gray-600">
+            Introdueix les teves credencials per accedir
+          </p>
         </div>
 
+        {/* Mensaje de error o éxito */}
         {message && (
           <div
             className={`mb-6 p-4 rounded-lg relative ${
@@ -238,7 +171,9 @@ const LoginForm = () => {
           </div>
         )}
 
+        {/* Formulario */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Campo email */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3">
               <User className="text-gray-400" />
@@ -256,6 +191,7 @@ const LoginForm = () => {
             />
           </div>
 
+          {/* Campo contraseña */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3">
               <Lock className="text-gray-400" />
@@ -273,6 +209,7 @@ const LoginForm = () => {
             />
           </div>
 
+          {/* Botón de enviar */}
           <button
             type="submit"
             disabled={isLoading}
@@ -287,4 +224,3 @@ const LoginForm = () => {
 }
 
 export default LoginForm
-
