@@ -94,11 +94,36 @@ class OrderController extends Controller
     public function showOrderByUser($userId)
     {
         $orders = Order::where('user_id', $userId)
-            ->with('requestRestaurant')
-            ->get();
+            ->with([
+                'requestRestaurant.product.seller',
+                'requestRestaurant.user',
+            ])
+            ->get()
+            ->map(function ($order) {
+                $product = $order->requestRestaurant->product;
+                $seller = $product->seller;
+                $restaurantUser = $order->requestRestaurant->user;
+
+                return [
+                    'order_id' => $order->id,
+                    'user_id' => $order->user_id,
+                    'request_restaurant_id' => $order->request_restaurant_id,
+                    'price_restaurant' => $order->requestRestaurant->price_restaurant,
+                    'quantity' => $order->requestRestaurant->quantity,
+                    'product' => [
+                        'name' => $product->name,
+                        'origin' => $product->origin,
+                        'year' => $product->year,
+                        'image' => $product->image,
+                    ],
+                    'seller_name' => $seller->name ?? null,
+                    'restaurant_name' => $restaurantUser->name ?? null,
+                ];
+            });
 
         return response()->json($orders);
     }
+
 
     public function completed($orderId)
     {
@@ -113,6 +138,7 @@ class OrderController extends Controller
             'user_id' => $order->user_id,
             'request_restaurant_id' => $order->request_restaurant_id,
             'status' => 'paid',
+            'total_price' => $order->requestRestaurant->price_restaurant * 2,
         ]);
 
 

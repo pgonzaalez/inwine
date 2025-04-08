@@ -25,6 +25,7 @@ export default function Header() {
   const mobileMenuRef = useRef(null);
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const [productCount, setProductCount] = useState(0);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
@@ -70,6 +71,50 @@ export default function Header() {
       // console.error("Error en la solicitud de logout:", error)
     }
   };
+
+  useEffect(() => {
+    const fetchCartCount = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const response = await fetch(`${apiUrl}/v1/${user.user.id}/orders`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.error("Error al obtener los pedidos:", response.status);
+          throw new Error("Error al obtener los pedidos");
+        }
+
+        const data = await response.json();
+        console.log("Datos recibidos de la API:", data);
+
+        // Suma la propiedad `quantity` de cada pedido
+        const count = data.reduce((acc, pedido) => {
+          const cantidadPedido = pedido.quantity || 0;
+          console.log("Pedido:", pedido, "-> Cantidad:", cantidadPedido);
+          return acc + cantidadPedido;
+        }, 0);
+
+        console.log("Total de productos calculado:", count);
+        setProductCount(count);
+      } catch (error) {
+        console.error("Error al cargar el número de productos:", error);
+      }
+    };
+
+    if (user?.user?.id) {
+      console.log("User ID disponible:", user.user.id);
+      fetchCartCount();
+    } else {
+      console.log("No se encontró user.user.id");
+    }
+  }, [user]);
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -179,12 +224,16 @@ export default function Header() {
             </button>
           )}
 
-          {/* Cistella / Carrito de compras */}
           <Link
             to="/cistella"
-            className="flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100"
+            className="relative flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100"
           >
             <ShoppingCart className="h-4 w-4" />
+            {productCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#9A3E50] text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
+                {productCount}
+              </span>
+            )}
             <span className="sr-only">Cistella</span>
           </Link>
 

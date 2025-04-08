@@ -14,8 +14,8 @@ class Order extends Model
         'user_id',
         'request_restaurant_id',
     ];
-    
-    public function investor()
+
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

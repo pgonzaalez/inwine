@@ -75,9 +75,9 @@ class User extends Authenticatable
         return $this->hasOne(RequestRestaurant::class);
     }
 
-    public function requests()
+    public function orders()
     {
-        return $this->hasMany(Request::class);
+        return $this->hasMany(Order::class);
     }
 
     public function roles()

@@ -8,7 +8,7 @@ import Notifications from "@pages/Notification/NotificationsPage";
 import Main from "@pages/MainPage";
 import ProductPage from "@pages/ProductPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
-import OrderCart from "@pages/OrderCartPage";
+import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
 import ProtectedRoute from "@components/auth/ProtectedRoute";
