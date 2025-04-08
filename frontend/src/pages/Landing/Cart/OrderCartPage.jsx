@@ -217,11 +217,11 @@ export default function ShoppingCartPage() {
               <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6">
                 <ShoppingBag className="h-12 w-12 text-gray-400" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">El teu carret està buit</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">La teva cistella es buida</h2>
               <p className="text-gray-500 mb-8 max-w-md mx-auto">
                 Sembla que encara no has afegit cap producte al carret. Torna a la botiga per explorar els nostres vins.
               </p>
-              <a href="/">
+              <a href="/productes">
                 <button className="bg-[#9A3E50] hover:bg-[#7e3241] text-white py-3 px-8 rounded-md font-medium transition-all duration-300">
                   Continuar comprant
                 </button>
