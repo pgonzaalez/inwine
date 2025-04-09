@@ -21,8 +21,21 @@ class RequestSeeder extends Seeder
                 'user_id' => 2,
                 'product_id' => 1,
                 'quantity' => 1,
-                'price_restaurant' => 1500,
-            ]
+                'price_restaurant' => 100,
+            ],
+            [
+                'user_id' => 1,
+                'product_id' => 1,
+                'quantity' => 1,
+                'price_restaurant' => 130,
+            ],
+            [
+                'user_id' => 4,
+                'product_id' => 1,
+                'quantity' => 1,
+                'price_restaurant' => 90,
+            ],
+            
         ];
 
         foreach ($requests as $request) {
@@ -42,9 +55,15 @@ class RequestSeeder extends Seeder
         try {
             // 1) Crear un producto en estado 'in_stock'
             $product = Product::factory()->create([
-                'name' => 'Producto de prueba',
-                'user_id' => 1,
-                'status' => 'in_stock'
+                'name'=> 'Palacio de Villachica ',
+                'origin' => 'Rioja',
+                'year'=> 2024,
+                'wine_type_id'=> 2,
+                'user_id'=> 1,
+                'description'=> 'Vi de prova per a la prova',
+                'price_demanded'=> 50,
+                'quantity'=> 1,
+                'image'=> '/storage/proba/palacio.jpg',
             ]);
 
             // 2) Crear una solicitud de restaurante en estado 'pending'

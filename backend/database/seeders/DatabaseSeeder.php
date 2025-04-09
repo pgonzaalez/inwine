@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\WineType;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
@@ -39,6 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             WineTypeSeeder::class,
             UserSeeder::class,
+            ProductSeeder::class,
             RequestSeeder::class,
         ]);
     }

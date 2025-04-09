@@ -32,6 +32,8 @@ class UserSeeder extends Seeder
             'caja-de-vino-tinto-toro-vinas-elias-mora-6-botellas.jpg',
             'botella-rioja-enamorados.jpg',
             'Botella-vino.jpeg',
+            'louis.jpg',
+            'palacio.jpg',
         ];
 
         foreach ($images as $image) {
@@ -81,6 +83,12 @@ class UserSeeder extends Seeder
             'password' => Hash::make('1234'),
         ]);
 
+        $testInvestor2 = User::factory()->create([
+            'name' => 'Inversor de Prueba',
+            'email' => 'inversor2@gmail.com',
+            'password' => Hash::make('1234'),
+        ]);
+
         // Asignar rol de investor
         UserRole::create([
             'user_id' => $testInvestor->id,
@@ -107,46 +115,7 @@ class UserSeeder extends Seeder
         createProfiles($testSeller, 'restaurant');
         createProfiles($testRestaurant, 'restaurant');
         createProfiles($testInvestor, 'investor');
-
-        // Crear productos de prueba
-        $products = [
-            [
-                'name' => 'Vi Criança',
-                'origin' => 'Catalunya',
-                'year' => 2020,
-                'wine_type_id' => 1,
-                'description' => 'Vi de prova per a la prova',
-                'price_demanded' => 1000,
-                'quantity' => 1,
-                'image' => '/storage/proba/caja-de-vino-tinto-toro-vinas-elias-mora-6-botellas.jpg',
-            ],
-            [
-                'name' => 'Vi i sen va',
-                'origin' => 'Madrid',
-                'year' => 2018,
-                'wine_type_id' => 2,
-                'description' => 'Vi de prova per a la prova',
-                'price_demanded' => 100,
-                'quantity' => 1,
-                'image' => '/storage/proba/botella-rioja-enamorados.jpg',
-            ],
-            [
-                'name' => 'Vi no vi',
-                'origin' => 'França',
-                'year' => 2017,
-                'wine_type_id' => 3,
-                'description' => 'Vi de prova per a la prova',
-                'price_demanded' => 9900,
-                'quantity' => 1,
-                'image' => '/storage/proba/Botella-vino.jpeg',
-            ],
-        ];
-
-        foreach ($products as $product) {
-            Product::factory()->create(array_merge($product, [
-                'user_id' => $testSeller->id,
-            ]));
-        }
+        createProfiles($testInvestor2,'investor');
 
         // // Crear usuarios aleatorios
         // Investor::factory()->count(10)->create();
