@@ -23,26 +23,32 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-    
+
         $user = User::where('email', $request->email)->first();
-    
+
         if (!$user) {
             throw ValidationException::withMessages([
                 'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
-    
+
         if (!Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
-    
+
         // Obtener todos los roles del usuario
-        $roles = UserRole::where('user_id', $user->id)->pluck('role')->toArray();
-    
+        $userRoles = UserRole::where('user_id', $user->id)->get();
+        $roles = $userRoles->pluck('role')->toArray();
+
+        // Si solo tiene un rol, lo marcamos como activo
+        if (count($roles) === 1) {
+            $userRoles->first()->update(['is_active' => true]);
+        }
+
         $token = $user->createToken('api-token')->plainTextToken;
-    
+
         return response()->json([
             'token' => $token,
             'user' => [
@@ -52,6 +58,26 @@ class AuthController extends Controller
                 'roles' => $roles, // Ahora devolvemos un array de roles
             ],
         ]);
+    }
+
+    public function updateActiveRole(Request $request)
+    {
+        $request->validate([
+            'role' => 'required|in:seller,investor,restaurant',
+        ]);
+
+        $user = $request->user();
+
+        // Desactivar todos los roles primero
+        UserRole::where('user_id', $user->id)
+            ->update(['is_active' => false]);
+
+        // Activar el rol seleccionado
+        UserRole::where('user_id', $user->id)
+            ->where('role', $request->role)
+            ->update(['is_active' => true]);
+
+        return response()->json(['message' => 'Rol actualizado correctamente']);
     }
 
     public function logout(Request $request)
