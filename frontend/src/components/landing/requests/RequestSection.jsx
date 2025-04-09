@@ -344,4 +344,3 @@ export default function RequestsSection({ requests, productPrice }) {
     </section>
   )
 }
-
