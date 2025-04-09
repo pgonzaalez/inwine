@@ -1,6 +1,9 @@
+"use client"
+
 import { useState, useRef, useEffect } from "react"
-import { ShoppingCart, ChevronUp, ChevronDown, Filter, Plus } from "lucide-react"
+import { ShoppingCart, ChevronUp, ChevronDown, Plus } from "lucide-react"
 import RequestCard from "./RequestCard"
+import FilterSidebar from "@/components/landing/requests/FilterSidebar"
 
 export default function RequestsSection({ requests, productPrice }) {
   const [isRequestsExpanded, setIsRequestsExpanded] = useState(false)
@@ -11,7 +14,7 @@ export default function RequestsSection({ requests, productPrice }) {
     maxQuantity: "",
   })
   const [filteredRequests, setFilteredRequests] = useState([])
-  const [visibleRequestsCount, setVisibleRequestsCount] = useState(5) // Número de solicitudes visibles inicialmente
+  const [visibleRequestsCount, setVisibleRequestsCount] = useState(5)
 
   // Refs for scroll animation
   const requestsSectionRef = useRef(null)
@@ -61,14 +64,6 @@ export default function RequestsSection({ requests, productPrice }) {
         })
       }, 100)
     }
-  }
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target
-    setFilterOptions((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
   }
 
   const resetFilters = () => {
@@ -142,83 +137,13 @@ export default function RequestsSection({ requests, productPrice }) {
           <div className="flex flex-col md:flex-row gap-6">
             {/* Left column - Filters */}
             <div className="w-full md:w-1/4 flex-shrink-0">
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-gray-100 bg-gray-50">
-                  <h3 className="font-semibold text-gray-800 flex items-center">
-                    <Filter className="h-4 w-4 mr-2 text-[#9A3E50]" />
-                    Filtres seleccionats
-                  </h3>
-                </div>
-                <div className="p-4">
-                  <div className="space-y-4">
-                    {/* Price range */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Rang de preu</label>
-                      <div className="space-y-2">
-                        <div className="relative">
-                          <input
-                            type="number"
-                            name="minPrice"
-                            value={filterOptions.minPrice}
-                            onChange={handleFilterChange}
-                            placeholder="Preu mínim"
-                            className="w-full rounded-md border border-gray-300 py-2 pl-8 pr-3 text-sm focus:border-[#9A3E50] focus:outline-none focus:ring-1 focus:ring-[#9A3E50] transition-colors"
-                          />
-                          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                            €
-                          </div>
-                        </div>
-                        <div className="relative">
-                          <input
-                            type="number"
-                            name="maxPrice"
-                            value={filterOptions.maxPrice}
-                            onChange={handleFilterChange}
-                            placeholder="Preu màxim"
-                            className="w-full rounded-md border border-gray-300 py-2 pl-8 pr-3 text-sm focus:border-[#9A3E50] focus:outline-none focus:ring-1 focus:ring-[#9A3E50] transition-colors"
-                          />
-                          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                            €
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Quantity range */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Rang de quantitat</label>
-                      <div className="space-y-2">
-                        <input
-                          type="number"
-                          name="minQuantity"
-                          value={filterOptions.minQuantity}
-                          onChange={handleFilterChange}
-                          placeholder="Quantitat mínima"
-                          className="w-full rounded-md border border-gray-300 py-2 px-3 text-sm focus:border-[#9A3E50] focus:outline-none focus:ring-1 focus:ring-[#9A3E50] transition-colors"
-                        />
-                        <input
-                          type="number"
-                          name="maxQuantity"
-                          value={filterOptions.maxQuantity}
-                          onChange={handleFilterChange}
-                          placeholder="Quantitat màxima"
-                          className="w-full rounded-md border border-gray-300 py-2 px-3 text-sm focus:border-[#9A3E50] focus:outline-none focus:ring-1 focus:ring-[#9A3E50] transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Reset button */}
-                    <div className="pt-2">
-                      <button
-                        onClick={resetFilters}
-                        className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md font-medium transition-colors text-sm"
-                      >
-                        Restablir filtres
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <FilterSidebar
+                requests={requests}
+                filteredRequests={filteredRequests}
+                filterOptions={filterOptions}
+                setFilterOptions={setFilterOptions}
+                resetFilters={resetFilters}
+              />
             </div>
 
             {/* Right column - Request cards */}
@@ -344,4 +269,3 @@ export default function RequestsSection({ requests, productPrice }) {
     </section>
   )
 }
-
