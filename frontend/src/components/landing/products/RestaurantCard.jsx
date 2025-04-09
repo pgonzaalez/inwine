@@ -63,4 +63,3 @@ export default function RestaurantCard({ restaurante, esFavorito, onToggleFavori
     </div>
   )
 }
-

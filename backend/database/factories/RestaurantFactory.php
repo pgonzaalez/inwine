@@ -17,12 +17,12 @@ class RestaurantFactory extends Factory
      */
     public function definition(): array
     {
+        $phone = '6' . $this->faker->numberBetween(10000000, 99999999);
 
         return [
-            'user_id' => User::factory()->state([
-                'role' => 'restaurant',
-                'name' => $this->faker->company // Asegurar que sea una empresa
-            ]),
+            'user_id' => User::factory(),
+            'address' => $this->faker->address,
+            'phone_contact' => $phone,
             'name_contact' => $this->faker->name,
             'credit_card' => $this->faker->creditCardNumber,
             'balance' => $this->faker->randomFloat(2, 0, 100000),

@@ -18,10 +18,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::where('status', 'in_stock')->get();
         
         $response = $products->map(function ($product) {
             return [
+                "id"=> $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,
@@ -48,6 +49,7 @@ class ProductController extends Controller
 
         $response = $products->map(function ($product) {
             return [
+                'id'=> $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,

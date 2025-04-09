@@ -10,10 +10,11 @@ import {
   User,
   Settings,
   LogOut,
-  AlertTriangle
+  AlertTriangle,
+  ShoppingCart,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
-import { getCookie, deleteCookie } from "@/utils/utils"
+import { getCookie, deleteCookie } from "@/utils/utils";
 import Modal from "@components/Modal";
 
 export default function Header() {
@@ -24,12 +25,13 @@ export default function Header() {
   const mobileMenuRef = useRef(null);
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
-  const [isLogoutOpen, setIsLogoutOpen] = useState(false)
-  const apiUrl = import.meta.env.VITE_API_URL
+  const [productCount, setProductCount] = useState(0);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const user = useFetchUser();
-  const role = user.user?.role
+  const role = user.user?.role;
 
   const handleProfile = () => {
     if (role === "seller") {
@@ -41,13 +43,13 @@ export default function Header() {
     } else {
       navigate("/login");
     }
-  }
+  };
 
   const handleLogout = async () => {
-    const token = getCookie("token")
+    const token = getCookie("token");
     if (!token) {
       // console.log("No hay token de autenticación")
-      return
+      return;
     }
 
     try {
@@ -57,11 +59,11 @@ export default function Header() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      })
+      });
 
       if (response.ok) {
         deleteCookie("token");
-        window.location.href = "/"
+        window.location.href = "/";
       } else {
         // console.log("Error al hacer logout")
       }
@@ -70,17 +72,49 @@ export default function Header() {
     }
   };
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const isScrolled = window.scrollY > 10;
-  //     if (isScrolled !== scrolled) {
-  //       setScrolled(isScrolled);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchCartCount = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const response = await fetch(`${apiUrl}/v1/${user.user.id}/orders`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        });
 
-  //   window.addEventListener("scroll", handleScroll, { passive: true });
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, [scrolled]);
+        if (!response.ok) {
+          console.error("Error al obtener los pedidos:", response.status);
+          throw new Error("Error al obtener los pedidos");
+        }
+
+        const data = await response.json();
+        console.log("Datos recibidos de la API:", data);
+
+        // Suma la propiedad `quantity` de cada pedido
+        const count = data.reduce((acc, pedido) => {
+          const cantidadPedido = pedido.quantity || 0;
+          console.log("Pedido:", pedido, "-> Cantidad:", cantidadPedido);
+          return acc + cantidadPedido;
+        }, 0);
+
+        console.log("Total de productos calculado:", count);
+        setProductCount(count);
+      } catch (error) {
+        console.error("Error al cargar el número de productos:", error);
+      }
+    };
+
+    if (user?.user?.id) {
+      console.log("User ID disponible:", user.user.id);
+      fetchCartCount();
+    } else {
+      console.log("No se encontró user.user.id");
+    }
+  }, [user]);
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -126,16 +160,7 @@ export default function Header() {
   ];
 
   return (
-    // <header
-    //   className={`bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full transition-all duration-500 ${scrolled
-    //     ? "bg-white/80 backdrop-blur-md"
-    //     : "bg-white/20 backdrop-blur-sm"
-    //     } text-black ${scrolled ? "translate-y-0" : "-translate-y-full"}`}
-    // >
-
-    <header
-      className="bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full"
-    >
+    <header className="bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-8">
         <div className="flex items-center">
           <Link to="/" className="mr-10">
@@ -198,6 +223,19 @@ export default function Header() {
               <span className="sr-only">Buscar</span>
             </button>
           )}
+
+          <Link
+            to="/cistella"
+            className="relative flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {productCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#9A3E50] text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
+                {productCount}
+              </span>
+            )}
+            <span className="sr-only">Cistella</span>
+          </Link>
 
           {/* Mostrar botón de login si no hay usuario, o el avatar con menú desplegable si hay usuario */}
           {user.user ? (
@@ -432,24 +470,24 @@ export default function Header() {
         <div className="flex items-start rounded-lg bg-amber-50 p-4">
           <AlertTriangle className="mr-3 h-5 w-5 text-amber-500" />
           <p className="text-sm text-amber-700">
-            Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al teu compte.
+            Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al
+            teu compte.
           </p>
         </div>
       </Modal>
 
-      {/* Add global styles for animations */}
-      <style jsx global>{`
-        @keyframes dropdownFade {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
+      <style>{`
+  @keyframes dropdownFade {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`}</style>
     </header>
   );
 }

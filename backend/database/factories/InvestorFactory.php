@@ -17,11 +17,12 @@ class InvestorFactory extends Factory
      */
     public function definition(): array
     {
+        $phone = '6' . $this->faker->numberBetween(10000000, 99999999);
 
         return [
-            'user_id' => User::factory()->state([
-                'role' => 'investor'
-            ]),
+            'user_id' => User::factory(),
+            'address' => $this->faker->address,
+            'phone_contact' => $phone,
             'credit_card' => $this->faker->creditCardNumber,
             'bank_account' => $this->faker->bankAccountNumber,
             'balance' => $this->faker->randomFloat(2, 0, 100000),

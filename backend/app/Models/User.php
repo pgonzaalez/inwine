@@ -23,9 +23,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'address',
-        'phone_contact',
-        'role',
 
     ];
 
@@ -78,8 +75,13 @@ class User extends Authenticatable
         return $this->hasOne(RequestRestaurant::class);
     }
 
-    public function requests()
+    public function orders()
     {
-        return $this->hasMany(Request::class);
+        return $this->hasMany(Order::class);
+    }
+
+    public function roles()
+    {
+        return $this->hasMany(UserRole::class);
     }
 }

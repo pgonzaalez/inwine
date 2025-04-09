@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RequestRestaurant;
 use Illuminate\Http\Request;
 
-class RequestController extends Controller
+class RequestRestaurantController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,7 +36,7 @@ class RequestController extends Controller
         return response()->json([
             'message' => 'Solicitud del restaurante creada con éxito.',
             'data' => $requestRestaurant
-        ], 201);
+        ], status: 201);
     }
 
     /**
@@ -65,6 +65,40 @@ class RequestController extends Controller
     {
         $request = RequestRestaurant::find($id);
         $request->delete();
+        return response()->json($request);
+    }
+
+    public function indexByRestaurant($userId)
+    {
+        $products = RequestRestaurant::where('user_id', $userId)
+            ->with('product')
+            ->get()
+            ->map(function ($request) {
+                return [
+                    'price_restaurant' => $request->price_restaurant,
+                    'status' => $request->status,
+                    'created_at' => $request->created_at,
+                    'product' => [
+                        'id' => $request->product->id,
+                        'name' => $request->product->name,
+                        'origin' => $request->product->origin,
+                        'year' => $request->product->year,
+                        'wine_type' => $request->product->wineType->name ?? null,
+                        'price_demanded' => $request->product->price_demanded,
+                        'quantity' => $request->quantity,
+                        'image' => $request->product->image,
+                    ],
+                ];
+            });
+
+        return response()->json($products);
+    }
+
+    public function searchByProduct(string $id)
+    {
+        $request = RequestRestaurant::where('product_id', $id)
+            ->where('status', 'pending')
+            ->get();
         return response()->json($request);
     }
 }

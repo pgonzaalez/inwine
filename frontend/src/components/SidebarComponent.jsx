@@ -80,7 +80,7 @@ export default function Sidebar() {
   let mobileNavItems = []
 
   // Comprobar el rol del usuario
-  const userRole = user?.role || "seller" 
+  const userRole = user?.active_role?.[0] || "seller";
 
   if (userRole === "restaurant") {
     // Navegación para restaurantes
@@ -113,7 +113,7 @@ export default function Sidebar() {
       {
         icon: User,
         label: "Perfil",
-        path: `/restaurant/${user?.id || "usuari"}`,
+        path: `/restaurant/profile`,
         divider: true,
       },
       {
@@ -144,6 +144,11 @@ export default function Sidebar() {
         icon: Bell,
         label: "Alertes",
         path: `/restaurant/notificacions`,
+      },
+      {
+        icon: LogOut,
+        label: "Tancar sessió",
+        action: () => setIsLogoutOpen(true)
       },
     ]
   } else {
@@ -177,7 +182,7 @@ export default function Sidebar() {
       {
         icon: User,
         label: "Perfil",
-        path: `/seller/${user?.id || "usuari"}`,
+        path: `/seller/profile`,
         divider: true,
       },
       {
@@ -208,6 +213,11 @@ export default function Sidebar() {
         icon: Bell,
         label: "Alertes",
         path: `/seller/notificacions`,
+      },
+      {
+        icon: LogOut,
+        label: "Tancar sessió",
+        action: () => setIsLogoutOpen(true)
       },
     ]
   }
@@ -276,7 +286,7 @@ export default function Sidebar() {
 
       {/* Mobile navigation bar */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 shadow-lg flex justify-around z-10 py-2"
+        className="md:hidden fixed bottom-0 left-0 right-0 shadow-lg flex justify-between z-10 py-2 p-5"
         style={{
           backgroundColor: "white",
           borderTop: `1px solid ${primaryColors.light}`,

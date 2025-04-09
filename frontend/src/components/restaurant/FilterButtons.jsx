@@ -1,4 +1,6 @@
-import { Filter } from 'lucide-react'
+"use client"
+
+import { Filter } from "lucide-react"
 import { primaryColors } from "./utils/colors"
 
 export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
@@ -58,6 +60,21 @@ export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            activeFilter === "in_transit" ? "text-white" : "text-gray-700 hover:bg-gray-100"
+          }`}
+          style={
+            activeFilter === "in_transit"
+              ? {
+                  background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                }
+              : {}
+          }
+          onClick={() => setActiveFilter("in_transit")}
+        >
+          En trànsit
+        </button>
+        <button
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             activeFilter === "in_my_local" ? "text-white" : "text-gray-700 hover:bg-gray-100"
           }`}
           style={
@@ -90,3 +107,4 @@ export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
     </div>
   )
 }
+

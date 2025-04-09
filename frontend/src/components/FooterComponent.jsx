@@ -11,7 +11,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <img
-                src="logo.webp"
+                src="/logo.webp"
                 alt="INWINE"
                 className="w-12 h-12 object-cover object-center rounded-full"
               />

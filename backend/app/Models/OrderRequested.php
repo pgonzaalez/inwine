@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Request extends Model
+class OrderRequested extends Model
 {
     
     use HasFactory;
@@ -14,6 +14,7 @@ class Request extends Model
         'user_id',
         'request_restaurant_id',
         'status',
+        'total_price'
     ];
 
     public function investor()

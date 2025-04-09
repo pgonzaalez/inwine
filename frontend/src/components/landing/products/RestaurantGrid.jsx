@@ -15,4 +15,3 @@ export default function RestaurantGrid({ restaurants, favorites, toggleFavorite 
     </div>
   )
 }
-

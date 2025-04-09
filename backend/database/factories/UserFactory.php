@@ -27,16 +27,11 @@ class UserFactory extends Factory
         $letter = $this->calculateNIFLetter($numbers);
         $nif = $numbers . $letter;
 
-        $phone = '6' . $this->faker->numberBetween(10000000, 99999999);
-
         return [
             'NIF' => $nif,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('1234'),
-            'address' => $this->faker->address,
-            'phone_contact' => $phone,
-            'role' => $this->faker->randomElement(['seller', 'investor', 'restaurant']),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ];

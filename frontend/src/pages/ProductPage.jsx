@@ -1,6 +1,6 @@
-
+"use client"
 import { useEffect, useState } from "react"
-import { Filter, X } from "lucide-react"
+import { Filter, X, Search } from "lucide-react"
 import Header from "@/components/HeaderComponent"
 import Footer from "@/components/FooterComponent"
 import HeroSection from "@/components/landing/products/HeroSection"
@@ -9,10 +9,10 @@ import ProductGrid from "@/components/landing/products/ProductGrid"
 import RestaurantGrid from "@/components/landing/products/RestaurantGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
 
-export default function PopularProducts() {
+export default function ProductPage() {
   // State for filters and tabs
   const [selectedType, setSelectedType] = useState("")
-  const [priceRange, setPriceRange] = useState([5, 2000])
+  const [priceRange, setPriceRange] = useState([0, 10000])
   const [selectedWineries, setSelectedWineries] = useState([])
   const [selectedZones, setSelectedZones] = useState([])
   const [activeFilter, setActiveFilter] = useState("Productors")
@@ -22,12 +22,14 @@ export default function PopularProducts() {
     zona: true,
   })
   const [favorites, setFavorites] = useState([])
+  const [searchTerm, setSearchTerm] = useState("")
 
   // Detectar si es móvil al inicio y manejar cambios de tamaño
   const [isMobile, setIsMobile] = useState(false)
   const [showFilters, setShowFilters] = useState(true)
   const [products, setProducts] = useState([])
   const [wineTypes, setWineTypes] = useState([])
+  const [loading, setLoading] = useState(true)
 
   // Cargar favoritos desde cookies al iniciar
   useEffect(() => {
@@ -72,13 +74,59 @@ export default function PopularProducts() {
   // Product data with real images
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true)
       try {
         const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
         const response = await fetch(`${apiUrl}/v1/products`)
         const data = await response.json()
-        setProducts(data)
+        
+        // Asegurarse de que cada producto tenga un ID y que sea un número
+        const productsWithId = data.map((product) => ({
+          ...product,
+          id: Number(product.id) // Convertir el ID a número
+        }))
+
+        setProducts(productsWithId)
       } catch (error) {
         console.error("Error fetching products:", error)
+        // Fallback data for testing
+        setProducts([
+          {
+            name: "Vi Criança",
+            origin: "Catalunya",
+            year: 2020,
+            wine_type: "Negre",
+            price_demanded: 1000,
+            quantity: 1,
+            image: "/storage/proba/caja-de-vino-tinto-toro-vinas-elias-mora-6-botellas.jpg",
+            status: "requested",
+            user_id: "Bodega de Proba",
+          },
+          {
+            name: "Vi i sen va",
+            origin: "Madrid",
+            year: 2018,
+            wine_type: "Blanc",
+            price_demanded: 100,
+            quantity: 1,
+            image: "/storage/proba/botella-rioja-enamorados.jpg",
+            status: "in_stock",
+            user_id: "Bodega de Proba",
+          },
+          {
+            name: "Vi no vi",
+            origin: "França",
+            year: 2017,
+            wine_type: "Rossat",
+            price_demanded: 9900,
+            quantity: 1,
+            image: "/storage/proba/Botella-vino.jpeg",
+            status: "in_stock",
+            user_id: "Bodega de Proba",
+          },
+        ])
+      } finally {
+        setLoading(false)
       }
     }
     fetchProducts()
@@ -94,6 +142,31 @@ export default function PopularProducts() {
         setWineTypes(data)
       } catch (error) {
         console.error("Error fetching wine types:", error)
+        // Fallback data for testing
+        setWineTypes([
+          { id: 1, name: "Negre", image: "https://www.elpationeiva.co/wp-content/uploads/2021/06/COPA-DE-VINO.jpg" },
+          {
+            id: 2,
+            name: "Blanc",
+            image: "https://www.blasbermejo.com/wp-content/uploads/2023/06/tipos-vino-blanco.webp",
+          },
+          {
+            id: 3,
+            name: "Rossat",
+            image: "https://s1.elespanol.com/2024/06/13/cocinillas/vinos/862673986_243984786_1706x1280.jpg",
+          },
+          {
+            id: 4,
+            name: "Espumós",
+            image: "https://media.scoolinary.app/blog/images/2022/05/como-servir-un-vino-espumoso.jpg",
+          },
+          {
+            id: 5,
+            name: "Dolç",
+            image:
+              "https://us.123rf.com/450wm/serezniy/serezniy1411/serezniy141101636/33498791-vino-que-vierte-en-la-copa-de-vino-primer-plano.jpg",
+          },
+        ])
       }
     }
     fetchWineTypes()
@@ -220,17 +293,42 @@ export default function PopularProducts() {
 
   // Filter products
   const filteredProducts = products.filter((product) => {
-    // Filter by wine type
-    if (selectedType && product.wine_type !== selectedType) {
+    // Verificar que el producto tenga un ID válido
+    if (!product.id || typeof product.id !== 'number') {
+      console.warn('Producto sin ID válido:', product)
       return false
     }
 
-    // Filter by price range
-    if (product.price_demanded < priceRange[0] || product.price_demanded > priceRange[1]) {
+    // Search filter
+    if (
+      searchTerm &&
+      !product.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !product.origin?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !product.wine_type?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !product.user_id?.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
       return false
     }
 
-    // Filter by winery (usaremos origin como bodega)
+    // Filter by wine type - case insensitive comparison
+    if (selectedType && selectedType !== "") {
+      // Normalize both strings for comparison (lowercase and trim)
+      const normalizedSelectedType = selectedType.toLowerCase().trim()
+      const normalizedProductType = (product.wine_type || "").toLowerCase().trim()
+
+      if (normalizedProductType !== normalizedSelectedType) {
+        return false
+      }
+    }
+
+    // Filter by price range - check if price_demanded exists and is a number
+    const price = Number(product.price_demanded)
+    if (!isNaN(price) && (price < priceRange[0] || price > priceRange[1])) {
+      return false
+    }
+
+    // Filter by winery (using origin as bodega)
+    // Only apply if wineries are selected
     if (selectedWineries.length > 0 && !selectedWineries.includes(product.origin)) {
       return false
     }
@@ -240,6 +338,16 @@ export default function PopularProducts() {
 
   // Filter restaurants
   const filteredRestaurants = allRestaurants.filter((restaurant) => {
+    // Search filter
+    if (
+      searchTerm &&
+      !restaurant.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !restaurant.zona?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !restaurant.solicitud?.tipo?.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
+      return false
+    }
+
     // Filter by wine type
     if (selectedType && restaurant.solicitud.tipo !== selectedType) {
       return false
@@ -298,17 +406,15 @@ export default function PopularProducts() {
   // Reset filters
   const resetFilters = () => {
     setSelectedType("")
-    setPriceRange([5, 2000])
-    if (activeFilter === "Productors") {
-      setSelectedWineries([])
-    } else {
-      setSelectedZones([])
-    }
+    setPriceRange([0, 10000])
+    setSelectedWineries([])
+    setSelectedZones([])
+    setSearchTerm("")
   }
 
   return (
     <>
-    <Header />
+      <Header />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <HeroSection activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
@@ -342,6 +448,17 @@ export default function PopularProducts() {
                     {activeFilter === "Productors" ? "Vins disponibles" : "Demandes de restaurants"}
                   </h2>
                   <div className="flex items-center gap-4 w-full sm:w-auto">
+                    {/* Search input */}
+                    <div className="relative flex-1 sm:w-64">
+                      <input
+                        type="text"
+                        placeholder="Cerca per nom, tipus..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full py-2 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9A3E50] focus:border-transparent"
+                      />
+                      <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    </div>
                     <button
                       className="md:hidden flex items-center gap-2 text-sm font-medium text-white bg-[#9A3E50] px-4 py-2 rounded-lg shadow-sm"
                       onClick={() => setShowFilters(true)}
@@ -349,20 +466,22 @@ export default function PopularProducts() {
                       <Filter size={16} />
                       Filtres
                     </button>
-                    {activeFilter === "Productors" || activeFilter === "Restaurants" && (
-                      <button
-                        onClick={resetFilters}
-                        className="flex-1 sm:flex-none text-[#9A3E50] font-medium text-sm bg-[#9A3E50]/5 hover:bg-[#9A3E50]/10 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
-                      >
-                        <X size={16} />
-                        Restablir filtres
-                      </button>
-                    )}
+                    <button
+                      onClick={resetFilters}
+                      className="flex-none text-[#9A3E50] font-medium text-sm bg-[#9A3E50]/5 hover:bg-[#9A3E50]/10 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
+                    >
+                      <X size={16} />
+                      Restablir
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {activeFilter === "Productors" ? (
+              {loading ? (
+                <div className="flex justify-center items-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#9A3E50]"></div>
+                </div>
+              ) : activeFilter === "Productors" ? (
                 // Products
                 filteredProducts.length > 0 ? (
                   <ProductGrid products={filteredProducts} favorites={favorites} toggleFavorite={toggleFavorite} />
@@ -387,4 +506,3 @@ export default function PopularProducts() {
     </>
   )
 }
-

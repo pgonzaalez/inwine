@@ -38,6 +38,15 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct })
     )
   }
 
+  // Función para formatear el precio con separador de miles
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("ca-ES", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: 0,
+    }).format(price)
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
       <div className="flex justify-between items-center p-4 border-b">
@@ -67,7 +76,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct })
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {wines.map((wine) => (
-              <tr key={wine.id} className="hover:bg-gray-50 transition-colors">
+              <tr key={wine.id || `wine-${wine.name}`} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="w-32 h-32 overflow-hidden rounded-lg">
                     <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-cover" />
@@ -100,7 +109,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct })
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-bold" style={{ color: primaryColors.dark }}>
-                    {wine.price_demanded}€
+                    {formatPrice(wine.price_demanded)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -126,16 +135,14 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct })
                     {wine.status === "requested" && (
                       <button
                         type="button"
-                        onClick={() => {
-                          console.log("Enviando producto ID:", Number(wine.id)); // Conversión explícita
-                          handleSendProduct(Number(wine.id)) // Asegurar valor numérico
-                        }}
+                        onClick={() => handleSendProduct(wine.id)}
                         disabled={sendingProduct === wine.id}
-                        className={`px-4 py-2 rounded-lg font-medium text-white transition-colors flex items-center ${sendingProduct === wine.id ? "opacity-70" : "hover:opacity-90"
-                          }`}
+                        className={`px-4 py-2 rounded-lg font-medium text-white transition-colors flex items-center ${
+                          sendingProduct === wine.id ? "opacity-70" : "hover:opacity-90"
+                        }`}
                         style={{
                           backgroundColor: primaryColors.dark,
-                          cursor: "pointer",
+                          cursor: sendingProduct === wine.id ? "wait" : "pointer",
                         }}
                       >
                         {sendingProduct === wine.id ? (

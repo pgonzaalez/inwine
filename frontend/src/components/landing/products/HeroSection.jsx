@@ -52,4 +52,3 @@ export default function HeroSection({ activeFilter, setActiveFilter }) {
     </div>
   )
 }
-
