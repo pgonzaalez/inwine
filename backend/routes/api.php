@@ -24,10 +24,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/seller', [SellerController::class, 'update']);
     Route::put('/restaurant', [RestaurantController::class, 'update']);
     Route::put('/investor', [InvestorController::class, 'update']);
+    
 });
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/update-active-role', [AuthController::class, 'updateActiveRole'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->get('/notifications', function () {
     return auth()->user()->notifications;
