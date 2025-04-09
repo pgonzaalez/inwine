@@ -14,6 +14,7 @@ class OrderRequested extends Model
         'user_id',
         'request_restaurant_id',
         'status',
+        'total_price'
     ];
 
     public function investor()

@@ -64,7 +64,8 @@ class RequestSeeder extends Seeder
             OrderRequested::create([
                 'user_id' => 3,
                 'request_restaurant_id' => $restaurantRequest->id,
-                'status' => 'paid'
+                'status' => 'paid',
+                'total_price' => 15,
             ]);
 
             // 4) Actualizar estados

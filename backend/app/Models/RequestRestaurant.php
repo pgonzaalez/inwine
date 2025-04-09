@@ -17,10 +17,9 @@ class RequestRestaurant extends Model
         'price_restaurant',
         'status'
     ];
-
     public function user()
     {
-        return $this->belongsTo(User::class)->where('role', 'restaurant');
+        return $this->belongsTo(User::class);
     }
 
     public function product()
