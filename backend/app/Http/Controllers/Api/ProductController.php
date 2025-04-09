@@ -18,7 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::where('status', 'in_stock')->get();
         
         $response = $products->map(function ($product) {
             return [
