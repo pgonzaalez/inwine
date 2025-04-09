@@ -46,7 +46,7 @@ export default function ProductCard({ producto, esFavorito, onToggleFavorito }) 
     }
   }
 
-  return (
+   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-md group hover:shadow-lg transition-all duration-300">
       <div className="relative h-64 sm:h-72">
         <img
@@ -65,14 +65,19 @@ export default function ProductCard({ producto, esFavorito, onToggleFavorito }) 
             <Heart className={`w-5 h-5 ${esFavorito ? "fill-[#9A3E50] text-[#9A3E50]" : "text-gray-400"}`} />
           </button>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-          <div className="text-white font-medium text-lg">{formatPrice(producto.price_demanded || 0)}</div>
-        </div>
       </div>
       <div className="p-5">
         <div className="flex justify-between items-start mb-3">
-          <div>
-            <h3 className="font-bold text-gray-800 mb-1 text-lg">{producto.name || "Sin nombre"}</h3>
+          <div className="flex-1">
+            <div className="flex items-start justify-between mb-2">
+              {/* Product name on the left */}
+              <h3 className="font-bold text-gray-800 text-lg">{producto.name || "Sin nombre"}</h3>
+
+              {/* Price tag on the right */}
+              <div className="bg-[#9A3E50] text-white font-bold px-3 py-1 rounded ml-2 min-w-[80px] text-center">
+                {formatPrice(producto.price_demanded || 0)}
+              </div>
+            </div>
             <div className="flex items-center gap-2 mb-1">
               {producto.year && (
                 <div className="bg-[#9A3E50]/10 text-[#9A3E50] text-xs font-medium px-2 py-1 rounded">
@@ -106,4 +111,5 @@ export default function ProductCard({ producto, esFavorito, onToggleFavorito }) 
     </div>
   )
 }
+
 
