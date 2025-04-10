@@ -7,7 +7,7 @@ import {
   X,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { setCookie } from "@/utils/utils"
+import { getCookie, setCookie } from "@/utils/utils";
 import RoleSelector from "@/components/RoleSelector" // Componente extraído para selección de rol
 
 const LoginForm = () => {
@@ -94,24 +94,45 @@ const LoginForm = () => {
     }
   }
 
-  // Redirige según el rol del usuario
-  const redirectToDashboard = (role) => {
-    setTimeout(() => {
-      switch (role) {
-        case "seller":
-          navigate("/seller/dashboard")
-          break
-        case "restaurant":
-          navigate("/restaurant/dashboard")
-          break
-        case "investor":
-          navigate(-1) // Redirige hacia atrás
-          break
-        default:
-          navigate("/login")
+  const redirectToDashboard = async (role) => {
+    try {
+      // Solo necesitamos actualizar el rol si hay más de uno
+      if (availableRoles.length > 1) {
+        const response = await fetch(`${apiUrl}/update-active-role`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+          body: JSON.stringify({ role }),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Error al actualizar el rol activo");
+        }
       }
-    }, 500)
-  }
+  
+      setTimeout(() => {
+        switch (role) {
+          case "seller":
+            navigate("/seller/dashboard");
+            break;
+          case "restaurant":
+            navigate("/restaurant/dashboard");
+            break;
+          case "investor":
+            navigate(-1);
+            break;
+          default:
+            navigate("/login");
+        }
+      }, 500);
+    } catch (error) {
+      console.error("Error updating active role:", error);
+      // Puedes manejar el error como prefieras
+    }
+  };
 
   // Cierra el mensaje de error o éxito
   const dismissMessage = () => {

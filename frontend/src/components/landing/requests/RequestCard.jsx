@@ -7,6 +7,7 @@ import { useFetchUser } from "@components/auth/FetchUser";
 export default function RequestCard({ request, index, productPrice, isRequestsExpanded }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
   
   // Llamada al hook en el nivel superior del componente
   const { user, loading: userLoading } = useFetchUser();
@@ -24,7 +25,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
       }
 
       // Realizar la petición POST a la API
-      const response = await fetch("http://localhost:8000/api/v1/orders", {
+      const response = await fetch(`${apiUrl}/v1/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
