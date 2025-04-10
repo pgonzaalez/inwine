@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\RestaurantController;
 use App\Http\Controllers\Api\InvestorController;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StripeController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -43,6 +44,8 @@ Route::middleware('auth:sanctum')->post('/notifications/mark-all', function () {
 });
 
 Route::prefix('v1')->group(function () {
+
+    
     // Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
     // Rutas para los productos
     Route::get('{userId}/products/', [ProductController::class, 'indexByUser']); // Todos los productos de un usuario
@@ -72,4 +75,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/{productId}/deliver', [LogisticController::class, 'deliver']);
         Route::post('/{productId}/sell', [LogisticController::class, 'sell']);
     });
+
+    Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent']);
+
+   
 });
