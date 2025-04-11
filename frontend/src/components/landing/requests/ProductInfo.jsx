@@ -153,9 +153,9 @@ export default function ProductInfo({ product, wineTypeName }) {
             }`}
           >
             {product.status === "in_stock"
-              ? "En estoc"
+              ? "En stock"
               : product.status === "out_of_stock"
-                ? "Sense estoc"
+                ? "Sense stock"
                 : "Desconegut"}
           </span>
         </div>
