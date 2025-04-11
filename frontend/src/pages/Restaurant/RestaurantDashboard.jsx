@@ -68,7 +68,7 @@ function RestaurantDashboardComponent() {
       setNotification({ type: "success", message: "Sol·licitud eliminada correctament" })
       setTimeout(() => setNotification(null), 3000)
     } catch (err) {
-      console.error("Error eliminant la sol·licitud:", err)
+      // console.error("Error eliminant la sol·licitud:", err)
       setNotification({ type: "error", message: err.message })
       setTimeout(() => setNotification(null), 3000)
     }
@@ -113,7 +113,7 @@ function RestaurantDashboardComponent() {
       setNotification({ type: "success", message: "Producte rebut correctament" })
       setTimeout(() => setNotification(null), 3000)
     } catch (error) {
-      console.error("Error:", error)
+      // console.error("Error:", error)
       setNotification({ type: "error", message: error.message })
       setTimeout(() => setNotification(null), 3000)
     } finally {
@@ -160,7 +160,7 @@ function RestaurantDashboardComponent() {
       setNotification({ type: "success", message: "Producte venut correctament" })
       setTimeout(() => setNotification(null), 3000)
     } catch (error) {
-      console.error("Error:", error)
+      // console.error("Error:", error)
       setNotification({ type: "error", message: error.message })
       setTimeout(() => setNotification(null), 3000)
     } finally {

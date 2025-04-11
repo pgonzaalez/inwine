@@ -23,13 +23,13 @@ export default function ProductDetail() {
     const fetchProductDetails = async () => {
       try {
         if (!id) {
-          console.error("ID del producte no trobat")
+          // console.error("ID del producte no trobat")
           setError("ID del producte no trobat")
           setLoading(false)
           return
         }
 
-        console.log("Fetching product with ID:", id)
+        // console.log("Fetching product with ID:", id)
 
         const [productResponse, requestsResponse] = await Promise.all([
           fetch(`${apiUrl}/v1/products/${id}`),
@@ -49,7 +49,7 @@ export default function ProductDetail() {
         setError(null)
         setLoading(false)
       } catch (error) {
-        console.error("Error en obtenir detalls del producte:", error)
+        // console.error("Error en obtenir detalls del producte:", error)
         setError("Error en obtenir detalls del producte")
         setLoading(false)
       }
@@ -69,7 +69,7 @@ export default function ProductDetail() {
         const data = await response.json()
         setWineTypes(data.data || data)
       } catch (error) {
-        console.error("Error en obtenir els tipus de vi:", error)
+        // console.error("Error en obtenir els tipus de vi:", error)
       }
     }
 
@@ -211,4 +211,3 @@ export default function ProductDetail() {
     </div>
   )
 }
-

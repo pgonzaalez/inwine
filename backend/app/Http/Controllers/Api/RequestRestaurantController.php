@@ -34,7 +34,7 @@ class RequestRestaurantController extends Controller
         $requestRestaurant = RequestRestaurant::create($validated);
 
         return response()->json([
-            'message' => 'Solicitud del restaurante creada con éxito.',
+            'message' => 'Solicitud del restaurante creada con Ã©xito.',
             'data' => $requestRestaurant
         ], status: 201);
     }

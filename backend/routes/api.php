@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\RestaurantController;
 use App\Http\Controllers\Api\InvestorController;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StripeController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -31,20 +32,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('/update-active-role', [AuthController::class, 'updateActiveRole'])->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->get('/notifications', function () {
-    return auth()->user()->notifications;
-});
-
-Route::middleware('auth:sanctum')->get('/notifications/unread', function () {
-    return auth()->user()->unreadNotifications;
-});
-
-Route::middleware('auth:sanctum')->post('/notifications/mark-all', function () {
-    auth()->user()->unreadNotifications->markAsRead();
-    return response()->json(['message' => 'Notificaciones marcadas como leídas']);
-});
 
 Route::prefix('v1')->group(function () {
+
+    
     // Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
     // Rutas para los productos
     Route::get('{userId}/products/', [ProductController::class, 'indexByUser']); // Todos los productos de un usuario
@@ -74,4 +65,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/{productId}/deliver', [LogisticController::class, 'deliver']);
         Route::post('/{productId}/sell', [LogisticController::class, 'sell']);
     });
+
+    Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent']);
+
+   
 });

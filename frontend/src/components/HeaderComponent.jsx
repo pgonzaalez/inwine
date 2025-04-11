@@ -31,7 +31,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const user = useFetchUser();
-  const role = user.user?.role;
+  const role = user.user?.active_role?.[0]
 
   const handleProfile = () => {
     if (role === "seller") {
@@ -85,32 +85,29 @@ export default function Header() {
         });
 
         if (!response.ok) {
-          console.error("Error al obtener los pedidos:", response.status);
+          // console.error("Error al obtener los pedidos:", response.status);
           throw new Error("Error al obtener los pedidos");
         }
 
         const data = await response.json();
-        console.log("Datos recibidos de la API:", data);
 
         // Suma la propiedad `quantity` de cada pedido
         const count = data.reduce((acc, pedido) => {
           const cantidadPedido = pedido.quantity || 0;
-          console.log("Pedido:", pedido, "-> Cantidad:", cantidadPedido);
           return acc + cantidadPedido;
         }, 0);
 
-        console.log("Total de productos calculado:", count);
         setProductCount(count);
       } catch (error) {
-        console.error("Error al cargar el número de productos:", error);
+        // console.error("Error al cargar el número de productos:", error);
       }
     };
 
     if (user?.user?.id) {
-      console.log("User ID disponible:", user.user.id);
+      // console.log("User ID disponible:", user.user.id);
       fetchCartCount();
     } else {
-      console.log("No se encontró user.user.id");
+      // console.log("No se encontró user.user.id");
     }
   }, [user]);
 

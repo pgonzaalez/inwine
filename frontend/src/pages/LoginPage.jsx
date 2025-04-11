@@ -129,7 +129,7 @@ const LoginForm = () => {
         }
       }, 500);
     } catch (error) {
-      console.error("Error updating active role:", error);
+      // console.error("Error updating active role:", error);
       // Puedes manejar el error como prefieras
     }
   };
