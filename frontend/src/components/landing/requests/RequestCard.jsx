@@ -30,6 +30,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
 
       // Realizar la petición POST a la API
       const response = await fetch(`${apiUrl}/v1/orders`, {
+      const response = await fetch(`${apiUrl}/v1/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

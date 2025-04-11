@@ -63,4 +63,3 @@ export default function ProductGallery({ images, productName, baseUrl }) {
     </div>
   )
 }
-

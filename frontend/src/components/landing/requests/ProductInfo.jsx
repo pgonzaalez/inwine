@@ -1,58 +1,63 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { Star, Heart, Share2, Check, Copy } from "lucide-react"
 
 export default function ProductInfo({ product, wineTypeName }) {
+  const [favorites, setFavorites] = useState([])
+  const [isMobile, setIsMobile] = useState(false)
+  const [showFilters, setShowFilters] = useState(true)
   const [isLiked, setIsLiked] = useState(false)
   const [shareStatus, setShareStatus] = useState("")
 
-  // Check if product is liked from cookies when component mounts
   useEffect(() => {
-    if (product && product.id) {
-      const likedProducts = getCookie("likedProducts") || ""
-      const likedProductsArray = likedProducts ? likedProducts.split(",") : []
-      setIsLiked(likedProductsArray.includes(product.id.toString()))
+    // Set initial mobile state
+    setIsMobile(window.innerWidth < 768)
+    setShowFilters(window.innerWidth >= 768)
+
+    const savedFavorites = document.cookie.split("; ").find((row) => row.startsWith("favorites="))
+
+    if (savedFavorites) {
+      try {
+        const parsedFavorites = JSON.parse(savedFavorites.split("=")[1])
+        setFavorites(parsedFavorites)
+
+        // Check if current product is in favorites
+        if (product && product.name) {
+          setIsLiked(parsedFavorites.includes(product.name))
+        }
+      } catch (error) {
+        console.error("Error parsing favorites from cookie:", error)
+      }
     }
   }, [product])
 
-  // Function to get cookie by name
-  const getCookie = (name) => {
-    if (typeof document === "undefined") return null
-    const value = `; ${document.cookie}`
-    const parts = value.split(`; ${name}=`)
-    if (parts.length === 2) return parts.pop()?.split(";").shift()
-    return null
-  }
-
-  // Function to set cookie
-  const setCookie = (name, value, days = 30) => {
-    if (typeof document === "undefined") return
-    const date = new Date()
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
-    const expires = `expires=${date.toUTCString()}`
-    document.cookie = `${name}=${value};${expires};path=/`
-  }
+  // Guardar favoritos en cookies cuando cambien
+  useEffect(() => {
+    if (favorites.length > 0) {
+      const expiryDate = new Date()
+      expiryDate.setMonth(expiryDate.getMonth() + 1) // Cookie válida por 1 mes
+      document.cookie = `favorites=${JSON.stringify(favorites)}; expires=${expiryDate.toUTCString()}; path=/`
+    } else {
+      document.cookie = "favorites=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+    }
+  }, [favorites])
 
   // Toggle like status
-  const toggleLike = () => {
-    if (!product || !product.id) return
+  const toggleFavorite = () => {
+    if (!product || !product.name) return
 
-    const productId = product.id.toString()
-    const likedProducts = getCookie("likedProducts") || ""
-    const likedProductsArray = likedProducts ? likedProducts.split(",").filter(Boolean) : []
+    const productName = product.name
 
-    if (isLiked) {
-      // Remove from liked products
-      const updatedLikedProducts = likedProductsArray.filter((id) => id !== productId)
-      setCookie("likedProducts", updatedLikedProducts.join(","))
-    } else {
-      // Add to liked products
-      if (!likedProductsArray.includes(productId)) {
-        likedProductsArray.push(productId)
+    setFavorites((prevFavorites) => {
+      if (prevFavorites.includes(productName)) {
+        setIsLiked(false)
+        return prevFavorites.filter((name) => name !== productName)
+      } else {
+        setIsLiked(true)
+        return [...prevFavorites, productName]
       }
-      setCookie("likedProducts", likedProductsArray.join(","))
-    }
-
-    setIsLiked(!isLiked)
+    })
   }
 
   // Share functionality
@@ -164,7 +169,7 @@ export default function ProductInfo({ product, wineTypeName }) {
       {/* Actions - Like and Share buttons with functionality */}
       <div className="flex flex-wrap gap-4">
         <button
-          onClick={toggleLike}
+          onClick={toggleFavorite}
           className={`bg-white border hover:bg-gray-50 p-3 rounded-md transition-colors flex items-center gap-2 ${
             isLiked ? "border-[#9A3E50] text-[#9A3E50]" : "border-gray-300 text-gray-700"
           }`}

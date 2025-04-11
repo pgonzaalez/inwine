@@ -76,7 +76,7 @@ export default function ProductPage() {
     const fetchProducts = async () => {
       setLoading(true)
       try {
-        const apiUrl = import.meta.env.VITE_API_URL
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
         const response = await fetch(`${apiUrl}/v1/products`)
         const data = await response.json()
         
@@ -141,7 +141,7 @@ export default function ProductPage() {
         const data = await response.json()
         setWineTypes(data)
       } catch (error) {
-        console.error("Error fetching wine types:", error)
+        // console.error("Error fetching wine types:", error)
         // Fallback data for testing
         setWineTypes([
           { id: 1, name: "Negre", image: "https://www.elpationeiva.co/wp-content/uploads/2021/06/COPA-DE-VINO.jpg" },

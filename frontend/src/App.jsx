@@ -7,11 +7,14 @@ import Notifications from "@pages/Notification/NotificationsPage";
 // Pages Landing
 import Main from "@pages/MainPage";
 import ProductPage from "@pages/ProductPage";
+import Products from "@pages/Landing/ProductsPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
 import Layout from "@layout/Layout";
 import ProtectedRoute from "@components/auth/ProtectedRoute";
+import CheckoutPage from "@pages/Payments/CheckoutPage";
+import OrderSummaryPage from "@pages/Payments/OrderSummaryPage";
 // Pages Seller
 import RegisterSeller from "@pages/RegisterSellerPage";
 import Seller from "@pages/Seller/SellerDashboardPage";
@@ -31,8 +34,11 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/productes" element={<ProductPage />} />
+        <Route path="/productos" element={<Products />} />
         <Route path="/productes/:id" element={<ViewProductsRequest />} />
         <Route path="/cistella" element={<OrderCart />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-summary" element={<OrderSummaryPage />} />
 
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
