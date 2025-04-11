@@ -48,7 +48,7 @@ export default function ShoppingCartPage() {
         })
         setSelectedItems(initialSelected)
       } catch (error) {
-        console.error("Error fetching cart items:", error)
+        // console.error("Error fetching cart items:", error)
       } finally {
         setLoading(false)
       }
@@ -82,7 +82,7 @@ export default function ShoppingCartPage() {
       setCartItems([])
       setSelectedItems({})
     } catch (error) {
-      console.error("Error clearing cart:", error)
+      // console.error("Error clearing cart:", error)
     }
   }
 
@@ -105,7 +105,7 @@ export default function ShoppingCartPage() {
       // Update local state
       setCartItems(cartItems.filter((item) => item.order_id !== orderId))
     } catch (error) {
-      console.error("Error removing item:", error)
+      // console.error("Error removing item:", error)
     }
   }
 
