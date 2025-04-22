@@ -31,7 +31,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const user = useFetchUser();
-  const role = user.user?.role;
+  const role = user.user?.active_role?.[0]
 
   const handleProfile = () => {
     if (role === "seller") {
