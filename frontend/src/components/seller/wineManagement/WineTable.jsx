@@ -58,39 +58,40 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct })
         </span>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imatge</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Detalls
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipus</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estat</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preu</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Accions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {wines.map((wine) => (
-              <tr key={wine.id || `wine-${wine.name}`} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="w-32 h-32 overflow-hidden rounded-lg">
-                    <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-cover" />
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-col">
-                    <div className="text-sm font-medium text-gray-900 mb-1">{wine.name}</div>
-                    <div className="text-sm text-gray-500">
-                      {wine.year} · {wine.origin}
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+      {/* Header - Only visible on tablet and desktop */}
+      <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 bg-gray-50 px-6 py-3">
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Imatge</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Detalls</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Tipus</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Estat</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Preu</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Accions</div>
+      </div>
+
+      {/* Wine Grid */}
+      <div className="divide-y divide-gray-200">
+        {wines.map((wine) => (
+          <div key={wine.id || `wine-${wine.name}`} className="hover:bg-gray-50 transition-colors">
+            {/* Mobile Layout */}
+            <div className="md:hidden grid grid-cols-[120px_1fr] gap-4 p-4">
+              <div className="relative">
+                <div className="w-full h-28 overflow-hidden rounded-lg">
+                  <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-cover" />
+                </div>
+              </div>
+
+              <div className="flex flex-col relative">
+                {/* Price at top right */}
+                <div className="absolute top-0 right-0 text-sm font-bold" style={{ color: primaryColors.dark }}>
+                  {formatPrice(wine.price_demanded)}
+                </div>
+
+                <div className="text-sm font-medium text-gray-900 mb-1 pr-20">{wine.name}</div>
+                <div className="text-xs text-gray-500 mb-2">
+                  {wine.year} · {wine.origin}
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-3">
                   <div
                     className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
                     style={{
@@ -103,69 +104,145 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct })
                   >
                     {wine.wine_type || "Vi"}
                   </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+
                   <StatusBadge status={wine.status} />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-bold" style={{ color: primaryColors.dark }}>
-                    {formatPrice(wine.price_demanded)}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex space-x-2">
+                </div>
+
+                <div className="flex flex-wrap gap-2 mt-auto">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      window.location.href = `/seller/products/${wine.id}`
+                    }}
+                    className="text-xs font-medium px-3 py-1 rounded-full transition-colors"
+                    style={{
+                      backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
+                        primaryColors.dark.slice(3, 5),
+                        16,
+                      )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
+                      color: primaryColors.dark,
+                    }}
+                  >
+                    Detalls
+                  </button>
+
+                  {wine.status === "requested" && (
                     <button
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        window.location.href = `/seller/products/${wine.id}`
-                      }}
-                      className="text-xs font-medium px-3 py-1 rounded-full transition-colors"
+                      type="button"
+                      onClick={() => handleSendProduct(wine.id)}
+                      disabled={sendingProduct === wine.id}
+                      className={`px-3 py-1 rounded-full text-xs font-medium text-white transition-colors flex items-center ${
+                        sendingProduct === wine.id ? "opacity-70" : "hover:opacity-90"
+                      }`}
                       style={{
-                        backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
-                          primaryColors.dark.slice(3, 5),
-                          16,
-                        )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
-                        color: primaryColors.dark,
+                        backgroundColor: primaryColors.dark,
+                        cursor: sendingProduct === wine.id ? "wait" : "pointer",
                       }}
                     >
-                      Detalls
+                      {sendingProduct === wine.id ? (
+                        <>
+                          <div className="w-3 h-3 rounded-full border-2 border-white border-t-transparent animate-spin mr-1"></div>
+                          Enviant...
+                        </>
+                      ) : (
+                        <>
+                          <Send size={12} className="mr-1" />
+                          Enviar
+                        </>
+                      )}
                     </button>
+                  )}
+                </div>
+              </div>
+            </div>
 
-                    {wine.status === "requested" && (
-                      <button
-                        type="button"
-                        onClick={() => handleSendProduct(wine.id)}
-                        disabled={sendingProduct === wine.id}
-                        className={`px-4 py-2 rounded-lg font-medium text-white transition-colors flex items-center ${
-                          sendingProduct === wine.id ? "opacity-70" : "hover:opacity-90"
-                        }`}
-                        style={{
-                          backgroundColor: primaryColors.dark,
-                          cursor: sendingProduct === wine.id ? "wait" : "pointer",
-                        }}
-                      >
-                        {sendingProduct === wine.id ? (
-                          <>
-                            <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin mr-2"></div>
-                            Enviant...
-                          </>
-                        ) : (
-                          <>
-                            <Send size={16} className="mr-2" />
-                            Enviar
-                          </>
-                        )}
-                      </button>
+            {/* Tablet/Desktop Layout */}
+            <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 items-center px-6 py-4">
+              <div className="w-32 h-32 overflow-hidden rounded-lg">
+                <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="flex flex-col">
+                <div className="text-sm font-medium text-gray-900 mb-1">{wine.name}</div>
+                <div className="text-sm text-gray-500">
+                  {wine.year} · {wine.origin}
+                </div>
+              </div>
+
+              <div>
+                <div
+                  className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                  style={{
+                    backgroundColor: getWineTypeColor(wine.wine_type?.toLowerCase()),
+                    color:
+                      wine.wine_type?.toLowerCase() === "blanc" || wine.wine_type?.toLowerCase() === "espumós"
+                        ? "#333"
+                        : "white",
+                  }}
+                >
+                  {wine.wine_type || "Vi"}
+                </div>
+              </div>
+
+              <div>
+                <StatusBadge status={wine.status} />
+              </div>
+
+              <div className="text-sm font-bold" style={{ color: primaryColors.dark }}>
+                {formatPrice(wine.price_demanded)}
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    window.location.href = `/seller/products/${wine.id}`
+                  }}
+                  className="text-xs font-medium px-3 py-1 rounded-full transition-colors"
+                  style={{
+                    backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
+                      primaryColors.dark.slice(3, 5),
+                      16,
+                    )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
+                    color: primaryColors.dark,
+                  }}
+                >
+                  Detalls
+                </button>
+
+                {wine.status === "requested" && (
+                  <button
+                    type="button"
+                    onClick={() => handleSendProduct(wine.id)}
+                    disabled={sendingProduct === wine.id}
+                    className={`px-4 py-1 rounded-lg text-xs font-medium text-white transition-colors flex items-center ${
+                      sendingProduct === wine.id ? "opacity-70" : "hover:opacity-90"
+                    }`}
+                    style={{
+                      backgroundColor: primaryColors.dark,
+                      cursor: sendingProduct === wine.id ? "wait" : "pointer",
+                    }}
+                  >
+                    {sendingProduct === wine.id ? (
+                      <>
+                        <div className="w-3 h-3 rounded-full border-2 border-white border-t-transparent animate-spin mr-1"></div>
+                        Enviant...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={12} className="mr-1" />
+                        Enviar
+                      </>
                     )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )
 }
-
