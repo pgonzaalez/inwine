@@ -170,14 +170,14 @@ export default function Sidebar() {
         path: `/seller/products`,
       },
       {
-        icon: Wine,
-        label: "Gestió de Vins",
-        path: `/seller/wine-management`,
-      },
-      {
         icon: Bell,
         label: "Notificacions",
         path: `/seller/notificacions`,
+      },
+      {
+        icon: Wine,
+        label: "Tornar a la web",
+        path: `/`,
       },
       {
         icon: User,

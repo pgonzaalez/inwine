@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { ShoppingBag, Check, CreditCard, Truck, Shield, AlertTriangle } from "lucide-react"
-import Header from "@/components/HeaderComponent"
 import Footer from "@/components/FooterComponent"
 import { CartItem } from "@/components/landing/cart/CartItem"
 import { CartSummary } from "@/components/landing/cart/CartSummary"
@@ -141,7 +140,6 @@ export default function ShoppingCartPage() {
   if (loading || userLoading) {
     return (
       <div className="min-h-screen bg-white">
-        <Header />
         <div className="pt-20 pb-12">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center space-y-6">
@@ -158,7 +156,7 @@ export default function ShoppingCartPage() {
   if (userError) {
     return (
       <div className="min-h-screen bg-white">
-        <Header />
+
         <div className="pt-20 pb-12">
           <div className="container mx-auto px-4">
             <div className="max-w-md mx-auto bg-white rounded-md shadow-md overflow-hidden md:max-w-lg">
@@ -186,7 +184,6 @@ export default function ShoppingCartPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
 
       {/* Main Content - with padding-top to account for fixed header */}
       <div className="pt-20 pb-12">

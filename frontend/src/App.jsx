@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router";
 import "./App.css";
 
+// Layout
+import Layout from "@layout/Layout";
+import HeaderLayout from "@layout/HeaderLayout";
 // Pages
 import Profile from "@pages/Profile/ProfilePage";
 import Notifications from "@pages/Notification/NotificationsPage";
@@ -11,7 +14,7 @@ import Products from "@pages/Landing/ProductsPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
-import Layout from "@layout/Layout";
+
 import ProtectedRoute from "@components/auth/ProtectedRoute";
 import CheckoutPage from "@pages/Payments/CheckoutPage";
 import OrderSummaryPage from "@pages/Payments/OrderSummaryPage";
@@ -32,13 +35,15 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/productes" element={<ProductPage />} />
-        <Route path="/productos" element={<Products />} />
-        <Route path="/productes/:id" element={<ViewProductsRequest />} />
-        <Route path="/cistella" element={<OrderCart />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/order-summary" element={<OrderSummaryPage />} />
+        <Route element={<HeaderLayout />}>
+          <Route path="/" element={<Main />} />
+          <Route path="/productes" element={<ProductPage />} />
+          <Route path="/productos" element={<Products />} />
+          <Route path="/productes/:id" element={<ViewProductsRequest />} />
+          <Route path="/cistella" element={<OrderCart />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/order-summary" element={<OrderSummaryPage />} />
+        </Route>
 
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
