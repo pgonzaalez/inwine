@@ -65,7 +65,7 @@ export default function Header() {
 
       if (response.ok) {
         deleteCookie("token");
-        navigate("/");
+        window.location.href = "/";
       } else {
         // console.log("Error al hacer logout")
       }
