@@ -151,7 +151,62 @@ export default function Sidebar() {
         action: () => setIsLogoutOpen(true)
       },
     ]
-  } else {
+  } else if (userRole === "inversor") {
+    // Navegación para inversores
+    navItems = [
+      {
+        icon: Home,
+        label: "Inici",
+        path: `/inversor/dashboard`,
+      },
+      {
+        icon: FileQuestion,
+        label: "Històric",
+        path: "/inversor/historic",
+      },
+      {
+        icon: Bell,
+        label: "Notificacions",
+        path: `/inversor/notificacions`,
+      },
+      {
+        icon: User,
+        label: "Perfil",
+        path: `/inversor/profile`,
+        divider: true,
+      },
+      {
+        icon: Settings,
+        label: "Configuració",
+        path: `/inversor/settings`,
+      },
+    ]
+
+    // Navegación móvil para restaurantes
+    mobileNavItems = [
+      {
+        icon: Home,
+        label: "Inici",
+        path: `/inversor/dashboard`,
+      },
+      {
+        icon: FileQuestion,
+        label: "Històric",
+        path: "/inversor/historic",
+      },
+      {
+        icon: Bell,
+        label: "Alertes",
+        path: `/inversor/notificacions`,
+      },
+      {
+        icon: LogOut,
+        label: "Tancar sessió",
+        action: () => setIsLogoutOpen(true)
+      },
+    ]
+  }
+  else {
     // Navegación para vendedores (seller)
     navItems = [
       {

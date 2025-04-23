@@ -10,8 +10,7 @@ import Profile from "@pages/Profile/ProfilePage";
 import Notifications from "@pages/Notification/NotificationsPage";
 // Pages Landing
 import Main from "@pages/MainPage";
-import ProductPage from "@pages/ProductPage";
-import Products from "@pages/Landing/ProductsPage";
+import ProductPage from "@pages/Landing/ProductsPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
@@ -28,6 +27,7 @@ import ViewProductPage from "@pages/Seller/ViewProductPage";
 import EditProductPage from "@pages/Seller/EditProductPage";
 // Pages Inversor
 import RegisterInversor from "@pages/RegisterInversorPage";
+import Inversor from "@pages/Inversor/InversorDashboardPage";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
@@ -40,7 +40,6 @@ export default function App() {
         <Route element={<HeaderLayout />}>
           <Route path="/" element={<Main />} />
           <Route path="/productes" element={<ProductPage />} />
-          <Route path="/productos" element={<Products />} />
           <Route path="/productes/:id" element={<ViewProductsRequest />} />
           <Route path="/cistella" element={<OrderCart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
@@ -119,6 +118,24 @@ export default function App() {
           />
           <Route
             path="/restaurant/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+           {/* Rutas protegidas para Inversor */}
+           <Route
+            path="/inversor/dashboard"
+            element={
+              <ProtectedRoute>
+                <Inversor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inversor/profile"
             element={
               <ProtectedRoute>
                 <Profile />
