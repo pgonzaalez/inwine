@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import {
   Search,
   Menu,
@@ -31,7 +32,8 @@ export default function Header() {
   const navigate = useNavigate();
 
   const user = useFetchUser();
-  const role = user.user?.active_role?.[0]
+  
+  const role = user.user?.active_role?.[0];
 
   const handleProfile = () => {
     if (role === "seller") {
@@ -63,7 +65,7 @@ export default function Header() {
 
       if (response.ok) {
         deleteCookie("token");
-        window.location.href = "/";
+        navigate("/");
       } else {
         // console.log("Error al hacer logout")
       }
