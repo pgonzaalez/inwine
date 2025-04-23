@@ -4,6 +4,7 @@ import "./App.css";
 // Layout
 import Layout from "@layout/Layout";
 import HeaderLayout from "@layout/HeaderLayout";
+import ScrollToTop from "@components/ScrollToTop";
 // Pages
 import Profile from "@pages/Profile/ProfilePage";
 import Notifications from "@pages/Notification/NotificationsPage";
@@ -34,6 +35,7 @@ import Restaurant from "@pages/Restaurant/RestaurantDashboard";
 export default function App() {
   return (
     <Router>
+        <ScrollToTop />
       <Routes>
         <Route element={<HeaderLayout />}>
           <Route path="/" element={<Main />} />
