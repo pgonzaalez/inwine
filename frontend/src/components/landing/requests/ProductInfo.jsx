@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Star, Heart, Share2, Check, Copy, ShoppingBag, Package } from "lucide-react"
 import Modal from "@components/Modal"
@@ -14,6 +12,7 @@ export default function ProductInfo({ product, wineTypeName }) {
   const [isRequestOpen, setIsRequestOpen] = useState(false)
   const [offerPrice, setOfferPrice] = useState("")
   const [requestStatus, setRequestStatus] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const user = useFetchUser();
   const role = user.user?.active_role?.[0]
