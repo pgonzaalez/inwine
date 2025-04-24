@@ -48,7 +48,6 @@ Route::prefix('v1')->group(function () {
     Route::get('/{userId}/orders', [OrderController::class, 'showOrderByUser']);
     Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
 
-    Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);

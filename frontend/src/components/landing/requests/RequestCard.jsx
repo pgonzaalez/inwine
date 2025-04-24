@@ -111,7 +111,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
           <button
             onClick={handleAddToOrder}
             disabled={isLoading || isSuccess}
-            className={`w-full bg-[#9A3E50] hover:bg-[#7e3241] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
+            className={`w-full bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] hover:from-[#7a2e3d] hover:to-[#5a1e2d] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
             {isLoading ? "Processant..." : isSuccess ? "Afegit!" : "Afegir"}
@@ -145,7 +145,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
               <button
                 onClick={handleAddToOrder}
                 disabled={isLoading || isSuccess}
-                className={`bg-[#9A3E50] hover:bg-[#7e3241] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ml-auto ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
+                className={`bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] hover:from-[#7a2e3d] hover:to-[#5a1e2d] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ml-auto ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
               >
                 <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
                 {isLoading ? "Processant..." : isSuccess ? "Afegit!" : "Afegir"}
