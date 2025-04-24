@@ -115,6 +115,7 @@ class OrderController extends Controller
                         'origin' => $product->origin,
                         'year' => $product->year,
                         'image' => $product->image,
+                        'price_demanded' => $product->price_demanded,
                     ],
                     'seller_name' => $seller->name ?? null,
                     'restaurant_name' => $restaurantUser->name ?? null,

@@ -1,0 +1,6 @@
+// Definim els colors primaris
+export const primaryColors = {
+  dark: "#9A3E50",
+  light: "#C27D7D",
+  background: "#F9F9F9",
+}

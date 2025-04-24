@@ -151,7 +151,7 @@ export default function Sidebar() {
         action: () => setIsLogoutOpen(true)
       },
     ]
-  } else if (userRole === "inversor") {
+  } else if (userRole === "investor") {
     // Navegación para inversores
     navItems = [
       {

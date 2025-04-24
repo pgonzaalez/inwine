@@ -55,6 +55,9 @@ Route::prefix('v1')->group(function () {
     Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
     Route::post('/investor', [AuthController::class, 'storeInvestor']);
 
+    // Ruta para obtener el historial del inversor
+    Route::get('{userId}/investments', [InvestorController::class,'investments']);
+
 
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
     Route::put('products/{productId}/images/{imageId}/primary', [ProductController::class, 'setPrimaryImage']);

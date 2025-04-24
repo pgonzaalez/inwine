@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Investor;
+use App\Models\OrderRequested;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\UserRole;
+use App\Models\User;
 
 class InvestorController extends Controller
 {
@@ -21,18 +23,12 @@ class InvestorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) 
-    {
-
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id) 
-    {
-
-    }
+    public function show(string $id) {}
 
     /**
      * Update the specified resource in storage.
@@ -121,8 +117,53 @@ class InvestorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id) 
-    {
+    public function destroy(string $id) {}
 
+    public function investments(Request $request, $userId)
+    {
+        $investor = User::find($userId);
+
+        if (!$investor) {
+            return response()->json(['message' => 'Inversor no encontrado'], 404);
+        }
+
+        $investments = OrderRequested::where('user_id', $userId)
+            ->with([
+                'requestRestaurant.product.seller',
+                'requestRestaurant.user',
+            ])
+            ->get();
+
+        if ($investments->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron inversiones para este inversor'], 404);
+        }
+
+        $data = $investments->map(function ($investment) {
+            $requestRestaurant = $investment->requestRestaurant;
+            $product = $requestRestaurant->product;
+            $seller = $product->seller;
+            $restaurantUser = $requestRestaurant->user;
+
+            return [
+                'investment_id' => $investment->id,
+                'status' => $investment->status,
+                'user_id' => $investment->user_id,
+                'request_restaurant_id' => $investment->request_restaurant_id,
+                'price_restaurant' => $requestRestaurant->price_restaurant,
+                'quantity' => $requestRestaurant->quantity,
+                'product' => [
+                    'name' => $product->name,
+                    'origin' => $product->origin,
+                    'year' => $product->year,
+                    'image' => $product->image,
+                    'price_demanded' => $product->price_demanded,
+                ],
+                'seller_name' => $seller->name ?? null,
+                'restaurant_name' => $restaurantUser->name ?? null,
+                'created_at' => $investment->created_at,
+            ];
+        });
+
+        return response()->json(['message' => 'Inversiones obtenidas correctamente', 'investments' => $data], 200);
     }
 }
