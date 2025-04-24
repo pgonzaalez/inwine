@@ -158,7 +158,7 @@ export default function Header() {
 
   return (
     <header className="bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-8">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6 md:px-8">
         <div className="flex items-center">
           <Link to="/" className="mr-10">
             <img
