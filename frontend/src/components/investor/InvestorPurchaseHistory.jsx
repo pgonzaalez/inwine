@@ -6,6 +6,7 @@ import { primaryColors } from "./utils/colors"
 import { InvestmentTable } from "./InvestmentTable"
 import { InvestmentSummary } from "./InvestmentSummary"
 import { Notification } from "./Notification"
+import { getCookie } from "@/utils/utils"
 
 export const InvestorPurchaseHistory = () => {
   const [investments, setInvestments] = useState([])
@@ -31,23 +32,36 @@ export const InvestorPurchaseHistory = () => {
   }, [activeFilter, dateRange, investments])
 
   const fetchInvestments = async () => {
-    if (userLoading || !user) return // Espera fins que l'usuari estigui carregat
+    if (userLoading || !user) return
 
     try {
       setIsLoading(true)
-      const response = await fetch(`${apiUrl}/v1/${user.id}/investments`)
+
+      const token = getCookie("token")
+
+      if (!token) {
+        setNotification("No s'ha trobat el token d'autenticació.")
+        setIsLoading(false)
+        return
+      }
+
+      const response = await fetch(`${apiUrl}/${user.id}/investments`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      })
 
       if (!response.ok) {
         throw new Error("No s'ha pogut connectar amb el servidor")
       }
 
       const data = await response.json()
-      // Utilitzem la propietat 'investments' de la resposta
-      const investmentsData = Array.isArray(data.investments) ? data.investments : []
-      setInvestments(investmentsData)
-      setFilteredInvestments(investmentsData)
+      setInvestments(data.investments)
+      setNotification(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconegut")
+      setError(err.message)
+      setNotification("Hi ha hagut un error carregant les inversions.")
     } finally {
       setIsLoading(false)
     }
