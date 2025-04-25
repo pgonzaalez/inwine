@@ -90,6 +90,11 @@ export default function Sidebar() {
         label: "Inici",
         path: `/restaurant/dashboard`,
       },
+      {
+        icon: Wine,
+        label: "Tornar a la web",
+        path: `/`,
+      },
       // {
       //   icon: FileQuestion,
       //   label: "Peticions",
@@ -131,9 +136,9 @@ export default function Sidebar() {
         path: `/restaurant/dashboard`,
       },
       {
-        icon: FileQuestion,
-        label: "Peticions",
-        path: "/restaurant/peticions",
+        icon: Wine,
+        label: "Tornar a la web",
+        path: `/`,
       },
       // {
       //   icon: ShoppingBag,
@@ -158,6 +163,11 @@ export default function Sidebar() {
         icon: Home,
         label: "Inici",
         path: `/inversor/dashboard`,
+      },
+      {
+        icon: Wine,
+        label: "Tornar a la web",
+        path: `/`,
       },
       // {
       //   icon: FileQuestion,
