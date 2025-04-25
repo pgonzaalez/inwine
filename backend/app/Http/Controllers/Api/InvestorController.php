@@ -121,6 +121,12 @@ class InvestorController extends Controller
 
     public function investments(Request $request, $userId)
     {
+        $authenticatedUser = $request->user();
+
+        if ($authenticatedUser->id != $userId) {
+            return response()->json(['message' => 'No tienes permiso para ver estas inversiones'], 403);
+        }
+        
         $investor = User::find($userId);
 
         if (!$investor) {
