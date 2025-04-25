@@ -14,6 +14,8 @@ export default function ProductInfo({ product, wineTypeName }) {
   const [requestStatus, setRequestStatus] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const user = useFetchUser();
   const role = user.user?.active_role?.[0]
 
@@ -114,23 +116,48 @@ export default function ProductInfo({ product, wineTypeName }) {
   }
 
   const handleRequestSubmit = async () => {
-    // Validar que el precio es un número válido
     const price = parseFloat(offerPrice)
     if (isNaN(price) || price <= 0) {
       setRequestStatus('error')
       return
     }
 
-    // Aquí iría la lógica para enviar la solicitud a tu API
-    console.log(`Solicitud enviada para ${product.name} con precio: ${price}€`)
+    setIsLoading(true)
+    setRequestStatus(null)
 
-    // Simulamos el envío exitoso
-    setRequestStatus('success')
-    setTimeout(() => {
-      setIsRequestOpen(false)
-      setRequestStatus(null)
-      setOfferPrice("")
-    }, 2000)
+    try {
+      const response = await fetch(`${apiUrl}/restaurants`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          user_id: user.user?.id,
+          product_id: product.id,
+          quantity: 1,
+          price_restaurant: price
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Error en la solicitud')
+      }
+
+      const data = await response.json()
+      setRequestStatus('success')
+
+      setTimeout(() => {
+        setIsRequestOpen(false)
+        setRequestStatus(null)
+        setOfferPrice("")
+      }, 2000)
+    } catch (error) {
+      console.error('Error al enviar solicitud:', error)
+      setRequestStatus('error')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -177,10 +204,10 @@ export default function ProductInfo({ product, wineTypeName }) {
           <p className="text-sm font-medium text-gray-500">Estat</p>
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.status === "in_stock"
-                ? "bg-green-100 text-green-800"
-                : product.status === "out_of_stock"
-                  ? "bg-red-100 text-red-800"
-                  : "bg-gray-100 text-gray-800"
+              ? "bg-green-100 text-green-800"
+              : product.status === "out_of_stock"
+                ? "bg-red-100 text-red-800"
+                : "bg-gray-100 text-gray-800"
               }`}
           >
             {product.status === "in_stock"
