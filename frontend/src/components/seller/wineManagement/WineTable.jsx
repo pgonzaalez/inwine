@@ -1,6 +1,6 @@
 "use client"
 
-import { Send } from "lucide-react"
+import { Filter, Send } from "lucide-react"
 import { StatusBadge } from "@components/seller/wineManagement/StatusBadge"
 
 // Definimos los colores primarios
@@ -31,12 +31,15 @@ const getWineTypeColor = (type) => {
   }
 }
 
-export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct }) => {
-  if (wines.length === 0) {
-    return (
-      <div className="bg-white text-center p-8 rounded-xl shadow-sm">No hi ha vins disponibles amb aquest filtre</div>
-    )
-  }
+export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, activeFilter, setActiveFilter }) => {
+  // Array de filtros para evitar el warning de keys
+  const filters = [
+    { id: "all", label: "Tots" },
+    { id: "in_stock", label: "En Stock" },
+    { id: "requested", label: "Sol·licitats" },
+    { id: "in_transit", label: "En Trànsit" },
+    { id: "sold", label: "Venuts" },
+  ]
 
   // Función para formatear el precio con separador de miles
   const formatPrice = (price) => {
@@ -47,15 +50,96 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct })
     }).format(price)
   }
 
+  if (wines.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        {/* Header with filters */}
+        <div className="border-b">
+          <div className="flex justify-between items-center p-4">
+            <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
+              Els teus vins
+            </h2>
+            <span className="text-sm text-gray-500">0 vins</span>
+          </div>
+
+          {/* Filter section */}
+          <div className="px-4 pb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Filter size={16} style={{ color: primaryColors.dark }} />
+              <span className="text-sm font-medium" style={{ color: primaryColors.dark }}>
+                Filtres
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {filters.map((filter) => (
+                <button
+                  key={filter.id}
+                  className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${
+                    activeFilter === filter.id ? "text-white" : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                  style={
+                    activeFilter === filter.id
+                      ? {
+                          background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                        }
+                      : {}
+                  }
+                  onClick={() => setActiveFilter(filter.id)}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center p-8">No hi ha vins disponibles amb aquest filtre</div>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-      <div className="flex justify-between items-center p-4 border-b">
-        <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
-          Els teus vins
-        </h2>
-        <span className="text-sm text-gray-500">
-          {wines.length} {wines.length === 1 ? "vi" : "vins"}
-        </span>
+      {/* Header with filters */}
+      <div className="border-b">
+        <div className="flex justify-between items-center p-4">
+          <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
+            Els teus vins
+          </h2>
+          <span className="text-sm text-gray-500">
+            {wines.length} {wines.length === 1 ? "vi" : "vins"}
+          </span>
+        </div>
+
+        {/* Filter section */}
+        <div className="px-4 pb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Filter size={16} style={{ color: primaryColors.dark }} />
+            <span className="text-sm font-medium" style={{ color: primaryColors.dark }}>
+              Filtres
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {filters.map((filter) => (
+              <button
+                key={filter.id}
+                className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${
+                  activeFilter === filter.id ? "text-white" : "text-gray-700 hover:bg-gray-100"
+                }`}
+                style={
+                  activeFilter === filter.id
+                    ? {
+                        background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                      }
+                    : {}
+                }
+                onClick={() => setActiveFilter(filter.id)}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Header - Only visible on tablet and desktop */}

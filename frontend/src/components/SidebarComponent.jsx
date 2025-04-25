@@ -90,26 +90,26 @@ export default function Sidebar() {
         label: "Inici",
         path: `/restaurant/dashboard`,
       },
-      {
-        icon: FileQuestion,
-        label: "Peticions",
-        path: "/restaurant/peticions",
-      },
-      {
-        icon: ShoppingBag,
-        label: "Compres",
-        path: `/restaurant/compres`,
-      },
-      {
-        icon: Clock,
-        label: "En espera",
-        path: `/restaurant/espera`,
-      },
-      {
-        icon: Bell,
-        label: "Notificacions",
-        path: `/restaurant/notificacions`,
-      },
+      // {
+      //   icon: FileQuestion,
+      //   label: "Peticions",
+      //   path: "/restaurant/peticions",
+      // },
+      // {
+      //   icon: ShoppingBag,
+      //   label: "Compres",
+      //   path: `/restaurant/compres`,
+      // },
+      // {
+      //   icon: Clock,
+      //   label: "En espera",
+      //   path: `/restaurant/espera`,
+      // },
+      // {
+      //   icon: Bell,
+      //   label: "Notificacions",
+      //   path: `/restaurant/notificacions`,
+      // },
       {
         icon: User,
         label: "Perfil",
@@ -135,16 +135,16 @@ export default function Sidebar() {
         label: "Peticions",
         path: "/restaurant/peticions",
       },
-      {
-        icon: ShoppingBag,
-        label: "Compres",
-        path: `/restaurant/compres`,
-      },
-      {
-        icon: Bell,
-        label: "Alertes",
-        path: `/restaurant/notificacions`,
-      },
+      // {
+      //   icon: ShoppingBag,
+      //   label: "Compres",
+      //   path: `/restaurant/compres`,
+      // },
+      // {
+      //   icon: Bell,
+      //   label: "Alertes",
+      //   path: `/restaurant/notificacions`,
+      // },
       {
         icon: LogOut,
         label: "Tancar sessió",
@@ -159,16 +159,16 @@ export default function Sidebar() {
         label: "Inici",
         path: `/inversor/dashboard`,
       },
-      {
-        icon: FileQuestion,
-        label: "Històric",
-        path: "/inversor/historic",
-      },
-      {
-        icon: Bell,
-        label: "Notificacions",
-        path: `/inversor/notificacions`,
-      },
+      // {
+      //   icon: FileQuestion,
+      //   label: "Històric",
+      //   path: "/inversor/historic",
+      // },
+      // {
+      //   icon: Bell,
+      //   label: "Notificacions",
+      //   path: `/inversor/notificacions`,
+      // },
       {
         icon: User,
         label: "Perfil",
@@ -189,16 +189,16 @@ export default function Sidebar() {
         label: "Inici",
         path: `/inversor/dashboard`,
       },
-      {
-        icon: FileQuestion,
-        label: "Històric",
-        path: "/inversor/historic",
-      },
-      {
-        icon: Bell,
-        label: "Alertes",
-        path: `/inversor/notificacions`,
-      },
+      // {
+      //   icon: FileQuestion,
+      //   label: "Històric",
+      //   path: "/inversor/historic",
+      // },
+      // {
+      //   icon: Bell,
+      //   label: "Alertes",
+      //   path: `/inversor/notificacions`,
+      // },
       {
         icon: LogOut,
         label: "Tancar sessió",
@@ -224,11 +224,11 @@ export default function Sidebar() {
         label: "Productes",
         path: `/seller/products`,
       },
-      {
-        icon: Bell,
-        label: "Notificacions",
-        path: `/seller/notificacions`,
-      },
+      // {
+      //   icon: Bell,
+      //   label: "Notificacions",
+      //   path: `/seller/notificacions`,
+      // },
       {
         icon: Wine,
         label: "Tornar a la web",
@@ -264,11 +264,11 @@ export default function Sidebar() {
         label: "Productes",
         path: `/seller/products`,
       },
-      {
-        icon: Bell,
-        label: "Alertes",
-        path: `/seller/notificacions`,
-      },
+      // {
+      //   icon: Bell,
+      //   label: "Alertes",
+      //   path: `/seller/notificacions`,
+      // },
       {
         icon: LogOut,
         label: "Tancar sessió",

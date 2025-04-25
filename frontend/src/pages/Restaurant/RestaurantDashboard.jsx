@@ -168,10 +168,6 @@ function RestaurantDashboardComponent() {
     }
   }
 
-  // Filter requests based on active filter
-  const filteredRequests =
-    activeFilter === "all" ? requests : requests.filter((request) => request.status === activeFilter)
-
   // Request statistics
   const stats = {
     total: requests.length,
@@ -224,21 +220,20 @@ function RestaurantDashboardComponent() {
       {/* Statistics */}
       <RequestStats stats={stats} />
 
-      {/* Filters */}
-      <FilterButtons activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Request table */}
         <div className="lg:col-span-3">
           <RestaurantTable
-            requests={filteredRequests}
+           requests={requests}
             baseUrl={baseUrl}
             onDelete={handleDeleteRequest}
             handleReceiveProduct={handleReceiveProduct}
             handleSellProduct={handleSellProduct}
             receivingProduct={receivingProduct}
             sellingProduct={sellingProduct}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
           />
         </div>
 
