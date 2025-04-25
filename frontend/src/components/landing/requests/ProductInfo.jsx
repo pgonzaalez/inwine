@@ -116,21 +116,33 @@ export default function ProductInfo({ product, wineTypeName }) {
   }
 
   const handleRequestSubmit = async () => {
-    const price = parseFloat(offerPrice)
-    if (isNaN(price) || price <= 0) {
-      setRequestStatus('error')
-      return
+    const price = parseFloat(offerPrice);
+    const productPrice = parseFloat(product.price_demanded);
+
+    // Validaciones
+    if (isNaN(price)) {
+      setRequestStatus('error');
+      return;
     }
 
-    setIsLoading(true)
-    setRequestStatus(null)
+    if (price <= 0) {
+      setRequestStatus('error');
+      return;
+    }
+
+    if (price < productPrice) {
+      setRequestStatus('price_error');
+      return;
+    }
+
+    setIsLoading(true);
+    setRequestStatus(null);
 
     try {
-      const response = await fetch(`${apiUrl}/restaurants`, {
+      const response = await fetch(`${apiUrl}/v1/restaurants`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           user_id: user.user?.id,
@@ -138,25 +150,25 @@ export default function ProductInfo({ product, wineTypeName }) {
           quantity: 1,
           price_restaurant: price
         })
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Error en la solicitud')
+        throw new Error('Error en la solicitud');
       }
 
-      const data = await response.json()
-      setRequestStatus('success')
+      const data = await response.json();
+      setRequestStatus('success');
 
       setTimeout(() => {
-        setIsRequestOpen(false)
-        setRequestStatus(null)
-        setOfferPrice("")
-      }, 2000)
+        setIsRequestOpen(false);
+        setRequestStatus(null);
+        setOfferPrice("");
+      }, 2000);
     } catch (error) {
-      console.error('Error al enviar solicitud:', error)
-      setRequestStatus('error')
+      console.error('Error al enviar solicitud:', error);
+      setRequestStatus('error');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -310,6 +322,9 @@ export default function ProductInfo({ product, wineTypeName }) {
             />
             {requestStatus === 'error' && (
               <p className="mt-1 text-sm text-red-600">Si us plau, introdueix un preu vàlid</p>
+            )}
+            {requestStatus === 'price_error' && (
+              <p className="mt-1 text-sm text-red-600">El preu ofertat no pot ser inferior al preu actual del producte</p>
             )}
           </div>
 
