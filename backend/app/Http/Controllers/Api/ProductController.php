@@ -19,13 +19,13 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::where('status', 'in_stock')
-        ->withCount('requestsRestaurant')
-        ->orderBy('requests_restaurant_count', 'desc')
-        ->get();
-        
+            ->withCount('requestsRestaurant')
+            ->orderBy('requests_restaurant_count', 'desc')
+            ->get();
+
         $response = $products->map(function ($product) {
             return [
-                "id"=> $product->id,
+                "id" => $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,
@@ -38,7 +38,7 @@ class ProductController extends Controller
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at,
                 'requests_restaurant_count' => $product->requests_restaurant_count,
-    
+
             ];
         });
 
@@ -54,7 +54,7 @@ class ProductController extends Controller
 
         $response = $products->map(function ($product) {
             return [
-                'id'=> $product->id,
+                'id' => $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,
@@ -71,6 +71,49 @@ class ProductController extends Controller
 
         return response()->json($response);
     }
+
+    public function showByUser(string $userId, string $productId)
+    {
+        $product = Product::with('images', 'wineType')
+            ->where('user_id', $userId)
+            ->find($productId);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+
+        $response = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'origin' => $product->origin,
+            'year' => $product->year,
+            'wine_type' => $product->wineType?->name,
+            'price_demanded' => $product->price_demanded,
+            'quantity' => $product->quantity,
+            'image' => $product->image,
+            'status' => $product->status,
+            'user_id' => $product->user_id,
+            'created_at' => $product->created_at,
+            'updated_at' => $product->updated_at,
+            'images' => $product->images->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'image_path' => $image->image_path,
+                    'is_primary' => $image->is_primary,
+                    'order' => $image->order
+                ];
+            }),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
+
 
     /**
      * Store a newly created resource in storage.
