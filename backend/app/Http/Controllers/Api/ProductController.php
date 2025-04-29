@@ -18,7 +18,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::where('status', 'in_stock')->get();
+        $products = Product::where('status', 'in_stock')
+        ->withCount('requestsRestaurant')
+        ->orderBy('requests_restaurant_count', 'desc')
+        ->get();
         
         $response = $products->map(function ($product) {
             return [
@@ -33,7 +36,9 @@ class ProductController extends Controller
                 'status' => $product->status,
                 'user_id' => $product->seller->name,
                 'created_at' => $product->created_at,
-                'updated_at' => $product->updated_at
+                'updated_at' => $product->updated_at,
+                'requests_restaurant_count' => $product->requests_restaurant_count,
+    
             ];
         });
 

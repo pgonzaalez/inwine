@@ -1,12 +1,14 @@
-"use client"
+import { Heart, Store } from "lucide-react";
 
-import { Heart, Store } from "lucide-react"
-
-export default function ProductCard({ producto, esFavorito, onToggleFavorito }) {
-  const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000"
+export default function ProductCard({
+  producto,
+  esFavorito,
+  onToggleFavorito,
+}) {
+  const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000";
 
   // Add safety checks for product properties
-  if (!producto) return null
+  if (!producto) return null;
 
   // Format price with thousand separators
   const formatPrice = (price) => {
@@ -14,43 +16,45 @@ export default function ProductCard({ producto, esFavorito, onToggleFavorito }) 
       style: "currency",
       currency: "EUR",
       maximumFractionDigits: 0,
-    }).format(price)
-  }
+    }).format(price);
+  };
 
   // Get wine type color
   const getWineTypeColor = (type) => {
     switch (type?.toLowerCase()) {
       case "negre":
-        return "bg-red-900"
+        return "bg-red-900";
       case "blanc":
-        return "bg-yellow-100"
+        return "bg-yellow-100";
       case "rossat":
-        return "bg-pink-300"
+        return "bg-pink-300";
       case "espumós":
-        return "bg-blue-100"
+        return "bg-blue-100";
       case "dolç":
-        return "bg-amber-300"
+        return "bg-amber-300";
       default:
-        return "bg-gray-200"
+        return "bg-gray-200";
     }
-  }
+  };
 
   // Get text color based on wine type
   const getTextColor = (type) => {
     switch (type?.toLowerCase()) {
       case "blanc":
       case "espumós":
-        return "text-gray-800"
+        return "text-gray-800";
       default:
-        return "text-white"
+        return "text-white";
     }
-  }
+  };
 
-   return (
+  return (
     <div className="bg-white rounded-xl overflow-hidden shadow-md group hover:shadow-lg transition-all duration-300">
       <div className="relative h-64 sm:h-72">
         <img
-          src={producto.image ? `${baseUrl}${producto.image}` : "/placeholder.svg"}
+          src={
+            producto.image ? `${baseUrl}${producto.image}` : "/placeholder.svg"
+          }
           alt={producto.name || "Vino"}
           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
         />
@@ -58,11 +62,15 @@ export default function ProductCard({ producto, esFavorito, onToggleFavorito }) 
           <button
             className="w-9 h-9 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
             onClick={(e) => {
-              e.preventDefault()
-              onToggleFavorito(producto.name)
+              e.preventDefault();
+              onToggleFavorito(producto.name);
             }}
           >
-            <Heart className={`w-5 h-5 ${esFavorito ? "fill-[#9A3E50] text-[#9A3E50]" : "text-gray-400"}`} />
+            <Heart
+              className={`w-5 h-5 ${
+                esFavorito ? "fill-[#9A3E50] text-[#9A3E50]" : "text-gray-400"
+              }`}
+            />
           </button>
         </div>
       </div>
@@ -71,7 +79,9 @@ export default function ProductCard({ producto, esFavorito, onToggleFavorito }) 
           <div className="flex-1">
             <div className="flex items-start justify-between mb-2">
               {/* Product name on the left */}
-              <h3 className="font-bold text-gray-800 text-lg">{producto.name || "Sin nombre"}</h3>
+              <h3 className="font-bold text-gray-800 text-lg">
+                {producto.name || "Sin nombre"}
+              </h3>
 
               {/* Price tag on the right */}
               <div className="bg-[#9A3E50] text-white font-bold px-3 py-1 rounded ml-2 min-w-[80px] text-center">
@@ -86,16 +96,29 @@ export default function ProductCard({ producto, esFavorito, onToggleFavorito }) 
               )}
               {producto.wine_type && (
                 <div
-                  className={`${getWineTypeColor(producto.wine_type)} ${getTextColor(producto.wine_type)} text-xs font-medium px-2 py-1 rounded`}
+                  className={`${getWineTypeColor(
+                    producto.wine_type
+                  )} ${getTextColor(
+                    producto.wine_type
+                  )} text-xs font-medium px-2 py-1 rounded`}
                 >
                   {producto.wine_type}
                 </div>
               )}
             </div>
-            <p className="text-gray-500 text-sm flex items-center gap-1 mt-2">
-              <img src="https://flagcdn.com/16x12/es.png" alt="D.O." className="inline-block" />
-              D.O. {producto.origin || "N/A"}{" "}
-            </p>
+            <div className="flex items-center justify-between mt-2 w-full">
+              <p className="text-gray-500 text-sm flex items-center gap-1">
+                <img
+                  src="https://flagcdn.com/16x12/es.png"
+                  alt="D.O."
+                  className="inline-block"
+                />
+                D.O. {producto.origin || "N/A"}{" "}
+              </p>
+              <div className="text-xs text-gray-500">
+                Quantitat: {producto.quantity || 1}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -103,13 +126,14 @@ export default function ProductCard({ producto, esFavorito, onToggleFavorito }) 
           <p className="text-gray-500 text-sm flex items-center gap-1">
             <Store className="w-3 h-3 text-[#9A3E50]" /> {producto.user_id || "N/A"}
           </p>
-          <div className="flex items-center">
-            <span className="text-xs text-gray-500">Quantitat: {producto.quantity || 1}</span>
-          </div>
+          {/* Solo mostrar badge si hay peticiones */}
+          {producto.requests_restaurant_count > 0 && (
+            <div className="inline-flex items-center bg-black text-white text-xs font-medium py-1 pl-3 pr-5 [clip-path:polygon(0_0,calc(100%_-_8px)_0,100%_50%,calc(100%_-_8px)_100%,0_100%)]">
+              {producto.requests_restaurant_count} peticions
+            </div>
+          )}
         </div>
       </div>
     </div>
-  )
+  );
 }
-
-
