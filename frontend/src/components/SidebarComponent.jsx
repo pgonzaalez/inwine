@@ -299,8 +299,8 @@ export default function Sidebar() {
               <User size={18} />
             </div>
             <div>
-              <p className="font-medium text-gray-900">{user ? user.name : "Usuari Desconegut"}</p>
-              <p className="text-sm text-gray-500">{user?.email || "email@example.com"}</p>
+              <p className="font-medium text-gray-900 break-words max-w-[180px]">{user ? user.name : "Usuari Desconegut"}</p>
+              <p className="text-sm text-gray-500 break-words max-w-[180px]">{user?.email || "email@example.com"}</p>
             </div>
           </div>
         </div>

@@ -32,7 +32,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const user = useFetchUser();
-  
+
   const role = user.user?.active_role?.[0];
 
   const handleProfile = () => {
@@ -241,16 +241,23 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 hover:scale-105 ring-1 ring-gray-200"
+                className="flex items-center space-x-3"
               >
-                <img
-                  src={
-                    user.avatar ||
-                    "https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                  }
-                  alt="Usuario"
-                  className="h-full w-full object-cover"
-                />
+                <div className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200">
+                  <img
+                    src={user.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
+                    alt="Usuario"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="hidden md:flex flex-col items-start">
+                  <span className="text-sm font-medium text-gray-700">
+                    {user.user?.name || "Usuari"}
+                  </span>
+                  <span className="text-xs text-gray-500 capitalize">
+                    Rol: {role || "rol"}
+                  </span>
+                </div>
               </button>
 
               {isOpen && (
@@ -264,6 +271,11 @@ export default function Header() {
                   <div className="py-1">
                     <div className="border-b px-4 py-3 text-sm font-medium border-gray-100 text-gray-700">
                       El meu compte
+                      <div className="hidden md:flex flex-col items-start">
+                        <span className="text-xs text-gray-500 break-words max-w-[180px]">
+                          {user.user?.email || "Correu"}
+                        </span>
+                      </div>
                     </div>
 
                     <button
