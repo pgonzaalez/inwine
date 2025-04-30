@@ -68,7 +68,7 @@ class ProductSeeder extends Seeder
                 'product_id' => $createdProduct->id,
                 'image_path' => $product['image'],
                 'is_primary' => true,
-                'order' => 1
+                'order' => 0
             ]);
         }
     }
