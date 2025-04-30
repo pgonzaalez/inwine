@@ -378,6 +378,49 @@ class ProductController extends Controller
     }
 
     /**
+     * Eliminar todos los productos de un usuario
+     */
+    public function destroyAllByUser(string $userId, string $productId)
+    {
+        $product = Product::with('images')->where('user_id', $userId)->find($productId);
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+        DB::beginTransaction();
+        try {
+            // Eliminamos las imágenes del almacenamiento
+            foreach ($product->images as $image) {
+                // Extraemos la ruta relativa del storage
+                $path = str_replace('/storage/', '', $image->image_path);
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+                $image->delete();
+            }
+
+            // Eliminamos el producto
+            $product->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Producto eliminado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar el producto: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Eliminar una imagen específica de un producto
      */
     public function deleteImage(string $productId, string $imageId)
