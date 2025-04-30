@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Star, Share2, Check, Copy, Trash, Edit } from "lucide-react";
 import Slider from "react-slick"; // Carousel library
+import { DeleteProductModal } from "@/components/seller/modals/DeleteProductModal";
 import { useFetchUser } from "@components/auth/FetchUser";
 
 import "slick-carousel/slick/slick.css";
@@ -56,7 +57,7 @@ export default function ViewProductPage() {
 
     const shareData = {
       title: product.name,
-      text: `Descubre ${product.name}, cosecha ${product.year} de ${product.origin}`,
+      text: `Descubreix ${product.name}, al ${product.year} de ${product.origin}`,
       url: window.location.href,
     };
 
@@ -113,7 +114,7 @@ export default function ViewProductPage() {
     } catch (err) {
       console.error(err.message);
     } finally {
-      setIsDeleteDialogOpen(false);
+      setIsDeleteDialogOpen(false); // Cerrar el modal después de la eliminación
     }
   };
 
@@ -169,10 +170,7 @@ export default function ViewProductPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Carrusel de imágenes del producto */}
               <div className="bg-white rounded-lg shadow-md p-4">
-                <Slider
-                  {...sliderSettings}
-                  className="pb-8" 
-                >
+                <Slider {...sliderSettings} className="pb-8">
                   {product.images.map((image) => (
                     <div
                       key={image.id}
@@ -297,6 +295,11 @@ export default function ViewProductPage() {
           </div>
         </div>
       </div>
+      <DeleteProductModal
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)} // Corregido: Llama a setIsDeleteDialogOpen
+        onConfirm={handleDeleteProduct}
+      />
     </div>
   );
 }
