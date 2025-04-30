@@ -89,6 +89,7 @@ class ProductController extends Controller
             'id' => $product->id,
             'name' => $product->name,
             'origin' => $product->origin,
+            'description' => $product->description,
             'year' => $product->year,
             'wine_type' => $product->wineType?->name,
             'price_demanded' => $product->price_demanded,
@@ -170,7 +171,7 @@ class ProductController extends Controller
                     Log::info('Procesando imagen', ['index' => $index]);
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image_path' => $path,
+                        'image_path' => Storage::url($path),
                         'is_primary' => $isPrimary,
                         'order' => $index
                     ]);
