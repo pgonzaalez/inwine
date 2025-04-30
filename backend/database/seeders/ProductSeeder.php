@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use App\Models\ProductImage;
 use App\Models\Product;
 
 class ProductSeeder extends Seeder
@@ -14,8 +15,8 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-         // Crear productos de prueba
-         $products = [
+        // Crear productos de prueba
+        $products = [
             [
                 'name' => 'Vi Criança',
                 'origin' => 'Catalunya',
@@ -47,21 +48,28 @@ class ProductSeeder extends Seeder
                 'image' => '/storage/proba/Botella-vino.jpeg',
             ],
             [
-                'name'=> 'Louis Latour ',
+                'name' => 'Louis Latour ',
                 'origin' => 'França',
-                'year'=> 2023,
-                'wine_type_id'=> 2,
-                'description'=> 'Vi de prova per a la prova',
-                'price_demanded'=> 100,
-                'quantity'=> 1,
-                'image'=> '/storage/proba/louis.jpg',
+                'year' => 2023,
+                'wine_type_id' => 2,
+                'description' => 'Vi de prova per a la prova',
+                'price_demanded' => 100,
+                'quantity' => 1,
+                'image' => '/storage/proba/louis.jpg',
             ],
         ];
 
-        foreach ($products as $product) {
-            Product::factory()->create(array_merge($product, [
-                'user_id' => 1, // ID del vendedor de prueba
+        foreach ($products as $index => $product) {
+            $createdProduct = Product::factory()->create(array_merge($product, [
+                'user_id' => 1,
             ]));
+
+            ProductImage::create([
+                'product_id' => $createdProduct->id,
+                'image_path' => $product['image'],
+                'is_primary' => true,
+                'order' => 1
+            ]);
         }
     }
 }
