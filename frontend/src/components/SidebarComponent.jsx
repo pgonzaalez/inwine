@@ -43,21 +43,21 @@ export default function Sidebar() {
 
   const redirectToDashboard = async (role) => {
     try {
-        const response = await fetch(`${apiUrl}/update-active-role`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${getCookie("token")}`,
-          },
-          body: JSON.stringify({ role }),
-        });
-  
-        if (!response.ok) {
-          throw new Error("Error al actualizar el rol activo");
-        }
-      
-  
+      const response = await fetch(`${apiUrl}/update-active-role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify({ role }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el rol activo");
+      }
+
+
       setTimeout(() => {
         switch (role) {
           case "seller":
@@ -212,17 +212,17 @@ export default function Sidebar() {
         icon: Home,
         label: "Inici",
         path: `/inversor/dashboard`,
+      }, 
+      {
+        icon: FileQuestion,
+        label: "Històric",
+        path: "/inversor/historic",
       },
       {
         icon: Wine,
         label: "Tornar a la web",
         path: `/`,
       },
-      // {
-      //   icon: FileQuestion,
-      //   label: "Històric",
-      //   path: "/inversor/historic",
-      // },
       // {
       //   icon: Bell,
       //   label: "Notificacions",
@@ -248,11 +248,11 @@ export default function Sidebar() {
         label: "Inici",
         path: `/inversor/dashboard`,
       },
-      // {
-      //   icon: FileQuestion,
-      //   label: "Històric",
-      //   path: "/inversor/historic",
-      // },
+      {
+        icon: FileQuestion,
+        label: "Històric",
+        path: "/inversor/historic",
+      },
       // {
       //   icon: Bell,
       //   label: "Alertes",
@@ -490,12 +490,12 @@ export default function Sidebar() {
         footer={null} // Eliminamos el footer ya que RoleSelector tiene su propio botón
       >
         <div className="px-2">
-          <RoleSelector 
-            roles={user?.roles || []} 
+          <RoleSelector
+            roles={user?.roles || []}
             onSelect={(role) => {
               redirectToDashboard(role);
               setIsRoleChangeOpen(false);
-            }} 
+            }}
           />
         </div>
       </Modal>

@@ -36,7 +36,7 @@ import Restaurant from "@pages/Restaurant/RestaurantDashboard";
 export default function App() {
   return (
     <Router>
-        <ScrollToTop />
+      <ScrollToTop />
       <Routes>
         <Route element={<HeaderLayout />}>
           <Route path="/" element={<Main />} />
@@ -126,8 +126,8 @@ export default function App() {
             }
           />
 
-           {/* Rutas protegidas para Inversor */}
-           <Route
+          {/* Rutas protegidas para Inversor */}
+          <Route
             path="/inversor/dashboard"
             element={
               <ProtectedRoute>
@@ -135,11 +135,11 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-               <Route
+          <Route
             path="/inversor/historic"
             element={
               <ProtectedRoute>
-                < InvestmentHistoryPage/>
+                < InvestmentHistoryPage />
               </ProtectedRoute>
             }
           />
