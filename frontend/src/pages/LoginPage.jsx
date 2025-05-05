@@ -8,7 +8,7 @@ import {
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { getCookie, setCookie } from "@/utils/utils";
-import RoleSelector from "@/components/RoleSelector" // Componente extraído para selección de rol
+import RoleSelector from "@/components/RoleSelector"
 
 const LoginForm = () => {
   const apiUrl = import.meta.env.VITE_API_URL
