@@ -28,6 +28,7 @@ import EditProductPage from "@pages/Seller/EditProductPage";
 // Pages Inversor
 import RegisterInversor from "@pages/RegisterInversorPage";
 import Inversor from "@pages/Inversor/InversorDashboardPage";
+import InvestmentHistoryPage from "@pages/Inversor/HIstoricPage";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
@@ -131,6 +132,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Inversor />
+              </ProtectedRoute>
+            }
+          />
+               <Route
+            path="/inversor/historic"
+            element={
+              <ProtectedRoute>
+                < InvestmentHistoryPage/>
               </ProtectedRoute>
             }
           />
