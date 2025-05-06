@@ -45,6 +45,29 @@ class UserSeeder extends Seeder
             }
         }
 
+        //Crear usuario admin (Pol)
+        $admin = User::factory()->create([
+            'name' => 'Pol Santandreu',
+            'email' => 'polsantandreu@gmail.com',
+            'password' => Hash::make('1234'),
+        ]);
+
+        //Asignamos todos los roles
+        UserRole::create([
+            'user_id' => $admin->id,
+            'role' => 'seller'
+        ]);
+
+        UserRole::create([
+            'user_id' => $admin->id,
+            'role' => 'restaurant'
+        ]);
+
+        UserRole::create([
+            'user_id' => $admin->id,
+            'role' => 'investor'
+        ]);
+
         // Crear usuario específico de prueba (Seller)
         $testSeller = User::factory()->create([
             'name' => 'Bodega de Proba',
@@ -58,7 +81,7 @@ class UserSeeder extends Seeder
             'role' => 'seller'
         ]);
 
-        // Asignar rol de seller
+        // Asignar rol de restaurant
         UserRole::create([
             'user_id' => $testSeller->id,
             'role' => 'restaurant'
@@ -111,11 +134,14 @@ class UserSeeder extends Seeder
         }
 
         // Crear perfiles usando factories
+        createProfiles($admin, 'seller');
+        createProfiles($admin, 'restaurant');
+        createProfiles($admin, 'investor');
         createProfiles($testSeller, 'seller');
         createProfiles($testSeller, 'restaurant');
         createProfiles($testRestaurant, 'restaurant');
         createProfiles($testInvestor, 'investor');
-        createProfiles($testInvestor2,'investor');
+        createProfiles($testInvestor2, 'investor');
 
         // // Crear usuarios aleatorios
         // Investor::factory()->count(10)->create();
