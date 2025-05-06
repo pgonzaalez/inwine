@@ -33,6 +33,7 @@ import ShowInvestment from "@pages/Inversor/ShowInvestment";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
+import ViewOneRequest from "@pages/Restaurant/ViewOneRequest";
 
 export default function App() {
   return (
@@ -115,6 +116,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Restaurant />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/restaurant/requests/:id"
+            element={
+              <ProtectedRoute>
+                <ViewOneRequest />
               </ProtectedRoute>
             }
           />
