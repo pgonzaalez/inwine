@@ -248,12 +248,15 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
               <div>
                 <button
                   onClick={() => handleViewDetails(investment.investment_id)}
-                  className="px-3 py-1 text-xs rounded-lg font-medium text-white flex items-center gap-1"
+                  className="text-xs font-medium px-3 py-1 rounded-full transition-colors"
                   style={{
-                    background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                    backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
+                      primaryColors.dark.slice(3, 5),
+                      16,
+                    )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
+                    color: primaryColors.dark,
                   }}
                 >
-                  <Eye size={12} />
                   Detalls
                 </button>
               </div>
