@@ -126,7 +126,7 @@ class InvestorController extends Controller
         if ($authenticatedUser->id != $userId) {
             return response()->json(['message' => 'No tienes permiso para ver estas inversiones'], 403);
         }
-        
+
         $investor = User::find($userId);
 
         if (!$investor) {
@@ -171,5 +171,53 @@ class InvestorController extends Controller
         });
 
         return response()->json(['message' => 'Inversiones obtenidas correctamente', 'investments' => $data], 200);
+    }
+
+
+    public function showInvestment(Request $request, $userId, $investmentId)
+    {
+        $authenticatedUser = $request->user();
+
+        if ($authenticatedUser->id != $userId) {
+            return response()->json(['message' => 'No tienes permiso para ver esta inversión'], 403);
+        }
+
+        $investment = OrderRequested::where('user_id', $userId)
+            ->where('id', $investmentId)
+            ->with([
+                'requestRestaurant.product.seller',
+                'requestRestaurant.user',
+            ])
+            ->first();
+
+        if (!$investment) {
+            return response()->json(['message' => 'Inversión no encontrada'], 404);
+        }
+
+        $requestRestaurant = $investment->requestRestaurant;
+        $product = $requestRestaurant->product;
+        $seller = $product->seller;
+        $restaurantUser = $requestRestaurant->user;
+
+        $data = [
+            'investment_id' => $investment->id,
+            'status' => $investment->status,
+            'user_id' => $investment->user_id,
+            'request_restaurant_id' => $investment->request_restaurant_id,
+            'price_restaurant' => $requestRestaurant->price_restaurant,
+            'quantity' => $requestRestaurant->quantity,
+            'product' => [
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'image' => $product->image,
+                'price_demanded' => $product->price_demanded,
+            ],
+            'seller_name' => $seller->name ?? null,
+            'restaurant_name' => $restaurantUser->name ?? null,
+            'created_at' => $investment->created_at,
+        ];
+
+        return response()->json(['message' => 'Inversión obtenida correctamente', 'investment' => $data], 200);
     }
 }

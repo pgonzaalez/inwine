@@ -30,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Ruta para obtener el historial del inversor
     Route::get('{userId}/investments', [InvestorController::class,'investments']);
 
+    Route::get('{userId}/investments/{investmentId}', [InvestorController::class,'showInvestment']);
+
     
 });
 
