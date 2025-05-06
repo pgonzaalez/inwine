@@ -101,7 +101,7 @@ export const RestaurantTable = ({
   const handleEdit = (e, id) => {
     e.preventDefault()
     e.stopPropagation()
-    window.location.href = `/restaurant/${id}/edit`
+    window.location.href = `/restaurant/requests/${id}/edit`
   }
   
   const navigate = useNavigate();
