@@ -1,6 +1,7 @@
 "use client"
 
 import { DollarSignIcon, Store, Trash2, Edit, Filter, Eye } from "lucide-react"
+import { useNavigate } from 'react-router-dom';
 
 const primaryColors = {
   dark: "#9A3E50",
@@ -100,12 +101,14 @@ export const RestaurantTable = ({
   const handleEdit = (e, id) => {
     e.preventDefault()
     e.stopPropagation()
-    window.location.href = `/restaurant/requests/${id}/edit`
+    window.location.href = `/restaurant/${id}/edit`
   }
+  
+  const navigate = useNavigate();
 
   const handleRowClick = (id) => {
-    window.location.href = `/restaurant/requests/${id}`
-  }
+    navigate(`/restaurant/requests/${id}`);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
