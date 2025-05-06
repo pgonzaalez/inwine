@@ -17,12 +17,20 @@ export default function CheckoutForm() {
       return
     }
 
+    // Get the orderId from localStorage to pass it as metadata
+    const orderId = localStorage.getItem("currentOrderId")
+
     // Change the return_url to your summary page
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Redirect to the summary page instead of the current page
         return_url: `${window.location.origin}/order-summary`,
+        payment_method_data: {
+          metadata: {
+            order_id: orderId, // Pass the orderId as metadata
+          },
+        },
       },
     })
 
