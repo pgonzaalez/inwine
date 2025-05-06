@@ -76,9 +76,14 @@ export default function ShoppingCartPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("token")}`,
         },
+        body: JSON.stringify({
+          selectedOrderIds: cartItems
+            .filter((item) => selectedItems[item.order_id]) // Solo seleccionados
+            .map((item) => item.order_id),
+        }),
       })
 
-      setCartItems([])
+      setCartItems(cartItems.filter((item) => !selectedItems[item.order_id])) // Mantener no seleccionados
       setSelectedItems({})
     } catch (error) {
       // console.error("Error clearing cart:", error)
@@ -285,13 +290,16 @@ export default function ShoppingCartPage() {
 
               {/* Order Summary */}
               <CartSummary
+                orderId={cartItems[0]?.order_id}
                 subtotal={subtotal}
                 serviceCommission={serviceCommission}
                 shippingCost={shippingCost}
                 total={total}
                 selectedItemsCount={selectedItemsCount}
                 hasItems={cartItems.length > 0}
-                onClearCart={() => setIsDeleteOpen(true)}
+                onClearCart={clearCart}
+                cartItems={cartItems}
+                selectedItems={selectedItems} // Pasar seleccionados
               />
             </div>
           )}

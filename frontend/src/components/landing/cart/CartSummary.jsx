@@ -1,14 +1,8 @@
-import {
-  ShoppingBag,
-  ChevronRight,
-  CreditCard,
-  Trash2,
-  Info,
-  Link,
-} from "lucide-react";
+import { ShoppingBag, ChevronRight, CreditCard, Trash2, Info } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 export function CartSummary({
+  orderId,
   subtotal,
   serviceCommission,
   shippingCost,
@@ -16,16 +10,32 @@ export function CartSummary({
   selectedItemsCount,
   hasItems,
   onClearCart,
+  cartItems, // Añade este prop para recibir los items del carrito
 }) {
-
-
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (hasItems && subtotal !== 0) {
+      // Opción 1: Si tienes un solo orderId
+      if (orderId) {
+        localStorage.setItem("currentOrderIds", JSON.stringify([orderId]));
+      } 
+      // Opción 2: Si tienes múltiples órdenes en cartItems
+      else if (cartItems && cartItems.length > 0) {
+        // Asumiendo que cada item en cartItems tiene un id que corresponde al order_id
+        const orderIds = cartItems.map(item => item.id);
+        localStorage.setItem("currentOrderIds", JSON.stringify(orderIds));
+      }
+      // Opción 3: Si no tienes ninguna de las anteriores, usa un array vacío
+      else {
+        localStorage.setItem("currentOrderIds", JSON.stringify([]));
+      }
+
+      // Navegar a la página de pago
       navigate("/checkout");
     }
   };
+
   return (
     <div className="lg:w-96">
       <div className="mb-4">
