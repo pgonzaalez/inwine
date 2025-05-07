@@ -57,6 +57,8 @@ Route::prefix('v1')->group(function () {
     // Rutas para los restaurantes
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
     Route::get('/{userId}/restaurant/{requestId}', [RequestRestaurantController::class, 'showRequestWithProduct']);
+    Route::delete('/restaurant/{id}', [RequestRestaurantController::class, 'destroy'])
+    ->middleware('auth:sanctum');
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);

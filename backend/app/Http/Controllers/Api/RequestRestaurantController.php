@@ -61,11 +61,35 @@ class RequestRestaurantController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        $request = RequestRestaurant::find($id);
-        $request->delete();
-        return response()->json($request);
+        // Obtener el usuario autenticado mediante el token
+        $user = $request->user();
+        
+        // Buscar la solicitud
+        $requestRestaurant = RequestRestaurant::find($id);
+        
+        // Verificar si la solicitud existe
+        if (!$requestRestaurant) {
+            return response()->json([
+                'message' => 'Solicitud no encontrada'
+            ], 404);
+        }
+        
+        // Verificar si la solicitud pertenece al usuario
+        if ($requestRestaurant->user_id !== $user->id) {
+            return response()->json([
+                'message' => 'No estás autorizado para eliminar esta solicitud'
+            ], 403);
+        }
+        
+        // Eliminar la solicitud
+        $requestRestaurant->delete();
+        
+        return response()->json([
+            'message' => 'Solicitud eliminada correctamente',
+            'data' => $requestRestaurant
+        ]);
     }
 
     public function indexByRestaurant($userId)
@@ -139,7 +163,6 @@ class RequestRestaurantController extends Controller
         return response()->json($result);
     }
     
-
     public function searchByProduct(string $id)
     {
         $request = RequestRestaurant::where('product_id', $id)
