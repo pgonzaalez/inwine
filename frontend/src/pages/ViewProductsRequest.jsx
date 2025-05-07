@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import Header from "../components/HeaderComponent"
 import Footer from "../components/FooterComponent"
 import ProductGallery from "../components/landing/requests/ProductGallery"
 import ProductInfo from "../components/landing/requests/ProductInfo"
