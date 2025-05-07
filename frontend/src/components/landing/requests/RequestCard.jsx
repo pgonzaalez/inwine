@@ -12,7 +12,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
   const [isSuccess, setIsSuccess] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
-  
+
   const { user, loading: userLoading } = useFetchUser();
 
   const profit = request.price_restaurant - productPrice;
@@ -20,8 +20,11 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
 
   const handleAddToOrder = async () => {
     try {
-      // Verificar si el usuario no está logueado
-      if (!user || userLoading) {
+      // Espera a que cargue
+      if (userLoading) return;
+
+      // Ahora evalúa si está logueado
+      if (!user) {
         setShowLoginModal(true);
         return;
       }
@@ -44,7 +47,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
         throw new Error("Error al crear la comanda");
       }
 
-      setIsSuccess(true); 
+      setIsSuccess(true);
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -154,7 +157,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
           </div>
         </div>
       </div>
-      
+
       {/* Modal de Inicio de Sesión */}
       <Modal
         isOpen={showLoginModal}
