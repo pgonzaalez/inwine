@@ -105,19 +105,29 @@ class RequestRestaurantController extends Controller
             return response()->json(['error' => 'Request not found'], 404);
         }
 
+        $product = $request->product;
+
         $result = [
             'price_restaurant' => $request->price_restaurant,
             'status' => $request->status,
             'created_at' => $request->created_at,
             'product' => [
-                'id' => $request->product->id,
-                'name' => $request->product->name,
-                'origin' => $request->product->origin,
-                'year' => $request->product->year,
-                'wine_type' => $request->product->wineType->name ?? null,
-                'price_demanded' => $request->product->price_demanded,
+                'id' => $product->id,
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type' => $product->wineType->name ?? null,
+                'price_demanded' => $product->price_demanded,
                 'quantity' => $request->quantity,
-                'image' => $request->product->image,
+                'image' => $product->image,
+                'images' => $product->images->map(function ($image) {
+                    return [
+                        'id' => $image->id,
+                        'image_path' => $image->image_path,
+                        'is_primary' => $image->is_primary,
+                        'order' => $image->order
+                    ];
+                }),
             ],
         ];
 
