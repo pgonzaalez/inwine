@@ -119,8 +119,6 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="text-sm text-gray-500 mb-6">
