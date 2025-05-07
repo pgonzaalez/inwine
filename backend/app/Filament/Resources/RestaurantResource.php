@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
+use App\Filament\Resources\RestaurantResource\Pages;
+use App\Filament\Resources\RestaurantResource\RelationManagers;
+use App\Models\Restaurant;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,37 +13,41 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class RestaurantResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = Restaurant::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Usuaris';
+    protected static ?string $modelLabel = 'Restaurants';
 
     protected static ?string $navigationGroup = "Gestió d'usuaris";
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 40;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('NIF')
+                Forms\Components\TextInput::make('user_id')
                     ->required()
-                    ->maxLength(9),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
+                    ->numeric(),
+                Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
+                Forms\Components\TextInput::make('phone_contact')
+                    ->tel()
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('name_contact')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                Forms\Components\TextInput::make('credit_card')
+                    ->maxLength(255)
+                    ->default(null),
+                Forms\Components\TextInput::make('balance')
+                    ->numeric()
+                    ->default(null),
             ]);
     }
 
@@ -51,14 +55,20 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('NIF')
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('address')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('phone_contact')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('name_contact')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+                Tables\Columns\TextColumn::make('credit_card')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('balance')
+                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -92,14 +102,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListRestaurants::route('/'),
+            'create' => Pages\CreateRestaurant::route('/create'),
+            'edit' => Pages\EditRestaurant::route('/{record}/edit'),
         ];
-    }
-
-    public static function getNavigationSort(): ?int
-    {
-        return 1;
     }
 }

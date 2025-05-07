@@ -19,6 +19,12 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $modelLabel = 'Productes';
+
+    protected static ?string $navigationGroup = "Gestió de productes";
+
+    protected static ?int $navigationSort = 10;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -118,4 +124,10 @@ class ProductResource extends Resource
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 2;
+    }
+    
 }
