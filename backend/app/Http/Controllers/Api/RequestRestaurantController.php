@@ -75,6 +75,7 @@ class RequestRestaurantController extends Controller
             ->get()
             ->map(function ($request) {
                 return [
+                    'id' => $request->id,
                     'price_restaurant' => $request->price_restaurant,
                     'status' => $request->status,
                     'created_at' => $request->created_at,
@@ -94,23 +95,28 @@ class RequestRestaurantController extends Controller
         return response()->json($products);
     }
 
-    public function showProductByRestaurant($userId, $productId)
+    public function showRequestWithProduct($userId, $requestId)
     {
         $request = RequestRestaurant::where('user_id', $userId)
-            ->where('product_id', $productId)
-            ->with('product.wineType') // Asegúrate de incluir wineType en el with
+            ->where('id', $requestId)
+            ->with(['product.wineType', 'product.images'])
             ->first();
-
+    
         if (!$request) {
             return response()->json(['error' => 'Request not found'], 404);
         }
-
+    
         $product = $request->product;
-
+    
         $result = [
+            'id' => $request->id,
+            'user_id' => $request->user_id,
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity,
             'price_restaurant' => $request->price_restaurant,
             'status' => $request->status,
             'created_at' => $request->created_at,
+            'updated_at' => $request->updated_at,
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -118,21 +124,21 @@ class RequestRestaurantController extends Controller
                 'year' => $product->year,
                 'wine_type' => $product->wineType->name ?? null,
                 'price_demanded' => $product->price_demanded,
-                'quantity' => $request->quantity,
                 'image' => $product->image,
                 'images' => $product->images->map(function ($image) {
                     return [
                         'id' => $image->id,
                         'image_path' => $image->image_path,
                         'is_primary' => $image->is_primary,
-                        'order' => $image->order
+                        'order' => $image->order,
                     ];
                 }),
             ],
         ];
-
+    
         return response()->json($result);
     }
+    
 
     public function searchByProduct(string $id)
     {

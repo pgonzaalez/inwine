@@ -56,7 +56,7 @@ Route::prefix('v1')->group(function () {
 
     // Rutas para los restaurantes
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
-    Route::get('/{userId}/restaurant/{productId}', [RequestRestaurantController::class, 'showProductByRestaurant']);
+    Route::get('/{userId}/restaurant/{requestId}', [RequestRestaurantController::class, 'showRequestWithProduct']);
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
