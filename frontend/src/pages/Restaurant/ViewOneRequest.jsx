@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Edit, Trash, ArrowLeft, DollarSign, Store, Tag, MapPin, Calendar, Wine } from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
-// import { DeleteRequestModal } from "./delete-request-modal"
-
+import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal";
+import {ProductGallery} from "@/components/landing/requests/ProductGallery"
 // Definimos los colores primarios
 const primaryColors = {
   dark: "#9A3E50",
@@ -150,7 +150,7 @@ export default function ViewOneRequest() {
         throw new Error("No s'ha pogut eliminar la sol·licitud.")
       }
 
-      navigate(`/restaurant/requests`, {
+      navigate(`/restaurant/dashboard`, {
         state: { successMessage: "Sol·licitud eliminada correctament." },
       })
     } catch (err) {
@@ -394,12 +394,12 @@ export default function ViewOneRequest() {
             </section>
           </main>
 
-          {/* Modal de eliminación
+          {/* Modal de eliminación */}
           <DeleteRequestModal
             isOpen={isDeleteDialogOpen}
             onClose={() => setIsDeleteDialogOpen(false)}
             onConfirm={handleDeleteRequest}
-          /> */}
+          />
         </div>
       </div>
     </div>
