@@ -94,6 +94,46 @@ class RequestRestaurantController extends Controller
         return response()->json($products);
     }
 
+    public function showProductByRestaurant($userId, $productId)
+    {
+        $request = RequestRestaurant::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->with('product.wineType') // Asegúrate de incluir wineType en el with
+            ->first();
+
+        if (!$request) {
+            return response()->json(['error' => 'Request not found'], 404);
+        }
+
+        $product = $request->product;
+
+        $result = [
+            'price_restaurant' => $request->price_restaurant,
+            'status' => $request->status,
+            'created_at' => $request->created_at,
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type' => $product->wineType->name ?? null,
+                'price_demanded' => $product->price_demanded,
+                'quantity' => $request->quantity,
+                'image' => $product->image,
+                'images' => $product->images->map(function ($image) {
+                    return [
+                        'id' => $image->id,
+                        'image_path' => $image->image_path,
+                        'is_primary' => $image->is_primary,
+                        'order' => $image->order
+                    ];
+                }),
+            ],
+        ];
+
+        return response()->json($result);
+    }
+
     public function searchByProduct(string $id)
     {
         $request = RequestRestaurant::where('product_id', $id)

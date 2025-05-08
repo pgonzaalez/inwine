@@ -29,9 +29,11 @@ import EditProductPage from "@pages/Seller/EditProductPage";
 import RegisterInversor from "@pages/RegisterInversorPage";
 import Inversor from "@pages/Inversor/InversorDashboardPage";
 import InvestmentHistoryPage from "@pages/Inversor/HIstoricPage";
+import ShowInvestment from "@pages/Inversor/ShowInvestment";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
+import ViewOneRequest from "@pages/Restaurant/ViewOneRequest";
 
 export default function App() {
   return (
@@ -117,6 +119,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/restaurant/requests/:id"
+            element={
+              <ProtectedRoute>
+                <ViewOneRequest />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/restaurant/profile"
             element={
@@ -140,6 +150,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 < InvestmentHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inversor/historic/:id"
+            element={
+              <ProtectedRoute>
+                < ShowInvestment />
               </ProtectedRoute>
             }
           />

@@ -29,8 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas para inversor
     // Ruta para obtener el historial del inversor
     Route::get('{userId}/investments', [InvestorController::class,'investments']);
+    Route::get('{userId}/investments/{investmentId}', [InvestorController::class,'showInvestment']);
 
-    
 });
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -54,7 +54,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/{userId}/orders', [OrderController::class, 'showOrderByUser']);
     Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
 
+    // Rutas para los restaurantes
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
+    Route::get('/{userId}/restaurant/{productId}', [RequestRestaurantController::class, 'showProductByRestaurant']);
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);

@@ -13,12 +13,17 @@ import {
   LogOut,
   AlertTriangle,
   ShoppingCart,
+  ShieldCheck,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie, deleteCookie } from "@/utils/utils";
 import Modal from "@components/Modal";
+import RoleSelector from '@/components/RoleSelector';
 
 export default function Header() {
+
+  const user = useFetchUser();
+  const hasMultipleRoles = user.user?.roles?.length > 1;
   // const [scrolled, setScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -29,11 +34,52 @@ export default function Header() {
   const [productCount, setProductCount] = useState(0);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate();
-
-  const user = useFetchUser();
-
+  const [isRoleChangeOpen, setIsRoleChangeOpen] = useState(false);
   const role = user.user?.active_role?.[0];
+
+  const redirectToDashboard = async (role) => {
+    try {
+      const response = await fetch(`${apiUrl}/update-active-role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify({ role }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el rol activo");
+      }
+
+
+      setTimeout(() => {
+        switch (role) {
+          case "seller":
+            navigate("/seller/dashboard");
+            break;
+          case "restaurant":
+            navigate("/restaurant/dashboard");
+            break;
+          case "investor":
+            navigate("/investor/dashboard");
+            break;
+          default:
+            navigate("/login");
+        }
+      }, 500);
+    } catch (error) {
+      // console.error("Error updating active role:", error);
+      // Puedes manejar el error como prefieras
+    }
+  };
+
+  const handleRoleChange = (role) => {
+    redirectToDashboard(role); // Asegúrate de tener esta función definida
+    setIsRoleChangeOpen(false);
+  };
+  const navigate = useNavigate();
 
   const handleProfile = () => {
     if (role === "seller") {
@@ -286,6 +332,16 @@ export default function Header() {
                       Perfil
                     </button>
 
+                    {hasMultipleRoles && (
+                      <button
+                        onClick={() => setIsRoleChangeOpen(true)}
+                        className="flex w-full items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
+                      >
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        Canviar rol
+                      </button>
+                    )}
+
                     <Link
                       to="/settings"
                       className="flex items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
@@ -452,6 +508,21 @@ export default function Header() {
         </Dialog>
       </Transition>
 
+      {/* Modal de Canvio de Rol */}
+      <Modal
+        isOpen={isRoleChangeOpen}
+        onClose={() => setIsRoleChangeOpen(false)}
+        title="Canviar rol"
+        description="Selecciona el rol amb el qual vols accedir:"
+        icon={<ShieldCheck className="h-8 w-8" />}
+        variant="primary"
+        size="md"
+        footer={null}
+      >
+        <div className="px-2">
+          <RoleSelector roles={user?.user?.roles || []} onSelect={handleRoleChange} />
+        </div>
+      </Modal>
       {/* Modal de Cierre de Sesión */}
       <Modal
         isOpen={isLogoutOpen}

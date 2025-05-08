@@ -1,7 +1,8 @@
 "use client"
 
-import { Filter } from "lucide-react"
+import { Filter, Eye } from "lucide-react"
 import { StatusBadge } from "./StatusBadge"
+import { useNavigate } from "react-router-dom"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -13,6 +14,7 @@ const primaryColors = {
 export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) => {
   // Get the base URL from environment variables
   const baseUrl = import.meta.env.VITE_URL_BASE
+  const navigate = useNavigate()
 
   // Array de filtros para evitar el warning de keys
   const filters = [
@@ -41,6 +43,11 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
     }).format(date)
   }
 
+  // Función para navegar a los detalles de la inversión
+  const handleViewDetails = (investmentId) => {
+    navigate(`/inversor/historic/${investmentId}`)
+  }
+
   if (investments.length === 0) {
     return (
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -65,14 +72,13 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
               {filters.map((filter) => (
                 <button
                   key={filter.id}
-                  className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${
-                    activeFilter === filter.id ? "text-white" : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                  className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${activeFilter === filter.id ? "text-white" : "text-gray-700 hover:bg-gray-100"
+                    }`}
                   style={
                     activeFilter === filter.id
                       ? {
-                          background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
-                        }
+                        background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                      }
                       : {}
                   }
                   onClick={() => setActiveFilter(filter.id)}
@@ -114,14 +120,13 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
             {filters.map((filter) => (
               <button
                 key={filter.id}
-                className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${
-                  activeFilter === filter.id ? "text-white" : "text-gray-700 hover:bg-gray-100"
-                }`}
+                className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors ${activeFilter === filter.id ? "text-white" : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 style={
                   activeFilter === filter.id
                     ? {
-                        background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
-                      }
+                      background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                    }
                     : {}
                 }
                 onClick={() => setActiveFilter(filter.id)}
@@ -134,13 +139,14 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
       </div>
 
       {/* Header - Only visible on tablet and desktop */}
-      <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 bg-gray-50 px-6 py-3">
+      <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr_0.5fr] gap-4 bg-gray-50 px-6 py-3">
         <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Imatge</div>
         <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Producte</div>
         <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Venedor</div>
         <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Estat</div>
         <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Inversió</div>
         <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Retorn</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Accions</div>
       </div>
 
       {/* Investment Grid */}
@@ -183,12 +189,24 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
                     Retorn potencial: {formatPrice(investment.price_restaurant * investment.quantity)}
                   </div>
                   <div className="text-xs text-gray-500">Data: {formatDate(investment.created_at)}</div>
+
+                  {/* Botón de detalles */}
+                  <button
+                    onClick={() => handleViewDetails(investment.investment_id)}
+                    className="mt-2 px-3 py-1 text-xs rounded-lg font-medium text-white flex items-center gap-1"
+                    style={{
+                      background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
+                    }}
+                  >
+                    <Eye size={12} />
+                    Detalls
+                  </button>
                 </div>
               </div>
             </div>
 
             {/* Tablet/Desktop Layout */}
-            <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 items-center px-6 py-4">
+            <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr_0.5fr] gap-4 items-center px-6 py-4">
               <div className="w-32 h-32 overflow-hidden rounded-lg">
                 <img
                   src={`${baseUrl}${investment.product.image}`}
@@ -225,6 +243,22 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
                   Benefici:{" "}
                   {formatPrice((investment.price_restaurant - investment.product.price_demanded) * investment.quantity)}
                 </div>
+              </div>
+
+              <div>
+                <button
+                  onClick={() => handleViewDetails(investment.investment_id)}
+                  className="text-xs font-medium px-3 py-1 rounded-full transition-colors"
+                  style={{
+                    backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
+                      primaryColors.dark.slice(3, 5),
+                      16,
+                    )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)`,
+                    color: primaryColors.dark,
+                  }}
+                >
+                  Detalls
+                </button>
               </div>
             </div>
           </div>
