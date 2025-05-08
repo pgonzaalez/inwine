@@ -17,13 +17,13 @@ class WineTypeResource extends Resource
 {
     protected static ?string $model = WineType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-sparkles';
 
     protected static ?string $modelLabel = 'Tipus de vins';
 
     protected static ?string $navigationGroup = "Gestió de productes";
 
-    protected static ?int $navigationSort = 20;
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {

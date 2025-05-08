@@ -17,11 +17,13 @@ class OrderRequestedResource extends Resource
 {
     protected static ?string $model = OrderRequested::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
     protected static ?string $navigationGroup = "Comandes";
 
-    protected static ?int $navigationSort = 30;
+    protected static ?string $modelLabel = 'Ordres Pagades';
+
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {

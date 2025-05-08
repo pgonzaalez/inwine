@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InvestorResource\Pages;
-use App\Filament\Resources\InvestorResource\RelationManagers;
-use App\Models\Investor;
+use App\Filament\Resources\RequestRestaurantResource\Pages;
+use App\Filament\Resources\RequestRestaurantResource\RelationManagers;
+use App\Models\RequestRestaurant;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,17 +13,17 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class InvestorResource extends Resource
+class RequestRestaurantResource extends Resource
 {
-    protected static ?string $model = Investor::class;
+    protected static ?string $model = RequestRestaurant::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Inversors';
+    protected static ?string $navigationGroup = "Gestió de productes";
 
-    protected static ?string $navigationGroup = "Gestió d'usuaris";
+    protected static ?string $modelLabel = 'Peticions de restaurants';
 
-    protected static ?int $navigationSort = 50;
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {
@@ -34,22 +34,19 @@ class InvestorResource extends Resource
                     ->relationship('user', 'name')
                     ->searchable()
                     ->required(),
-                Forms\Components\TextInput::make('address')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone_contact')
-                    ->tel()
+                Forms\Components\Select::make('product_id')
+                    ->label('Producte')
+                    ->relationship('product', 'name')
+                    ->searchable()
+                    ->required(),
+                Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('credit_card')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('bank_account')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('balance')
-                    ->numeric()
-                    ->default(null),
+                Forms\Components\TextInput::make('price_restaurant')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('status')
+                    ->required(),
             ]);
     }
 
@@ -61,18 +58,17 @@ class InvestorResource extends Resource
                     ->label('Usuari')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('product.name')
+                    ->label('Producte')
+                    ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone_contact')
+                Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('credit_card')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('bank_account')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('balance')
+                Tables\Columns\TextColumn::make('price_restaurant')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -105,9 +101,9 @@ class InvestorResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInvestors::route('/'),
-            'create' => Pages\CreateInvestor::route('/create'),
-            'edit' => Pages\EditInvestor::route('/{record}/edit'),
+            'index' => Pages\ListRequestRestaurants::route('/'),
+            'create' => Pages\CreateRequestRestaurant::route('/create'),
+            'edit' => Pages\EditRequestRestaurant::route('/{record}/edit'),
         ];
     }
 }
