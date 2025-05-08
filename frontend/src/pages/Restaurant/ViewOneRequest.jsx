@@ -5,33 +5,12 @@ import { useParams, useNavigate } from "react-router-dom"
 import { Edit, Trash, ArrowLeft, DollarSign, Store, Tag, MapPin, Calendar, Wine } from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal";
-import {ProductGallery} from "@/components/landing/requests/ProductGallery"
-// Definimos los colores primarios
+import ProductGallery from "@/components/landing/requests/ProductGallery"// Definimos los colores primarios
 const primaryColors = {
   dark: "#9A3E50",
   light: "#C27D7D",
   background: "#F9F9F9",
 }
-
-// Componente para la galería de imágenes
-const RequestGallery = ({ image, productName, baseUrl }) => {
-  return (
-    <div className="space-y-4">
-      {/* Imagen principal */}
-      <div className="aspect-square overflow-hidden rounded-xl bg-gray-100 border border-gray-200">
-        <img
-          src={`${baseUrl}${image}`}
-          alt={productName}
-          className="h-full w-full object-cover"
-          onError={(e) => {
-            e.target.src = "/placeholder.svg?height=600&width=600"
-          }}
-        />
-      </div>
-    </div>
-  )
-}
-
 // Componente para el badge de estado
 const StatusBadge = ({ status }) => {
   let backgroundColor
@@ -262,8 +241,11 @@ export default function ViewOneRequest() {
             <section className="mb-8 transition-all duration-500 ease-in-out">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 {/* Left Column - Images */}
-                <RequestGallery image={request.product.image} productName={request.product.name} baseUrl={baseUrl} />
-
+                <ProductGallery
+                  images={request.images}
+                  productName={request.product.name}
+                  baseUrl={baseUrl}
+                />
                 {/* Right Column - Info */}
                 <div className="space-y-6">
                   <div>
