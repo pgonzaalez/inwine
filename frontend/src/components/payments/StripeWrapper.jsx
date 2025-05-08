@@ -5,7 +5,6 @@ import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "./CheckoutForm"
 import { useEffect, useState } from "react"
 
-// Make sure to add your publishable key to your environment variables
 const apiUrl = import.meta.env.VITE_API_URL
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
@@ -16,7 +15,6 @@ export default function StripeWrapper() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Get the orderIds from localStorage
     const orderIdsString = localStorage.getItem("currentOrderIds");
 
     if (!orderIdsString) {
@@ -33,7 +31,6 @@ export default function StripeWrapper() {
         throw new Error("Invalid order IDs format");
       }
 
-      // Filter out null or invalid IDs
       orderIds = orderIds.filter((id) => id !== null && id !== undefined);
 
       if (orderIds.length === 0) {
@@ -48,7 +45,6 @@ export default function StripeWrapper() {
 
     console.log("Valid Order IDs being sent to API:", orderIds);
 
-    // Create PaymentIntent as soon as the page loads
     fetch(`${apiUrl}/v1/create-payment-intent`, {
       method: "POST",
       headers: {

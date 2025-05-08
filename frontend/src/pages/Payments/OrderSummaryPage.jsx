@@ -18,8 +18,7 @@ export default function OrderSummaryPage() {
   const redirectStatus = searchParams.get("redirect_status")
 
   const isPaymentSuccessful = paymentIntent && redirectStatus === "succeeded"
-
-  // Function to get the complete image URL
+º
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "/placeholder.svg?height=80&width=80"
     if (imagePath.startsWith("http")) return imagePath
@@ -32,12 +31,11 @@ export default function OrderSummaryPage() {
     if (parts.length === 2) return parts.pop().split(";").shift()
     return null
   }
-
-  // Format date to Catalan locale
+º
   const formatDate = (dateString) => {
     const date = new Date(dateString)
     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
-    return date.toLocaleDateString("ca-ES", options).replace(/^\w/, (c) => c.toUpperCase()) // Capitalize first letter
+    return date.toLocaleDateString("ca-ES", options).replace(/^\w/, (c) => c.toUpperCase()) 
   }
 
   const markOrderAsCompleted = async (orderId) => {
@@ -60,26 +58,22 @@ export default function OrderSummaryPage() {
   }
 
   useEffect(() => {
-    // Set user email when user data is loaded
     if (user && user.email) {
       setEmail(user.email)
     }
   }, [user])
 
   useEffect(() => {
-    // Only fetch orders when user data is loaded
     if (userLoading || !user) return
 
     const fetchOrderDetails = async () => {
       setLoading(true)
       try {
-        // Get token from cookies
         const token = getCookie("token")
         if (!token) {
           throw new Error("No authentication token found")
         }
 
-        // Fetch all orders for the user
         const response = await fetch(`${apiUrl}/v1/${user.id}/orders`, {
           method: "GET",
           headers: {
@@ -98,7 +92,6 @@ export default function OrderSummaryPage() {
           throw new Error("No orders found")
         }
 
-        // Group orders by order_id
         const ordersByOrderId = ordersData.reduce((acc, order) => {
           const orderId = order.order_id.toString()
           if (!acc[orderId]) {
@@ -107,13 +100,11 @@ export default function OrderSummaryPage() {
           acc[orderId].push(order)
           return acc
         }, {})
-
-        // Create an array of all orders with their items
         const allOrders = Object.entries(ordersByOrderId).map(([orderId, items]) => {
           return {
             id: orderId,
             date: formatDate(items[0].created_at || new Date()),
-            paymentMethod: "Mastercard finalitza en 2543", // This would come from your payment processor
+            paymentMethod: "Mastercard finalitza en 2543", 
             items: items.map((item) => ({
               id: item.product.id || Math.random().toString(36).substr(2, 9),
               name: item.product.name,
@@ -129,15 +120,12 @@ export default function OrderSummaryPage() {
           }
         })
 
-        // Set all orders
         setOrderDetails(allOrders)
 
-        // Mark each order as completed
         allOrders.forEach((order) => {
           markOrderAsCompleted(order.id)
         })
 
-        // Clear the orderId from localStorage after successful fetch if payment was successful
         if (isPaymentSuccessful) {
           localStorage.removeItem("currentOrderId")
         }
@@ -152,7 +140,6 @@ export default function OrderSummaryPage() {
     fetchOrderDetails()
   }, [user, userLoading, paymentIntent, isPaymentSuccessful, apiUrl])
 
-  // Calculate totals for all orders
   const calculateTotals = (order) => {
     if (!order || !order.items || order.items.length === 0) return { subtotal: 0, shippingCost: 0, total: 0 }
 
@@ -165,8 +152,6 @@ export default function OrderSummaryPage() {
 
     return { subtotal, shippingCost, total }
   }
-
-  // Show loading state while fetching user data or order details
   if (userLoading || loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -174,8 +159,6 @@ export default function OrderSummaryPage() {
       </div>
     )
   }
-
-  // Show error state if user data couldn't be fetched
   if (userError && !orderDetails) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
