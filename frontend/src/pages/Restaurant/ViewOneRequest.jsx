@@ -6,6 +6,7 @@ import { Edit, Trash, ArrowLeft, DollarSign, Store, Tag, MapPin, Calendar, Wine 
 import { getCookie } from "@/utils/utils";
 import { useFetchUser } from "@components/auth/FetchUser"
 import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal";
+import { EditRequestModal } from "@/components/restaurant/modals/EditRequestModal";
 import ProductGallery from "@/components/landing/requests/ProductGallery"
 const primaryColors = {
   dark: "#9A3E50",
@@ -313,13 +314,6 @@ export default function ViewOneRequest() {
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Detalls del producte</h3>
                     <div className="bg-gray-50 p-4 rounded-lg space-y-3">
                       <div className="flex items-start gap-2">
-                        <Tag className="h-5 w-5 text-gray-400 mt-0.5" />
-                        <div>
-                          <p className="text-sm text-gray-500">Quantitat</p>
-                          <p className="font-medium">{request.product.quantity}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-2">
                         <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">Origen</p>
@@ -387,6 +381,20 @@ export default function ViewOneRequest() {
             isOpen={isDeleteDialogOpen}
             onClose={() => setIsDeleteDialogOpen(false)}
             onConfirm={handleDeleteRequest}
+          />
+
+          <EditRequestModal
+            isOpen={isRequestOpen}
+            onClose={() => {
+              setIsRequestOpen(false)
+              setRequestStatus(null)
+              setOfferPrice("")
+            }}
+            onSubmit={handleRequestSubmit}
+            offerPrice={offerPrice}
+            setOfferPrice={setOfferPrice}
+            product={product}
+            requestStatus={requestStatus}
           />
         </div>
       </div>
