@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Edit, Trash, ArrowLeft, DollarSign, Store, Tag, MapPin, Calendar, Wine } from "lucide-react"
+import { getCookie } from "@/utils/utils";
 import { useFetchUser } from "@components/auth/FetchUser"
 import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal";
-import ProductGallery from "@/components/landing/requests/ProductGallery"// Definimos los colores primarios
+import ProductGallery from "@/components/landing/requests/ProductGallery"
 const primaryColors = {
   dark: "#9A3E50",
   light: "#C27D7D",
@@ -121,8 +122,13 @@ export default function ViewOneRequest() {
 
   const handleDeleteRequest = async () => {
     try {
-      const response = await fetch(`${apiUrl}/${user.id}/restaurant/${id}`, {
+      const response = await fetch(`${apiUrl}/v1/restaurant/${id}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
       })
 
       if (!response.ok) {
