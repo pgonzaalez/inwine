@@ -51,11 +51,12 @@ class RequestRestaurantController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $httpRequest, string $id)
     {
-        $request = RequestRestaurant::find($id);
-        $request->update($request->all());
-        return response()->json($request);
+        $requestRestaurant = RequestRestaurant::findOrFail($id);
+        $requestRestaurant->update($httpRequest->all());
+
+        return response()->json($requestRestaurant);
     }
 
     /**
