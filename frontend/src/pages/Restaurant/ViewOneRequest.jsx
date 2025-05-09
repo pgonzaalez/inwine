@@ -8,11 +8,13 @@ import { useFetchUser } from "@components/auth/FetchUser"
 import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal";
 import { EditRequestModal } from "@/components/restaurant/modals/EditRequestModal";
 import ProductGallery from "@/components/landing/requests/ProductGallery"
+
 const primaryColors = {
   dark: "#9A3E50",
   light: "#C27D7D",
   background: "#F9F9F9",
 }
+
 // Componente para el badge de estado
 const StatusBadge = ({ status }) => {
   let backgroundColor
@@ -96,6 +98,11 @@ export default function ViewOneRequest() {
   const [error, setError] = useState(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
+  // Estados para el modal de edición
+  const [isRequestOpen, setIsRequestOpen] = useState(false)
+  const [offerPrice, setOfferPrice] = useState("")
+  const [requestStatus, setRequestStatus] = useState(null)
+
   const { user, loading: userLoading } = useFetchUser()
   const apiUrl = import.meta.env.VITE_API_URL
   const baseUrl = import.meta.env.VITE_URL_BASE
@@ -145,6 +152,46 @@ export default function ViewOneRequest() {
       setIsDeleteDialogOpen(false)
     }
   }
+
+  const handleRequestSubmit = async () => {
+    // Validar que el precio sea válido
+    if (!offerPrice || isNaN(parseFloat(offerPrice)) || parseFloat(offerPrice) <= 0) {
+      setRequestStatus("error");
+      return;
+    }
+
+    try {
+      // Enviamos solo el precio actualizado
+      const response = await fetch(`${apiUrl}/v1/restaurants/${id}?price_restaurant=${offerPrice}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("No s'ha pogut actualitzar la sol·licitud.");
+      }
+
+      // Actualizar el estado
+      setRequestStatus("success");
+
+      // Cerrar el modal después de 2 segundos
+      setTimeout(() => {
+        setIsRequestOpen(false);
+        setRequestStatus(null);
+        setOfferPrice("");
+        // Recargar los datos
+        fetchRequest();
+      }, 2000);
+
+    } catch (err) {
+      console.error(err.message);
+      setRequestStatus("error");
+    }
+  };
 
   const handleReceiveProduct = async () => {
     try {
@@ -226,6 +273,16 @@ export default function ViewOneRequest() {
     )
   }
 
+  // Preparar imágenes del producto para el carousel
+  const productImages = [];
+
+  // Verificar si existen imágenes en la estructura correcta
+  if (request.images && Array.isArray(request.images)) {
+    // Pasar los objetos completos de imagen, no solo las rutas
+    productImages.push(...request.images);
+  }
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <div className="flex flex-1">
@@ -249,7 +306,7 @@ export default function ViewOneRequest() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 {/* Left Column - Images */}
                 <ProductGallery
-                  images={request.images}
+                  images={productImages}
                   productName={request.product.name}
                   baseUrl={baseUrl}
                 />
@@ -335,7 +392,7 @@ export default function ViewOneRequest() {
                     {request.status === "pending" && (
                       <>
                         <button
-                          onClick={() => navigate(`/restaurant/requests/${id}/edit`)}
+                          onClick={() => setIsRequestOpen(true)}
                           className="bg-blue-500 text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-blue-600"
                         >
                           <Edit className="w-5 h-5" />
@@ -383,17 +440,18 @@ export default function ViewOneRequest() {
             onConfirm={handleDeleteRequest}
           />
 
+          {/* Modal de edición */}
           <EditRequestModal
             isOpen={isRequestOpen}
             onClose={() => {
-              setIsRequestOpen(false)
-              setRequestStatus(null)
-              setOfferPrice("")
+              setIsRequestOpen(false);
+              setRequestStatus(null);
+              setOfferPrice("");
             }}
             onSubmit={handleRequestSubmit}
             offerPrice={offerPrice}
             setOfferPrice={setOfferPrice}
-            product={product}
+            product={request?.product || {}}
             requestStatus={requestStatus}
           />
         </div>

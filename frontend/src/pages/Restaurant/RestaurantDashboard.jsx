@@ -8,6 +8,9 @@ import { FilterButtons } from "@/components/restaurant/FilterButtons"
 import { RestaurantTable } from "@/components/restaurant/RestaurantTable"
 import { WineTypeDistribution } from "@/components/restaurant/WineTypeDistribution"
 import { Notification } from "@/components/restaurant/Notification"
+import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal"
+import { EditRequestModal } from "@/components/restaurant/modals/EditRequestModal"
+import { getCookie } from "@/utils/utils"
 
 function RestaurantDashboardComponent() {
   const [requests, setRequests] = useState([])
@@ -17,6 +20,14 @@ function RestaurantDashboardComponent() {
   const [receivingProduct, setReceivingProduct] = useState(null)
   const [sellingProduct, setSellingProduct] = useState(null)
   const [notification, setNotification] = useState(null)
+
+  // Estados para los modales
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [selectedRequestId, setSelectedRequestId] = useState(null)
+  const [isRequestOpen, setIsRequestOpen] = useState(false)
+  const [offerPrice, setOfferPrice] = useState("")
+  const [requestStatus, setRequestStatus] = useState(null)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
   const apiUrl = import.meta.env.VITE_API_URL
   const baseUrl = import.meta.env.VITE_URL_BASE
@@ -47,13 +58,31 @@ function RestaurantDashboardComponent() {
     }
   }
 
+  // Función para abrir el modal de eliminación
+  const openDeleteModal = (id) => {
+    setSelectedRequestId(id)
+    setIsDeleteDialogOpen(true)
+  }
+
+  // Función para abrir el modal de edición
+  const openEditModal = (request) => {
+    setSelectedRequestId(request.id)
+    setOfferPrice(request.price_restaurant.toString())
+    setSelectedProduct(request.product)
+    setIsRequestOpen(true)
+  }
+
   // Handle request deletion
-  const handleDeleteRequest = async (id) => {
+  const handleDeleteRequest = async () => {
+    if (!selectedRequestId) return
+
     try {
-      const response = await fetch(`${apiUrl}/v1/restaurants/${id}`, {
+      const response = await fetch(`${apiUrl}/v1/restaurant/${selectedRequestId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -62,18 +91,69 @@ function RestaurantDashboardComponent() {
       }
 
       // Remove the deleted request from state
-      setRequests(requests.filter((request) => request.id !== id))
+      setRequests(requests.filter((request) => request.id !== selectedRequestId))
 
       // Mostrar notificación de éxito
       setNotification({ type: "success", message: "Sol·licitud eliminada correctament" })
       setTimeout(() => setNotification(null), 3000)
     } catch (err) {
-      // console.error("Error eliminant la sol·licitud:", err)
       setNotification({ type: "error", message: err.message })
       setTimeout(() => setNotification(null), 3000)
+    } finally {
+      setIsDeleteDialogOpen(false)
+      setSelectedRequestId(null)
     }
   }
 
+  // Handle request update
+  const handleRequestSubmit = async () => {
+    // Validar que el precio sea válido
+    if (!offerPrice || isNaN(parseFloat(offerPrice)) || parseFloat(offerPrice) <= 0) {
+      setRequestStatus("error")
+      return
+    }
+
+    try {
+      // Enviamos solo el precio actualizado
+      const response = await fetch(`${apiUrl}/v1/restaurants/${selectedRequestId}?price_restaurant=${offerPrice}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${getCookie("token")}`,
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error("No s'ha pogut actualitzar la sol·licitud")
+      }
+
+      // Actualizar el estado local
+      setRequests(
+        requests.map((request) =>
+          request.id === selectedRequestId
+            ? { ...request, price_restaurant: parseFloat(offerPrice) }
+            : request
+        )
+      )
+
+      // Actualizar el estado
+      setRequestStatus("success")
+
+      // Cerrar el modal después de 2 segundos
+      setTimeout(() => {
+        setIsRequestOpen(false)
+        setRequestStatus(null)
+        setOfferPrice("")
+        setSelectedProduct(null)
+        setSelectedRequestId(null)
+      }, 2000)
+
+    } catch (err) {
+      console.error(err.message)
+      setRequestStatus("error")
+    }
+  }
   // Handle receiving product
   const handleReceiveProduct = async (productId) => {
     // Verificación simple del ID
@@ -225,9 +305,10 @@ function RestaurantDashboardComponent() {
         {/* Request table */}
         <div className="lg:col-span-3">
           <RestaurantTable
-           requests={requests}
+            requests={requests}
             baseUrl={baseUrl}
-            onDelete={handleDeleteRequest}
+            onDelete={openDeleteModal} // Cambiado para abrir el modal
+            onEdit={openEditModal} // Nuevo prop para editar
             handleReceiveProduct={handleReceiveProduct}
             handleSellProduct={handleSellProduct}
             receivingProduct={receivingProduct}
@@ -242,6 +323,29 @@ function RestaurantDashboardComponent() {
           <WineTypeDistribution requests={requests} />
         </div>
       </div>
+
+      {/* Modal de eliminación */}
+      <DeleteRequestModal
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleDeleteRequest}
+      />
+
+      {/* Modal de edición */}
+      <EditRequestModal
+        isOpen={isRequestOpen}
+        onClose={() => {
+          setIsRequestOpen(false);
+          setRequestStatus(null);
+          setOfferPrice("");
+          setSelectedProduct(null);
+        }}
+        onSubmit={handleRequestSubmit}
+        offerPrice={offerPrice}
+        setOfferPrice={setOfferPrice}
+        product={selectedProduct || {}}
+        requestStatus={requestStatus}
+      />
     </div>
   )
 }

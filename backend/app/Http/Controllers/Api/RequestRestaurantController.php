@@ -54,6 +54,16 @@ class RequestRestaurantController extends Controller
     public function update(Request $httpRequest, string $id)
     {
         $requestRestaurant = RequestRestaurant::findOrFail($id);
+
+        // Verificar si el producto está en stock
+        $product = $requestRestaurant->product; 
+        if (!$product || $product->status !== 'in_stock') {
+            return response()->json([
+                'message' => 'No se puede actualizar la solicitud porque el producto no está en stock'
+            ], 400);
+        }
+
+
         $requestRestaurant->update($httpRequest->all());
 
         return response()->json($requestRestaurant);
@@ -82,6 +92,14 @@ class RequestRestaurantController extends Controller
             return response()->json([
                 'message' => 'No estás autorizado para eliminar esta solicitud'
             ], 403);
+        }
+
+        // Verificar si el producto está en stock
+        $product = $requestRestaurant->product;
+        if (!$product || $product->status !== 'in_stock') {
+            return response()->json([
+                'message' => 'No se puede eliminar la solicitud porque el producto no está en stock'
+            ], 400);
         }
 
         // Eliminar la solicitud
