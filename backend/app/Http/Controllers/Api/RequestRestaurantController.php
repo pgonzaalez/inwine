@@ -51,11 +51,12 @@ class RequestRestaurantController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $httpRequest, string $id)
     {
-        $request = RequestRestaurant::find($id);
-        $request->update($request->all());
-        return response()->json($request);
+        $requestRestaurant = RequestRestaurant::findOrFail($id);
+        $requestRestaurant->update($httpRequest->all());
+
+        return response()->json($requestRestaurant);
     }
 
     /**
@@ -65,27 +66,27 @@ class RequestRestaurantController extends Controller
     {
         // Obtener el usuario autenticado mediante el token
         $user = $request->user();
-        
+
         // Buscar la solicitud
         $requestRestaurant = RequestRestaurant::find($id);
-        
+
         // Verificar si la solicitud existe
         if (!$requestRestaurant) {
             return response()->json([
                 'message' => 'Solicitud no encontrada'
             ], 404);
         }
-        
+
         // Verificar si la solicitud pertenece al usuario
         if ($requestRestaurant->user_id !== $user->id) {
             return response()->json([
                 'message' => 'No estás autorizado para eliminar esta solicitud'
             ], 403);
         }
-        
+
         // Eliminar la solicitud
         $requestRestaurant->delete();
-        
+
         return response()->json([
             'message' => 'Solicitud eliminada correctamente',
             'data' => $requestRestaurant
@@ -125,14 +126,14 @@ class RequestRestaurantController extends Controller
             ->where('id', $requestId)
             ->with(['product.wineType', 'product.images'])
             ->first();
-    
+
         if (!$request) {
             return response()->json(['error' => 'Request not found'], 404);
         }
-    
+
         $product = $request->product;
-    
-        $result = [
+
+        return response()->json([
             'id' => $request->id,
             'user_id' => $request->user_id,
             'product_id' => $request->product_id,
@@ -141,6 +142,14 @@ class RequestRestaurantController extends Controller
             'status' => $request->status,
             'created_at' => $request->created_at,
             'updated_at' => $request->updated_at,
+            'images' => $product->images->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'image_path' => $image->image_path,
+                    'is_primary' => $image->is_primary,
+                    'order' => $image->order,
+                ];
+            }),
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -148,21 +157,10 @@ class RequestRestaurantController extends Controller
                 'year' => $product->year,
                 'wine_type' => $product->wineType->name ?? null,
                 'price_demanded' => $product->price_demanded,
-                'image' => $product->image,
-                'images' => $product->images->map(function ($image) {
-                    return [
-                        'id' => $image->id,
-                        'image_path' => $image->image_path,
-                        'is_primary' => $image->is_primary,
-                        'order' => $image->order,
-                    ];
-                }),
             ],
-        ];
-    
-        return response()->json($result);
+        ]);
     }
-    
+
     public function searchByProduct(string $id)
     {
         $request = RequestRestaurant::where('product_id', $id)
