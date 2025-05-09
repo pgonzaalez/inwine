@@ -1,3 +1,4 @@
+import { useState } from "react"
 import Modal from "@components/Modal"
 import { ShoppingBag, Check } from "lucide-react"
 
@@ -14,12 +15,17 @@ export function EditRequestModal({
     onClose()
   }
 
+  // ELIMINAR estas definiciones duplicadas:
+  // const [offerPrice, setOfferPrice] = useState("");
+  // const [requestStatus, setRequestStatus] = useState(null);
+  // const [product, setProduct] = useState(null);
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title={`Sol·licitar ${product?.name || ""}`}
-      description="Introdueix el preu que vols oferir per aquest producte"
+      title={`Modificar preu ${product?.name || ""}`}
+      description="Introdueix el nou preu que vols oferir per aquest producte"
       icon={<ShoppingBag className="h-8 w-8 text-[#9A3E50]" />}
       variant="default"
       size="md"
@@ -35,7 +41,7 @@ export function EditRequestModal({
             onClick={onSubmit}
             className="flex items-center justify-center rounded-lg bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] px-4 py-2.5 text-sm font-medium text-white hover:from-[#7a2e3d] hover:to-[#5a1e2d]"
           >
-            Enviar sol·licitud
+            Actualitzar preu
           </button>
         </div>
       }
@@ -43,7 +49,7 @@ export function EditRequestModal({
       <div className="space-y-4">
         <div>
           <label htmlFor="offerPrice" className="block text-sm font-medium text-gray-700 mb-1">
-            Preu venta (€)
+            Nou preu (€)
           </label>
           <input
             type="number"
@@ -53,15 +59,10 @@ export function EditRequestModal({
             value={offerPrice}
             onChange={(e) => setOfferPrice(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#9A3E50] focus:border-[#9A3E50]"
-            placeholder="Introdueix el teu preu"
+            placeholder="Introdueix el nou preu"
           />
           {requestStatus === 'error' && (
             <p className="mt-1 text-sm text-red-600">Si us plau, introdueix un preu vàlid</p>
-          )}
-          {requestStatus === 'price_error' && (
-            <p className="mt-1 text-sm text-red-600">
-              El preu ofertat no pot ser inferior al preu actual del producte
-            </p>
           )}
         </div>
 
@@ -72,9 +73,9 @@ export function EditRequestModal({
           {offerPrice && (
             <p className="text-sm text-gray-600 mt-1">
               <span className="font-medium">La teva oferta:</span> {offerPrice}€
-              {parseFloat(offerPrice) > parseFloat(product.price_demanded) ? (
+              {product?.price_demanded && parseFloat(offerPrice) > parseFloat(product.price_demanded) ? (
                 <span className="ml-2 text-green-600">(Supera el preu actual)</span>
-              ) : parseFloat(offerPrice) < parseFloat(product.price_demanded) ? (
+              ) : product?.price_demanded && parseFloat(offerPrice) < parseFloat(product.price_demanded) ? (
                 <span className="ml-2 text-amber-600">(Inferior al preu actual)</span>
               ) : (
                 <span className="ml-2 text-blue-600">(Igual al preu actual)</span>
@@ -87,7 +88,7 @@ export function EditRequestModal({
           <div className="bg-green-50 p-3 rounded-md flex items-start">
             <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
             <p className="text-sm text-green-700">
-              Sol·licitud enviada correctament! El venedor revisarà la teva oferta i et contactarà aviat.
+              Preu actualitzat correctament!
             </p>
           </div>
         )}

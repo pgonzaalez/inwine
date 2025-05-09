@@ -74,6 +74,7 @@ export const RestaurantTable = ({
   requests,
   baseUrl,
   onDelete,
+  onEdit,
   handleReceiveProduct,
   handleSellProduct,
   receivingProduct,
@@ -92,18 +93,6 @@ export const RestaurantTable = ({
 
   const filteredRequests = activeFilter === "all" ? requests : requests.filter((r) => r.status === activeFilter)
 
-  const handleDelete = (e, id) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (window.confirm("Estàs segur que vols eliminar aquesta sol·licitud?")) onDelete(id)
-  }
-
-  const handleEdit = (e, id) => {
-    e.preventDefault()
-    e.stopPropagation()
-    window.location.href = `/restaurant/requests/${id}/edit`
-  }
-  
   const navigate = useNavigate();
 
   const handleRowClick = (id) => {
@@ -237,13 +226,22 @@ export const RestaurantTable = ({
                     {request.status === "pending" && (
                       <>
                         <button
-                          onClick={(e) => handleEdit(e, request.id)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onEdit(request); // Pasar el objeto completo de la solicitud
+                          }}
                           className="p-1.5 bg-blue-100 hover:bg-blue-200 rounded-full text-blue-600"
                         >
                           <Edit size={16} />
                         </button>
+
                         <button
-                          onClick={(e) => handleDelete(e, request.id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onDelete(request.id);
+                      }}
                           className="p-1.5 bg-red-100 hover:bg-red-200 rounded-full text-red-600"
                         >
                           <Trash2 size={16} />
@@ -336,13 +334,21 @@ export const RestaurantTable = ({
                   {request.status === "pending" && (
                     <>
                       <button
-                        onClick={(e) => handleEdit(e, request.id)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onEdit(request); // Pasar el objeto completo de la solicitud
+                        }}
                         className="p-1.5 bg-blue-100 hover:bg-blue-200 rounded-full text-blue-600"
                       >
                         <Edit size={16} />
                       </button>
                       <button
-                        onClick={(e) => handleDelete(e, request.id)}
+                       onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onDelete(request.id);
+                      }}
                         className="p-1.5 bg-red-100 hover:bg-red-200 rounded-full text-red-600"
                       >
                         <Trash2 size={16} />
