@@ -6,11 +6,25 @@ export const WinePricingForm = ({
   touchedFields,
   onPrevious,
   isSubmitEnabled,
+  isEditMode = false
 }) => {
   // Helper function to check if a field has an error
   const hasError = (fieldName) => {
     return touchedFields[fieldName] && errors[fieldName]
   }
+  
+  // Obtener la URL base para las imágenes
+  const baseUrl = import.meta.env.VITE_URL_BASE;
+
+  // Verificar si la imagen es un objeto con propiedad 'preview' o si es un objeto con 'image_path'
+  const getImageSrc = (img) => {
+    if (img.preview) {
+      return img.preview;
+    } else if (img.image_path) {
+      return `${baseUrl}${img.image_path}`;
+    }
+    return "/placeholder.svg";
+  };
 
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg shadow-md">
@@ -109,7 +123,7 @@ export const WinePricingForm = ({
                   {selectedImages.map((img, index) => (
                     <img
                       key={index}
-                      src={img.preview || "/placeholder.svg"}
+                      src={getImageSrc(img)}
                       alt={`Preview ${index + 1}`}
                       className="h-16 w-16 object-cover rounded-md flex-shrink-0"
                     />
@@ -136,7 +150,7 @@ export const WinePricingForm = ({
                 }`}
               disabled={!isSubmitEnabled}
             >
-              Puja el teu vi
+              {isEditMode ? "Actualitzar el vi" : "Puja el teu vi"}
             </button>
           </div>
         </div>
@@ -144,4 +158,3 @@ export const WinePricingForm = ({
     </div>
   )
 }
-
