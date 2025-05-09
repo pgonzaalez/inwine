@@ -69,7 +69,6 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('origin')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('year')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('wine_type_id')
                     ->numeric()

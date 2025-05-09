@@ -64,7 +64,6 @@ class InvestorResource extends Resource
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_contact')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('credit_card')
                     ->searchable(),

@@ -63,8 +63,7 @@ class SellerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone_contact')
-                    ->numeric()
+                    Tables\Columns\TextColumn::make('phone_contact')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name_contact')
                     ->searchable(),
