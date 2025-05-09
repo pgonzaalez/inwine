@@ -97,7 +97,7 @@ export default function ViewOneRequest() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  
+
   // Estados para el modal de edición
   const [isRequestOpen, setIsRequestOpen] = useState(false)
   const [offerPrice, setOfferPrice] = useState("")
@@ -159,7 +159,7 @@ export default function ViewOneRequest() {
       setRequestStatus("error");
       return;
     }
-  
+
     try {
       // Enviamos solo el precio actualizado
       const response = await fetch(`${apiUrl}/v1/restaurants/${id}?price_restaurant=${offerPrice}`, {
@@ -170,14 +170,14 @@ export default function ViewOneRequest() {
           Authorization: `Bearer ${getCookie("token")}`,
         }
       });
-  
+
       if (!response.ok) {
         throw new Error("No s'ha pogut actualitzar la sol·licitud.");
       }
-  
+
       // Actualizar el estado
       setRequestStatus("success");
-      
+
       // Cerrar el modal después de 2 segundos
       setTimeout(() => {
         setIsRequestOpen(false);
@@ -186,7 +186,7 @@ export default function ViewOneRequest() {
         // Recargar los datos
         fetchRequest();
       }, 2000);
-      
+
     } catch (err) {
       console.error(err.message);
       setRequestStatus("error");
@@ -275,16 +275,13 @@ export default function ViewOneRequest() {
 
   // Preparar imágenes del producto para el carousel
   const productImages = [];
-  
+
   // Verificar si existen imágenes en la estructura correcta
   if (request.images && Array.isArray(request.images)) {
-    // Extraer las rutas de imagen del array de objetos
-    request.images.forEach(imgObj => {
-      if (imgObj && imgObj.image_path) {
-        productImages.push(imgObj.image_path);
-      }
-    });
+    // Pasar los objetos completos de imagen, no solo las rutas
+    productImages.push(...request.images);
   }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
