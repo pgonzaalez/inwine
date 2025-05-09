@@ -44,7 +44,7 @@ export const WineDetailsForm = ({
               name="name"
               value={formData.name}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               id="name"
@@ -66,7 +66,7 @@ export const WineDetailsForm = ({
               name="origin"
               value={formData.origin}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("origin") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("origin") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               id="origin"
@@ -88,7 +88,7 @@ export const WineDetailsForm = ({
               name="year"
               value={formData.year}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("year") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("year") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               id="year"
@@ -109,7 +109,7 @@ export const WineDetailsForm = ({
               name="description"
               value={formData.description}
               onChange={onChange}
-              className={`peer w-full h-24 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("description") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-24 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("description") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               id="description"

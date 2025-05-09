@@ -6,25 +6,11 @@ export const WinePricingForm = ({
   touchedFields,
   onPrevious,
   isSubmitEnabled,
-  isEditMode = false
 }) => {
   // Helper function to check if a field has an error
   const hasError = (fieldName) => {
     return touchedFields[fieldName] && errors[fieldName]
   }
-  
-  // Obtener la URL base para las imágenes
-  const baseUrl = import.meta.env.VITE_URL_BASE;
-
-  // Verificar si la imagen es un objeto con propiedad 'preview' o si es un objeto con 'image_path'
-  const getImageSrc = (img) => {
-    if (img.preview) {
-      return img.preview;
-    } else if (img.image_path) {
-      return `${baseUrl}${img.image_path}`;
-    }
-    return "/placeholder.svg";
-  };
 
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg shadow-md">
@@ -43,7 +29,7 @@ export const WinePricingForm = ({
               id="price_demanded"
               value={formData.price_demanded}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("price_demanded") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("price_demanded") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               step="0.01"
@@ -68,7 +54,7 @@ export const WinePricingForm = ({
               id="quantity"
               value={formData.quantity}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("quantity") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("quantity") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               min="1"
@@ -123,7 +109,7 @@ export const WinePricingForm = ({
                   {selectedImages.map((img, index) => (
                     <img
                       key={index}
-                      src={getImageSrc(img)}
+                      src={img.preview || "/placeholder.svg"}
                       alt={`Preview ${index + 1}`}
                       className="h-16 w-16 object-cover rounded-md flex-shrink-0"
                     />
@@ -150,7 +136,7 @@ export const WinePricingForm = ({
                 }`}
               disabled={!isSubmitEnabled}
             >
-              {isEditMode ? "Actualitzar el vi" : "Puja el teu vi"}
+              Puja el teu vi
             </button>
           </div>
         </div>
@@ -158,3 +144,4 @@ export const WinePricingForm = ({
     </div>
   )
 }
+

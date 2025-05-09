@@ -14,6 +14,7 @@ export default function InvestorForm({ primaryColors }) {
   })
   const [errors, setErrors] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
+  const [touchedFields, setTouchedFields] = useState({})
 
   // Sincronizar datos del inversor al formulario
   useEffect(() => {
@@ -31,31 +32,43 @@ export default function InvestorForm({ primaryColors }) {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    setTouchedFields((prev) => ({ ...prev, [name]: true }))
 
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: undefined }))
     }
   }
 
+  const hasError = (fieldName) => {
+    return touchedFields[fieldName] && errors[fieldName];
+  }
+
   const validateForm = () => {
     const newErrors = {}
 
     if (!formData.address || formData.address.length < 5) {
-      newErrors.address = "La dirección debe tener al menos 5 caracteres"
+      newErrors.address = "La direcció ha de tenir al menys 5 caràcters"
     }
 
     if (!formData.phone_contact || formData.phone_contact.length < 9) {
-      newErrors.phone_contact = "El teléfono debe tener al menos 9 dígitos"
+      newErrors.phone_contact = "El telèfon ha de tenir al menys 9 dígits"
     }
 
     if (!formData.credit_card || formData.credit_card.length < 16) {
-      newErrors.credit_card = "La tarjeta de crédito debe tener al menos 16 dígitos"
+      newErrors.credit_card = "La targeta de crèdit ha de tenir al menys 16 dígits"
     }
 
     if (!formData.bank_account || formData.bank_account.length < 10) {
-      newErrors.bank_account = "El número de cuenta bancaria debe tener al menos 10 dígitos"
+      newErrors.bank_account = "El número de compte bancari ha de tenir al menys 10 dígits"
     }
 
+    // Marcar todos los campos como tocados
+    const allTouched = Object.keys(formData).reduce((acc, key) => {
+      acc[key] = true;
+      return acc;
+    }, {});
+    setTouchedFields(allTouched);
+    
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -81,13 +94,13 @@ export default function InvestorForm({ primaryColors }) {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.message || "Error al actualizar los datos del inversor")
+        throw new Error(errorData.message || "Error al actualitzar les dades de l'inversor")
       }
 
-      setSuccessMessage("Datos de inversor actualizados correctamente")
+      setSuccessMessage("Dades d'inversor actualitzades correctament")
     } catch (error) {
       setErrors({
-        submit: error.message || "Ha ocurrido un error al guardar los cambios"
+        submit: error.message || "Ha ocorregut un error en guardar els canvis"
       })
     } finally {
       setIsLoading(false)
@@ -109,72 +122,104 @@ export default function InvestorForm({ primaryColors }) {
         </div>
       )}
 
-      <div className="space-y-2">
-        <label htmlFor="address" className="block text-sm font-medium">
-          Direcció
-        </label>
-        <input
-          id="address"
-          name="address"
-          type="text"
-          value={formData.address}
-          onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md ${errors.address ? "border-red-500" : "border-gray-300"}`}
-        />
-        {errors.address && <p className="text-sm text-red-500">{errors.address}</p>}
-      </div>
+      <div className="space-y-4">
+        {/* Dirección */}
+        <div className="relative">
+          <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+              hasError("address") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+            }`}
+            placeholder=" "
+            id="address"
+          />
+          <label
+            htmlFor="address"
+            className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+              hasError("address") ? "text-red-500" : "text-gray-500"
+            }`}
+          >
+            Direcció
+          </label>
+          {hasError("address") && <span className="text-red-500 text-xs mt-1">{errors.address}</span>}
+        </div>
 
-      <div className="space-y-2">
-        <label htmlFor="phone_contact" className="block text-sm font-medium">
-          Telèfon de contacte
-        </label>
-        <input
-          id="phone_contact"
-          name="phone_contact"
-          type="tel"
-          value={formData.phone_contact}
-          onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md ${
-            errors.phone_contact ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors.phone_contact && <p className="text-sm text-red-500">{errors.phone_contact}</p>}
-      </div>
+        {/* Teléfono de contacto */}
+        <div className="relative">
+          <input
+            type="tel"
+            name="phone_contact"
+            value={formData.phone_contact}
+            onChange={handleChange}
+            className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+              hasError("phone_contact") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+            }`}
+            placeholder=" "
+            id="phone_contact"
+          />
+          <label
+            htmlFor="phone_contact"
+            className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+              hasError("phone_contact") ? "text-red-500" : "text-gray-500"
+            }`}
+          >
+            Telèfon de contacte
+          </label>
+          {hasError("phone_contact") && <span className="text-red-500 text-xs mt-1">{errors.phone_contact}</span>}
+        </div>
 
-      <div className="space-y-2">
-        <label htmlFor="credit_card" className="block text-sm font-medium">
-          Targeta de crèdit
-        </label>
-        <input
-          id="credit_card"
-          name="credit_card"
-          type="text"
-          value={formData.credit_card}
-          onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md ${
-            errors.credit_card ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors.credit_card && <p className="text-sm text-red-500">{errors.credit_card}</p>}
-        <p className="text-sm text-gray-500">Informació de targeta per pagaments</p>
-      </div>
+        {/* Tarjeta de crédito */}
+        <div className="relative">
+          <input
+            type="text"
+            name="credit_card"
+            value={formData.credit_card}
+            onChange={handleChange}
+            className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+              hasError("credit_card") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+            }`}
+            placeholder=" "
+            id="credit_card"
+          />
+          <label
+            htmlFor="credit_card"
+            className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+              hasError("credit_card") ? "text-red-500" : "text-gray-500"
+            }`}
+          >
+            Targeta de crèdit
+          </label>
+          {hasError("credit_card") && <span className="text-red-500 text-xs mt-1">{errors.credit_card}</span>}
+          <p className="text-xs text-gray-500 mt-1">Informació de targeta per pagaments</p>
+        </div>
 
-      <div className="space-y-2">
-        <label htmlFor="bank_account" className="block text-sm font-medium">
-          Compte bancari
-        </label>
-        <input
-          id="bank_account"
-          name="bank_account"
-          type="text"
-          value={formData.bank_account}
-          onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md ${
-            errors.bank_account ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors.bank_account && <p className="text-sm text-red-500">{errors.bank_account}</p>}
-        <p className="text-sm text-gray-500">Compte per rebre pagaments</p>
+        {/* Cuenta bancaria */}
+        <div className="relative">
+          <input
+            type="text"
+            name="bank_account"
+            value={formData.bank_account}
+            onChange={handleChange}
+            className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+              hasError("bank_account") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+            }`}
+            placeholder=" "
+            id="bank_account"
+          />
+          <label
+            htmlFor="bank_account"
+            className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+              hasError("bank_account") ? "text-red-500" : "text-gray-500"
+            }`}
+          >
+            Compte bancari
+          </label>
+          {hasError("bank_account") && <span className="text-red-500 text-xs mt-1">{errors.bank_account}</span>}
+          <p className="text-xs text-gray-500 mt-1">Compte per rebre pagaments</p>
+        </div>
       </div>
 
       <button
