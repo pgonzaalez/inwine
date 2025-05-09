@@ -1,8 +1,10 @@
-"use client"
-
+// Importaciones necesarias
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft, Calendar, User, Store, Wine, Tag, TrendingUp, Clock, AlertCircle } from "lucide-react"
+import {
+  ArrowLeft, Calendar, User, Store, Wine, Tag, TrendingUp,
+  Clock, AlertCircle, ChevronLeft, ChevronRight
+} from "lucide-react"
 import { StatusBadge } from "@components/investor/StatusBadge"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { getCookie } from "@/utils/utils"
@@ -20,6 +22,7 @@ export default function ShowInvestment() {
   const [investment, setInvestment] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [activeImage, setActiveImage] = useState(0)
   const { user, loading: userLoading } = useFetchUser()
   const apiUrl = import.meta.env.VITE_API_URL
   const baseUrl = import.meta.env.VITE_URL_BASE
@@ -52,7 +55,7 @@ export default function ShowInvestment() {
       }
 
       const data = await response.json()
-      setInvestment(data.investment)
+      setInvestment(data)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -117,6 +120,32 @@ export default function ShowInvestment() {
     )
   }
 
+  // Preparar imágenes para el carousel - ACTUALIZADO para la nueva estructura
+  const productImages = []
+
+  // Verificar si existen imágenes en la estructura correcta (ahora en investment.images)
+  if (investment.images && Array.isArray(investment.images)) {
+    // Ordenar las imágenes por order, poniendo las primarias primero
+    const sortedImages = [...investment.images].sort((a, b) => {
+      // Primero por is_primary (descendente)
+      if (a.is_primary && !b.is_primary) return -1;
+      if (!a.is_primary && b.is_primary) return 1;
+      // Luego por order (ascendente)
+      return a.order - b.order;
+    });
+
+    sortedImages.forEach(imgObj => {
+      if (imgObj && imgObj.image_path) {
+        productImages.push(`${baseUrl}${imgObj.image_path}`)
+      }
+    })
+  }
+
+  // Si no hay imágenes, agregar una imagen de placeholder
+  if (productImages.length === 0) {
+    productImages.push("/placeholder.svg")
+  }
+
   // Calcular beneficio
   const investmentAmount = investment.product.price_demanded * investment.quantity
   const potentialReturn = investment.price_restaurant * investment.quantity
@@ -137,33 +166,77 @@ export default function ShowInvestment() {
               Tornar
             </button>
 
-            {/* Encabezado */}
-            <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between">
-                <h1 className="text-2xl font-bold mb-2 md:mb-0" style={{ color: primaryColors.dark }}>
-                  Detalls de la Inversió
-                </h1>
-                <StatusBadge status={investment.status} />
-              </div>
-              <p className="text-gray-500 mt-2">Inversió realitzada el {formatDate(investment.created_at)}</p>
-            </div>
-
             {/* Contenido principal */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Columna izquierda - Imagen y detalles del producto */}
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-                    {/* Imagen del producto */}
+                    {/* Imagen del producto con carousel */}
                     <div className="flex flex-col">
-                      <div className="aspect-square overflow-hidden rounded-lg mb-4">
+                      {/* Imagen principal con navegación */}
+                      <div className="relative aspect-square overflow-hidden rounded-lg mb-4 bg-gray-50">
                         <img
-                          src={`${baseUrl}${investment.product.image}`}
+                          src={productImages[activeImage]}
                           alt={investment.product.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
+                          onError={(e) => {
+                            e.target.src = "/placeholder.svg?height=400&width=400"
+                          }}
                         />
+
+                        {/* Controles de navegación (mostrar solo si hay más de una imagen) */}
+                        {productImages.length > 1 && (
+                          <>
+                            <button
+                              onClick={() => setActiveImage((prev) =>
+                                prev === 0 ? productImages.length - 1 : prev - 1
+                              )}
+                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md hover:bg-white transition-colors"
+                              aria-label="Imagen anterior"
+                            >
+                              <ChevronLeft className="h-5 w-5" />
+                            </button>
+                            <button
+                              onClick={() => setActiveImage((prev) =>
+                                (prev + 1) % productImages.length
+                              )}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md hover:bg-white transition-colors"
+                              aria-label="Siguiente imagen"
+                            >
+                              <ChevronRight className="h-5 w-5" />
+                            </button>
+                          </>
+                        )}
                       </div>
-                      <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
+
+                      {/* Miniaturas (mostrar solo si hay más de una imagen) */}
+                      {productImages.length > 1 && (
+                        <div className="flex space-x-2 overflow-x-auto pb-2">
+                          {productImages.map((img, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setActiveImage(idx)}
+                              className={`flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 ${activeImage === idx
+                                  ? 'border-[#9A3E50]'
+                                  : 'border-transparent'
+                                }`}
+                              aria-label={`Ver imagen ${idx + 1}`}
+                            >
+                              <img
+                                src={img}
+                                alt={`${investment.product.name} - vista ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.src = "/placeholder.svg?height=64&width=64"
+                                }}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      <h3 className="text-lg font-bold mt-2" style={{ color: primaryColors.dark }}>
                         {investment.product.name}
                       </h3>
                       <p className="text-gray-500">
