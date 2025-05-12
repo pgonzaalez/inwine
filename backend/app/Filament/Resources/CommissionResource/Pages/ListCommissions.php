@@ -12,6 +12,7 @@ class ListCommissions extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+        ];
     }
 }
