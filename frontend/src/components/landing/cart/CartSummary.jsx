@@ -128,29 +128,29 @@ export function CartSummary({
           <div className="flex items-center justify-between space-x-2">
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
               <img
-                src="/placeholder.svg?height=20&width=32"
+                src="./img/visa.jpg"
                 alt="Visa"
                 className="h-5 w-auto"
               />
             </div>
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
               <img
-                src="/placeholder.svg?height=20&width=32"
+                src="./img/mastercard.png"
                 alt="Mastercard"
                 className="h-5 w-auto"
               />
             </div>
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
               <img
-                src="/placeholder.svg?height=20&width=32"
-                alt="American Express"
+                src="./img/eps.png"
+                alt="EPS"
                 className="h-5 w-auto"
               />
             </div>
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
               <img
-                src="/placeholder.svg?height=20&width=32"
-                alt="PayPal"
+                src="./img/bancontact.png"
+                alt="Bancontact"
                 className="h-5 w-auto"
               />
             </div>
