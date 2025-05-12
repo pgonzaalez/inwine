@@ -24,14 +24,23 @@ class CommissionResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('percentage_to_seller')
-                    ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->suffix('%')
+                    ->required(),
                 Forms\Components\TextInput::make('percentage_to_restaurant')
-                    ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->suffix('%')
+                    ->required(),
                 Forms\Components\TextInput::make('percentage_to_investor')
-                    ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->suffix('%')
+                    ->required(),
             ]);
     }
 
