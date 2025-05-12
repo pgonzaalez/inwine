@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Resources\ProductResource\Widgets\ProductOverview;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -17,7 +18,13 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
+
+    protected static ?string $modelLabel = 'Productes';
+
+    protected static ?string $navigationGroup = "Gestió de productes";
+
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
@@ -63,7 +70,6 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('origin')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('year')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('wine_type_id')
                     ->numeric()
@@ -116,6 +122,18 @@ class ProductResource extends Resource
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 2;
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ProductOverview::class,
         ];
     }
 }

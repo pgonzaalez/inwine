@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
+use App\Filament\Resources\OrderRequestedResource\Pages;
+use App\Filament\Resources\OrderRequestedResource\RelationManagers;
+use App\Models\OrderRequested;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,15 +13,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class OrderRequestedResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = OrderRequested::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
-    protected static ?string $modelLabel = 'Usuaris';
+    protected static ?string $navigationGroup = "Comandes";
 
-    protected static ?string $navigationGroup = "Gestió d'usuaris";
+    protected static ?string $modelLabel = 'Ordres Pagades';
 
     protected static ?int $navigationSort = 10;
 
@@ -29,21 +29,17 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('NIF')
+                Forms\Components\TextInput::make('user_id')
                     ->required()
-                    ->maxLength(9),
-                Forms\Components\TextInput::make('name')
+                    ->numeric(),
+                Forms\Components\TextInput::make('request_restaurant_id')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
+                    ->numeric(),
+                Forms\Components\TextInput::make('status')
+                    ->required(),
+                Forms\Components\TextInput::make('total_price')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                    ->numeric(),
             ]);
     }
 
@@ -51,14 +47,17 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('NIF')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('request_restaurant_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('total_price')
+                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -92,14 +91,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListOrderRequesteds::route('/'),
+            'create' => Pages\CreateOrderRequested::route('/create'),
+            'edit' => Pages\EditOrderRequested::route('/{record}/edit'),
         ];
-    }
-
-    public static function getNavigationSort(): ?int
-    {
-        return 1;
     }
 }
