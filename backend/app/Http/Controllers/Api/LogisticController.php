@@ -16,76 +16,7 @@ use Illuminate\Http\Request as HttpRequest;
 class LogisticController extends Controller
 {
     /**
-     * 1) Aprobar una solicitud
-     *    - Pasa de:
-     *        Product: in_stock  --> requested
-     *        RequestRestaurant: pending    --> accepted
-     *        Request:                      --> paid
-     *    - Esta peticion la hace el usuario con rol 'investor'
-     */
-    public function approve(HttpRequest $request, $productId)
-    {
-        DB::beginTransaction();
-
-        try {
-            // 1) Obtenemos el producto
-            $product = Product::findOrFail($productId);
-
-            if (trim(strtolower($product->status)) !== 'in_stock') {
-                Log::info("Estado del producto ID: {$product->id} -> '{$product->status}'");
-                return response()->json(['error' => "El producto no está in_stock. Estado actual: '{$product->status}'"], 422);
-            }
-
-            // 2) Obtenemos la solicitud de restaurante relacionada
-            $restaurantRequest = RequestRestaurant::where('product_id', $productId)
-                ->where('status', 'pending')
-                ->orderBy('created_at', 'desc')
-                ->first();
-
-            if (!$restaurantRequest) {
-                return response()->json(['error' => 'No se encontró una solicitud de restaurante pendiente para este producto.'], 404);
-            }
-
-            // 3) Crear una nueva solicitud del inversor con estado 'paid'
-            $investorRequest = OrderRequested::create([
-                'user_id' => 3,
-                'request_restaurant_id' => 1,
-                'status' => 'paid',
-            ]);
-
-            // Actualizamos estados
-            $product->update(['status' => 'requested']);
-            $restaurantRequest->update(['status' => 'accepted']);
-
-            DB::commit();
-
-            // Notificar al vendedor
-            $sellerUser = User::find($product->user_id);
-            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'),);
-            // Notificar al restaurante
-            $restaurantUser = User::find($restaurantRequest->user_id);
-            $restaurantUser->notify(new ProductStatusUpdated($product, 'requested'));
-            // Notificar al inversor
-            $investorUser = User::find($investorRequest->user_id);
-            $investorUser->notify(new ProductStatusUpdated($product, 'requested'));
-
-
-            return response()->json([
-                'message' => 'Solicitud aprobada correctamente.',
-                'product_status' => $product->status,
-                'restaurant_request_status' => $restaurantRequest->status,
-                'investor_request_status' => $investorRequest->status,
-            ], 200);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'error' => 'Error al aprobar la solicitud: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * 2) Enviar el producto (En tránsito)
+     * 1) Enviar el producto (En tránsito)
      *    - Pasa de:
      *        Product: requested   --> in_transit
      *        RequestRestaurant: accepted   --> in_transit
@@ -166,7 +97,7 @@ class LogisticController extends Controller
     }
 
     /**
-     * 3) Marcar como entregado en el local (El producto llega al restaurante)
+     * 2) Marcar como entregado en el local (El producto llega al restaurante)
      *    - Pasa de:
      *        Product: in_transit   --> sold
      *        RequestRestaurant: in_transit  --> in_my_local
@@ -233,7 +164,7 @@ class LogisticController extends Controller
     }
 
     /**
-     * 4) Marcar el producto como vendido (cliente final compra el vino en el restaurante)
+     * 3) Marcar el producto como vendido (cliente final compra el vino en el restaurante)
      *    - Pasa de:
      *        RequestRestaurant: in_my_local --> sold
      *        Request: waiting     --> completed (sin cambio)
