@@ -10,28 +10,24 @@ export function CartSummary({
   selectedItemsCount,
   hasItems,
   onClearCart,
-  cartItems, // Añade este prop para recibir los items del carrito
+  cartItems,
 }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (hasItems && subtotal !== 0) {
-      // Opción 1: Si tienes un solo orderId
       if (orderId) {
         localStorage.setItem("currentOrderIds", JSON.stringify([orderId]));
       } 
-      // Opción 2: Si tienes múltiples órdenes en cartItems
       else if (cartItems && cartItems.length > 0) {
-        // Asumiendo que cada item en cartItems tiene un id que corresponde al order_id
         const orderIds = cartItems.map(item => item.id);
         localStorage.setItem("currentOrderIds", JSON.stringify(orderIds));
       }
-      // Opción 3: Si no tienes ninguna de las anteriores, usa un array vacío
       else {
         localStorage.setItem("currentOrderIds", JSON.stringify([]));
+        
       }
-
-      // Navegar a la página de pago
+      localStorage.setItem("totalPrice", total.toFixed(2));
       navigate("/checkout");
     }
   };
@@ -132,29 +128,29 @@ export function CartSummary({
           <div className="flex items-center justify-between space-x-2">
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
               <img
-                src="/placeholder.svg?height=20&width=32"
+                src="./img/visa.jpg"
                 alt="Visa"
                 className="h-5 w-auto"
               />
             </div>
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
               <img
-                src="/placeholder.svg?height=20&width=32"
+                src="./img/mastercard.png"
                 alt="Mastercard"
                 className="h-5 w-auto"
               />
             </div>
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
               <img
-                src="/placeholder.svg?height=20&width=32"
-                alt="American Express"
+                src="./img/eps.png"
+                alt="EPS"
                 className="h-5 w-auto"
               />
             </div>
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
               <img
-                src="/placeholder.svg?height=20&width=32"
-                alt="PayPal"
+                src="./img/bancontact.png"
+                alt="Bancontact"
                 className="h-5 w-auto"
               />
             </div>

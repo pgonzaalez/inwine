@@ -135,22 +135,28 @@ class OrderController extends Controller
         }
 
         try {
-            // Ensure the related requestRestaurant exists
             $requestRestaurant = $order->requestRestaurant;
             if (!$requestRestaurant) {
                 return response()->json(['message' => 'RequestRestaurant not found for this order.'], 404);
             }
 
-            // Delete the existing Order
             $order->delete();
 
-            // Create a new OrderRequested entry
             OrderRequested::create([
                 'user_id' => $order->user_id,
                 'request_restaurant_id' => $order->request_restaurant_id,
-                'status' => 'paid', // Updated status to 'completed'
-                'total_price' => $requestRestaurant->price_restaurant * $requestRestaurant->quantity, // Corrected calculation
+                'status' => 'paid', 
+                'total_price' => $requestRestaurant->price_restaurant * $requestRestaurant->quantity, 
             ]);
+
+            $requestRestaurant->status = 'accepted'; 
+            $requestRestaurant->save();
+
+            $product = $requestRestaurant->product;
+            if ($product) {
+                $product->status = 'requested'; 
+                $product->save();
+            }
 
             return response()->json(['message' => 'Order marked as completed.']);
         } catch (\Exception $e) {
