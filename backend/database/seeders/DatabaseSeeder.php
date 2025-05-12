@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Base de dades inicialitzada amb exit.');
 
         $this->call([
+            CommissionSeeder::class,
             WineTypeSeeder::class,
             UserSeeder::class,
             ProductSeeder::class,

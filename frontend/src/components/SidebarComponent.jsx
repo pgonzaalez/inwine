@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import {
   BookmarkPlus,
   ShoppingCart,
@@ -12,11 +13,13 @@ import {
   Clock,
   ShoppingBag,
   FileQuestion,
-  AlertTriangle
+  AlertTriangle,
+  ShieldCheck
 } from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { getCookie, deleteCookie } from "@/utils/utils"
 import Modal from "@components/Modal";
+import RoleSelector from "@/components/RoleSelector"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -26,11 +29,56 @@ const primaryColors = {
 
 export default function Sidebar() {
   const location = useLocation()
+  const navigate = useNavigate()
   const apiUrl = import.meta.env.VITE_API_URL
   const { user, loading, error } = useFetchUser()
 
   const [isLogoutOpen, setIsLogoutOpen] = useState(false)
-  
+  const [isRoleChangeOpen, setIsRoleChangeOpen] = useState(false)
+
+  // // Estados relacionados con la selección de rol
+  // const [showRoleSelection, setShowRoleSelection] = useState(false)
+  // const [availableRoles, setAvailableRoles] = useState([])
+  // const [selectedRole, setSelectedRole] = useState(null)
+
+  const redirectToDashboard = async (role) => {
+    try {
+      const response = await fetch(`${apiUrl}/update-active-role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify({ role }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el rol activo");
+      }
+
+
+      setTimeout(() => {
+        switch (role) {
+          case "seller":
+            navigate("/seller/dashboard");
+            break;
+          case "restaurant":
+            navigate("/restaurant/dashboard");
+            break;
+          case "investor":
+            navigate("/investor/dashboard");
+            break;
+          default:
+            navigate("/login");
+        }
+      }, 500);
+    } catch (error) {
+      // console.error("Error updating active role:", error);
+      // Puedes manejar el error como prefieras
+    }
+  };
+
   const handleLogout = async () => {
     const token = getCookie("token")
     if (!token) {
@@ -81,6 +129,7 @@ export default function Sidebar() {
 
   // Comprobar el rol del usuario
   const userRole = user?.active_role?.[0] || "seller";
+  const hasMultipleRoles = user?.roles?.length > 1;
 
   if (userRole === "restaurant") {
     // Navegación para restaurantes
@@ -91,25 +140,30 @@ export default function Sidebar() {
         path: `/restaurant/dashboard`,
       },
       {
-        icon: FileQuestion,
-        label: "Peticions",
-        path: "/restaurant/peticions",
+        icon: Wine,
+        label: "Tornar a la web",
+        path: `/`,
       },
-      {
-        icon: ShoppingBag,
-        label: "Compres",
-        path: `/restaurant/compres`,
-      },
-      {
-        icon: Clock,
-        label: "En espera",
-        path: `/restaurant/espera`,
-      },
-      {
-        icon: Bell,
-        label: "Notificacions",
-        path: `/restaurant/notificacions`,
-      },
+      // {
+      //   icon: FileQuestion,
+      //   label: "Peticions",
+      //   path: "/restaurant/peticions",
+      // },
+      // {
+      //   icon: ShoppingBag,
+      //   label: "Compres",
+      //   path: `/restaurant/compres`,
+      // },
+      // {
+      //   icon: Clock,
+      //   label: "En espera",
+      //   path: `/restaurant/espera`,
+      // },
+      // {
+      //   icon: Bell,
+      //   label: "Notificacions",
+      //   path: `/restaurant/notificacions`,
+      // },
       {
         icon: User,
         label: "Perfil",
@@ -131,27 +185,87 @@ export default function Sidebar() {
         path: `/restaurant/dashboard`,
       },
       {
-        icon: FileQuestion,
-        label: "Peticions",
-        path: "/restaurant/peticions",
+        icon: Wine,
+        label: "Tornar a la web",
+        path: `/`,
       },
-      {
-        icon: ShoppingBag,
-        label: "Compres",
-        path: `/restaurant/compres`,
-      },
-      {
-        icon: Bell,
-        label: "Alertes",
-        path: `/restaurant/notificacions`,
-      },
+      // {
+      //   icon: ShoppingBag,
+      //   label: "Compres",
+      //   path: `/restaurant/compres`,
+      // },
+      // {
+      //   icon: Bell,
+      //   label: "Alertes",
+      //   path: `/restaurant/notificacions`,
+      // },
       {
         icon: LogOut,
         label: "Tancar sessió",
         action: () => setIsLogoutOpen(true)
       },
     ]
-  } else {
+  } else if (userRole === "investor") {
+    // Navegación para inversores
+    navItems = [
+      {
+        icon: Home,
+        label: "Inici",
+        path: `/inversor/dashboard`,
+      }, 
+      {
+        icon: FileQuestion,
+        label: "Històric",
+        path: "/inversor/historic",
+      },
+      {
+        icon: Wine,
+        label: "Tornar a la web",
+        path: `/`,
+      },
+      // {
+      //   icon: Bell,
+      //   label: "Notificacions",
+      //   path: `/inversor/notificacions`,
+      // },
+      {
+        icon: User,
+        label: "Perfil",
+        path: `/inversor/profile`,
+        divider: true,
+      },
+      {
+        icon: Settings,
+        label: "Configuració",
+        path: `/inversor/settings`,
+      },
+    ]
+
+    // Navegación móvil para restaurantes
+    mobileNavItems = [
+      {
+        icon: Home,
+        label: "Inici",
+        path: `/inversor/dashboard`,
+      },
+      {
+        icon: FileQuestion,
+        label: "Històric",
+        path: "/inversor/historic",
+      },
+      // {
+      //   icon: Bell,
+      //   label: "Alertes",
+      //   path: `/inversor/notificacions`,
+      // },
+      {
+        icon: LogOut,
+        label: "Tancar sessió",
+        action: () => setIsLogoutOpen(true)
+      },
+    ]
+  }
+  else {
     // Navegación para vendedores (seller)
     navItems = [
       {
@@ -169,15 +283,15 @@ export default function Sidebar() {
         label: "Productes",
         path: `/seller/products`,
       },
+      // {
+      //   icon: Bell,
+      //   label: "Notificacions",
+      //   path: `/seller/notificacions`,
+      // },
       {
         icon: Wine,
-        label: "Gestió de Vins",
-        path: `/seller/wine-management`,
-      },
-      {
-        icon: Bell,
-        label: "Notificacions",
-        path: `/seller/notificacions`,
+        label: "Tornar a la web",
+        path: `/`,
       },
       {
         icon: User,
@@ -209,11 +323,11 @@ export default function Sidebar() {
         label: "Productes",
         path: `/seller/products`,
       },
-      {
-        icon: Bell,
-        label: "Alertes",
-        path: `/seller/notificacions`,
-      },
+      // {
+      //   icon: Bell,
+      //   label: "Alertes",
+      //   path: `/seller/notificacions`,
+      // },
       {
         icon: LogOut,
         label: "Tancar sessió",
@@ -244,8 +358,8 @@ export default function Sidebar() {
               <User size={18} />
             </div>
             <div>
-              <p className="font-medium text-gray-900">{user ? user.name : "Usuari Desconegut"}</p>
-              <p className="text-sm text-gray-500">{user?.email || "email@example.com"}</p>
+              <p className="font-medium text-gray-900 break-words max-w-[180px]">{user ? user.name : "Usuari Desconegut"}</p>
+              <p className="text-sm text-gray-500 break-words max-w-[180px]">{user?.email || "email@example.com"}</p>
             </div>
           </div>
         </div>
@@ -272,8 +386,17 @@ export default function Sidebar() {
           ))}
         </nav>
 
-        {/* Logout button */}
+        {/* Role & Logout button */}
         <div className="p-4 border-t" style={{ borderColor: primaryColors.light }}>
+          {hasMultipleRoles && (
+            <button
+              onClick={() => setIsRoleChangeOpen(true)}
+              className="flex w-full items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
+            >
+              <ShieldCheck size={18} />
+              <span>Canviar rol</span>
+            </button>
+          )}
           <button
             onClick={() => setIsLogoutOpen(true)}
             className="flex w-full items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
@@ -352,6 +475,28 @@ export default function Sidebar() {
           <p className="text-sm text-amber-700">
             Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al teu compte.
           </p>
+        </div>
+      </Modal>
+
+      {/* Modal de Cambio de Rol */}
+      <Modal
+        isOpen={isRoleChangeOpen}
+        onClose={() => setIsRoleChangeOpen(false)}
+        title="Canviar rol"
+        description="Selecciona el rol amb el qual vols accedir:"
+        icon={<ShieldCheck className="h-8 w-8" />}
+        variant="primary"
+        size="md" // Cambiado a lg para que quede mejor el RoleSelector
+        footer={null} // Eliminamos el footer ya que RoleSelector tiene su propio botón
+      >
+        <div className="px-2">
+          <RoleSelector
+            roles={user?.roles || []}
+            onSelect={(role) => {
+              redirectToDashboard(role);
+              setIsRoleChangeOpen(false);
+            }}
+          />
         </div>
       </Modal>
     </>

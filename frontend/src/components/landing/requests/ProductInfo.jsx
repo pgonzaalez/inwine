@@ -1,7 +1,7 @@
-"use client"
-
 import { useState, useEffect } from "react"
-import { Star, Heart, Share2, Check, Copy } from "lucide-react"
+import { Star, Heart, Share2, Check, Copy, ShoppingBag, Package } from "lucide-react"
+import Modal from "@components/Modal"
+import { useFetchUser } from "@components/auth/FetchUser";
 
 export default function ProductInfo({ product, wineTypeName }) {
   const [favorites, setFavorites] = useState([])
@@ -9,6 +9,15 @@ export default function ProductInfo({ product, wineTypeName }) {
   const [showFilters, setShowFilters] = useState(true)
   const [isLiked, setIsLiked] = useState(false)
   const [shareStatus, setShareStatus] = useState("")
+  const [isRequestOpen, setIsRequestOpen] = useState(false)
+  const [offerPrice, setOfferPrice] = useState("")
+  const [requestStatus, setRequestStatus] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  const user = useFetchUser();
+  const role = user.user?.active_role?.[0]
 
   useEffect(() => {
     // Set initial mobile state
@@ -106,6 +115,63 @@ export default function ProductInfo({ product, wineTypeName }) {
     )
   }
 
+  const handleRequestSubmit = async () => {
+    const price = parseFloat(offerPrice);
+    const productPrice = parseFloat(product.price_demanded);
+
+    // Validaciones
+    if (isNaN(price)) {
+      setRequestStatus('error');
+      return;
+    }
+
+    if (price <= 0) {
+      setRequestStatus('error');
+      return;
+    }
+
+    if (price < productPrice) {
+      setRequestStatus('price_error');
+      return;
+    }
+
+    setIsLoading(true);
+    setRequestStatus(null);
+
+    try {
+      const response = await fetch(`${apiUrl}/v1/restaurants`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.user?.id,
+          product_id: product.id,
+          quantity: 1,
+          price_restaurant: price
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en la solicitud');
+      }
+
+      const data = await response.json();
+      setRequestStatus('success');
+
+      setTimeout(() => {
+        setIsRequestOpen(false);
+        setRequestStatus(null);
+        setOfferPrice("");
+      }, 2000);
+    } catch (error) {
+      console.error('Error al enviar solicitud:', error);
+      setRequestStatus('error');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -149,13 +215,12 @@ export default function ProductInfo({ product, wineTypeName }) {
         <div>
           <p className="text-sm font-medium text-gray-500">Estat</p>
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              product.status === "in_stock"
-                ? "bg-green-100 text-green-800"
-                : product.status === "out_of_stock"
-                  ? "bg-red-100 text-red-800"
-                  : "bg-gray-100 text-gray-800"
-            }`}
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.status === "in_stock"
+              ? "bg-green-100 text-green-800"
+              : product.status === "out_of_stock"
+                ? "bg-red-100 text-red-800"
+                : "bg-gray-100 text-gray-800"
+              }`}
           >
             {product.status === "in_stock"
               ? "En stock"
@@ -170,9 +235,8 @@ export default function ProductInfo({ product, wineTypeName }) {
       <div className="flex flex-wrap gap-4">
         <button
           onClick={toggleFavorite}
-          className={`bg-white border hover:bg-gray-50 p-3 rounded-md transition-colors flex items-center gap-2 ${
-            isLiked ? "border-[#9A3E50] text-[#9A3E50]" : "border-gray-300 text-gray-700"
-          }`}
+          className={`bg-white border hover:bg-gray-50 p-3 rounded-md transition-colors flex items-center gap-2 ${isLiked ? "border-[#9A3E50] text-[#9A3E50]" : "border-gray-300 text-gray-700"
+            }`}
         >
           <Heart className={`w-5 h-5 ${isLiked ? "fill-[#9A3E50]" : ""}`} />
           {isLiked ? "M'agrada" : "M'agrada"}
@@ -194,13 +258,104 @@ export default function ProductInfo({ product, wineTypeName }) {
             {shareStatus || "Compartir"}
           </button>
         </div>
+        {/* En caso de que sea un usuario con rol restaurante te mostrara el boton */}
+        {role === "restaurant" && (
+          <button
+            onClick={() => setIsRequestOpen(true)}
+            className="bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:from-[#7a2e3d] hover:to-[#5a1e2d]"
+          >
+            <Package className="w-5 h-5" />
+            Sol·licitar producte
+          </button>
+        )}
       </div>
 
       {/* Additional Info */}
       <div className="text-sm text-gray-500">
         <p>Data de creació: {new Date(product.created_at).toLocaleDateString()}</p>
       </div>
+
+      {/* Modal de Solicitar Producto */}
+      <Modal
+        isOpen={isRequestOpen}
+        onClose={() => {
+          setIsRequestOpen(false)
+          setRequestStatus(null)
+          setOfferPrice("")
+        }}
+        title={`Sol·licitar ${product.name}`}
+        description="Introdueix el preu que vols oferir per aquest producte"
+        icon={<ShoppingBag className="h-8 w-8 text-[#9A3E50]" />}
+        variant="default"
+        size="md"
+        footer={
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setIsRequestOpen(false)}
+              className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Cancel·lar
+            </button>
+            <button
+              onClick={handleRequestSubmit}
+              className="flex items-center justify-center rounded-lg bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] px-4 py-2.5 text-sm font-medium text-white hover:from-[#7a2e3d] hover:to-[#5a1e2d]"
+            >
+              Enviar sol·licitud
+            </button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="offerPrice" className="block text-sm font-medium text-gray-700 mb-1">
+              Preu venta (€)
+            </label>
+            <input
+              type="number"
+              id="offerPrice"
+              min="0"
+              step="0.01"
+              value={offerPrice}
+              onChange={(e) => setOfferPrice(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#9A3E50] focus:border-[#9A3E50]"
+              placeholder="Introdueix el teu preu"
+            />
+            {requestStatus === 'error' && (
+              <p className="mt-1 text-sm text-red-600">Si us plau, introdueix un preu vàlid</p>
+            )}
+            {requestStatus === 'price_error' && (
+              <p className="mt-1 text-sm text-red-600">El preu ofertat no pot ser inferior al preu actual del producte</p>
+            )}
+          </div>
+
+          <div className="bg-gray-50 p-3 rounded-md">
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Preu actual:</span> {product.price_demanded}€
+            </p>
+            {offerPrice && (
+              <p className="text-sm text-gray-600 mt-1">
+                <span className="font-medium">La teva oferta:</span> {offerPrice}€
+                {parseFloat(offerPrice) > parseFloat(product.price_demanded) ? (
+                  <span className="ml-2 text-green-600">(Supera el preu actual)</span>
+                ) : parseFloat(offerPrice) < parseFloat(product.price_demanded) ? (
+                  <span className="ml-2 text-amber-600">(Inferior al preu actual)</span>
+                ) : (
+                  <span className="ml-2 text-blue-600">(Igual al preu actual)</span>
+                )}
+              </p>
+            )}
+          </div>
+
+          {requestStatus === 'success' && (
+            <div className="bg-green-50 p-3 rounded-md flex items-start">
+              <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
+              <p className="text-sm text-green-700">
+                Sol·licitud enviada correctament! El venedor revisarà la teva oferta i et contactarà aviat.
+              </p>
+            </div>
+          )}
+        </div>
+      </Modal>
     </div>
   )
 }
-

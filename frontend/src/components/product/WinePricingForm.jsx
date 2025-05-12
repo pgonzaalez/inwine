@@ -29,7 +29,7 @@ export const WinePricingForm = ({
               id="price_demanded"
               value={formData.price_demanded}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("price_demanded") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("price_demanded") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               step="0.01"
@@ -54,7 +54,7 @@ export const WinePricingForm = ({
               id="quantity"
               value={formData.quantity}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("quantity") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("quantity") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               min="1"

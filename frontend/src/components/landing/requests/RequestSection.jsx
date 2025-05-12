@@ -60,7 +60,7 @@ export default function RequestsSection({ requests, productPrice }) {
       setTimeout(() => {
         requestsSectionRef.current.scrollIntoView({
           behavior: "smooth",
-          block: "start",
+          block: "nearest",
         })
       }, 100)
     }

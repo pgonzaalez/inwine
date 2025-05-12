@@ -115,6 +115,7 @@ class OrderController extends Controller
                         'origin' => $product->origin,
                         'year' => $product->year,
                         'image' => $product->image,
+                        'price_demanded' => $product->price_demanded,
                     ],
                     'seller_name' => $seller->name ?? null,
                     'restaurant_name' => $restaurantUser->name ?? null,
@@ -127,22 +128,33 @@ class OrderController extends Controller
 
     public function completed($orderId)
     {
-        $order = Order::where('order_id', $orderId)
-            ->first();
+        $order = Order::find($orderId);
 
         if (!$order) {
             return response()->json(['message' => 'Order not found.'], 404);
         }
 
-        OrderRequested::create([
-            'user_id' => $order->user_id,
-            'request_restaurant_id' => $order->request_restaurant_id,
-            'status' => 'paid',
-            'total_price' => $order->requestRestaurant->price_restaurant * 2,
-        ]);
+        try {
+            // Ensure the related requestRestaurant exists
+            $requestRestaurant = $order->requestRestaurant;
+            if (!$requestRestaurant) {
+                return response()->json(['message' => 'RequestRestaurant not found for this order.'], 404);
+            }
 
+            // Delete the existing Order
+            $order->delete();
 
+            // Create a new OrderRequested entry
+            OrderRequested::create([
+                'user_id' => $order->user_id,
+                'request_restaurant_id' => $order->request_restaurant_id,
+                'status' => 'paid', // Updated status to 'completed'
+                'total_price' => $requestRestaurant->price_restaurant * $requestRestaurant->quantity, // Corrected calculation
+            ]);
 
-        return response()->json(['message' => 'Order marked as completed.']);
+            return response()->json(['message' => 'Order marked as completed.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to mark order as completed.', 'error' => $e->getMessage()], 500);
+        }
     }
 }

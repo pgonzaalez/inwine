@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Investor;
+use App\Models\OrderRequested;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\UserRole;
+use App\Models\User;
 
 class InvestorController extends Controller
 {
@@ -21,18 +23,12 @@ class InvestorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) 
-    {
-
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id) 
-    {
-
-    }
+    public function show(string $id) {}
 
     /**
      * Update the specified resource in storage.
@@ -121,8 +117,121 @@ class InvestorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id) 
-    {
+    public function destroy(string $id) {}
 
+    public function investments(Request $request, $userId)
+    {
+        $authenticatedUser = $request->user();
+
+        if ($authenticatedUser->id != $userId) {
+            return response()->json(['message' => 'No tienes permiso para ver estas inversiones'], 403);
+        }
+
+        $investor = User::find($userId);
+
+        if (!$investor) {
+            return response()->json(['message' => 'Inversor no encontrado'], 404);
+        }
+
+        $investments = OrderRequested::where('user_id', $userId)
+            ->with([
+                'requestRestaurant.product.seller',
+                'requestRestaurant.user',
+            ])
+            ->get();
+
+        if ($investments->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron inversiones para este inversor'], 404);
+        }
+
+        $data = $investments->map(function ($investment) {
+            $requestRestaurant = $investment->requestRestaurant;
+            $product = $requestRestaurant->product;
+            $seller = $product->seller;
+            $restaurantUser = $requestRestaurant->user;
+
+            return [
+                'investment_id' => $investment->id,
+                'status' => $investment->status,
+                'user_id' => $investment->user_id,
+                'request_restaurant_id' => $investment->request_restaurant_id,
+                'price_restaurant' => $requestRestaurant->price_restaurant,
+                'quantity' => $requestRestaurant->quantity,
+                'product' => [
+                    'name' => $product->name,
+                    'origin' => $product->origin,
+                    'year' => $product->year,
+                    'image' => $product->image,
+                    'price_demanded' => $product->price_demanded,
+                ],
+                'seller_name' => $seller->name ?? null,
+                'restaurant_name' => $restaurantUser->name ?? null,
+                'created_at' => $investment->created_at,
+            ];
+        });
+
+        return response()->json(['message' => 'Inversiones obtenidas correctamente', 'investments' => $data], 200);
+    }
+
+
+    public function showInvestment(Request $request, $userId, $investmentId)
+    {
+        $authenticatedUser = $request->user();
+    
+        if ($authenticatedUser->id != $userId) {
+            return response()->json(['error' => 'No tienes permiso para ver esta inversión'], 403);
+        }
+    
+        $investment = OrderRequested::where('user_id', $userId)
+            ->where('id', $investmentId)
+            ->with([
+                'requestRestaurant.product.wineType',
+                'requestRestaurant.product.images',
+                'requestRestaurant.product.seller',
+                'requestRestaurant.user',
+            ])
+            ->first();
+    
+        if (!$investment) {
+            return response()->json(['error' => 'Inversión no encontrada'], 404);
+        }
+    
+        $requestRestaurant = $investment->requestRestaurant;
+        $product = $requestRestaurant->product;
+    
+        // Asegura que las relaciones estén cargadas correctamente
+        $product->loadMissing(['images', 'wineType']);
+    
+        $seller = $product->seller;
+        $restaurantUser = $requestRestaurant->user;
+    
+        return response()->json([
+            'id' => $investment->id,
+            'user_id' => $investment->user_id,
+            'request_restaurant_id' => $investment->request_restaurant_id,
+            'status' => $investment->status,
+            'price_restaurant' => $requestRestaurant->price_restaurant,
+            'quantity' => $requestRestaurant->quantity,
+            'created_at' => $investment->created_at,
+            'updated_at' => $investment->updated_at,
+            'restaurant_name' => $restaurantUser->name ?? null,
+            'seller_name' => $seller->name ?? null,
+            'images' => $product->images->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'image_path' => $image->image_path,
+                    'is_primary' => $image->is_primary,
+                    'order' => $image->order,
+                ];
+            }),
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type' => $product->wineType->name ?? null,
+                'price_demanded' => $product->price_demanded,
+            ],
+        ], 200);
     }
 }

@@ -1,17 +1,20 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router";
 import "./App.css";
 
+// Layout
+import Layout from "@layout/Layout";
+import HeaderLayout from "@layout/HeaderLayout";
+import ScrollToTop from "@components/ScrollToTop";
 // Pages
 import Profile from "@pages/Profile/ProfilePage";
 import Notifications from "@pages/Notification/NotificationsPage";
 // Pages Landing
 import Main from "@pages/MainPage";
-import ProductPage from "@pages/ProductPage";
-import Products from "@pages/Landing/ProductsPage";
+import ProductPage from "@pages/Landing/ProductsPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
-import Layout from "@layout/Layout";
+
 import ProtectedRoute from "@components/auth/ProtectedRoute";
 import CheckoutPage from "@pages/Payments/CheckoutPage";
 import OrderSummaryPage from "@pages/Payments/OrderSummaryPage";
@@ -24,21 +27,27 @@ import ViewProductPage from "@pages/Seller/ViewProductPage";
 import EditProductPage from "@pages/Seller/EditProductPage";
 // Pages Inversor
 import RegisterInversor from "@pages/RegisterInversorPage";
+import Inversor from "@pages/Inversor/InversorDashboardPage";
+import InvestmentHistoryPage from "@pages/Inversor/HIstoricPage";
+import ShowInvestment from "@pages/Inversor/ShowInvestment";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
+import ViewOneRequest from "@pages/Restaurant/ViewOneRequest";
 
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/productes" element={<ProductPage />} />
-        <Route path="/productos" element={<Products />} />
-        <Route path="/productes/:id" element={<ViewProductsRequest />} />
-        <Route path="/cistella" element={<OrderCart />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/order-summary" element={<OrderSummaryPage />} />
+        <Route element={<HeaderLayout />}>
+          <Route path="/" element={<Main />} />
+          <Route path="/productes" element={<ProductPage />} />
+          <Route path="/productes/:id" element={<ViewProductsRequest />} />
+          <Route path="/cistella" element={<OrderCart />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/order-summary" element={<OrderSummaryPage />} />
+        </Route>
 
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
@@ -110,8 +119,50 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/restaurant/requests/:id"
+            element={
+              <ProtectedRoute>
+                <ViewOneRequest />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/restaurant/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Rutas protegidas para Inversor */}
+          <Route
+            path="/inversor/dashboard"
+            element={
+              <ProtectedRoute>
+                <Inversor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inversor/historic"
+            element={
+              <ProtectedRoute>
+                < InvestmentHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inversor/historic/:id"
+            element={
+              <ProtectedRoute>
+                < ShowInvestment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inversor/profile"
             element={
               <ProtectedRoute>
                 <Profile />

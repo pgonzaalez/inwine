@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import Header from "../components/HeaderComponent"
 import Footer from "../components/FooterComponent"
 import ProductGallery from "../components/landing/requests/ProductGallery"
 import ProductInfo from "../components/landing/requests/ProductInfo"
@@ -119,8 +118,6 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-
       <main className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="text-sm text-gray-500 mb-6">

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { ShoppingBag, Check, CreditCard, Truck, Shield, AlertTriangle } from "lucide-react"
-import Header from "@/components/HeaderComponent"
 import Footer from "@/components/FooterComponent"
 import { CartItem } from "@/components/landing/cart/CartItem"
 import { CartSummary } from "@/components/landing/cart/CartSummary"
@@ -77,9 +76,14 @@ export default function ShoppingCartPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("token")}`,
         },
+        body: JSON.stringify({
+          selectedOrderIds: cartItems
+            .filter((item) => selectedItems[item.order_id]) // Solo seleccionados
+            .map((item) => item.order_id),
+        }),
       })
 
-      setCartItems([])
+      setCartItems(cartItems.filter((item) => !selectedItems[item.order_id])) // Mantener no seleccionados
       setSelectedItems({})
     } catch (error) {
       // console.error("Error clearing cart:", error)
@@ -141,7 +145,6 @@ export default function ShoppingCartPage() {
   if (loading || userLoading) {
     return (
       <div className="min-h-screen bg-white">
-        <Header />
         <div className="pt-20 pb-12">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center space-y-6">
@@ -158,7 +161,7 @@ export default function ShoppingCartPage() {
   if (userError) {
     return (
       <div className="min-h-screen bg-white">
-        <Header />
+
         <div className="pt-20 pb-12">
           <div className="container mx-auto px-4">
             <div className="max-w-md mx-auto bg-white rounded-md shadow-md overflow-hidden md:max-w-lg">
@@ -186,7 +189,6 @@ export default function ShoppingCartPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
 
       {/* Main Content - with padding-top to account for fixed header */}
       <div className="pt-20 pb-12">
@@ -288,13 +290,16 @@ export default function ShoppingCartPage() {
 
               {/* Order Summary */}
               <CartSummary
+                orderId={cartItems[0]?.order_id}
                 subtotal={subtotal}
                 serviceCommission={serviceCommission}
                 shippingCost={shippingCost}
                 total={total}
                 selectedItemsCount={selectedItemsCount}
                 hasItems={cartItems.length > 0}
-                onClearCart={() => setIsDeleteOpen(true)}
+                onClearCart={clearCart}
+                cartItems={cartItems}
+                selectedItems={selectedItems} // Pasar seleccionados
               />
             </div>
           )}

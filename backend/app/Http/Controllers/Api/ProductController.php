@@ -18,11 +18,14 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::where('status', 'in_stock')->get();
-        
+        $products = Product::where('status', 'in_stock')
+            ->withCount('requestsRestaurant')
+            ->orderBy('requests_restaurant_count', 'desc')
+            ->get();
+
         $response = $products->map(function ($product) {
             return [
-                "id"=> $product->id,
+                "id" => $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,
@@ -33,7 +36,9 @@ class ProductController extends Controller
                 'status' => $product->status,
                 'user_id' => $product->seller->name,
                 'created_at' => $product->created_at,
-                'updated_at' => $product->updated_at
+                'updated_at' => $product->updated_at,
+                'requests_restaurant_count' => $product->requests_restaurant_count,
+
             ];
         });
 
@@ -49,7 +54,7 @@ class ProductController extends Controller
 
         $response = $products->map(function ($product) {
             return [
-                'id'=> $product->id,
+                'id' => $product->id,
                 'name' => $product->name,
                 'origin' => $product->origin,
                 'year' => $product->year,
@@ -66,6 +71,51 @@ class ProductController extends Controller
 
         return response()->json($response);
     }
+
+    public function showByUser(string $userId, string $productId)
+    {
+        $product = Product::with('images', 'wineType')
+            ->where('user_id', $userId)
+            ->find($productId);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+
+        $response = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'origin' => $product->origin,
+            'description' => $product->description,
+            'year' => $product->year,
+            'wine_type' => $product->wineType?->name,
+            'wine_type_id' => $product->wine_type_id,
+            'price_demanded' => $product->price_demanded,
+            'quantity' => $product->quantity,
+            'image' => $product->image,
+            'status' => $product->status,
+            'user_id' => $product->user_id,
+            'created_at' => $product->created_at,
+            'updated_at' => $product->updated_at,
+            'images' => $product->images->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'image_path' => $image->image_path,
+                    'is_primary' => $image->is_primary,
+                    'order' => $image->order
+                ];
+            }),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -122,7 +172,7 @@ class ProductController extends Controller
                     Log::info('Procesando imagen', ['index' => $index]);
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image_path' => $path,
+                        'image_path' => Storage::url($path),
                         'is_primary' => $isPrimary,
                         'order' => $index
                     ]);
@@ -191,14 +241,13 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         $product = Product::find($id);
-
+    
         if (!$product) {
             return response()->json([
-                'success' => false,
                 'message' => 'Producto no encontrado'
             ], 404);
         }
-
+    
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'origin' => 'sometimes|required|string|max:255',
@@ -209,18 +258,21 @@ class ProductController extends Controller
             'quantity' => 'sometimes|required|integer|min:0',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240',
+            'existing_images' => 'nullable|array',
+            'existing_images.*' => 'numeric',
+            'removed_images' => 'nullable|array',
+            'removed_images.*' => 'numeric',
             'user_id' => 'sometimes|required|exists:users,id'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
                 'errors' => $validator->errors()
             ], 422);
         }
-
+    
         DB::beginTransaction();
-
+    
         try {
             // Actualizamos los datos del producto
             $productData = $request->only([
@@ -233,28 +285,47 @@ class ProductController extends Controller
                 'quantity',
                 'user_id'
             ]);
-
+    
             $product->update($productData);
-
+    
+            // Procesamos las imágenes eliminadas
+            if ($request->has('removed_images')) {
+                $removedImageIds = $request->input('removed_images');
+                
+                foreach ($removedImageIds as $imageId) {
+                    $image = ProductImage::where('product_id', $product->id)
+                        ->where('id', $imageId)
+                        ->first();
+                    
+                    if ($image) {
+                        $path = str_replace('/storage/', '', $image->image_path);
+                        if (Storage::disk('public')->exists($path)) {
+                            Storage::disk('public')->delete($path);
+                        }
+                        $image->delete();
+                    }
+                }
+            }
+    
             // Procesamos nuevas imágenes si se proporcionan
             if ($request->hasFile('images')) {
-                // Determinamos si ya hay imágenes
+                // Verificamos si ya hay imágenes principales
                 $hasPrimaryImage = $product->images()->where('is_primary', true)->exists();
                 $isPrimary = !$hasPrimaryImage;
                 $lastOrder = $product->images()->max('order') ?? -1;
-
+    
                 foreach ($request->file('images') as $imageFile) {
                     $path = $imageFile->store('products', 'public');
                     $lastOrder++;
-
+    
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image_path' => $path,
+                        'image_path' => Storage::url($path),
                         'is_primary' => $isPrimary,
                         'order' => $lastOrder
                     ]);
-
-                    // Si es la primera imagen y no había una principal, actualizamos el campo image
+    
+                    // Si es la primera imagen y no hay principal, la establecemos como principal
                     if ($isPrimary) {
                         $product->image = Storage::url($path);
                         $product->save();
@@ -262,21 +333,29 @@ class ProductController extends Controller
                     }
                 }
             }
-
+    
+            // Si no quedan imágenes principales después de las eliminaciones, asignamos otra
+            if (!$product->images()->where('is_primary', true)->exists() && $product->images()->count() > 0) {
+                $newPrimaryImage = $product->images()->first();
+                $newPrimaryImage->is_primary = true;
+                $newPrimaryImage->save();
+                
+                $product->image = $newPrimaryImage->image_path;
+                $product->save();
+            }
+    
             DB::commit();
-
+    
             // Cargamos las imágenes para la respuesta
             $product->load('images');
-
+    
             return response()->json([
-                'success' => true,
                 'data' => $product
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-
+    
             return response()->json([
-                'success' => false,
                 'message' => 'Error al actualizar el producto: ' . $e->getMessage()
             ], 500);
         }
@@ -298,6 +377,49 @@ class ProductController extends Controller
 
         DB::beginTransaction();
 
+        try {
+            // Eliminamos las imágenes del almacenamiento
+            foreach ($product->images as $image) {
+                // Extraemos la ruta relativa del storage
+                $path = str_replace('/storage/', '', $image->image_path);
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+                $image->delete();
+            }
+
+            // Eliminamos el producto
+            $product->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Producto eliminado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar el producto: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Eliminar todos los productos de un usuario
+     */
+    public function destroyAllByUser(string $userId, string $productId)
+    {
+        $product = Product::with('images')->where('user_id', $userId)->find($productId);
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+        DB::beginTransaction();
         try {
             // Eliminamos las imágenes del almacenamiento
             foreach ($product->images as $image) {

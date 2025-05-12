@@ -41,13 +41,8 @@ const RoleSelector = ({ roles = [], onSelect }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-800">Selecciona el teu rol</h1>
-          <p className="text-gray-500 mt-2">Escull com vols accedir al sistema</p>
-        </div>
-
+    <div className=" flex items-center justify-center p-4">
+      <div>
         <div className="grid gap-4">
           {roles.map((role, index) => {
             const { icon, label, description } = getRoleInfo(role)

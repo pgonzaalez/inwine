@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import {
   Search,
   Menu,
@@ -12,12 +13,17 @@ import {
   LogOut,
   AlertTriangle,
   ShoppingCart,
+  ShieldCheck,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie, deleteCookie } from "@/utils/utils";
 import Modal from "@components/Modal";
+import RoleSelector from '@/components/RoleSelector';
 
 export default function Header() {
+
+  const user = useFetchUser();
+  const hasMultipleRoles = user.user?.roles?.length > 1;
   // const [scrolled, setScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -28,10 +34,52 @@ export default function Header() {
   const [productCount, setProductCount] = useState(0);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate();
+  const [isRoleChangeOpen, setIsRoleChangeOpen] = useState(false);
+  const role = user.user?.active_role?.[0];
 
-  const user = useFetchUser();
-  const role = user.user?.active_role?.[0]
+  const redirectToDashboard = async (role) => {
+    try {
+      const response = await fetch(`${apiUrl}/update-active-role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify({ role }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el rol activo");
+      }
+
+
+      setTimeout(() => {
+        switch (role) {
+          case "seller":
+            navigate("/seller/dashboard");
+            break;
+          case "restaurant":
+            navigate("/restaurant/dashboard");
+            break;
+          case "investor":
+            navigate("/investor/dashboard");
+            break;
+          default:
+            navigate("/login");
+        }
+      }, 500);
+    } catch (error) {
+      // console.error("Error updating active role:", error);
+      // Puedes manejar el error como prefieras
+    }
+  };
+
+  const handleRoleChange = (role) => {
+    redirectToDashboard(role); // Asegúrate de tener esta función definida
+    setIsRoleChangeOpen(false);
+  };
+  const navigate = useNavigate();
 
   const handleProfile = () => {
     if (role === "seller") {
@@ -39,7 +87,7 @@ export default function Header() {
     } else if (role === "restaurant") {
       navigate("/restaurant/dashboard");
     } else if (role === "investor") {
-      navigate("/investor/dashboard");
+      navigate("/inversor/dashboard");
     } else {
       navigate("/login");
     }
@@ -158,7 +206,7 @@ export default function Header() {
 
   return (
     <header className="bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-8">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6 md:px-8">
         <div className="flex items-center">
           <Link to="/" className="mr-10">
             <img
@@ -239,16 +287,23 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 hover:scale-105 ring-1 ring-gray-200"
+                className="flex items-center space-x-3"
               >
-                <img
-                  src={
-                    user.avatar ||
-                    "https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                  }
-                  alt="Usuario"
-                  className="h-full w-full object-cover"
-                />
+                <div className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200">
+                  <img
+                    src={user.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
+                    alt="Usuario"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="hidden md:flex flex-col items-start">
+                  <span className="text-sm font-medium text-gray-700">
+                    {user.user?.name || "Usuari"}
+                  </span>
+                  <span className="text-xs text-gray-500 capitalize">
+                    Rol: {role || "rol"}
+                  </span>
+                </div>
               </button>
 
               {isOpen && (
@@ -262,6 +317,11 @@ export default function Header() {
                   <div className="py-1">
                     <div className="border-b px-4 py-3 text-sm font-medium border-gray-100 text-gray-700">
                       El meu compte
+                      <div className="hidden md:flex flex-col items-start">
+                        <span className="text-xs text-gray-500 break-words max-w-[180px]">
+                          {user.user?.email || "Correu"}
+                        </span>
+                      </div>
                     </div>
 
                     <button
@@ -271,6 +331,16 @@ export default function Header() {
                       <User className="mr-2 h-4 w-4" />
                       Perfil
                     </button>
+
+                    {hasMultipleRoles && (
+                      <button
+                        onClick={() => setIsRoleChangeOpen(true)}
+                        className="flex w-full items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
+                      >
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        Canviar rol
+                      </button>
+                    )}
 
                     <Link
                       to="/settings"
@@ -438,6 +508,21 @@ export default function Header() {
         </Dialog>
       </Transition>
 
+      {/* Modal de Canvio de Rol */}
+      <Modal
+        isOpen={isRoleChangeOpen}
+        onClose={() => setIsRoleChangeOpen(false)}
+        title="Canviar rol"
+        description="Selecciona el rol amb el qual vols accedir:"
+        icon={<ShieldCheck className="h-8 w-8" />}
+        variant="primary"
+        size="md"
+        footer={null}
+      >
+        <div className="px-2">
+          <RoleSelector roles={user?.user?.roles || []} onSelect={handleRoleChange} />
+        </div>
+      </Modal>
       {/* Modal de Cierre de Sesión */}
       <Modal
         isOpen={isLogoutOpen}

@@ -25,7 +25,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/seller', [SellerController::class, 'update']);
     Route::put('/restaurant', [RestaurantController::class, 'update']);
     Route::put('/investor', [InvestorController::class, 'update']);
-    
+
+    // Rutas para inversor
+    // Ruta para obtener el historial del inversor
+    Route::get('{userId}/investments', [InvestorController::class,'investments']);
+    Route::get('{userId}/investments/{investmentId}', [InvestorController::class,'showInvestment']);
+
 });
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -35,10 +40,11 @@ Route::post('/update-active-role', [AuthController::class, 'updateActiveRole'])-
 
 Route::prefix('v1')->group(function () {
 
-    
     // Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
     // Rutas para los productos
-    Route::get('{userId}/products/', [ProductController::class, 'indexByUser']); // Todos los productos de un usuario
+    Route::get('{userId}/products/', [ProductController::class, 'indexByUser']);
+    Route::get('{userId}/products/{productId}', [ProductController::class, 'showByUser']); 
+    Route::delete('{userId}/products/{productId}', [ProductController::class, 'destroyAllByUser']);
     Route::apiResource('/products', ProductController::class);
     Route::apiResource('/winetypes', WineTypeController::class);
     Route::apiResource('/investor', InvestorController::class);
@@ -48,13 +54,15 @@ Route::prefix('v1')->group(function () {
     Route::get('/{userId}/orders', [OrderController::class, 'showOrderByUser']);
     Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
 
-    Route::post('/seller', [AuthController::class, 'storeSeller']);
+    // Rutas para los restaurantes
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
+    Route::get('/{userId}/restaurant/{requestId}', [RequestRestaurantController::class, 'showRequestWithProduct']);
+    Route::delete('/restaurant/{id}', [RequestRestaurantController::class, 'destroy'])
+    ->middleware('auth:sanctum');
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
     Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
     Route::post('/investor', [AuthController::class, 'storeInvestor']);
-
 
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
     Route::put('products/{productId}/images/{imageId}/primary', [ProductController::class, 'setPrimaryImage']);

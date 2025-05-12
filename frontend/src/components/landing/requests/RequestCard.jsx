@@ -12,7 +12,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
   const [isSuccess, setIsSuccess] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
-  
+
   const { user, loading: userLoading } = useFetchUser();
 
   const profit = request.price_restaurant - productPrice;
@@ -20,8 +20,11 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
 
   const handleAddToOrder = async () => {
     try {
-      // Verificar si el usuario no está logueado
-      if (!user || userLoading) {
+      // Espera a que cargue
+      if (userLoading) return;
+
+      // Ahora evalúa si está logueado
+      if (!user) {
         setShowLoginModal(true);
         return;
       }
@@ -44,7 +47,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
         throw new Error("Error al crear la comanda");
       }
 
-      setIsSuccess(true); 
+      setIsSuccess(true);
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -111,7 +114,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
           <button
             onClick={handleAddToOrder}
             disabled={isLoading || isSuccess}
-            className={`w-full bg-[#9A3E50] hover:bg-[#7e3241] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
+            className={`w-full bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] hover:from-[#7a2e3d] hover:to-[#5a1e2d] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
             {isLoading ? "Processant..." : isSuccess ? "Afegit!" : "Afegir"}
@@ -145,7 +148,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
               <button
                 onClick={handleAddToOrder}
                 disabled={isLoading || isSuccess}
-                className={`bg-[#9A3E50] hover:bg-[#7e3241] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ml-auto ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
+                className={`bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] hover:from-[#7a2e3d] hover:to-[#5a1e2d] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ml-auto ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
               >
                 <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
                 {isLoading ? "Processant..." : isSuccess ? "Afegit!" : "Afegir"}
@@ -154,7 +157,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
           </div>
         </div>
       </div>
-      
+
       {/* Modal de Inicio de Sesión */}
       <Modal
         isOpen={showLoginModal}

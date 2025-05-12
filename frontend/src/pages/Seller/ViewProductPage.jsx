@@ -1,260 +1,171 @@
-"use client"
+"use client";
 
-import { useFetchUser } from "@components/auth/FetchUser"
-import Header from "@components/HeaderComponent"
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
-import { CircleAlert, CornerDownLeft, Edit, Star, Trash } from "lucide-react"
-import { useEffect, useState } from "react"
-import ConfirmationDialog from "@components/ConfirmationDialogComponent"
-import { StatusBadge } from "@components/seller/StatusBadge"
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Edit, Trash, ArrowLeft } from "lucide-react"; // Importar el ícono de flecha
+import ProductGallery from "@/components/landing/requests/ProductGallery";
+import ProductInfo from "@/components/landing/requests/ProductInfo";
+import { DeleteProductModal } from "@/components/seller/modals/DeleteProductModal";
+import { useFetchUser } from "@components/auth/FetchUser";
 
 export default function ViewProductPage() {
-  const { id: productID } = useParams()
-  const { user, error } = useFetchUser()
-  const [wines, setWines] = useState({})
-  const [typeWines, setTypeWines] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [errorMessage, setErrorMessage] = useState("")
-  const location = useLocation()
-  const [showSuccessNotification, setShowSuccessNotification] = useState(false)
-  const [successMessage, setSuccessMessage] = useState("")
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false) // Estat per al diàleg
-  const navigate = useNavigate()
-  const apiUrl = import.meta.env.VITE_API_URL
+  const { id: productId } = useParams();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const { user, loading: userLoading } = useFetchUser();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const baseUrl = import.meta.env.VITE_URL_BASE;
 
   useEffect(() => {
-    if (location.state?.successMessage) {
-      setSuccessMessage(location.state.successMessage)
-      setShowSuccessNotification(true)
+    if (!user || userLoading) return;
+    fetchProduct();
+  }, [user, productId]);
 
-      setTimeout(() => {
-        setShowSuccessNotification(false)
-      }, 3000)
-    }
-    const fetchWines = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/v1/products/${productID}`)
-        if (!response.ok) {
-          throw new Error("No s'ha pogut connectar amb el servidor")
-        }
-        const data = await response.json()
-        if (!data) {
-          setErrorMessage("No s'ha trobat el producte.")
-        } else {
-          setWines(data)
-        }
-      } catch (error) {
-        setErrorMessage(error.message)
-      } finally {
-        setLoading(false)
+  const fetchProduct = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`);
+      if (!response.ok) {
+        throw new Error("No se pudo obtener la información del producto.");
       }
+      const data = await response.json();
+      setProduct(data.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    fetchWines()
-  }, [productID, location.state])
-
-  useEffect(() => {
-    if (!wines.wine_type_id) return
-
-    const fetchTypeWines = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/v1/winetypes/${wines.wine_type_id}`)
-        if (!response.ok) {
-          throw new Error("No s'ha pogut connectar amb el servidor")
-        }
-        const data = await response.json()
-        if (!data) {
-          setErrorMessage("No s'ha trobat el tipus de vi.")
-        } else {
-          setTypeWines(data)
-        }
-      } catch (error) {
-        setErrorMessage(error.message)
-      }
-    }
-
-    fetchTypeWines()
-  }, [wines.wine_type_id])
-
-  const { user: seller, loading: sellerLoading, error: sellerError } = useFetchUser(wines.user_id)
-
-  // Funció per obrir el diàleg de confirmació
-  const openDeleteDialog = () => {
-    setIsDeleteDialogOpen(true)
-  }
-
-  // Funció per tancar el diàleg de confirmació
-  const closeDeleteDialog = () => {
-    setIsDeleteDialogOpen(false)
-  }
-
-  // Funció per eliminar el producte
   const handleDeleteProduct = async () => {
     try {
-      const response = await fetch(`${apiUrl}/v1/products/${productID}`, {
+      const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`, {
         method: "DELETE",
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut eliminar el producte")
+        throw new Error("No se pudo eliminar el producto.");
       }
 
-      // Redirigir a la llista de productes amb un missatge d'èxit
       navigate(`/seller/products`, {
-        state: { successMessage: "Producte eliminat correctament ✅" },
-      })
-    } catch (error) {
-      setErrorMessage(error.message)
+        state: { successMessage: "Producto eliminado correctamente." },
+      });
+    } catch (err) {
+      console.error(err.message);
     } finally {
-      closeDeleteDialog() // Tancar el diàleg després de l'acció
+      setIsDeleteDialogOpen(false);
     }
-  }
+  };
 
-  const formatDates = (data) => {
-    const date = new Date(data)
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-  }
-
-  if (loading) {
+  if (isLoading || userLoading) {
     return (
-      <div className="fixed inset-0 bg-white bg-opacity-80 flex justify-center items-center z-50">
-        <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+      <div className="flex justify-center items-center h-64">
+        <div
+          className="w-12 h-12 rounded-full animate-spin"
+          style={{
+            borderWidth: "4px",
+            borderStyle: "solid",
+            borderColor: "#C27D7D",
+            borderTopColor: "#9A3E50",
+          }}
+        ></div>
       </div>
-    )
+    );
   }
 
-  const images = wines.image ? [{ original: wines.image }] : []
+  if (error) {
+    return (
+      <div
+        className="bg-white text-center p-8 rounded-xl shadow-sm"
+        style={{
+          borderLeft: "4px solid #9A3E50",
+          color: "#9A3E50",
+        }}
+      >
+        {error}
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-2xl text-gray-600">Producto no encontrado</p>
+      </div>
+    );
+  }
+
+  // Preparar imágenes del producto
+  const productImages = [];
+  if (product.image) {
+    productImages.push(product.image);
+  }
+  if (product.images && Array.isArray(product.images)) {
+    productImages.push(...product.images);
+  }
 
   return (
-    <>
-      {errorMessage ? (
-        <div className="text-center">{errorMessage}</div>
-      ) : (
-        <>
-          <Header />
-          <div className="flex flex-col mt-[60px] h-[calc(100vh-60px)]">
-            {/* Envoltem el contingut amb flex-col per a mòbil i en fila en desktop */}
-            <div className="flex flex-1 flex-col md:flex-row">
-              {/* El marge esquerre només s'aplica en desktop i afegim padding-bottom per a mòbil */}
-              <main className="flex-1 md:ml-[245px] p-6 pb-20 bg-gray-100 overflow-y-auto">
-                {showSuccessNotification && (
-                  <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
-                    {successMessage}
-                  </div>
-                )}
-                {/* Diàleg de confirmació */}
-                <ConfirmationDialog
-                  isOpen={isDeleteDialogOpen}
-                  onClose={closeDeleteDialog}
-                  onConfirm={handleDeleteProduct}
-                  title="Eliminar Producte"
-                  message="Estàs segur que vols eliminar aquest producte? Aquesta acció no es pot desfer."
-                />
-                <div className="bg-white rounded-t-lg shadow-sm p-4 flex justify-between items-center">
-                  <Link
-                    to={`/seller/products`}
-                    className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
-                  >
-                    <CornerDownLeft size={20} className="cursor-pointer" />
-                  </Link>
-                  <div className="flex gap-2 items-center">
-                    <Link
-                      to={`/seller/products/${productID}/edit`}
-                      className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
-                    >
-                      <Edit size={20} className="cursor-pointer" />
-                    </Link>
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <div className="flex flex-1">
+        {/* Sidebar margin */}
+        <div
+          className="flex-1 md:ml-64 p-8 overflow-y-auto pb-16"
+          style={{ backgroundColor: "#F9F9F9" }}
+        >
+          <main className="container mx-auto px-4 py-8">
+            {/* Back Arrow */}
+            <button
+              onClick={() => navigate(-1)} // Navegar hacia atrás
+              className="flex items-center text-gray-500 hover:text-gray-700 mb-6"
+            >
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Tornar
+            </button>
+
+            {/* SECTION 1: Product Details Section */}
+            <section className="mb-8 transition-all duration-500 ease-in-out">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                {/* Left Column - Images */}
+                <ProductGallery images={productImages} productName={product.name} baseUrl={baseUrl} />
+
+                {/* Right Column - Info */}
+                <div>
+                  <ProductInfo product={product} wineTypeName={product.wine_type} />
+
+                  {/* Botones de acción */}
+                  <div className="flex flex-wrap gap-4 mt-6">
                     <button
-                      onClick={openDeleteDialog}
-                      className="border-2 border-red-500 rounded-lg p-1 hover:bg-red-100 transition-colors duration-200"
+                      onClick={() => navigate(`/seller/products/${productId}/edit`)}
+                      className="bg-blue-500 text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-blue-600"
                     >
-                      <Trash size={20} className="text-red-500 cursor-pointer" />
+                      <Edit className="w-5 h-5" />
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => setIsDeleteDialogOpen(true)}
+                      className="bg-red-500 text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-red-600"
+                    >
+                      <Trash className="w-5 h-5" />
+                      Eliminar
                     </button>
                   </div>
                 </div>
-                <div className="flex flex-col md:flex-row bg-white rounded-b-lg shadow-lg p-8 w-full">
-                  <div className="flex flex-col gap-4 md:w-1/2">
-                    <div className="w-full flex justify-center items-center h-[400px]">
-                      <div className="w-full max-w-lg object-cover">
-                        <div className="w-full max-w-md mx-auto">
-                          {images.length > 0 ? (
-                            <div className="grid grid-cols-1 gap-4">
-                              {images.map((img, index) => (
-                                <div key={index} className="relative w-full h-[400px] flex justify-center items-center">
-                                  <img
-                                    src={img.original || "/placeholder.svg"}
-                                    alt={wines.name}
-                                    className="max-w-full max-h-full object-contain "
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <div className="w-full h-[300px] flex items-center justify-center bg-gray-200 text-gray-500 rounded-lg">
-                              No hi ha imatges disponibles
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="md:w-1/2 pl-0 md:pl-8 flex flex-col justify-between mt-4 md:mt-0">
-                    <div>
-                      <div className="flex flex-col justify-between text-gray-500 text-sm">
-                        <div className="flex justify-between gap-2 items-center">
-                          <span>Vi {typeWines.name}</span>
-                          {/* Mostrar el estado del vino */}
-                          {wines.status && <StatusBadge status={wines.status} />}
-                        </div>
-                      </div>
-                      <h2 className="text-black text-2xl font-semibold mt-2">
-                        {wines.name} {wines.year}
-                      </h2>
-                      <div className="flex gap-2 items-center mt-2">
-                        <span className="text-gray-500 text-sm">{wines.origin}</span>
-                      </div>
-                      <div className="flex gap-2 items-center mt-2">
-                        <span className="text-black text-xl font-bold">{wines.price_demanded}€</span>
-                      </div>
-                      <div className="flex gap-2 items-center mt-2">
-                        <span className={`text-sm ${wines.quantity <= 10 ? "text-red-500" : "text-gray-500"}`}>
-                          {wines.quantity} en stock
-                        </span>
-                        {wines.quantity <= 10 && (
-                          <span className="text-red-500 text-sm ml-2 flex items-center gap-1">
-                            <CircleAlert className="w-4 h-4" />
-                            ¡Queda poc stock!
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex gap-2 items-center mt-2">
-                        <div className="flex gap-1">
-                          <Star className="w-5 h-5 text-yellow-500" />
-                          <Star className="w-5 h-5 text-yellow-500" />
-                          <Star className="w-5 h-5 text-yellow-500" />
-                          <Star className="w-5 h-5 text-yellow-500" />
-                          <Star className="w-5 h-5 text-gray-300" />
-                        </div>
-                        <span className="text-black text-xs">(4)</span>
-                        <span className="text-black text-xs">1,3k Reseñas</span>
-                      </div>
-                      <div className="mt-4">
-                        <h3 className="text-black text-lg font-bold">Descripció</h3>
-                        <p className="text-gray-500 text-base leading-6 mt-1">{wines.description}</p>
-                      </div>
-                    </div>
-                    <div className="flex justify-end gap-2 items-center text-gray-500 mt-4">
-                      <span>Publicat: {formatDates(wines.created_at)}</span>
-                      <span>Actualitzat: {formatDates(wines.updated_at)}</span>
-                    </div>
-                  </div>
-                </div>
-              </main>
-            </div>
-          </div>
-        </>
-      )}
-    </>
-  )
-}
+              </div>
+            </section>
+          </main>
 
+          {/* Modal de eliminación */}
+          <DeleteProductModal
+            isOpen={isDeleteDialogOpen}
+            onClose={() => setIsDeleteDialogOpen(false)}
+            onConfirm={handleDeleteProduct}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

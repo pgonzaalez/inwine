@@ -5,10 +5,12 @@ import {
   CornerDownLeft,
   AlertCircle,
   X,
+  ShieldCheck,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { getCookie, setCookie } from "@/utils/utils";
-import RoleSelector from "@/components/RoleSelector" // Componente extraído para selección de rol
+import RoleSelector from "@/components/RoleSelector"
+import Modal from "@components/Modal";
 
 const LoginForm = () => {
   const apiUrl = import.meta.env.VITE_API_URL
@@ -27,9 +29,10 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   // Estados relacionados con la selección de rol
-  const [showRoleSelection, setShowRoleSelection] = useState(false)
-  const [availableRoles, setAvailableRoles] = useState([])
-  const [selectedRole, setSelectedRole] = useState(null)
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false)
+  // const [showRoleSelection, setShowRoleSelection] = useState(false)
+  // const [availableRoles, setAvailableRoles] = useState([])
+  // const [selectedRole, setSelectedRole] = useState(null)
   const [userData, setUserData] = useState(null)
 
   const navigate = useNavigate()
@@ -80,8 +83,7 @@ const LoginForm = () => {
 
       // Si tiene varios roles, mostrar selector. Si no, redirigir.
       if (result.user?.roles?.length > 1) {
-        setAvailableRoles(result.user.roles)
-        setShowRoleSelection(true)
+        setIsRoleModalOpen(true)
       } else {
         const role = result.user?.roles?.[0]
         redirectToDashboard(role)
@@ -97,7 +99,7 @@ const LoginForm = () => {
   const redirectToDashboard = async (role) => {
     try {
       // Solo necesitamos actualizar el rol si hay más de uno
-      if (availableRoles.length > 1) {
+      if (userData?.roles?.length > 1) {
         const response = await fetch(`${apiUrl}/update-active-role`, {
           method: "POST",
           headers: {
@@ -107,12 +109,12 @@ const LoginForm = () => {
           },
           body: JSON.stringify({ role }),
         });
-  
+
         if (!response.ok) {
           throw new Error("Error al actualizar el rol activo");
         }
       }
-  
+
       setTimeout(() => {
         switch (role) {
           case "seller":
@@ -140,107 +142,128 @@ const LoginForm = () => {
     setMessageType("")
   }
 
-  // Si debe seleccionar un rol, mostrar la vista de roles
-  if (showRoleSelection) {
-    return (
-      <RoleSelector
-        roles={availableRoles}
-        onSelect={(role) => {
-          setSelectedRole(role)
-          redirectToDashboard(role)
-        }}
-      />
-    )
-  }
+  // // Si debe seleccionar un rol, mostrar la vista de roles
+  // if (showRoleSelection) {
+  //   return (
+  //     <RoleSelector
+  //       roles={availableRoles}
+  //       onSelect={(role) => {
+  //         setSelectedRole(role)
+  //         redirectToDashboard(role)
+  //       }}
+  //     />
+  //   )
+  // }
 
   // Vista normal del login
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md">
-        {/* Botón para volver atrás */}
-        <button
-          onClick={() => navigate(-1)}
-          className="border-2 rounded-lg p-2 hover:bg-gray-200 transition-colors duration-200"
-        >
-          <CornerDownLeft size={20} className="cursor-pointer" />
-        </button>
-
-        {/* Título */}
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-gray-800">Inicia sessió</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Introdueix les teves credencials per accedir
-          </p>
-        </div>
-
-        {/* Mensaje de error o éxito */}
-        {message && (
-          <div
-            className={`mb-6 p-4 rounded-lg relative ${
-              messageType === "error"
-                ? "bg-red-50 border border-red-200 text-red-700"
-                : "bg-green-50 border border-green-200 text-green-700"
-            }`}
-          >
-            <div className="flex items-start">
-              {messageType === "error" && <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />}
-              <div className="flex-1">{message}</div>
-              <button onClick={dismissMessage} className="ml-2 text-gray-400 hover:text-gray-600">
-                <X size={18} />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Formulario */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Campo email */}
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <User className="text-gray-400" />
-            </div>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                messageType === "error" ? "border-red-300" : "border-gray-300"
-              }`}
-              placeholder="Correu electrònic"
-              required
-            />
-          </div>
-
-          {/* Campo contraseña */}
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <Lock className="text-gray-400" />
-            </div>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                messageType === "error" ? "border-red-300" : "border-gray-300"
-              }`}
-              placeholder="Contrasenya"
-              required
-            />
-          </div>
-
-          {/* Botón de enviar */}
+    <>
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md">
+          {/* Botón para volver atrás */}
           <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 bg-[#BE6674] text-white rounded-lg hover:bg-[#741C28] transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+            onClick={() => navigate(-1)}
+            className="border-2 rounded-lg p-2 hover:bg-gray-200 transition-colors duration-200"
           >
-            {isLoading ? "Carregant..." : "Enviar"}
+            <CornerDownLeft size={20} className="cursor-pointer" />
           </button>
-        </form>
+
+          {/* Título */}
+          <div className="mb-6 text-center">
+            <h1 className="text-3xl font-bold text-gray-800">Inicia sessió</h1>
+            <p className="mt-2 text-sm text-gray-600">
+              Introdueix les teves credencials per accedir
+            </p>
+          </div>
+
+          {/* Mensaje de error o éxito */}
+          {message && (
+            <div
+              className={`mb-6 p-4 rounded-lg relative ${messageType === "error"
+                  ? "bg-red-50 border border-red-200 text-red-700"
+                  : "bg-green-50 border border-green-200 text-green-700"
+                }`}
+            >
+              <div className="flex items-start">
+                {messageType === "error" && <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />}
+                <div className="flex-1">{message}</div>
+                <button onClick={dismissMessage} className="ml-2 text-gray-400 hover:text-gray-600">
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Formulario */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Campo email */}
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <User className="text-gray-400" />
+              </div>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${messageType === "error" ? "border-red-300" : "border-gray-300"
+                  }`}
+                placeholder="Correu electrònic"
+                required
+              />
+            </div>
+
+            {/* Campo contraseña */}
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <Lock className="text-gray-400" />
+              </div>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${messageType === "error" ? "border-red-300" : "border-gray-300"
+                  }`}
+                placeholder="Contrasenya"
+                required
+              />
+            </div>
+
+            {/* Botón de enviar */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 bg-[#BE6674] text-white rounded-lg hover:bg-[#741C28] transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Carregant..." : "Enviar"}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+
+      {/* Modal de Cambio de Rol */}
+      <Modal
+        isOpen={isRoleModalOpen}
+        onClose={() => setIsRoleModalOpen(false)}
+        title="Escollir rol"
+        description="Selecciona el rol amb el qual vols accedir:"
+        icon={<User className="h-8 w-8" />}
+        variant="primary"
+        size="md" 
+        footer={null}
+      >
+        <div className="px-2">
+          <RoleSelector
+            roles={userData?.roles || []}
+            onSelect={(role) => {
+              redirectToDashboard(role);
+              setIsRoleModalOpen(false);
+            }}
+          />
+        </div>
+      </Modal>
+    </>
   )
 }
 

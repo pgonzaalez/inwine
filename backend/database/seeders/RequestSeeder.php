@@ -74,7 +74,7 @@ class RequestSeeder extends Seeder
                 ],
                 [
                     'quantity' => 1,
-                    'price_restaurant' => 10,
+                    'price_restaurant' => 100,
                     'status' => 'pending'
                 ]
             );
