@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\OrderRequestedResource\Pages;
-use App\Filament\Resources\OrderRequestedResource\RelationManagers;
-use App\Models\OrderRequested;
+use App\Filament\Resources\RequestRestaurantResource\Pages;
+use App\Filament\Resources\RequestRestaurantResource\RelationManagers;
+use App\Models\RequestRestaurant;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,33 +13,40 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class OrderRequestedResource extends Resource
+class RequestRestaurantResource extends Resource
 {
-    protected static ?string $model = OrderRequested::class;
+    protected static ?string $model = RequestRestaurant::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = "Comandes";
+    protected static ?string $navigationGroup = "Gestió de productes";
 
-    protected static ?string $modelLabel = 'Ordres Pagades';
+    protected static ?string $modelLabel = 'Peticions de restaurants';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                Forms\Components\Select::make('user_id')
+                    ->label('Usuari')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->required(),
+                Forms\Components\Select::make('product_id')
+                    ->label('Producte')
+                    ->relationship('product', 'name')
+                    ->searchable()
+                    ->required(),
+                Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('request_restaurant_id')
+                Forms\Components\TextInput::make('price_restaurant')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('status')
                     ->required(),
-                Forms\Components\TextInput::make('total_price')
-                    ->required()
-                    ->numeric(),
             ]);
     }
 
@@ -47,18 +54,21 @@ class OrderRequestedResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Usuari')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('product.name')
+                    ->label('Producte')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('request_restaurant_id')
+                Tables\Columns\TextColumn::make('price_restaurant')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('total_price')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -91,9 +101,9 @@ class OrderRequestedResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListOrderRequesteds::route('/'),
-            'create' => Pages\CreateOrderRequested::route('/create'),
-            'edit' => Pages\EditOrderRequested::route('/{record}/edit'),
+            'index' => Pages\ListRequestRestaurants::route('/'),
+            'create' => Pages\CreateRequestRestaurant::route('/create'),
+            'edit' => Pages\EditRequestRestaurant::route('/{record}/edit'),
         ];
     }
 }

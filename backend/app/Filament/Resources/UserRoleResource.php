@@ -17,21 +17,23 @@ class UserRoleResource extends Resource
 {
     protected static ?string $model = UserRole::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static ?string $modelLabel = 'Usuaris + Rols';
+    protected static ?string $modelLabel = 'Rols';
 
     protected static ?string $navigationGroup = "Gestió d'usuaris";
 
-    protected static ?int $navigationSort = 60;
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('user_id')
+                    ->label('Usuari')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->required(),
                 Forms\Components\TextInput::make('role')
                     ->required(),
                 Forms\Components\Toggle::make('is_active')
@@ -43,9 +45,10 @@ class UserRoleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Usuari')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('role'),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),

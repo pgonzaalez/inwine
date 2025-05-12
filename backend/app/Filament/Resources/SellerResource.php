@@ -17,7 +17,7 @@ class SellerResource extends Resource
 {
     protected static ?string $model = Seller::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     
     protected static ?string $modelLabel = 'Cellers';
 
@@ -29,9 +29,11 @@ class SellerResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('user_id')
+                    ->label('Usuari')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->required(),
                 Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
@@ -55,13 +57,13 @@ class SellerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Usuari')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone_contact')
-                    ->numeric()
+                    Tables\Columns\TextColumn::make('phone_contact')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name_contact')
                     ->searchable(),

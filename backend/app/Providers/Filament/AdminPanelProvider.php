@@ -27,6 +27,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName("Panell d'administració d'Inwine")
+            ->favicon(asset('images/logo.webp'))
             ->colors([
                 'primary' => Color::Red,
                 // 'gray' => Color::Pink,
