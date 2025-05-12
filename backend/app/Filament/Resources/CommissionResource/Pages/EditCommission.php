@@ -12,6 +12,7 @@ class EditCommission extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+        ];
     }
 }

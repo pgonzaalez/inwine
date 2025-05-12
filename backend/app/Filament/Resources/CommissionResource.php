@@ -17,12 +17,21 @@ class CommissionResource extends Resource
 {
     protected static ?string $model = Commission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('percentage')
+                    ->required()
+                    ->numeric()
+                    ->suffix('%')
+                    ->minValue(0)
+                    ->maxValue(100),
                 Forms\Components\TextInput::make('percentage_to_seller')
                     ->numeric()
                     ->minValue(0)
@@ -48,13 +57,9 @@ class CommissionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('percentage_to_seller')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('percentage_to_restaurant')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('percentage_to_investor')
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('percentage')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
