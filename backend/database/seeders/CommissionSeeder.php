@@ -13,10 +13,15 @@ class CommissionSeeder extends Seeder
      */
     public function run(): void
     {
-        Commission::create([
-            'percentage_to_seller' => 0.00,
-            'percentage_to_restaurant' => 0.00,
-            'percentage_to_investor' => 0.00,
-        ]);
+        $commissions = [
+            ["name" => "Comissió pel producte", "percentage" => 5.00],
+            ["name" => "Comissió pel restaurant", "percentage" => 5.00],
+            ["name" => "Comissió pel transportista", "percentage" => 5.00],
+            ["name" => "Comissió per l'inversor", "percentage" => 5.00],
+        ];
+
+        foreach ($commissions as $commission) {
+            Commission::create($commission);
+        }
     }
 }

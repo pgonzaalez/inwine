@@ -13,15 +13,8 @@ return new class extends Migration
     {
         Schema::create('commissions', function (Blueprint $table) {
             $table->id();
-            $table->decimal('percentage_to_seller', 5, 2); 
-            $table->decimal('percentage_to_restaurant', 5, 2);
-            $table->decimal('percentage_to_investor', 5, 2);
-
-            // // Ejemplo
-            // $table->string('slug');
-            // $table->enum('who', ['seller', 'restaurant', 'investor'])->default('seller');
-            // $table->decimal('percentage', 5, 2)->default(0.00);
-
+            $table->string('name');
+            $table->decimal('percentage', 5, 2); 
             $table->timestamps();
         });
     }

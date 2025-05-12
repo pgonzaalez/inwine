@@ -17,11 +17,19 @@ class Product extends Model
         "wine_type_id",
         "description",
         "price_demanded",
+        "price_demanded_with_commission",
         "quantity",
         "image",
         'status',
         "user_id",
     ];
+
+    protected static function booted()
+    {
+        static::saving(function ($product) {
+            $product->price_demanded_with_commission = $product->calculatePriceWithCommission();
+        });
+    }
 
     public function wineType()
     {
@@ -46,5 +54,14 @@ class Product extends Model
     public function requestsRestaurant()
     {
         return $this->hasMany(RequestRestaurant::class);
+    }
+
+    public function calculatePriceWithCommission(): float
+    {
+        $commission = Commission::where('name', 'Comissió pel producte')->first();
+
+        if (!$commission) return $this->price_demanded;
+
+        return round($this->price_demanded * (1 + $commission->percentage / 100), 2);
     }
 }
