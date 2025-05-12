@@ -34,6 +34,7 @@ class UserFactory extends Factory
             'password' => Hash::make('1234'),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
+            'created_at' => $this->faker->dateTimeBetween('2025-01-01 00:00:00', '2025-12-31 23:59:59'),
         ];
     }
 
