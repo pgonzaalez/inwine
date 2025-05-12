@@ -18,7 +18,7 @@ export default function OrderSummaryPage() {
   const redirectStatus = searchParams.get("redirect_status")
 
   const isPaymentSuccessful = paymentIntent && redirectStatus === "succeeded"
-º
+
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "/placeholder.svg?height=80&width=80"
     if (imagePath.startsWith("http")) return imagePath
@@ -31,7 +31,16 @@ export default function OrderSummaryPage() {
     if (parts.length === 2) return parts.pop().split(";").shift()
     return null
   }
-º
+
+  const totalPrice = localStorage.getItem("totalPrice")
+  if (!totalPrice) {
+    console.error("No total price found in localStorage")
+    setError("No total price found")
+    setLoading(false)
+    return
+  }
+
+
   const formatDate = (dateString) => {
     const date = new Date(dateString)
     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
@@ -108,7 +117,7 @@ export default function OrderSummaryPage() {
             items: items.map((item) => ({
               id: item.product.id || Math.random().toString(36).substr(2, 9),
               name: item.product.name,
-              price: Number.parseFloat(item.price_restaurant),
+              price: totalPrice,
               quantity: item.quantity,
               image: item.product.image,
               category: item.product.origin,
@@ -237,7 +246,7 @@ export default function OrderSummaryPage() {
                             )}
                             <div className="flex justify-between mt-1">
                               <p className="text-xs text-gray-500">x{item.quantity}</p>
-                              <p className="text-sm">{item.price.toFixed(2)} €</p>
+                              <p className="text-sm">{totalPrice} €</p>
                             </div>
                           </div>
                         </div>

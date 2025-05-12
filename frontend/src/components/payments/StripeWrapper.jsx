@@ -25,6 +25,13 @@ export default function StripeWrapper() {
     }
 
     let orderIds;
+    const totalPrice = localStorage.getItem("totalPrice") || 0;
+    if (!totalPrice) {
+      console.error("No total price found in localStorage");
+      setError("No total price found");
+      setLoading(false);
+      return;
+    }
     try {
       orderIds = JSON.parse(orderIdsString);
       if (!Array.isArray(orderIds)) {
@@ -51,7 +58,7 @@ export default function StripeWrapper() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ orderIds }),
+      body: JSON.stringify({ orderIds,totalPrice }),
     })
       .then(async (res) => {
         if (!res.ok) {

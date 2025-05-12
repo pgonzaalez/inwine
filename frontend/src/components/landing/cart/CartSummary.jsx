@@ -25,7 +25,9 @@ export function CartSummary({
       }
       else {
         localStorage.setItem("currentOrderIds", JSON.stringify([]));
+        
       }
+      localStorage.setItem("totalPrice", total.toFixed(2));
       navigate("/checkout");
     }
   };

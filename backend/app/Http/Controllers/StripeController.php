@@ -24,9 +24,11 @@ class StripeController extends Controller
         try {
             $request->validate([
                 'orderIds' => 'required|array',
+                'totalPrice' => 'required|numeric',
             ]);
 
             $orderIds = $request->orderIds;
+            $totalPrice = $request->totalPrice;
             
             $totalAmount = 0;
             
@@ -51,7 +53,7 @@ class StripeController extends Controller
                     ->where('id', $requestRestaurant->product_id)
                     ->first();
                 
-                $orderPrice = $requestRestaurant->price_restaurant;
+                $orderPrice = $totalPrice;
                 $quantity = $requestRestaurant->quantity;
                 $orderTotal = $orderPrice * $quantity;
                 $totalAmount += $orderTotal;
