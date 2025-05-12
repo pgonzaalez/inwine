@@ -19,6 +19,8 @@ class CommissionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
 
+        protected static ?string $modelLabel = 'Comissions';
+
     public static function form(Form $form): Form
     {
         return $form
