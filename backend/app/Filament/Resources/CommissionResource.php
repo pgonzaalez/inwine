@@ -34,24 +34,6 @@ class CommissionResource extends Resource
                     ->suffix('%')
                     ->minValue(0)
                     ->maxValue(100),
-                Forms\Components\TextInput::make('percentage_to_seller')
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(100)
-                    ->suffix('%')
-                    ->required(),
-                Forms\Components\TextInput::make('percentage_to_restaurant')
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(100)
-                    ->suffix('%')
-                    ->required(),
-                Forms\Components\TextInput::make('percentage_to_investor')
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(100)
-                    ->suffix('%')
-                    ->required(),
             ]);
     }
 
