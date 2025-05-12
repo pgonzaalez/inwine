@@ -13,6 +13,7 @@ class Commission extends Model
         'percentage_to_seller',
         'percentage_to_restaurant',
         'percentage_to_investor',
+        'percentage_to_delivery',
     ];
     protected $casts = [
         'percentage_to_seller' => 'decimal:2',

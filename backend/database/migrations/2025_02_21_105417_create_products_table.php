@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('wine_type_id');
             $table->string('description');
             $table->float('price_demanded');
+            $table->float('price_demanded_with_commission');
             $table->integer('quantity');
             $table->string('image')->nullable();
             $table->enum('status', ['in_stock','requested','in_transit', 'sold'])->default('in_stock');
