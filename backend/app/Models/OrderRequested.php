@@ -17,7 +17,7 @@ class OrderRequested extends Model
         'total_price'
     ];
 
-    public function investor()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
