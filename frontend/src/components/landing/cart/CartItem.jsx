@@ -7,7 +7,7 @@ export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageU
     <div className="py-5 px-4 border-b last:border-b-0 hover:bg-gray-50/30 transition-colors relative">
       {/* Checkbox - mobile (top left) */}
       <div className="md:hidden absolute top-2 left-2 z-10">
-        <label className="relative flex items-center justify-center cursor-pointer">
+        {/* <label className="relative flex items-center justify-center cursor-pointer">
           <input type="checkbox" checked={isSelected} onChange={onToggleSelect} className="peer sr-only" />
           <div className="w-5 h-5 border border-gray-300 rounded peer-checked:bg-[#9A3E50] peer-checked:border-[#9A3E50] transition-colors"></div>
           <svg
@@ -21,7 +21,7 @@ export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageU
           >
             <polyline points="6 12 10 16 18 8"></polyline>
           </svg>
-        </label>
+        </label> */}
       </div>
 
       {/* Eliminar - mobile (top right) */}
@@ -35,8 +35,8 @@ export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageU
       <div className="flex items-start gap-4">
         {/* Checkbox - desktop */}
         <div className="hidden md:block">
-          <label className="relative flex items-center justify-center cursor-pointer">
-            <input type="checkbox" checked={isSelected} onChange={onToggleSelect} className="peer sr-only" />
+          {/* <label className="relative flex items-center justify-center cursor-pointer">
+            {/* <input type="checkbox" checked={isSelected} onChange={onToggleSelect} className="peer sr-only" /> 
             <div className="w-5 h-5 border border-gray-300 rounded peer-checked:bg-[#9A3E50] peer-checked:border-[#9A3E50] transition-colors"></div>
             <svg
               className="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100"
@@ -49,7 +49,7 @@ export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageU
             >
               <polyline points="6 12 10 16 18 8"></polyline>
             </svg>
-          </label>
+          </label> */}
         </div>
 
         {/* Product image */}

@@ -17,26 +17,20 @@ export default function CheckoutForm() {
       return
     }
 
-    // Get the orderId from localStorage to pass it as metadata
     const orderId = localStorage.getItem("currentOrderId")
 
-    // Change the return_url to your summary page
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Redirect to the summary page instead of the current page
         return_url: `${window.location.origin}/order-summary`,
         payment_method_data: {
           metadata: {
-            order_id: orderId, // Pass the orderId as metadata
+            order_id: orderId,
           },
         },
       },
     })
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // the return_url you specified above.
     if (error) {
       setMessage(error.message || "An unexpected error occurred.")
     }
@@ -45,7 +39,7 @@ export default function CheckoutForm() {
   }
 
   return (
-    <div className="flex justify-center items-center bg-gray-50 px-4 py-8 rounded-lg">
+    <div className="flex justify-center items-center  px-4 py-20 rounded-lg">
       <form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md">
         <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Pagar comanda</h2>
 
