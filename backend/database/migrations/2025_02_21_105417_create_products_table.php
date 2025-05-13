@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('description');
             $table->float('price_demanded');
             $table->float('price_demanded_with_commission');
+            $table->float('commission_platform')->default(0);
             $table->integer('quantity');
             $table->string('image')->nullable();
             $table->enum('status', ['in_stock','requested','in_transit', 'sold'])->default('in_stock');

@@ -18,6 +18,7 @@ class Product extends Model
         "description",
         "price_demanded",
         "price_demanded_with_commission",
+        "commission_platform",
         "quantity",
         "image",
         'status',
@@ -28,6 +29,10 @@ class Product extends Model
     {
         static::saving(function ($product) {
             $product->price_demanded_with_commission = $product->calculatePriceWithCommission();
+            $product->commission_platform = round(
+                $product->price_demanded_with_commission - $product->price_demanded,
+                2
+            );
         });
     }
 

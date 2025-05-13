@@ -144,8 +144,8 @@ class UserSeeder extends Seeder
         createProfiles($admin, 'investor');
 
         // // Crear usuarios aleatorios
-        Investor::factory()->count(20)->create();
-        Seller::factory()->count(20)->create();
-        Restaurant::factory()->count(20)->create();
+        Investor::factory()->count(5)->create();
+        Seller::factory()->count(5)->create();
+        Restaurant::factory()->count(5)->create();
     }
 }
