@@ -31,7 +31,7 @@ export const WineTypeDistribution = ({ requests = [] }) => {
           return (
             <div key={type} className="flex items-center">
               <div
-                className="w-4 h-4 rounded-full mr-2 flex-shrink-0"
+                className="w-4 h-4 rounded-full mr-2 flex-shrink-0 border-2 border-gray-300"
                 style={{
                   backgroundColor: getWineTypeColor(type.toLowerCase()),
                 }}
@@ -43,7 +43,7 @@ export const WineTypeDistribution = ({ requests = [] }) => {
                     {count} ({percentage}%)
                   </span>
                 </div>
-                <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-gray-300 rounded-full border-2 border-gray-300 h-3 overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
