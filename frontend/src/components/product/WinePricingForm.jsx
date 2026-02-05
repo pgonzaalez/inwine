@@ -29,10 +29,13 @@ export const WinePricingForm = ({
               id="price_demanded"
               value={formData.price_demanded}
               onChange={onChange}
+              max="999999.99"
+              step="0.01"
+              inputMode="decimal"
               className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("price_demanded") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
-              step="0.01"
+              
             />
             <label
               htmlFor="price_demanded"
@@ -91,7 +94,7 @@ export const WinePricingForm = ({
 
               <div className="flex justify-between items-center pb-2 border-b border-[#E8D5D5]">
                 <span className="text-sm text-gray-600">Preu:</span>
-                <span className="font-bold text-[#8C2E2E] text-lg">
+                <span className="font-bold text-[#8C2E2E] text-lg max-w-[120px] truncate text-right" >
                   {formData.price_demanded ? `${formData.price_demanded}€` : "-"}
                 </span>
               </div>
