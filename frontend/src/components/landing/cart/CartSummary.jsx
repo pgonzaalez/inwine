@@ -100,7 +100,7 @@ export function CartSummary({
 
           <div className="mt-4 text-center">
             <a
-              href="/"
+              href="/productes"
               className="text-[#9A3E50] hover:text-[#7e3241] text-sm font-medium inline-flex items-center"
             >
               <ChevronRight className="h-4 w-4 mr-1 transform rotate-180" />
