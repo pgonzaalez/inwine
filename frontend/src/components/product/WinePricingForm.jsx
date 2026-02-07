@@ -29,7 +29,7 @@ export const WinePricingForm = ({
               id="price_demanded"
               value={formData.price_demanded}
               onChange={onChange}
-              max="999999.99"
+              max="99999.99"
               step="0.01"
               inputMode="decimal"
               className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("price_demanded") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
@@ -57,6 +57,7 @@ export const WinePricingForm = ({
               id="quantity"
               value={formData.quantity}
               onChange={onChange}
+              max="1000"
               className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("quantity") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
@@ -101,7 +102,8 @@ export const WinePricingForm = ({
 
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Quantitat:</span>
-                <span className="font-bold text-[#8C2E2E]">{formData.quantity || "-"}</span>
+                <span className="font-bold text-[#8C2E2E]  text-lg max-w-[120px] truncate text-right">
+                  {formData.quantity || "-"}</span>
               </div>
             </div>
 
