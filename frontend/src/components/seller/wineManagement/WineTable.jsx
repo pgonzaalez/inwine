@@ -160,7 +160,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
             <div className="md:hidden grid grid-cols-[120px_1fr] gap-4 p-4">
               <div className="relative">
                 <div className="w-full h-28 overflow-hidden rounded-lg">
-                  <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-cover" />
+                  <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-contain" />
                 </div>
               </div>
 
@@ -244,7 +244,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
             {/* Tablet/Desktop Layout */}
             <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 items-center px-6 py-4">
               <div className="w-32 h-32 overflow-hidden rounded-lg">
-                <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-cover" />
+                <img src={`${baseUrl}${wine.image}`} alt={wine.name} className="w-full h-full object-contain" />
               </div>
 
               <div className="flex flex-col">
