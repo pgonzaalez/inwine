@@ -462,46 +462,61 @@ export default function Header() {
 
                 {/* Perfil en menú móvil */}
                 <div className="mt-8 space-y-6">
-                  <div className="flex items-center space-x-3 py-2">
-                    <img
-                      src={user.avatar || "/placeholder.svg"}
-                      alt="Usuario"
-                      className="h-10 w-10 rounded-full object-cover"
-                    />
-                    <div>
-                      <div className="text-sm font-medium">Mi cuenta</div>
-                      <Link
-                        onClick={handleProfile}
-                        className="text-xs text-gray-500"
-                      >
-                        Ver perfil
-                      </Link>
+                  {user.user ? (
+                    <div className="flex items-center space-x-3 py-2">
+                      <img
+                        src={user.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
+                        alt="Usuario"
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="text-sm font-medium">El meu compte</div>
+                        <button
+                          onClick={handleProfile}
+                          className="text-xs text-gray-500"
+                        >
+                          Veure perfil
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center space-x-3 py-2 text-gray-700 hover:text-black"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+                        <User className="h-5 w-5" />
+                      </div>
+                      <span className="text-base font-medium">Iniciar sessió</span>
+                    </Link>
+                  )}
                   <div className="h-px w-full bg-gray-100" />
                 </div>
 
-                <div className="mt-auto pt-10 space-y-4">
-                  <Link
-                    to="/settings"
-                    className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-black"
-                  >
-                    <span className="flex items-center">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Configuració
-                    </span>
-                    <ChevronDown className="h-4 w-4 opacity-50" />
-                  </Link>
-                  <button
-                    onClick={() => setIsLogoutOpen(true)}
-                    className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-red-600"
-                  >
-                    <span className="flex items-center">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Tancar sessió
-                    </span>
-                  </button>
-                </div>
+                {user.user && (
+                  <div className="mt-auto pt-10 space-y-4">
+                    <Link
+                      to="/settings"
+                      className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-black"
+                    >
+                      <span className="flex items-center">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Configuració
+                      </span>
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Link>
+                    <button
+                      onClick={() => setIsLogoutOpen(true)}
+                      className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-red-600"
+                    >
+                      <span className="flex items-center">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Tancar sessió
+                      </span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </Transition.Child>
