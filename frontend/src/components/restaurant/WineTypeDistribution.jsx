@@ -5,11 +5,11 @@ export const WineTypeDistribution = ({ requests = [] }) => {
   const wines = requests.map((request) => request.product)
 
   // Count wines by type
-  const wineTypes = ["Negre", "Blanc", "Rossat", "Espumós", "Dolç", "Altres"]
+  const wineTypes = ["Negre", "Blanc", "Rossat", "Espumós", "Dolç"]
 
   const typeCount = wineTypes.reduce((acc, type) => {
     acc[type] = wines.filter(
-      (wine) => wine.wine_type?.toLowerCase() === type.toLowerCase() || (!wine.wine_type && type === "Altres"),
+      (wine) => wine.wine_type?.toLowerCase() === type.toLowerCase(),
     ).length
     return acc
   }, {})

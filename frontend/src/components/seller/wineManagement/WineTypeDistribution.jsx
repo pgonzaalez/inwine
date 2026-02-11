@@ -17,7 +17,7 @@ const primaryColors = {
       case "espumós":
         return "#F2EFD3" // Color champán para espumoso
       case "dolç":
-        return "#E8D0B5" // Color ámbar para vino dulce
+        return "#EBBF99" // Color ámbar para vino dulce
       default:
         return `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
           primaryColors.dark.slice(3, 5),
@@ -28,11 +28,11 @@ const primaryColors = {
   
   export const WineTypeDistribution = ({ wines = [] }) => {
     // Contar vinos por tipo
-    const wineTypes = ["Negre", "Blanc", "Rossat", "Espumós", "Dolç", "Altres"]
+    const wineTypes = ["Negre", "Blanc", "Rossat", "Espumós", "Dolç"]
   
     const typeCount = wineTypes.reduce((acc, type) => {
       acc[type] = wines.filter(
-        (wine) => wine.wine_type?.toLowerCase() === type.toLowerCase() || (!wine.wine_type && type === "Altres"),
+        (wine) => wine.wine_type?.toLowerCase() === type.toLowerCase(),
       ).length
       return acc
     }, {})
