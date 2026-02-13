@@ -1,4 +1,4 @@
-import { Heart, Store } from "lucide-react";
+import { Heart, Store, Bell } from "lucide-react";
 
 export default function ProductCard({
   producto,
@@ -41,6 +41,14 @@ export default function ProductCard({
   return (
     <div className="flex flex-col bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300" style={{ width: "300px" }}>
    <div className="relative h-64 sm:h-72">
+        {producto.requests_restaurant_count > 0 && (
+          <div className="absolute top-3 left-3 z-10">
+            <div className="bg-white/90 backdrop-blur-sm text-[#9A3E50] text-[10px] font-bold uppercase tracking-wider py-1.5 px-3 flex items-center gap-1.5 rounded-full shadow-sm border border-[#9A3E50]/10">
+              <Bell className="w-3.5 h-3.5 fill-[#9A3E50]" />
+              <span>{producto.requests_restaurant_count} peticions</span>
+            </div>
+          </div>
+        )}
         <img
           src={producto.image ? `${baseUrl}${producto.image}` : "/placeholder.svg"}
           alt={producto.name || "Vino"}
@@ -101,11 +109,7 @@ export default function ProductCard({
           <p className="text-gray-500 text-sm flex items-center gap-1">
             <Store className="w-3 h-3 text-[#9A3E50]" /> {producto.user_id || "N/A"}
           </p>
-          {producto.requests_restaurant_count > 0 && (
-            <div className="inline-flex items-center bg-black text-white text-xs font-medium py-1 pl-3 pr-5 [clip-path:polygon(0_0,calc(100%_-_8px)_0,100%_50%,calc(100%_-_8px)_100%,0_100%)]">
-              {producto.requests_restaurant_count} peticions
-            </div>
-          )}
+          
         </div>
       </div>
     </div>
