@@ -19,6 +19,57 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
+    public function clear(Request $request)
+    {
+        $userId = auth()->id();
+
+        $orderIds = $request->selectedOrderIds ?? [];
+
+        Order::where('user_id', $userId)
+            ->whereIn('id', $orderIds)
+            ->delete();
+
+        return response()->json(['message' => 'Cart cleared']);
+    }
+
+
+    public function myOrders()
+    {
+        $userId = auth()->id();
+
+        $orders = Order::where('user_id', $userId)
+            ->with([
+                'requestRestaurant.product.seller',
+                'requestRestaurant.user',
+            ])
+            ->get()
+            ->map(function ($order) {
+                $product = $order->requestRestaurant->product;
+                $seller = $product->seller;
+                $restaurantUser = $order->requestRestaurant->user;
+
+                return [
+                    'order_id' => $order->id,
+                    'user_id' => $order->user_id,
+                    'request_restaurant_id' => $order->request_restaurant_id,
+                    'price_restaurant' => $order->requestRestaurant->price_restaurant,
+                    'quantity' => $order->requestRestaurant->quantity,
+                    'product' => [
+                        'name' => $product->name,
+                        'origin' => $product->origin,
+                        'year' => $product->year,
+                        'image' => $product->image,
+                        'price_demanded' => $product->price_demanded,
+                    ],
+                    'seller_name' => $seller->name ?? null,
+                    'restaurant_name' => $restaurantUser->name ?? null,
+                ];
+            });
+
+        return response()->json($orders);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */

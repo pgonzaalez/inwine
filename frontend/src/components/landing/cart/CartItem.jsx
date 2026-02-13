@@ -57,7 +57,7 @@ export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageU
           <img
             src={getImageUrl(item.product?.image) || "/placeholder.svg?height=80&width=80"}
             alt={item.product?.name || "Product image"}
-            className="w-full h-auto object-contain"
+            className="w-full h-full object-contain"
           />
         </div>
 
