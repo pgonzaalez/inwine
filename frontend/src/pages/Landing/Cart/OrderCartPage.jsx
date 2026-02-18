@@ -19,44 +19,44 @@ export default function ShoppingCartPage() {
 
   const { user, loading: userLoading, error: userError } = useFetchUser()
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      if (!user) return
+useEffect(() => {
+  const fetchCartItems = async () => {
+    if (!user) {
+      setLoading(false)  
+      return
+    }
 
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
-        const response = await fetch(`${apiUrl}/v1/${user.id}/orders`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getCookie("token")}`,
-          },
-        })
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      const response = await fetch(`${apiUrl}/v1/orders/my`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      })
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch cart items")
-        }
-
-        const data = await response.json()
-        setCartItems(data)
-
-        // Initialize all items as selected
-        const initialSelected = {}
-        data.forEach((item) => {
-          initialSelected[item.order_id] = true
-        })
-        setSelectedItems(initialSelected)
-      } catch (error) {
-        // console.error("Error fetching cart items:", error)
-      } finally {
-        setLoading(false)
+      if (!response.ok) {
+        throw new Error("Failed to fetch cart items")
       }
-    }
 
-    if (user) {
-      fetchCartItems()
+      const data = await response.json()
+      setCartItems(data)
+
+      const initialSelected = {}
+      data.forEach((item) => {
+        initialSelected[item.order_id] = true
+      })
+      setSelectedItems(initialSelected)
+    } catch (error) {
+      console.error("Error fetching cart:", error)
+    } finally {
+      setLoading(false)
     }
-  }, [user])
+  }
+
+  fetchCartItems()
+}, [user])
 
   const toggleSelectItem = (id) => {
     setSelectedItems((prev) => ({
@@ -70,7 +70,7 @@ export default function ShoppingCartPage() {
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
-      await fetch(`${apiUrl}/v1/${user.id}/orders/clear`, {
+        await fetch(`${apiUrl}/v1/orders/clear`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -78,10 +78,12 @@ export default function ShoppingCartPage() {
         },
         body: JSON.stringify({
           selectedOrderIds: cartItems
-            .filter((item) => selectedItems[item.order_id]) // Solo seleccionados
+            .filter((item) => selectedItems[item.order_id])
             .map((item) => item.order_id),
         }),
       })
+
+      
 
       setCartItems(cartItems.filter((item) => !selectedItems[item.order_id])) // Mantener no seleccionados
       setSelectedItems({})

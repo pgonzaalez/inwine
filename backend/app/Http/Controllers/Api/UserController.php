@@ -28,12 +28,22 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
-    {
-        $user = $request->user()->load('roles');
+public function show(Request $request)
+{
+    if (!$request->user()) {
+        return response()->json(['message' => 'Unauthenticated'], 401);
+    }
 
-        // Obtener los roles activos (puede ser uno o varios)
-        $activeRoles = $user->roles->where('is_active', 1)->pluck('role');
+    $user = $request->user()->load('roles');
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $user->load('roles');
+
+        $activeRoles = $user->roles
+            ->where('is_active', 1)
+            ->pluck('role');
 
         $responseData = [
             'id' => $user->id,
@@ -61,6 +71,7 @@ class UserController extends Controller
 
         return response()->json($responseData);
     }
+
 
     /**
      * Update the specified resource in storage.
