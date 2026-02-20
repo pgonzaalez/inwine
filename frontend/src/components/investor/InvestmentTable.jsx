@@ -45,7 +45,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
 
   // Función para navegar a los detalles de la inversión
   const handleViewDetails = (investmentId) => {
-    navigate(`/inversor/historic/${investmentId}`)
+    navigate(`/investor/historic/${investmentId}`)
   }
 
   if (investments.length === 0) {

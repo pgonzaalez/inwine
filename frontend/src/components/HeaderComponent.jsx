@@ -87,7 +87,7 @@ export default function Header() {
     } else if (role === "restaurant") {
       navigate("/restaurant/dashboard");
     } else if (role === "investor") {
-      navigate("/inversor/dashboard");
+      navigate("/investor/dashboard");
     } else {
       navigate("/login");
     }

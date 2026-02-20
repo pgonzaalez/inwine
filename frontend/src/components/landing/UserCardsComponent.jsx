@@ -33,7 +33,7 @@ export default function UserCards() {
     },
   }
   
-  const redirectToDashboard = async (role) => {
+  const handleRoleChange = async (role) => {
     try {
       const response = await fetch(`${apiUrl}/update-active-role`, {
         method: "POST",
@@ -57,7 +57,7 @@ export default function UserCards() {
           case "restaurant":
             navigate("/restaurant/dashboard");
             break;
-          case "inversor":
+          case "investor":
             navigate("/investor/dashboard");
             break;
           default:
@@ -68,11 +68,6 @@ export default function UserCards() {
       // console.error("Error updating active role:", error);
       // Puedes manejar el error como prefieras
     }
-  };
-  
-  const handleRoleChange = (role) => {
-    console.log("maneel " + role);
-    redirectToDashboard(role); // Asegúrate de tener esta función definida
   };
 
   // Card data
@@ -95,8 +90,8 @@ export default function UserCards() {
       imageAlt: "Inversor",
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
-      linkUrl: "/register/inversor",
-      role: "inversor",
+      linkUrl: "/register/investor",
+      role: "investor",
       features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
     },
     {
