@@ -28,7 +28,7 @@ useEffect(() => {
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
-      const response = await fetch(`${apiUrl}/v1/orders/my`, {
+      const response = await fetch(`${apiUrl}/v1/${user.id}/orders`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +70,7 @@ useEffect(() => {
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
-        await fetch(`${apiUrl}/v1/orders/clear`, {
+        await fetch(`${apiUrl}/v1/${user.id}/orders/clear`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
