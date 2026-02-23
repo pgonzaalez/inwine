@@ -94,7 +94,7 @@ class RestaurantController extends Controller
                 'address' => $request->address,
                 'phone_contact' => $request->phone_contact,
                 'name_contact' => $request->name_contact,
-                'bank_account' => $request->bank_account,
+                'credit_card' => $request->credit_card,
             ];
 
             Log::info('Creando o actualizando datos del vendedor', ['restaurantData' => $restaurantData]);
