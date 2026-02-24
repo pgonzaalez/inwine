@@ -211,12 +211,12 @@ export default function Sidebar() {
       {
         icon: Home,
         label: "Inici",
-        path: `/inversor/dashboard`,
+        path: `/investor/dashboard`,
       }, 
       {
         icon: FileQuestion,
         label: "Històric",
-        path: "/inversor/historic",
+        path: "/investor/historic",
       },
       {
         icon: Wine,
@@ -226,18 +226,18 @@ export default function Sidebar() {
       // {
       //   icon: Bell,
       //   label: "Notificacions",
-      //   path: `/inversor/notificacions`,
+      //   path: `/investor/notificacions`,
       // },
       {
         icon: User,
         label: "Perfil",
-        path: `/inversor/profile`,
+        path: `/investor/profile`,
         divider: true,
       },
       {
         icon: Settings,
         label: "Configuració",
-        path: `/inversor/settings`,
+        path: `/investor/settings`,
       },
     ]
 
@@ -246,17 +246,17 @@ export default function Sidebar() {
       {
         icon: Home,
         label: "Inici",
-        path: `/inversor/dashboard`,
+        path: `/investor/dashboard`,
       },
       {
         icon: FileQuestion,
         label: "Històric",
-        path: "/inversor/historic",
+        path: "/investor/historic",
       },
       // {
       //   icon: Bell,
       //   label: "Alertes",
-      //   path: `/inversor/notificacions`,
+      //   path: `/investor/notificacions`,
       // },
       {
         icon: LogOut,

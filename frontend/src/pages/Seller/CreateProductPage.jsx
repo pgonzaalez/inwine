@@ -27,6 +27,7 @@ export default function CreateProduct() {
     1: false,
     2: false,
     3: false,
+    4: false,
   })
   const navigate = useNavigate()
   const apiUrl = import.meta.env.VITE_API_URL
@@ -186,6 +187,9 @@ export default function CreateProduct() {
     // Validate the last step before sending
     const { isValid } = validateStep(3, formData, selectedImages)
     if (!isValid) return
+
+    if (stepValidation[4]) return
+    stepValidation[4] = true
 
     try {
       // Create FormData object for file uploads

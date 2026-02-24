@@ -89,13 +89,13 @@ export default function FilterSidebar({
                     type="range"
                     min="0"
                     max="2000"
-                    value={priceRange[1]}
+                    value={Math.min(priceRange[1], 2000)}
                     onChange={(e) => setPriceRange([priceRange[0], Number.parseInt(e.target.value)])}
                     className="w-full h-1 bg-gray-200 rounded-full appearance-none cursor-pointer accent-[#9A3E50]"
                   />
                   <div className="flex justify-between mt-2 text-xs text-gray-500">
-                    <span>{priceRange[0]},00 €</span>
-                    <span>{priceRange[1]},00 € o més</span>
+                    <span>De {priceRange[0]},00 €</span>
+                    <span>fins {Math.min(priceRange[1], 2000)},00 €</span>
                   </div>
                 </div>
               </div>

@@ -27,7 +27,7 @@ const getWineTypeColor = (type) => {
     case "espumós":
       return "#F2EFD3"
     case "dolç":
-      return "#E8D0B5"
+      return "#EBBF99"
     default:
       return `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
         primaryColors.dark.slice(3, 5),

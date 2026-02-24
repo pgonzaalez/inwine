@@ -27,7 +27,7 @@ class WineTypeSeeder extends Seeder
             [
                 'name' => 'Rossat',
                 'description' => 'Vino rosado',
-                'image' => 'https://s1.elespanol.com/2024/06/13/cocinillas/vinos/862673986_243984786_1706x1280.jpg'
+                'image' => 'https://masvicens.com/wp-content/uploads/2021/06/MSV-Bodego-NEWS-26.webp'
             ],
             [
                 'name' => 'Espumós',

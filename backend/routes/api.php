@@ -19,7 +19,7 @@ use App\Http\Controllers\StripeController;
 // })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'show']);
+    Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
 
     Route::put('/seller', [SellerController::class, 'update']);
@@ -51,9 +51,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/request-product/{id}', [RequestRestaurantController::class, 'searchByProduct']);
     Route::apiResource('/restaurants', RequestRestaurantController::class);
     Route::apiResource('/orders', OrderController::class);
-    Route::middleware('auth:sanctum')->get('/orders/my', [OrderController::class, 'myOrders']);
+    Route::get('{userId}/orders/', [OrderController::class, 'showOrderByUser']);
     Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
-    Route::middleware('auth:sanctum')->delete('/orders/clear', [OrderController::class, 'clear']);
+    Route::delete('{userId}/orders/clear', [OrderController::class, 'clear']);
 
 
     // Rutas para los restaurantes

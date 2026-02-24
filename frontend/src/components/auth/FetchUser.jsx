@@ -19,7 +19,7 @@ export function useFetchUser() {
       }
 
       try {
-        const response = await fetch(`${apiUrl}/api/user`, {
+        const response = await fetch(`${apiUrl}/user`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
