@@ -195,8 +195,15 @@ export default function ViewOneRequest() {
 
   const handleReceiveProduct = async () => {
     try {
-      const response = await fetch(`${apiUrl}/${user.id}/requests/${id}/receive`, {
-        method: "PUT",
+      const productId = request.product.id;
+      const url = `${apiUrl}/v1/logistic/${productId}/deliver`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
       })
 
       if (!response.ok) {
@@ -212,8 +219,15 @@ export default function ViewOneRequest() {
 
   const handleSellProduct = async () => {
     try {
-      const response = await fetch(`${apiUrl}/${user.id}/requests/${id}/sell`, {
-        method: "PUT",
+      const productId = request.product.id;
+      const url = `${apiUrl}/v1/logistic/${productId}/sell`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
       })
 
       if (!response.ok) {

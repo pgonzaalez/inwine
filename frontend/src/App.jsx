@@ -140,7 +140,7 @@ export default function App() {
 
           {/* Rutas protegidas para Inversor */}
           <Route
-            path="/inversor/dashboard"
+            path="/investor/dashboard"
             element={
               <ProtectedRoute>
                 <Inversor />
@@ -148,7 +148,7 @@ export default function App() {
             }
           />
           <Route
-            path="/inversor/historic"
+            path="/investor/historic"
             element={
               <ProtectedRoute>
                 < InvestmentHistoryPage />
@@ -156,7 +156,7 @@ export default function App() {
             }
           />
           <Route
-            path="/inversor/historic/:id"
+            path="/investor/historic/:id"
             element={
               <ProtectedRoute>
                 < ShowInvestment />
@@ -164,7 +164,7 @@ export default function App() {
             }
           />
           <Route
-            path="/inversor/profile"
+            path="/investor/profile"
             element={
               <ProtectedRoute>
                 <Profile />
@@ -174,7 +174,7 @@ export default function App() {
         </Route>
 
         <Route path="/register/seller" element={<RegisterSeller />} />
-        <Route path="/register/inversor" element={<RegisterInversor />} />
+        <Route path="/register/investor" element={<RegisterInversor />} />
         <Route path="/register/restaurant" element={<RegisterRestaurant />} />
         <Route path="/login" element={<Login />} />
       </Routes>
