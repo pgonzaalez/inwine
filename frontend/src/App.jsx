@@ -14,6 +14,7 @@ import ProductPage from "@pages/Landing/ProductsPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
+import Contacte from "@pages/Landing/ContactPage";
 
 import ProtectedRoute from "@components/auth/ProtectedRoute";
 import CheckoutPage from "@pages/Payments/CheckoutPage";
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/cistella" element={<OrderCart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-summary" element={<OrderSummaryPage />} />
+          <Route path="/contacte" element={<Contacte />} />
         </Route>
 
         {/* Rutas con Sidebar */}
