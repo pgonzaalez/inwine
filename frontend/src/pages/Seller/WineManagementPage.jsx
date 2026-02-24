@@ -2,7 +2,6 @@
 import { useFetchUser } from "@components/auth/FetchUser"
 import { useState, useEffect } from "react"
 import { WineStats } from "@components/seller/WineStats"
-import { FilterBar } from "@components/seller/wineManagement/FilterBar"
 import { Notification } from "@components/seller/wineManagement/Notification"
 import { WineTable } from "@components/seller/wineManagement/WineTable"
 import { WineTypeDistribution } from "@components/seller/wineManagement/WineTypeDistribution"
@@ -126,9 +125,6 @@ function WineManagementComponent() {
       {/* Estadísticas */}
       <WineStats wines={wines} />
 
-      {/* Filtros */}
-      <FilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-
       {/* Contenido principal */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Lista de vinos en formato tabla */}
@@ -138,6 +134,8 @@ function WineManagementComponent() {
             baseUrl={baseUrl}
             handleSendProduct={handleSendProduct}
             sendingProduct={sendingProduct}
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
           />
         </div>
 
@@ -180,4 +178,3 @@ export default function WineManagementPage() {
     </div>
   )
 }
-

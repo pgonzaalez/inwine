@@ -23,7 +23,7 @@ const getWineTypeColor = (type) => {
     case "espumós":
       return "#F2EFD3" // Color champán para espumoso
     case "dolç":
-      return "#E8D0B5" // Color ámbar para vino dulce
+      return "#EBBF99" // Color ámbar para vino dulce
     default:
       return roseColors.light // Color por defecto
   }

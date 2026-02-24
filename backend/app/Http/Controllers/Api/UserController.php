@@ -28,34 +28,41 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
-    {
-        $user = $request->user()->load('roles');
+public function show(Request $request)
+{
+    if (!$request->user()) {
+        return response()->json(['message' => 'Unauthenticated'], 401);
+    }
+
+    $user = $request->user()->load('roles');
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $user->load('roles');
+
+        $activeRoles = $user->roles
+            ->where('is_active', 1)
+            ->pluck('role');
 
         $responseData = [
             'id' => $user->id,
             'NIF' => $user->NIF,
             'name' => $user->name,
             'email' => $user->email,
-
-            // Agrega otros campos básicos del usuario que necesites
             'roles' => $user->roles->pluck('role'),
-
-            //Devuelve la informacion de los campos especificos de cada rol
+            'active_role' => $activeRoles,
             'details' => []
         ];
 
-        // Cargar relaciones según los roles que tenga el usuario
         foreach ($user->roles as $role) {
             switch ($role->role) {
                 case 'restaurant':
                     $responseData['details']['restaurant'] = $user->restaurants;
                     break;
-
                 case 'seller':
                     $responseData['details']['seller'] = $user->sellers;
                     break;
-
                 case 'investor':
                     $responseData['details']['investor'] = $user->investors;
                     break;
@@ -64,6 +71,7 @@ class UserController extends Controller
 
         return response()->json($responseData);
     }
+
 
     /**
      * Update the specified resource in storage.

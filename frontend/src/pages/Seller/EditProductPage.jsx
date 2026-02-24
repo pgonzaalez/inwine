@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import Header from "@components/HeaderComponent";
-import { CornerDownLeft } from "lucide-react";
-import { useFetchUser } from "@components/auth/FetchUser";
+import { useState, useEffect, useRef } from "react"
+import { useNavigate, useParams } from "react-router-dom" 
+import { useFetchUser } from "@components/auth/FetchUser"
+import { ProgressBar } from "@/components/product/ProgressBar"
+import { WineTypeSelector } from "@/components/product/WineTypeSelector"
+import { WineDetailsForm } from "@/components/product/WineDetailsForm"
+import { WinePricingForm } from "@/components/product/WinePricingForm"
+import { validateStep } from "@/utils/form-validation"
 
-export default function EditProductPage() {
-  const { id: productID } = useParams();
-  const { user, error } = useFetchUser();
-  const [wineTypes, setWineTypes] = useState([]);
+export default function EditProduct() {
+  const { id: productId } = useParams();
+  const { user, loading } = useFetchUser()
+  const [wineTypes, setWineTypes] = useState([])
   const [formData, setFormData] = useState({
     name: "",
     origin: "",
@@ -17,330 +20,417 @@ export default function EditProductPage() {
     price_demanded: "",
     quantity: "",
     image: "",
-    seller_id: "",
-  });
-  const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
+    user_id: "",
+  })
+  const [errors, setErrors] = useState({})
+  const [currentStep, setCurrentStep] = useState(1)
+  const [stepValidation, setStepValidation] = useState({
+    1: false,
+    2: false,
+    3: false,
+  })
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
+  const apiUrl = import.meta.env.VITE_API_URL
+  const formSectionRef = useRef(null)
+  const priceSectionRef = useRef(null)
+  const [selectedImages, setSelectedImages] = useState([])
+  const [touchedFields, setTouchedFields] = useState({})
+  const [existingImages, setExistingImages] = useState([])
+  // Nuevo estado para rastrear IDs de imágenes eliminadas
+  const [removedImageIds, setRemovedImageIds] = useState([])
+
+  // Cargar tipos de vino
+  useEffect(() => {
+    const fetchWineTypes = async () => {
+      const response = await fetch(`${apiUrl}/v1/winetypes`)
+      const data = await response.json()
+      setWineTypes(data)
+    }
+    fetchWineTypes()
+  }, [apiUrl])
+
+  // Cargar datos del producto existente
+  useEffect(() => {
+    const fetchProductData = async () => {
+      if (!user || !productId) return;
+      
+      try {
+        setIsLoading(true);
+        const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`);
+        
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la información del producto");
+        }
+        
+        const data = await response.json();
+        const productData = data.data || data;
+        
+        // Configurar datos del formulario
+        setFormData({
+          name: productData.name || "",
+          origin: productData.origin || "",
+          year: productData.year || "",
+          wine_type_id: productData.wine_type_id?.toString() || "",
+          description: productData.description || "",
+          price_demanded: productData.price_demanded?.toString() || "",
+          quantity: productData.quantity?.toString() || "",
+          // Si hay imágenes, el campo image tendrá un valor
+          image: productData.images && productData.images.length > 0 ? "existing_images" : "",
+          user_id: user.id,
+        });
+        
+        // Si el producto tiene imágenes
+        if (productData.images && productData.images.length > 0) {
+          setExistingImages(productData.images);
+        }
+        
+        // Inicializar validación de pasos con datos completos
+        const step1Valid = !!productData.wine_type_id;
+        const step2Valid = !!productData.name && !!productData.origin && 
+                          !!productData.year && 
+                          (productData.images && productData.images.length > 0);
+        const step3Valid = !!productData.price_demanded && !!productData.quantity;
+        
+        setStepValidation({
+          1: step1Valid,
+          2: step2Valid,
+          3: step3Valid
+        });
+        
+        setTouchedFields({
+          name: true,
+          origin: true,
+          year: true,
+          wine_type_id: true,
+          description: true,
+          price_demanded: true,
+          quantity: true,
+          image: productData.images && productData.images.length > 0,
+        });
+        
+      } catch (error) {
+        // console.error("Error al cargar el producto:", error);
+        navigate('/seller/dashboard', { 
+          state: { errorMessage: "No se pudo cargar el producto para editar" } 
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchProductData();
+  }, [user, productId, apiUrl, navigate]);
 
   useEffect(() => {
-    // Fetch wine types from the API
-    const fetchWineTypes = async () => {
-      const response = await fetch(`${apiUrl}/v1/winetypes`);
-      const data = await response.json();
-      setWineTypes(data);
-    };
+    if (user) {
+      setFormData((prevData) => ({
+        ...prevData,
+        user_id: user.id,
+      }))
+    }
+  }, [user])
 
-    // Fetch product data from the API
-    const fetchProductData = async () => {
-      const response = await fetch(`${apiUrl}/v1/products/${productID}`);
-      const data = await response.json();
-      setFormData(data);
-    };
-
-    fetchWineTypes();
-    fetchProductData();
-  }, [productID]);
+  // Effect para validar el paso actual cuando cambian los datos
+  useEffect(() => {
+    if (Object.keys(touchedFields).length > 0) {
+      // Pasar tanto imágenes nuevas como existentes a la validación
+      const { isValid, errors: validationErrors } = validateStep(
+        currentStep, 
+        formData, 
+        [...selectedImages, ...existingImages]
+      )
+      setErrors(validationErrors)
+      setStepValidation((prev) => ({ ...prev, [currentStep]: isValid }))
+    }
+  }, [formData, selectedImages, existingImages, touchedFields, currentStep])
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData({
       ...formData,
       [name]: value,
-    });
-  };
+    })
+    setTouchedFields({
+      ...touchedFields,
+      [name]: true,
+    })
+  }
 
   const handleWineTypeSelect = (wineTypeId) => {
     setFormData({
       ...formData,
-      wine_type_id: wineTypeId,
-    });
-  };
+      wine_type_id: wineTypeId.toString(),
+    })
+    setTouchedFields({
+      ...touchedFields,
+      wine_type_id: true,
+    })
 
+    // Solo avanzar si la selección es válida
+    if (wineTypeId) {
+      const newErrors = { ...errors }
+      delete newErrors.wine_type_id
+      setErrors(newErrors)
+      setStepValidation((prev) => ({ ...prev, 1: true }))
+
+      if (formSectionRef.current) {
+        setTimeout(() => {
+          setCurrentStep(2)
+          formSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+        }, 300)
+      }
+    }
+  }
+
+  const handleImageSelect = (e) => {
+    if (!e.target.files) return
+
+    const files = Array.from(e.target.files)
+
+    // Crear URLs de vista previa para los archivos seleccionados
+    const newImages = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }))
+
+    setSelectedImages((prevImages) => [...prevImages, ...newImages])
+    setTouchedFields({
+      ...touchedFields,
+      image: true,
+    })
+
+    // Actualizar formData si no había imágenes antes
+    if (files.length > 0 && selectedImages.length === 0 && existingImages.length === 0) {
+      setFormData({
+        ...formData,
+        image: "file_upload", // Marcador de posición, el archivo real se enviará en FormData
+      })
+    }
+  }
+
+  // Función para eliminar una imagen nueva
+  const removeImage = (index) => {
+    setSelectedImages((prevImages) => {
+      const newImages = [...prevImages]
+      // Revocar la URL del objeto para evitar fugas de memoria
+      URL.revokeObjectURL(newImages[index].preview)
+      newImages.splice(index, 1)
+      return newImages
+    })
+
+    // Actualizar formData si se eliminan todas las imágenes
+    if (selectedImages.length === 1 && existingImages.length === 0) {
+      setFormData({
+        ...formData,
+        image: "",
+      })
+      
+      // Marcar el campo como tocado para que se valide
+      setTouchedFields({
+        ...touchedFields,
+        image: true,
+      })
+    }
+  }
+
+  // Función mejorada para eliminar una imagen existente
+  const removeExistingImage = (index) => {
+    setExistingImages((prevImages) => {
+      const newImages = [...prevImages]
+      // Guardar el ID de la imagen eliminada para enviarlo al backend
+      const removedImage = newImages[index]
+      if (removedImage && removedImage.id) {
+        setRemovedImageIds(prev => [...prev, removedImage.id])
+      }
+      newImages.splice(index, 1)
+      return newImages
+    })
+
+    // Actualizar formData si se eliminan todas las imágenes
+    if (existingImages.length === 1 && selectedImages.length === 0) {
+      setFormData({
+        ...formData,
+        image: "",
+      })
+      
+      // Marcar el campo como tocado para que se valide
+      setTouchedFields({
+        ...touchedFields,
+        image: true,
+      })
+    }
+  }
+
+  const goToNextStep = () => {
+    // Marcar todos los campos del paso actual como tocados
+    const fieldsForCurrentStep = {}
+    if (currentStep === 1) {
+      fieldsForCurrentStep.wine_type_id = true
+    } else if (currentStep === 2) {
+      fieldsForCurrentStep.name = true
+      fieldsForCurrentStep.origin = true
+      fieldsForCurrentStep.year = true
+      fieldsForCurrentStep.description = true
+      fieldsForCurrentStep.image = true
+    } else if (currentStep === 3) {
+      fieldsForCurrentStep.price_demanded = true
+      fieldsForCurrentStep.quantity = true
+    }
+
+    setTouchedFields({ ...touchedFields, ...fieldsForCurrentStep })
+
+    // Validar el paso actual
+    const { isValid } = validateStep(currentStep, formData, [...selectedImages, ...existingImages])
+
+    if (isValid && currentStep < 3) {
+      setCurrentStep(currentStep + 1)
+      if (currentStep === 2 && priceSectionRef.current) {
+        priceSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+    }
+  }
+
+  const goToPreviousStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1)
+    }
+  }
+
+  // Método de envío del formulario actualizado
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+
+    // Validar el último paso antes de enviar
+    const { isValid } = validateStep(3, formData, [...selectedImages, ...existingImages])
+    if (!isValid) return
 
     try {
-      const response = await fetch(`${apiUrl}/v1/products/${productID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // Crear FormData para cargas de archivos
+      const formDataObj = new FormData()
+      
+      // Indicar que es una petición PUT
+      formDataObj.append('_method', 'PUT');
 
-      const data = await response.json();
+      // Añadir todos los campos del formulario a FormData
+      Object.keys(formData).forEach((key) => {
+        if (key !== "image") {
+          formDataObj.append(key, formData[key])
+        }
+      })
+
+      // Añadir nuevos archivos de imagen a FormData
+      if (selectedImages.length > 0) {
+        selectedImages.forEach((img) => {
+          formDataObj.append(`images[]`, img.file)
+        })
+      }
+      
+      // Añadir IDs de imágenes existentes que se mantienen
+      if (existingImages.length > 0) {
+        existingImages.forEach((img) => {
+          formDataObj.append('existing_images[]', img.id)
+        })
+      }
+      
+      // Añadir IDs de imágenes eliminadas
+      if (removedImageIds.length > 0) {
+        removedImageIds.forEach(id => {
+          formDataObj.append('removed_images[]', id)
+        })
+      }
+
+      const response = await fetch(`${apiUrl}/v1/products/${productId}`, {
+        method: "POST", // Usamos POST con _method=PUT para compatibilidad con FormData
+        body: formDataObj,
+      })
+
+      const data = await response.json()
 
       if (!response.ok) {
         if (response.status === 422) {
-          setErrors(data.errors);
+          setErrors(data.errors)
         } else {
-          throw new Error("Error updating product");
+          throw new Error("Error al actualizar el producto")
         }
       } else {
-        navigate(`/seller/products/${productID}`, {
-          state: { successMessage: "Producte modificat correctament ✅" },
-        });
+        navigate(`/seller/dashboard`, {
+          state: { successMessage: "Producto actualizado correctamente" }
+        })
       }
     } catch (error) {
-      // console.error("Error:", error);
+      // console.error("Error:", error)
     }
-  };
+  }
 
-  return (
-    <>
-      <Header />
-      <div className="flex flex-col mt-[60px] h-[calc(100vh-60px)]">
-        <div className="flex flex-1">
-          <main className="flex-1 ml-[245px] p-6 bg-gray-100 overflow-y-auto">
-            <div className="bg-white rounded-t-lg shadow-sm p-4 flex justify-between items-center">
-              <Link
-                to={`/seller/products/${productID}`}
-                className="border-2 rounded-lg p-1 hover:bg-gray-200 transition-colors duration-200"
-              >
-                <CornerDownLeft size={20} className="cursor-pointer" />
-              </Link>
-            </div>
-            <div className="flex bg-white rounded-b-lg shadow-lg p-8 w-full">
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
-                {/* Sección 1: Selección del Tipo de Vino */}
-                <div className="flex flex-col md:flex-row justify-between">
-                  <div className="md:w-1/3 text-sm text-gray-600 mb-10 md:mb-0">
-                    <h2 className="text-lg font-semibold">Tria la categoria</h2>
-                    <p>
-                      Selecciona una opció d'aquest menú desplegable per escollir la categoria
-                    </p>
-                  </div>
-                  <div className="md:w-2/3">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      {wineTypes.map((wine) => (
-                        <div
-                          key={wine.id}
-                          onClick={() => handleWineTypeSelect(wine.id)}
-                          className={`cursor-pointer border p-6 rounded-lg ${
-                            formData.wine_type_id === wine.id
-                              ? "bg-blue-100 border-blue-500"
-                              : "border-gray-300"
-                          }`}
-                        >
-                          <img
-                            src={wine.image}
-                            alt={wine.name}
-                            className="w-full h-24 object-cover mb-2 rounded"
-                          />
-                          <div className="text-center text-sm">{wine.name}</div>
-                        </div>
-                      ))}
-                    </div>
-                    {errors.wine_type_id && (
-                      <span className="text-red-500 text-xs mt-1">
-                        {errors.wine_type_id[0]}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Sección 2: Campos del Producto */}
-                <div className="flex flex-col md:flex-row justify-between mt-8 border-t pt-8">
-                  <div className="md:w-1/3 text-sm text-gray-600 mb-4 md:mb-0">
-                    <h2 className="text-lg font-semibold">Edita el producte</h2>
-                    <p>
-                      Omple les següents dades per editar el teu producte.
-                      Proporciona tota la informació rellevant.
-                    </p>
-                  </div>
-                  <div className="md:w-2/3 w-full">
-                    {/* Nombre del Producto */}
-                    <div className="relative mb-4">
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder=" "
-                        id="name"
-                      />
-                      <label
-                        htmlFor="name"
-                        className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                      >
-                        Nom del Vi
-                      </label>
-                      {errors.name && (
-                        <span className="text-red-500 text-xs mt-1">
-                          {errors.name[0]}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Denominación y Año */}
-                    <div className="flex flex-col md:flex-row gap-4">
-                      {/* Denominación */}
-                      <div className="relative mb-4 w-full">
-                        <input
-                          type="text"
-                          name="origin"
-                          value={formData.origin}
-                          onChange={handleChange}
-                          className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder=" "
-                          id="origin"
-                        />
-                        <label
-                          htmlFor="origin"
-                          className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                        >
-                          Denominació d'Origen
-                        </label>
-                        {errors.origin && (
-                          <span className="text-red-500 text-xs mt-1">
-                            {errors.origin[0]}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Año */}
-                      <div className="relative mb-4 w-full">
-                        <input
-                          type="number"
-                          name="year"
-                          value={formData.year}
-                          onChange={handleChange}
-                          className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder=" "
-                          id="year"
-                        />
-                        <label
-                          htmlFor="year"
-                          className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                        >
-                          Any
-                        </label>
-                        {errors.year && (
-                          <span className="text-red-500 text-xs mt-1">
-                            {errors.year[0]}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Descripción */}
-                    <div className="relative mb-4">
-                      <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        className="peer w-full h-24 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder=" "
-                        id="description"
-                      />
-                      <label
-                        htmlFor="description"
-                        className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                      >
-                        Descripció
-                      </label>
-                      <div className="flex justify-between text-gray-400 text-xs mt-2 px-1">
-                        <span>Màxim de 255 caràcters</span>
-                        <span>{formData.description.length}/255</span>
-                      </div>
-                      {errors.description && (
-                        <span className="text-red-500 text-xs mt-1">
-                          {errors.description[0]}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Precio y Cantidad */}
-                    <div className="flex flex-col md:flex-row gap-4">
-                      {/* Precio */}
-                      <div className="relative mb-4 w-full">
-                        <input
-                          type="number"
-                          name="price_demanded"
-                          value={formData.price_demanded}
-                          onChange={handleChange}
-                          className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder=" "
-                          id="price_demanded"
-                        />
-                        <label
-                          htmlFor="price_demanded"
-                          className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                        >
-                          Preu
-                        </label>
-                        {errors.price_demanded && (
-                          <span className="text-red-500 text-xs mt-1">
-                            {errors.price_demanded[0]}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Cantidad */}
-                      <div className="relative mb-4 w-full">
-                        <input
-                          type="number"
-                          name="quantity"
-                          value={formData.quantity}
-                          onChange={handleChange}
-                          className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder=" "
-                          id="quantity"
-                        />
-                        <label
-                          htmlFor="quantity"
-                          className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                        >
-                          Quantitat
-                        </label>
-                        {errors.quantity && (
-                          <span className="text-red-500 text-xs mt-1">
-                            {errors.quantity[0]}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Imagen */}
-                    <div className="relative mb-4">
-                      <input
-                        type="text"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
-                        className="peer w-full h-12 bg-white rounded-lg border border-gray-300 px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder=" "
-                        id="image"
-                      />
-                      <label
-                        htmlFor="image"
-                        className="absolute left-3 top-2 text-gray-500 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75"
-                      >
-                        URL de la Imatge
-                      </label>
-                      {errors.image && (
-                        <span className="text-red-500 text-xs mt-1">
-                          {errors.image[0]}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Botón de Envío */}
-                <button
-                  type="submit"
-                  className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors self-end"
-                >
-                  Actualitzar Producte
-                </button>
-              </form>
-            </div>
-          </main>
+  if (isLoading) {
+    return (
+      <div className="flex-1 md:ml-[245px] p-8 flex justify-center items-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9A3E50] mx-auto"></div>
+          <p className="mt-4 text-gray-700">Carregant producte...</p>
         </div>
       </div>
-    </>
-  );
+    );
+  }
+
+  return (
+    <div className="flex flex-col md:flex-row">
+      <div className="flex-1 md:ml-[245px] p-4 md:p-8 pb-20 bg-gray-50 min-h-screen">
+        {/* Progress bar header */}
+        <ProgressBar currentStep={currentStep} totalSteps={3} />
+
+        <div className="max-w-4xl mx-auto">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            {/* Step 1: Wine Type Selection */}
+            {currentStep === 1 && (
+              <WineTypeSelector
+                wineTypes={wineTypes}
+                selectedTypeId={formData.wine_type_id}
+                onSelect={handleWineTypeSelect}
+                error={errors.wine_type_id?.[0]}
+              />
+            )}
+
+            {/* Step 2: Wine Details Form */}
+            <div ref={formSectionRef}>
+              {currentStep === 2 && (
+                <WineDetailsForm
+                  formData={formData}
+                  onChange={handleChange}
+                  selectedImages={selectedImages}
+                  existingImages={existingImages}
+                  onImageSelect={handleImageSelect}
+                  onImageRemove={removeImage}
+                  onExistingImageRemove={removeExistingImage}
+                  errors={errors}
+                  touchedFields={touchedFields}
+                  onPrevious={goToPreviousStep}
+                  onNext={goToNextStep}
+                  isNextEnabled={stepValidation[2]}
+                  isEditMode={true}
+                />
+              )}
+            </div>
+
+            {/* Step 3: Wine Pricing Form */}
+            <div ref={priceSectionRef}>
+              {currentStep === 3 && (
+                <WinePricingForm
+                  formData={formData}
+                  onChange={handleChange}
+                  selectedImages={[...selectedImages, ...existingImages]}
+                  errors={errors}
+                  touchedFields={touchedFields}
+                  onPrevious={goToPreviousStep}
+                  isSubmitEnabled={stepValidation[3]}
+                  isEditMode={true}
+                />
+              )}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
 }

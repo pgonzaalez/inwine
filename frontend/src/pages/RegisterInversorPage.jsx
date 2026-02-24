@@ -14,6 +14,7 @@ import {
     Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { setCookie } from "@/utils/utils"
 
 const AddInvestorForm = () => {
     const navigate = useNavigate();
@@ -89,6 +90,31 @@ const AddInvestorForm = () => {
         setTouched({ ...touched, [name]: true });
     };
 
+    const handleLogin = async (email, password) => {
+        try {
+            const response = await fetch(`${apiUrl}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Error al iniciar sessió");
+            }
+
+            setCookie("token", result.token, 7);
+
+        } catch (error) {
+            setMessage(error.message);
+            setMessageType("error");
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -139,6 +165,10 @@ const AddInvestorForm = () => {
             } else {
                 setMessage("¡Inversor registrado exitosamente! Redirigiendo...");
                 setMessageType("success");
+
+                //Realizar login una vez registrado
+                await handleLogin(formData.email, formData.password);
+
                 setFormData({
                     NIF: "",
                     name: "",
@@ -154,7 +184,7 @@ const AddInvestorForm = () => {
                 setFormErrors({});
 
                 setTimeout(() => {
-                    navigate("/");
+                    navigate("/restaurant/dashboard");
                 }, 2000);
             }
         } catch (error) {
@@ -208,8 +238,8 @@ const AddInvestorForm = () => {
                     {message && (
                         <div
                             className={`mb-6 p-4 rounded-lg relative ${messageType === "error"
-                                    ? "bg-red-50 border border-red-200 text-red-700"
-                                    : "bg-green-50 border border-green-200 text-green-700"
+                                ? "bg-red-50 border border-red-200 text-red-700"
+                                : "bg-green-50 border border-green-200 text-green-700"
                                 }`}
                         >
                             <div className="flex items-start">
@@ -309,8 +339,8 @@ const AddInvestorForm = () => {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("address")
-                                                        ? "border-red-500 focus:ring-red-500"
-                                                        : "border-gray-300 focus:ring-blue-500"
+                                                    ? "border-red-500 focus:ring-red-500"
+                                                    : "border-gray-300 focus:ring-blue-500"
                                                     }`}
                                                 placeholder=" "
                                                 id="address"
@@ -344,8 +374,8 @@ const AddInvestorForm = () => {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("phone")
-                                                        ? "border-red-500 focus:ring-red-500"
-                                                        : "border-gray-300 focus:ring-blue-500"
+                                                    ? "border-red-500 focus:ring-red-500"
+                                                    : "border-gray-300 focus:ring-blue-500"
                                                     }`}
                                                 placeholder=" "
                                                 id="phone"
@@ -384,8 +414,8 @@ const AddInvestorForm = () => {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("email")
-                                                        ? "border-red-500 focus:ring-red-500"
-                                                        : "border-gray-300 focus:ring-blue-500"
+                                                    ? "border-red-500 focus:ring-red-500"
+                                                    : "border-gray-300 focus:ring-blue-500"
                                                     }`}
                                                 placeholder=" "
                                                 id="email"
@@ -420,8 +450,8 @@ const AddInvestorForm = () => {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("password")
-                                                        ? "border-red-500 focus:ring-red-500"
-                                                        : "border-gray-300 focus:ring-blue-500"
+                                                    ? "border-red-500 focus:ring-red-500"
+                                                    : "border-gray-300 focus:ring-blue-500"
                                                     }`}
                                                 placeholder=" "
                                                 id="password"
@@ -462,8 +492,8 @@ const AddInvestorForm = () => {
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("credit_card")
-                                                    ? "border-red-500 focus:ring-red-500"
-                                                    : "border-gray-300 focus:ring-blue-500"
+                                                ? "border-red-500 focus:ring-red-500"
+                                                : "border-gray-300 focus:ring-blue-500"
                                                 }`}
                                             placeholder=" "
                                             id="credit_card"
@@ -497,8 +527,8 @@ const AddInvestorForm = () => {
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("bank_account")
-                                                    ? "border-red-500 focus:ring-red-500"
-                                                    : "border-gray-300 focus:ring-blue-500"
+                                                ? "border-red-500 focus:ring-red-500"
+                                                : "border-gray-300 focus:ring-blue-500"
                                                 }`}
                                             placeholder=" "
                                             id="bank_account"

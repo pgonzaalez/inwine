@@ -1,6 +1,5 @@
 
 import { motion } from "framer-motion";
-import Header from "@components/HeaderComponent";
 import Footer from "@components/FooterComponent";
 import AboutSection from "@components/landing/AboutComponent";
 import CarouselComponent from "@components/landing/CarouselComponent";
@@ -17,7 +16,6 @@ export default function App() {
 
   return (
     <>
-      <Header />
       <div className="relative w-full h-screen overflow-hidden">
         {/* Fons de vídeo */}
         <video

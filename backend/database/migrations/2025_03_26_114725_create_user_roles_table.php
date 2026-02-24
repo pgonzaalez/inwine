@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('role', ['seller', 'investor', 'restaurant']);
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

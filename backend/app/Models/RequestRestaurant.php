@@ -15,16 +15,32 @@ class RequestRestaurant extends Model
         'product_id',
         'quantity',
         'price_restaurant',
+        'price_restaurant_with_commission',
         'status'
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($requestRestaurant) {
+            $requestRestaurant->price_restaurant_with_commission = $requestRestaurant->calculatePriceWithCommission();
+        });
+    }
     public function user()
     {
-        return $this->belongsTo(User::class)->where('role', 'restaurant');
+        return $this->belongsTo(User::class);
     }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function calculatePriceWithCommission(): float
+    {
+        $commission = Commission::where('name', 'Comissió pel restaurant')->first();
+
+        if (!$commission) return $this->price_restaurant;
+
+        return round($this->price_restaurant * (1 + $commission->percentage / 100), 2);
     }
 }

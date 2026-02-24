@@ -2,13 +2,17 @@
 
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\WineTypeController;
-use App\Http\Controllers\Api\InvestorController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\RequestController;
-use App\Http\Controllers\Api\RestaurantController;
+use App\Http\Controllers\Api\RequestRestaurantController;
 use App\Http\Controllers\Api\LogisticController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\SellerController;
+use App\Http\Controllers\Api\RestaurantController;
+use App\Http\Controllers\Api\InvestorController;
+use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StripeController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -17,38 +21,50 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
+
+    Route::put('/seller', [SellerController::class, 'update']);
+    Route::put('/restaurant', [RestaurantController::class, 'update']);
+    Route::put('/investor', [InvestorController::class, 'update']);
+
+    // Rutas para inversor
+    // Ruta para obtener el historial del inversor
+    Route::get('{userId}/investments', [InvestorController::class,'investments']);
+    Route::get('{userId}/investments/{investmentId}', [InvestorController::class,'showInvestment']);
+
 });
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/update-active-role', [AuthController::class, 'updateActiveRole'])->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->get('/notifications', function () {
-    return auth()->user()->notifications;
-});
-
-Route::middleware('auth:sanctum')->get('/notifications/unread', function () {
-    return auth()->user()->unreadNotifications;
-});
-
-Route::middleware('auth:sanctum')->post('/notifications/mark-all', function () {
-    auth()->user()->unreadNotifications->markAsRead();
-    return response()->json(['message' => 'Notificaciones marcadas como leídas']);
-});
 
 Route::prefix('v1')->group(function () {
+
     // Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
     // Rutas para los productos
-    Route::get('{userId}/products/', [ProductController::class, 'indexByUser']); // Todos los productos de un usuario
+    Route::get('{userId}/products/', [ProductController::class, 'indexByUser']);
+    Route::get('{userId}/products/{productId}', [ProductController::class, 'showByUser']); 
+    Route::delete('{userId}/products/{productId}', [ProductController::class, 'destroyAllByUser']);
     Route::apiResource('/products', ProductController::class);
     Route::apiResource('/winetypes', WineTypeController::class);
     Route::apiResource('/investor', InvestorController::class);
-    Route::apiResource('/request', RequestController::class);
-    Route::apiResource('/restaurants', RestaurantController::class);
+    Route::get('/request-product/{id}', [RequestRestaurantController::class, 'searchByProduct']);
+    Route::apiResource('/restaurants', RequestRestaurantController::class);
+    Route::apiResource('/orders', OrderController::class);
+    Route::get('{userId}/orders/', [OrderController::class, 'showOrderByUser']);
+    Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
+    Route::delete('{userId}/orders/clear', [OrderController::class, 'clear']);
+
+
+    // Rutas para los restaurantes
+    Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
+    Route::get('/{userId}/restaurant/{requestId}', [RequestRestaurantController::class, 'showRequestWithProduct']);
+    Route::delete('/restaurant/{id}', [RequestRestaurantController::class, 'destroy'])
+    ->middleware('auth:sanctum');
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
-    Route::get('/{userId}/restaurant', [RestaurantController::class, 'indexByRestaurant']);
     Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
-
+    Route::post('/investor', [AuthController::class, 'storeInvestor']);
 
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
     Route::put('products/{productId}/images/{imageId}/primary', [ProductController::class, 'setPrimaryImage']);
@@ -59,4 +75,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/{productId}/deliver', [LogisticController::class, 'deliver']);
         Route::post('/{productId}/sell', [LogisticController::class, 'sell']);
     });
+
+    Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent']);
+
+   
 });

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom"
 
 const wines = [
   { id: 1, name: "ONDULE", description: "NAPA VALLEY COLOMBARD", image: "https://hips.hearstapps.com/hmg-prod/images/red-wine-being-poured-into-glass-at-sunset-outdoor-royalty-free-image-1738062893.pjpeg?crop=0.667xw:1.00xh;0.219xw,0&resize=640:*" },
@@ -16,6 +17,7 @@ const wines = [
 
 export default function WineShowcase() {
   const [currentWine, setCurrentWine] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,7 +73,8 @@ export default function WineShowcase() {
                 Descobreix la nostra selecció de vins premium, elaborats amb les millors raïms i tècniques tradicionals.
                 Cada ampolla representa l’excel·lència i passió per la viticultura.
               </p>
-              <button className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors">
+              <button className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+              onClick={() => navigate("/productes")}>
                 Veure més
               </button>
             </motion.div>

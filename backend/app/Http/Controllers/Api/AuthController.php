@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
+use App\Models\Investor;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
@@ -22,26 +23,32 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-    
+
         $user = User::where('email', $request->email)->first();
-    
+
         if (!$user) {
             throw ValidationException::withMessages([
                 'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
-    
+
         if (!Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
-    
+
         // Obtener todos los roles del usuario
-        $roles = UserRole::where('user_id', $user->id)->pluck('role')->toArray();
-    
+        $userRoles = UserRole::where('user_id', $user->id)->get();
+        $roles = $userRoles->pluck('role')->toArray();
+
+        // Si solo tiene un rol, lo marcamos como activo
+        if (count($roles) === 1) {
+            $userRoles->first()->update(['is_active' => true]);
+        }
+
         $token = $user->createToken('api-token')->plainTextToken;
-    
+
         return response()->json([
             'token' => $token,
             'user' => [
@@ -51,6 +58,26 @@ class AuthController extends Controller
                 'roles' => $roles, // Ahora devolvemos un array de roles
             ],
         ]);
+    }
+
+    public function updateActiveRole(Request $request)
+    {
+        $request->validate([
+            'role' => 'required|in:seller,investor,restaurant',
+        ]);
+
+        $user = $request->user();
+
+        // Desactivar todos los roles primero
+        UserRole::where('user_id', $user->id)
+            ->update(['is_active' => false]);
+
+        // Activar el rol seleccionado
+        UserRole::where('user_id', $user->id)
+            ->where('role', $request->role)
+            ->update(['is_active' => true]);
+
+        return response()->json(['message' => 'Rol actualizado correctamente']);
     }
 
     public function logout(Request $request)
@@ -211,6 +238,83 @@ class AuthController extends Controller
             Log::error('Error al crear restaurante', ['error' => $e->getMessage()]);
             return response()->json([
                 'message' => 'Error al crear restaurante',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function storeInvestor(Request $request)
+    {
+        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
+
+        try {
+            // Validar los datos de entrada
+            $validatedData = Validator::make($request->all(), [
+                'NIF' => 'required|string|max:9|unique:users,NIF',
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email',
+                'password' => 'required|string|min:8',
+                'address' => 'nullable|string|min:2|max:255',
+                'phone' => 'nullable|string|max:11',
+                'credit_card' => 'nullable|string|max:34',
+                'bank_account' => 'nullable|string|max:34',
+                'balance' => 'nullable|numeric',
+            ]);
+
+            if ($validatedData->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validatedData->errors()
+                ], 422);
+            }
+
+            DB::beginTransaction();
+
+            // Obtener los datos validados
+            $validatedData = $validatedData->validated();
+
+            Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
+
+            // Crear usuario
+            $user = User::create([
+                'NIF' => $validatedData['NIF'],
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($validatedData['password']),
+                'email_verified_at' => now(),
+            ]);
+
+            Log::info('Usuario creado correctamente', ['user_id' => $user->id]);
+
+            // Asignar rol de inversor
+            UserRole::create([
+                'user_id' => $user->id,
+                'role' => 'investor'
+            ]);
+
+            // Crear inversor con todos los campos requeridos
+            $investor = Investor::create([
+                'user_id' => $user->id,
+                'address' => $validatedData['address'],
+                'phone_contact' => $validatedData['phone'],
+                'credit_card' => $validatedData['credit_card'] ?? null,
+                'bank_account' => $validatedData['bank_account'] ?? null,
+                'balance' => $validatedData['balance'] ?? 0.00,
+            ]);
+
+            Log::info('Inversor creado exitosamente', ['investor' => $investor->id]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Inversor creado exitosamente',
+                'investor' => $investor,
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al crear inversor', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Error al crear inversor',
                 'error' => $e->getMessage(),
             ], 500);
         }

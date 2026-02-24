@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Product;
-use App\Models\Request;
 use App\Models\RequestRestaurant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\OrderRequested;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\ProductStatusUpdated;
 use App\Models\User;
@@ -20,7 +20,7 @@ class LogisticController extends Controller
      *    - Pasa de:
      *        Product: in_stock  --> requested
      *        RequestRestaurant: pending    --> accepted
-     *        Request:           null/???   --> paid
+     *        Request:                      --> paid
      *    - Esta peticion la hace el usuario con rol 'investor'
      */
     public function approve(HttpRequest $request, $productId)
@@ -47,10 +47,10 @@ class LogisticController extends Controller
             }
 
             // 3) Crear una nueva solicitud del inversor con estado 'paid'
-            $investorRequest = Request::create([
+            $investorRequest = OrderRequested::create([
                 'user_id' => 3,
                 'request_restaurant_id' => 1,
-                'status' => 'paid'
+                'status' => 'paid',
             ]);
 
             // Actualizamos estados
@@ -124,7 +124,7 @@ class LogisticController extends Controller
             }
 
             // 3) Obtenemos la solicitud del inversor
-            $investorRequest = Request::where('request_restaurant_id', $restaurantRequest->id)
+            $investorRequest = OrderRequested::where('request_restaurant_id', $restaurantRequest->id)
                 ->where('status', 'paid')
                 ->orderBy('created_at', 'desc')
                 ->first();
@@ -139,6 +139,17 @@ class LogisticController extends Controller
             $investorRequest->update(['status' => 'shipped']);
 
             DB::commit();
+
+            // Notificar al vendedor
+            $sellerUser = User::find($product->user_id);
+            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'),);
+            // Notificar al restaurante
+            $restaurantUser = User::find($restaurantRequest->user_id);
+            $restaurantUser->notify(new ProductStatusUpdated($product, 'requested'));
+            // Notificar al inversor
+            $investorUser = User::find($investorRequest->user_id);
+            $investorUser->notify(new ProductStatusUpdated($product, 'requested'));
+
 
             return response()->json([
                 'message' => 'Producto enviado y en tránsito.',
@@ -182,7 +193,7 @@ class LogisticController extends Controller
                 return response()->json(['error' => 'No se encontró una solicitud de restaurante en estado in_transit.'], 404);
             }
 
-            $investorRequest = Request::where('request_restaurant_id', $restaurantRequest->id)
+            $investorRequest = OrderRequested::where('request_restaurant_id', $restaurantRequest->id)
                 ->where('status', 'shipped')
                 ->orderBy('created_at', 'desc')
                 ->first();
@@ -197,6 +208,15 @@ class LogisticController extends Controller
             $investorRequest->update(['status' => 'waiting']);
 
             DB::commit();
+
+            $sellerUser = User::find($product->user_id);
+            $sellerUser->notify(new ProductStatusUpdated($product, 'sold'),);
+            // Notificar al restaurante
+            $restaurantUser = User::find($restaurantRequest->user_id);
+            $restaurantUser->notify(new ProductStatusUpdated($restaurantRequest, 'en mi local'));
+            // Notificar al inversor
+            $investorUser = User::find($investorRequest->user_id);
+            $investorUser->notify(new ProductStatusUpdated($product, 'sold'));
 
             return response()->json([
                 'message' => 'Producto entregado al restaurante.',
@@ -224,9 +244,7 @@ class LogisticController extends Controller
         DB::beginTransaction();
 
         try {
-            $product = Product::findOrFail($productId);
-
-
+            Product::findOrFail($productId);
             $restaurantRequest = RequestRestaurant::where('product_id', $productId)
                 ->where('status', 'in_my_local')
                 ->orderBy('created_at', 'desc')
@@ -236,7 +254,7 @@ class LogisticController extends Controller
                 return response()->json(['error' => 'No se encontró una solicitud de restaurante en estado in_my_local.'], 404);
             }
 
-            $investorRequest = Request::where('request_restaurant_id', $restaurantRequest->id)
+            $investorRequest = OrderRequested::where('request_restaurant_id', $restaurantRequest->id)
                 ->orderBy('created_at', 'desc')
                 ->first();
 

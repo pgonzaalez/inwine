@@ -2,25 +2,33 @@ export const WineDetailsForm = ({
   formData,
   onChange,
   selectedImages,
+  existingImages = [],
   onImageSelect,
   onImageRemove,
+  onExistingImageRemove,
   errors,
   touchedFields,
   onPrevious,
   onNext,
   isNextEnabled,
+  isEditMode = false,
 }) => {
   // Helper function to check if a field has an error
+  const baseUrl = import.meta.env.VITE_URL_BASE;
   const hasError = (fieldName) => {
     return touchedFields[fieldName] && errors[fieldName]
   }
 
+  // Calcular el total de imágenes (existentes + nuevas)
+  const totalImages = existingImages.length + selectedImages.length;
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg shadow-md">
       <div className="w-full bg-gradient-to-r from-[#F5E6E8] to-[#E8D5D5] p-4 rounded-t-lg border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-[#8C2E2E]">Crea el vi</h2>
+        <h2 className="text-lg font-semibold text-[#8C2E2E]">
+          {isEditMode ? "Edita el vi" : "Crea el vi"}
+        </h2>
         <p className="text-sm text-gray-600">
-          Omple les següents dades per crear el teu vi. Proporciona tota la informació rellevant.
+          Omple les següents dades per {isEditMode ? "editar" : "crear"} el teu vi. Proporciona tota la informació rellevant.
         </p>
       </div>
 
@@ -36,7 +44,7 @@ export const WineDetailsForm = ({
               name="name"
               value={formData.name}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               id="name"
@@ -58,7 +66,7 @@ export const WineDetailsForm = ({
               name="origin"
               value={formData.origin}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("origin") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("origin") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               id="origin"
@@ -80,7 +88,7 @@ export const WineDetailsForm = ({
               name="year"
               value={formData.year}
               onChange={onChange}
-              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("year") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("year") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               id="year"
@@ -101,7 +109,7 @@ export const WineDetailsForm = ({
               name="description"
               value={formData.description}
               onChange={onChange}
-              className={`peer w-full h-24 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("description") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-[#9A3E50]"
+              className={`peer w-full h-24 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("description") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
                 }`}
               placeholder=" "
               id="description"
@@ -125,7 +133,9 @@ export const WineDetailsForm = ({
 
         {/* Right column - Images */}
         <div className="space-y-4">
-          <h3 className="font-medium text-[#8C2E2E] border-b border-[#E8D5D5] pb-2">Imatges del vi</h3>
+          <h3 className="font-medium text-[#8C2E2E] border-b border-[#E8D5D5] pb-2">
+            Imatges del vi {totalImages > 0 && <span className="text-sm text-gray-600">({totalImages} {totalImages === 1 ? 'imatge' : 'imatges'})</span>}
+          </h3>
 
           {/* Imatge */}
           <div className="space-y-4">
@@ -154,7 +164,7 @@ export const WineDetailsForm = ({
                     className={`relative cursor-pointer bg-white rounded-md font-medium focus-within:outline-none ${hasError("image") ? "text-red-500 hover:text-red-400" : "text-[#9A3E50] hover:text-[#C27D7D]"
                       }`}
                   >
-                    <span>Puja imatges</span>
+                    <span>{totalImages > 0 ? "Afegir més imatges" : "Puja imatges"}</span>
                     <input
                       id="file-upload"
                       name="file-upload"
@@ -171,7 +181,41 @@ export const WineDetailsForm = ({
               </div>
             </div>
 
-            {/* Image preview section */}
+            {/* Existing images section (for edit mode) */}
+            {existingImages && existingImages.length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Imatges existents</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {existingImages.map((image, index) => (
+                    <div key={`existing-${index}`} className="relative group">
+                      <img
+                        src={`${baseUrl}${image.image_path}`}
+                        alt={`Imatge existent ${index + 1}`}
+                        className="h-40 w-full object-cover rounded-lg border border-gray-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => onExistingImageRemove(index)}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span className="sr-only">Eliminar</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* New images preview section */}
             {selectedImages.length > 0 && (
               <div className="mt-4">
                 <h4 className="text-sm font-medium text-gray-700 mb-2">Previsualització d'imatges</h4>
@@ -239,8 +283,8 @@ export const WineDetailsForm = ({
               type="button"
               onClick={onNext}
               className={`px-4 py-2 rounded-lg transition-colors ${isNextEnabled
-                  ? "bg-[#9A3E50] text-white hover:bg-[#8C2E2E]"
-                  : "bg-[#E8D5D5] text-[#8C2E2E] cursor-not-allowed"
+                ? "bg-[#9A3E50] text-white hover:bg-[#8C2E2E]"
+                : "bg-[#E8D5D5] text-[#8C2E2E] cursor-not-allowed"
                 }`}
               disabled={!isNextEnabled}
             >
@@ -252,4 +296,3 @@ export const WineDetailsForm = ({
     </div>
   )
 }
-

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\OrderRequested;
 use Illuminate\Database\Seeder;
 use App\Models\RequestRestaurant;
 use App\Models\Product;
@@ -21,7 +22,20 @@ class RequestSeeder extends Seeder
                 'product_id' => 1,
                 'quantity' => 1,
                 'price_restaurant' => 100,
-            ]
+            ],
+            [
+                'user_id' => 1,
+                'product_id' => 1,
+                'quantity' => 1,
+                'price_restaurant' => 130,
+            ],
+            [
+                'user_id' => 4,
+                'product_id' => 1,
+                'quantity' => 1,
+                'price_restaurant' => 90,
+            ],
+            
         ];
 
         foreach ($requests as $request) {
@@ -41,9 +55,15 @@ class RequestSeeder extends Seeder
         try {
             // 1) Crear un producto en estado 'in_stock'
             $product = Product::factory()->create([
-                'name' => 'Producto de prueba',
-                'user_id' => 1,
-                'status' => 'in_stock'
+                'name'=> 'Palacio de Villachica ',
+                'origin' => 'Rioja',
+                'year'=> 2024,
+                'wine_type_id'=> 2,
+                'user_id'=> 1,
+                'description'=> 'Vi de prova per a la prova',
+                'price_demanded'=> 50,
+                'quantity'=> 1,
+                'image'=> '/storage/proba/palacio.jpg',
             ]);
 
             // 2) Crear una solicitud de restaurante en estado 'pending'
@@ -54,16 +74,17 @@ class RequestSeeder extends Seeder
                 ],
                 [
                     'quantity' => 1,
-                    'price_restaurant' => 10,
+                    'price_restaurant' => 100,
                     'status' => 'pending'
                 ]
             );
 
             // 3) Crear una solicitud de inversor en estado 'paid'
-            $investorRequest = Request::create([
+            OrderRequested::create([
                 'user_id' => 3,
                 'request_restaurant_id' => $restaurantRequest->id,
-                'status' => 'paid'
+                'status' => 'paid',
+                'total_price' => 15,
             ]);
 
             // 4) Actualizar estados

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import {
   Search,
   Menu,
@@ -11,12 +12,18 @@ import {
   Settings,
   LogOut,
   AlertTriangle,
+  ShoppingCart,
+  ShieldCheck,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie, deleteCookie } from "@/utils/utils";
 import Modal from "@components/Modal";
+import RoleSelector from '@/components/RoleSelector';
 
 export default function Header() {
+
+  const user = useFetchUser();
+  const hasMultipleRoles = user.user?.roles?.length > 1;
   // const [scrolled, setScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -24,12 +31,55 @@ export default function Header() {
   const mobileMenuRef = useRef(null);
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const [productCount, setProductCount] = useState(0);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate();
+  const [isRoleChangeOpen, setIsRoleChangeOpen] = useState(false);
+  const role = user.user?.active_role?.[0];
 
-  const user = useFetchUser();
-  const role = user.user?.role;
+  const redirectToDashboard = async (role) => {
+    try {
+      const response = await fetch(`${apiUrl}/update-active-role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify({ role }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el rol activo");
+      }
+
+
+      setTimeout(() => {
+        switch (role) {
+          case "seller":
+            navigate("/seller/dashboard");
+            break;
+          case "restaurant":
+            navigate("/restaurant/dashboard");
+            break;
+          case "investor":
+            navigate("/investor/dashboard");
+            break;
+          default:
+            navigate("/login");
+        }
+      }, 500);
+    } catch (error) {
+      // console.error("Error updating active role:", error);
+      // Puedes manejar el error como prefieras
+    }
+  };
+
+  const handleRoleChange = (role) => {
+    redirectToDashboard(role); // Asegúrate de tener esta función definida
+    setIsRoleChangeOpen(false);
+  };
+  const navigate = useNavigate();
 
   const handleProfile = () => {
     if (role === "seller") {
@@ -70,17 +120,46 @@ export default function Header() {
     }
   };
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const isScrolled = window.scrollY > 10;
-  //     if (isScrolled !== scrolled) {
-  //       setScrolled(isScrolled);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchCartCount = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const response = await fetch(`${apiUrl}/v1/${user.user.id}/orders`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        });
 
-  //   window.addEventListener("scroll", handleScroll, { passive: true });
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, [scrolled]);
+        if (!response.ok) {
+          // console.error("Error al obtener los pedidos:", response.status);
+          throw new Error("Error al obtener los pedidos");
+        }
+
+        const data = await response.json();
+
+        // Suma la propiedad `quantity` de cada pedido
+        const count = data.reduce((acc, pedido) => {
+          const cantidadPedido = pedido.quantity || 0;
+          return acc + cantidadPedido;
+        }, 0);
+
+        setProductCount(count);
+      } catch (error) {
+        // console.error("Error al cargar el número de productos:", error);
+      }
+    };
+
+    if (user?.user?.id) {
+      // console.log("User ID disponible:", user.user.id);
+      fetchCartCount();
+    } else {
+      // console.log("No se encontró user.user.id");
+    }
+  }, [user]);
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -126,15 +205,8 @@ export default function Header() {
   ];
 
   return (
-    // <header
-    //   className={`bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full transition-all duration-500 ${scrolled
-    //     ? "bg-white/80 backdrop-blur-md"
-    //     : "bg-white/20 backdrop-blur-sm"
-    //     } text-black ${scrolled ? "translate-y-0" : "-translate-y-full"}`}
-    // >
-
     <header className="bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-8">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6 md:px-8">
         <div className="flex items-center">
           <Link to="/" className="mr-10">
             <img
@@ -197,21 +269,41 @@ export default function Header() {
             </button>
           )}
 
+          <Link
+            to="/cistella"
+            className="relative flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {productCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#9A3E50] text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
+                {productCount}
+              </span>
+            )}
+            <span className="sr-only">Cistella</span>
+          </Link>
+
           {/* Mostrar botón de login si no hay usuario, o el avatar con menú desplegable si hay usuario */}
           {user.user ? (
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full transition-transform duration-300 hover:scale-105 ring-1 ring-gray-200"
+                className="flex items-center space-x-3"
               >
-                <img
-                  src={
-                    user.avatar ||
-                    "https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                  }
-                  alt="Usuario"
-                  className="h-full w-full object-cover"
-                />
+                <div className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-gray-200">
+                  <img
+                    src={user.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
+                    alt="Usuario"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="hidden md:flex flex-col items-start">
+                  <span className="text-sm font-medium text-gray-700">
+                    {user.user?.name || "Usuari"}
+                  </span>
+                  <span className="text-xs text-gray-500 capitalize">
+                    Rol: {role || "rol"}
+                  </span>
+                </div>
               </button>
 
               {isOpen && (
@@ -225,6 +317,11 @@ export default function Header() {
                   <div className="py-1">
                     <div className="border-b px-4 py-3 text-sm font-medium border-gray-100 text-gray-700">
                       El meu compte
+                      <div className="hidden md:flex flex-col items-start">
+                        <span className="text-xs text-gray-500 break-words max-w-[180px]">
+                          {user.user?.email || "Correu"}
+                        </span>
+                      </div>
                     </div>
 
                     <button
@@ -234,6 +331,16 @@ export default function Header() {
                       <User className="mr-2 h-4 w-4" />
                       Perfil
                     </button>
+
+                    {hasMultipleRoles && (
+                      <button
+                        onClick={() => setIsRoleChangeOpen(true)}
+                        className="flex w-full items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
+                      >
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        Canviar rol
+                      </button>
+                    )}
 
                     <Link
                       to="/settings"
@@ -355,52 +462,82 @@ export default function Header() {
 
                 {/* Perfil en menú móvil */}
                 <div className="mt-8 space-y-6">
-                  <div className="flex items-center space-x-3 py-2">
-                    <img
-                      src={user.avatar || "/placeholder.svg"}
-                      alt="Usuario"
-                      className="h-10 w-10 rounded-full object-cover"
-                    />
-                    <div>
-                      <div className="text-sm font-medium">Mi cuenta</div>
-                      <Link
-                        onClick={handleProfile}
-                        className="text-xs text-gray-500"
-                      >
-                        Ver perfil
-                      </Link>
+                  {user.user ? (
+                    <div className="flex items-center space-x-3 py-2">
+                      <img
+                        src={user.avatar || "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
+                        alt="Usuario"
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="text-sm font-medium">El meu compte</div>
+                        <button
+                          onClick={handleProfile}
+                          className="text-xs text-gray-500"
+                        >
+                          Veure perfil
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center space-x-3 py-2 text-gray-700 hover:text-black"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+                        <User className="h-5 w-5" />
+                      </div>
+                      <span className="text-base font-medium">Iniciar sessió</span>
+                    </Link>
+                  )}
                   <div className="h-px w-full bg-gray-100" />
                 </div>
 
-                <div className="mt-auto pt-10 space-y-4">
-                  <Link
-                    to="/settings"
-                    className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-black"
-                  >
-                    <span className="flex items-center">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Configuració
-                    </span>
-                    <ChevronDown className="h-4 w-4 opacity-50" />
-                  </Link>
-                  <button
-                    onClick={() => setIsLogoutOpen(true)}
-                    className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-red-600"
-                  >
-                    <span className="flex items-center">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Tancar sessió
-                    </span>
-                  </button>
-                </div>
+                {user.user && (
+                  <div className="mt-auto pt-10 space-y-4">
+                    <Link
+                      to="/settings"
+                      className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-black"
+                    >
+                      <span className="flex items-center">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Configuració
+                      </span>
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Link>
+                    <button
+                      onClick={() => setIsLogoutOpen(true)}
+                      className="flex w-full items-center justify-between rounded-lg py-3 px-4 bg-gray-50 text-red-600"
+                    >
+                      <span className="flex items-center">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Tancar sessió
+                      </span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </Transition.Child>
         </Dialog>
       </Transition>
 
+      {/* Modal de Canvio de Rol */}
+      <Modal
+        isOpen={isRoleChangeOpen}
+        onClose={() => setIsRoleChangeOpen(false)}
+        title="Canviar rol"
+        description="Selecciona el rol amb el qual vols accedir:"
+        icon={<ShieldCheck className="h-8 w-8" />}
+        variant="primary"
+        size="md"
+        footer={null}
+      >
+        <div className="px-2">
+          <RoleSelector roles={user?.user?.roles || []} onSelect={handleRoleChange} />
+        </div>
+      </Modal>
       {/* Modal de Cierre de Sesión */}
       <Modal
         isOpen={isLogoutOpen}

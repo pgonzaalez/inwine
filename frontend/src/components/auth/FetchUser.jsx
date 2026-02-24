@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {getCookie} from "@/utils/utils"
+import { getCookie } from "@/utils/utils";
 
 export function useFetchUser() {
   const [user, setUser] = useState(null);
@@ -9,30 +9,40 @@ export function useFetchUser() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = getCookie("token") // Obtener el token
+      const token = getCookie("token");
+
+      
       if (!token) {
-        setError("No token found");
+        setUser(null);
         setLoading(false);
         return;
       }
 
       try {
         const response = await fetch(`${apiUrl}/user`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Agregar token a la cabecera
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
+
+        
+        if (response.status === 401) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
 
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
 
         const data = await response.json();
-        setUser(data); // Establecer los datos del usuario
-      } catch (error) {
-        setError(error.message);
+        setUser(data);
+      } catch (err) {
+        console.error("User fetch error:", err);
+        setUser(null); // fallback
       } finally {
         setLoading(false);
       }

@@ -1,0 +1,62 @@
+= Generación de Recursos con Filament en Laravel
+
+== Comando para generar un recurso con CRUD automático
+
+Para crear un recurso Filament que genere automáticamente el CRUD, se utiliza el siguiente comando:
+
+[source,bash]
+----
+php artisan make:filament-resource NombreDelModelo --generate
+----
+
+Este comando crea las siguientes partes del recurso:
+
+== Estructura generada
+
+=== Pages
+
+Contiene las páginas principales del CRUD: listar, crear, editar, etc.  
+Aquí también se gestionan las relaciones con otros modelos.
+
+=== NombreDelModeloResource.php
+
+Este archivo es el núcleo del recurso. Dentro de él se hace referencia a las páginas, los formularios y las tablas.
+
+- Se define la relación entre el modelo y el recurso.
+- Se especifican las rutas, iconos, títulos, y configuración general del recurso.
+
+=== Formulario (Form)
+
+Se encuentra dentro del método `form()` del recurso o de sus páginas.  
+Define los campos que aparecerán en el formulario de creación/edición.
+
+Ejemplo:
+
+[source,php]
+----
+$form->schema([
+    TextInput::make('nombre'),
+    Select::make('categoria_id')->relationship('categoria', 'nombre'),
+]);
+----
+
+=== Tabla (Table)
+
+Se encuentra dentro del método `table()` del recurso o de sus páginas.  
+Define las columnas que se mostrarán en la vista de lista.
+
+Ejemplo:
+
+[source,php]
+----
+$table->columns([
+    TextColumn::make('nombre'),
+    TextColumn::make('categoria.nombre'),
+]);
+----
+
+== Notas
+
+- Las relaciones entre modelos se pueden configurar fácilmente en los campos del formulario usando `->relationship()`.
+- Es posible personalizar completamente el formulario y la tabla según sea necesario.
+

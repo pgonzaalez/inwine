@@ -8,7 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
@@ -49,6 +52,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return str_ends_with($this->email, 'polsantandreu@gmail.com') && $this->hasVerifiedEmail();
+    }
+
     public function restaurants()
     {
         return $this->hasOne(Restaurant::class);
@@ -75,9 +83,9 @@ class User extends Authenticatable
         return $this->hasOne(RequestRestaurant::class);
     }
 
-    public function requests()
+    public function orders()
     {
-        return $this->hasMany(Request::class);
+        return $this->hasMany(Order::class);
     }
 
     public function roles()
