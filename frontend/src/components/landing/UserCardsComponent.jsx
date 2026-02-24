@@ -1,8 +1,15 @@
 import { motion } from "framer-motion"
 import { Check } from "lucide-react"
 import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { useFetchUser } from "@components/auth/FetchUser";
+import { getCookie } from "@/utils/utils"
 
 export default function UserCards() {
+  const user = useFetchUser();
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -25,6 +32,43 @@ export default function UserCards() {
       },
     },
   }
+  
+  const handleRoleChange = async (role) => {
+    try {
+      const response = await fetch(`${apiUrl}/update-active-role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify({ role }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el rol activo");
+      }
+
+      setTimeout(() => {
+        switch (role) {
+          case "seller":
+            navigate("/seller/dashboard");
+            break;
+          case "restaurant":
+            navigate("/restaurant/dashboard");
+            break;
+          case "investor":
+            navigate("/investor/dashboard");
+            break;
+          default:
+            navigate("/login");
+        }
+      }, 500);
+    } catch (error) {
+      // console.error("Error updating active role:", error);
+      // Puedes manejar el error como prefieras
+    }
+  };
 
   // Card data
   const cards = [
@@ -36,6 +80,7 @@ export default function UserCards() {
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
       linkUrl: "/register/seller",
+      role: "seller",
       features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
     },
     {
@@ -45,7 +90,8 @@ export default function UserCards() {
       imageAlt: "Inversor",
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
-      linkUrl: "/register/inversor",
+      linkUrl: "/register/investor",
+      role: "investor",
       features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
     },
     {
@@ -56,6 +102,7 @@ export default function UserCards() {
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
       linkUrl: "/register/restaurant",
+      role: "restaurant",
       features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
     },
   ]
@@ -92,11 +139,19 @@ export default function UserCards() {
                     <p className="text-gray-700 text-sm leading-relaxed">{card.description}</p>
                   </div>
 
-                  <Link to={card.linkUrl}>
+                  {user.user?.roles?.includes(card.role) ? (
                     <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
-                      <span className="text-white text-sm font-medium">Comença</span>
+                      <button className="text-white text-sm font-medium" type="button" onClick={() => handleRoleChange(card.role)}>
+                        Obrir Perfil 
+                      </button>
                     </div>
-                  </Link>
+                  ) : (
+                    <Link to={user.user ? (user.user.active_role?.[0] + "/profile") : card.linkUrl}>
+                      <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
+                        <span className="text-white text-sm font-medium">Comença</span>
+                      </div>
+                    </Link>
+                  )}
 
                   <div className="mt-6">
                     <h4 className="text-black text-md font-medium mb-3">Característiques:</h4>

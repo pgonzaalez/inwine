@@ -72,7 +72,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="#"
+                  to="/blog"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Blog
@@ -80,7 +80,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/comunitat"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Comunitat
@@ -88,7 +88,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/idees"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Idees
@@ -96,7 +96,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/desenvolupadors"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Desenvolupadors
@@ -111,7 +111,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="#"
+                  to="/sobre-nosaltres"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Sobre nosaltres
@@ -119,7 +119,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/equip"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Equip
@@ -127,7 +127,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/influencers"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Influencers
@@ -135,7 +135,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/afiliats"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Afiliats
@@ -143,7 +143,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/mitjans"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Mitjans
@@ -151,7 +151,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/contacte"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Contacte
@@ -166,7 +166,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="#"
+                  to="/garantia"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Garantia
@@ -174,7 +174,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/declaracions-producte"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Declaracions de producte
@@ -182,7 +182,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/condicions"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Condicions d'ús
@@ -190,7 +190,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/privacitat"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Política de privacitat
@@ -198,7 +198,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  to="/cookies"
                   className="hover:text-gray-600 transition-colors"
                 >
                   Política de cookies

@@ -51,8 +51,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/request-product/{id}', [RequestRestaurantController::class, 'searchByProduct']);
     Route::apiResource('/restaurants', RequestRestaurantController::class);
     Route::apiResource('/orders', OrderController::class);
-    Route::get('/{userId}/orders', [OrderController::class, 'showOrderByUser']);
+    Route::get('{userId}/orders/', [OrderController::class, 'showOrderByUser']);
     Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
+    Route::delete('{userId}/orders/clear', [OrderController::class, 'clear']);
+
 
     // Rutas para los restaurantes
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);

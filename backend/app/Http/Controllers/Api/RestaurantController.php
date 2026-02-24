@@ -76,25 +76,25 @@ class RestaurantController extends Controller
 
             Log::info('Verificando si el usuario ya tiene rol de restaurante');
 
-            $sellerRole = UserRole::where('user_id', $user->id)
-                ->where('role', 'seller')
+            $restaurantRole = UserRole::where('user_id', $user->id)
+                ->where('role', 'restaurant')
                 ->first();
 
-            if (!$sellerRole) {
-                Log::info('Usuario no tiene rol de vendedor. Asignando rol...');
+            if (!$restaurantRole) {
+                Log::info('Usuario no tiene rol de restaurante. Asignando rol...');
                 UserRole::create([
                     'user_id' => $user->id,
-                    'role' => 'seller'
+                    'role' => 'restaurant'
                 ]);
             } else {
-                Log::info('Usuario ya tiene rol de vendedor');
+                Log::info('Usuario ya tiene rol de restaurante');
             }
 
             $restaurantData = [
                 'address' => $request->address,
                 'phone_contact' => $request->phone_contact,
                 'name_contact' => $request->name_contact,
-                'bank_account' => $request->bank_account,
+                'credit_card' => $request->credit_card,
             ];
 
             Log::info('Creando o actualizando datos del vendedor', ['restaurantData' => $restaurantData]);
@@ -109,12 +109,12 @@ class RestaurantController extends Controller
             Log::info('Información de vendedor guardada correctamente');
 
             return response()->json([
-                'message' => 'Información de vendedor actualizada correctamente',
+                'message' => 'Información de restaurante actualizada correctamente',
                 'seller' => $restaurantData
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error al guardar la información del vendedor', [
+            Log::error('Error al guardar la información del restaurante', [
                 'exception' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);

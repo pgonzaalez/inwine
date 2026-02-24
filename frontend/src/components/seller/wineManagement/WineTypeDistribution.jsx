@@ -17,7 +17,7 @@ const primaryColors = {
       case "espumós":
         return "#F2EFD3" // Color champán para espumoso
       case "dolç":
-        return "#E8D0B5" // Color ámbar para vino dulce
+        return "#EBBF99" // Color ámbar para vino dulce
       default:
         return `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
           primaryColors.dark.slice(3, 5),
@@ -28,11 +28,11 @@ const primaryColors = {
   
   export const WineTypeDistribution = ({ wines = [] }) => {
     // Contar vinos por tipo
-    const wineTypes = ["Negre", "Blanc", "Rossat", "Espumós", "Dolç", "Altres"]
+    const wineTypes = ["Negre", "Blanc", "Rossat", "Espumós", "Dolç"]
   
     const typeCount = wineTypes.reduce((acc, type) => {
       acc[type] = wines.filter(
-        (wine) => wine.wine_type?.toLowerCase() === type.toLowerCase() || (!wine.wine_type && type === "Altres"),
+        (wine) => wine.wine_type?.toLowerCase() === type.toLowerCase(),
       ).length
       return acc
     }, {})
@@ -54,7 +54,7 @@ const primaryColors = {
             return (
               <div key={type} className="flex items-center">
                 <div
-                  className="w-4 h-4 rounded-full mr-2 flex-shrink-0"
+                  className="w-4 h-4 rounded-full mr-2 flex-shrink-0 border-2 border-gray-300"
                   style={{
                     backgroundColor: getWineTypeColor(type.toLowerCase()),
                   }}
@@ -66,7 +66,7 @@ const primaryColors = {
                       {count} ({percentage}%)
                     </span>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                  <div className="w-full bg-gray-300 rounded-full border-2 border-gray-300 h-3 overflow-hidden">
                     <div
                       className="h-full rounded-full"
                       style={{

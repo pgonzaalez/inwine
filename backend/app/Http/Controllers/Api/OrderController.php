@@ -19,6 +19,18 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
+    public function clearForUser(Request $request, $userId)
+    {
+        $orderIds = $request->selectedOrderIds ?? [];
+
+        Order::where('user_id', $userId)
+            ->whereIn('id', $orderIds)
+            ->delete();
+
+        return response()->json(['message' => 'Cart cleared']);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */
