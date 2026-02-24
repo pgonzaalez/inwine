@@ -16,7 +16,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "@/utils/utils"
 
+import { useTranslation } from "react-i18next";
+
 const AddInvestorForm = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -104,7 +107,7 @@ const AddInvestorForm = () => {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.message || "Error al iniciar sessió");
+                throw new Error(result.message || t("auth.login.error_generic"));
             }
 
             setCookie("token", result.token, 7);
@@ -129,7 +132,7 @@ const AddInvestorForm = () => {
 
         // Validar formulario antes de enviar
         if (!validateForm()) {
-            setMessage("Por favor, corrige los errores en el formulario antes de continuar.");
+            setMessage(t("auth.register.error_validation"));
             setMessageType("error");
             return;
         }
@@ -151,19 +154,19 @@ const AddInvestorForm = () => {
             if (!response.ok) {
                 if (response.status === 422) {
                     setErrors(data.errors || {});
-                    setMessage("Hay errores de validación en el formulario. Revisa los campos.");
+                    setMessage(t("auth.register.error_validation"));
                     setMessageType("error");
                 } else if (response.status === 409) {
-                    setMessage("Ya existe un usuario con este email o NIF. Por favor, utiliza datos diferentes.");
+                    setMessage(t("auth.register.error_conflict"));
                     setMessageType("error");
                 } else if (response.status === 403) {
-                    setMessage("No tienes permisos para realizar esta acción.");
+                    setMessage(t("auth.register.error_forbidden"));
                     setMessageType("error");
                 } else {
-                    throw new Error(data.message || "Error al crear el inversor");
+                    throw new Error(data.message || t("auth.register.error_generic"));
                 }
             } else {
-                setMessage("¡Inversor registrado exitosamente! Redirigiendo...");
+                setMessage(t("auth.register.success_investor"));
                 setMessageType("success");
 
                 //Realizar login una vez registrado
@@ -189,7 +192,7 @@ const AddInvestorForm = () => {
             }
         } catch (error) {
             setMessage(
-                `Error: ${error.message || "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde."}`,
+                `Error: ${error.message || t("auth.register.error_generic")}`,
             );
             setMessageType("error");
         } finally {
@@ -225,12 +228,12 @@ const AddInvestorForm = () => {
                             >
                                 <CornerDownLeft size={20} className="cursor-pointer" />
                             </button>
-                            <h1 className="text-2xl font-bold text-center w-full">Crear compte d'usuari inversor</h1>
+                            <h1 className="text-2xl font-bold text-center w-full">{t("auth.register.investor_title")}</h1>
                         </div>
                         <h4 className="text-gray-600 text-center">
-                            Tens un compte?{" "}
+                            {t("auth.register.have_account")}{" "}
                             <a href="/login" className="text-[#741C28]">
-                                Inicia sessió
+                                {t("auth.register.login_link")}
                             </a>
                         </h4>
                     </div>
@@ -259,7 +262,7 @@ const AddInvestorForm = () => {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <h2 className="text-lg font-semibold mb-4">Informació dades personals</h2>
+                                <h2 className="text-lg font-semibold mb-4">{t("auth.register.personal_info")}</h2>
                                 <div className="space-y-2">
                                     {/* Nombre */}
                                     <div className="relative">
@@ -285,7 +288,7 @@ const AddInvestorForm = () => {
                                                 className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("name") ? "text-red-500" : "text-gray-500"
                                                     }`}
                                             >
-                                                Nom usuari
+                                                {t("auth.register.labels.name")}
                                             </label>
                                         </div>
                                     </div>
@@ -317,7 +320,7 @@ const AddInvestorForm = () => {
                                                 className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("NIF") ? "text-red-500" : "text-gray-500"
                                                     }`}
                                             >
-                                                NIF
+                                                {t("auth.register.labels.nif")}
                                             </label>
                                         </div>
                                     </div>
@@ -350,7 +353,7 @@ const AddInvestorForm = () => {
                                                 className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("address") ? "text-red-500" : "text-gray-500"
                                                     }`}
                                             >
-                                                Adreça
+                                                {t("auth.register.labels.address")}
                                             </label>
                                         </div>
                                     </div>
@@ -385,7 +388,7 @@ const AddInvestorForm = () => {
                                                 className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("phone") ? "text-red-500" : "text-gray-500"
                                                     }`}
                                             >
-                                                Telèfon contacte
+                                                {t("auth.register.labels.phone")}
                                             </label>
                                         </div>
                                     </div>
@@ -398,7 +401,7 @@ const AddInvestorForm = () => {
                             </div>
 
                             <div>
-                                <h2 className="text-lg font-semibold mb-4">Informació inici de sessió</h2>
+                                <h2 className="text-lg font-semibold mb-4">{t("auth.register.login_info")}</h2>
                                 <div className="space-y-2">
                                     {/* Email */}
                                     <div className="relative">
@@ -426,7 +429,7 @@ const AddInvestorForm = () => {
                                                 className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("email") ? "text-red-500" : "text-gray-500"
                                                     }`}
                                             >
-                                                Email
+                                                {t("auth.register.labels.email")}
                                             </label>
                                         </div>
                                     </div>
@@ -462,7 +465,7 @@ const AddInvestorForm = () => {
                                                 className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("password") ? "text-red-500" : "text-gray-500"
                                                     }`}
                                             >
-                                                Contrasenya
+                                                {t("auth.register.labels.password")}
                                             </label>
                                         </div>
                                     </div>
@@ -476,7 +479,7 @@ const AddInvestorForm = () => {
                         </div>
 
                         <div>
-                            <h2 className="text-lg font-semibold mb-4">Informació dades bancàries</h2>
+                            <h2 className="text-lg font-semibold mb-4">{t("auth.register.bank_info")}</h2>
                             <div className="space-y-2">
                                 {/* Tarjeta de crédito */}
                                 <div className="relative">
@@ -503,7 +506,7 @@ const AddInvestorForm = () => {
                                             className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("credit_card") ? "text-red-500" : "text-gray-500"
                                                 }`}
                                         >
-                                            Tarjeta de crédito
+                                            {t("auth.register.labels.credit_card")}
                                         </label>
                                     </div>
                                 </div>
@@ -538,7 +541,7 @@ const AddInvestorForm = () => {
                                             className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("bank_account") ? "text-red-500" : "text-gray-500"
                                                 }`}
                                         >
-                                            Número compte
+                                            {t("auth.register.labels.bank_account")}
                                         </label>
                                     </div>
                                 </div>
@@ -558,10 +561,10 @@ const AddInvestorForm = () => {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Procesando...
+                                    {t("auth.register.loading")}
                                 </>
                             ) : (
-                                "Agregar Inversor"
+                                t("auth.register.submit_investor")
                             )}
                         </button>
                     </form>

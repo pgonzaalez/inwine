@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import { X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 export default function ResponsiveModal({
   isOpen,
@@ -20,6 +21,7 @@ export default function ResponsiveModal({
   className = "",
   mobileFullScreen = false, // Si es true, en móvil ocupa toda la pantalla en lugar de ser un drawer
 }) {
+  const { t } = useTranslation()
   const [isMobile, setIsMobile] = useState(false)
 
   // Detectar si es dispositivo móvil
@@ -137,7 +139,7 @@ export default function ResponsiveModal({
                       type="button"
                       onClick={onClose}
                       className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none"
-                      aria-label="Cerrar"
+                      aria-label={t("common.close", "Tancar")}
                     >
                       <X className="h-5 w-5" />
                     </button>
@@ -220,7 +222,7 @@ export default function ResponsiveModal({
                       type="button"
                       onClick={onClose}
                       className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none"
-                      aria-label="Cerrar"
+                      aria-label={t("common.close", "Tancar")}
                     >
                       <X className="h-5 w-5" />
                     </button>

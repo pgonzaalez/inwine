@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import {
@@ -16,10 +16,15 @@ import {
   AlertTriangle,
   ShieldCheck
 } from "lucide-react"
+import { useTranslation } from "react-i18next";
 import { useFetchUser } from "@components/auth/FetchUser"
 import { getCookie, deleteCookie } from "@/utils/utils"
 import Modal from "@components/Modal";
 import RoleSelector from "@/components/RoleSelector"
+
+import flagCA from "@/img/locales/cataluña.png";
+import flagES from "@/img/locales/espana.png";
+import flagEN from "@/img/locales/reino-unido.png";
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -28,6 +33,7 @@ const primaryColors = {
 }
 
 export default function Sidebar() {
+  const { t, i18n } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const apiUrl = import.meta.env.VITE_API_URL
@@ -106,6 +112,61 @@ export default function Sidebar() {
     }
   };
 
+  const LanguageSelector = () => {
+    const [isLangOpen, setIsLangOpen] = useState(false);
+    const langRef = useRef(null);
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (langRef.current && !langRef.current.contains(event.target)) {
+          setIsLangOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const languages = [
+      { code: 'ca', label: 'CA', flag: flagCA },
+      { code: 'es', label: 'ES', flag: flagES },
+      { code: 'en', label: 'EN', flag: flagEN }
+    ];
+
+    const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
+
+    return (
+      <div className="relative" ref={langRef}>
+        <button
+          onClick={() => setIsLangOpen(!isLangOpen)}
+          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100 overflow-hidden ring-1 ring-gray-200"
+          title={t("languages." + i18n.language)}
+        >
+          <img src={currentLang.flag} alt={currentLang.label} className="h-4 w-6 object-cover rounded-sm" />
+        </button>
+
+        {isLangOpen && (
+          <div className="absolute left-0 bottom-full mb-2 w-32 origin-bottom-left rounded-lg shadow-lg bg-white ring-1 ring-gray-200 py-1 z-50">
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  i18n.changeLanguage(lang.code);
+                  setIsLangOpen(false);
+                }}
+                className={`flex w-full items-center px-4 py-2 text-sm transition-colors hover:bg-gray-50 ${
+                  i18n.language === lang.code ? "font-bold text-[#9A3E50]" : "text-gray-700"
+                }`}
+              >
+                <img src={lang.flag} alt={lang.label} className="h-3 w-5 mr-3 object-cover rounded-sm" />
+                {lang.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   if (loading)
     return (
       <div className="flex items-center justify-center h-screen">
@@ -136,12 +197,12 @@ export default function Sidebar() {
     navItems = [
       {
         icon: Home,
-        label: "Inici",
+        label: t("sidebar.nav.home"),
         path: `/restaurant/dashboard`,
       },
       {
         icon: Wine,
-        label: "Tornar a la web",
+        label: t("sidebar.nav.back_to_web"),
         path: `/`,
       },
       // {
@@ -166,13 +227,13 @@ export default function Sidebar() {
       // },
       {
         icon: User,
-        label: "Perfil",
+        label: t("sidebar.nav.profile"),
         path: `/restaurant/profile`,
         divider: true,
       },
       {
         icon: Settings,
-        label: "Configuració",
+        label: t("sidebar.nav.settings"),
         path: `/restaurant/settings`,
       },
     ]
@@ -181,12 +242,12 @@ export default function Sidebar() {
     mobileNavItems = [
       {
         icon: Home,
-        label: "Inici",
+        label: t("sidebar.nav.home"),
         path: `/restaurant/dashboard`,
       },
       {
         icon: Wine,
-        label: "Tornar a la web",
+        label: t("sidebar.nav.back_to_web"),
         path: `/`,
       },
       // {
@@ -201,7 +262,7 @@ export default function Sidebar() {
       // },
       {
         icon: LogOut,
-        label: "Tancar sessió",
+        label: t("sidebar.nav.logout"),
         action: () => setIsLogoutOpen(true)
       },
     ]
@@ -210,17 +271,17 @@ export default function Sidebar() {
     navItems = [
       {
         icon: Home,
-        label: "Inici",
+        label: t("sidebar.nav.home"),
         path: `/investor/dashboard`,
       }, 
       {
         icon: FileQuestion,
-        label: "Històric",
+        label: t("sidebar.nav.history"),
         path: "/investor/historic",
       },
       {
         icon: Wine,
-        label: "Tornar a la web",
+        label: t("sidebar.nav.back_to_web"),
         path: `/`,
       },
       // {
@@ -230,13 +291,13 @@ export default function Sidebar() {
       // },
       {
         icon: User,
-        label: "Perfil",
+        label: t("sidebar.nav.profile"),
         path: `/investor/profile`,
         divider: true,
       },
       {
         icon: Settings,
-        label: "Configuració",
+        label: t("sidebar.nav.settings"),
         path: `/investor/settings`,
       },
     ]
@@ -245,12 +306,12 @@ export default function Sidebar() {
     mobileNavItems = [
       {
         icon: Home,
-        label: "Inici",
+        label: t("sidebar.nav.home"),
         path: `/investor/dashboard`,
       },
       {
         icon: FileQuestion,
-        label: "Històric",
+        label: t("sidebar.nav.history"),
         path: "/investor/historic",
       },
       // {
@@ -260,7 +321,7 @@ export default function Sidebar() {
       // },
       {
         icon: LogOut,
-        label: "Tancar sessió",
+        label: t("sidebar.nav.logout"),
         action: () => setIsLogoutOpen(true)
       },
     ]
@@ -270,17 +331,17 @@ export default function Sidebar() {
     navItems = [
       {
         icon: Home,
-        label: "Inici",
+        label: t("sidebar.nav.home"),
         path: `/seller/dashboard`,
       },
       {
         icon: BookmarkPlus,
-        label: "Pujar Producte",
+        label: t("sidebar.nav.upload_product"),
         path: "/create",
       },
       {
         icon: ShoppingCart,
-        label: "Productes",
+        label: t("sidebar.nav.products"),
         path: `/seller/products`,
       },
       // {
@@ -290,18 +351,18 @@ export default function Sidebar() {
       // },
       {
         icon: Wine,
-        label: "Tornar a la web",
+        label: t("sidebar.nav.back_to_web"),
         path: `/`,
       },
       {
         icon: User,
-        label: "Perfil",
+        label: t("sidebar.nav.profile"),
         path: `/seller/profile`,
         divider: true,
       },
       {
         icon: Settings,
-        label: "Configuració",
+        label: t("sidebar.nav.settings"),
         path: `/seller/settings`,
       },
     ]
@@ -310,17 +371,17 @@ export default function Sidebar() {
     mobileNavItems = [
       {
         icon: Home,
-        label: "Inici",
+        label: t("sidebar.nav.home"),
         path: `/seller/dashboard`,
       },
       {
         icon: BookmarkPlus,
-        label: "Pujar",
+        label: t("sidebar.nav.upload"),
         path: "/create",
       },
       {
         icon: ShoppingCart,
-        label: "Productes",
+        label: t("sidebar.nav.products"),
         path: `/seller/products`,
       },
       // {
@@ -330,7 +391,7 @@ export default function Sidebar() {
       // },
       {
         icon: LogOut,
-        label: "Tancar sessió",
+        label: t("sidebar.nav.logout"),
         action: () => setIsLogoutOpen(true)
       },
     ]
@@ -358,7 +419,7 @@ export default function Sidebar() {
               <User size={18} />
             </div>
             <div>
-              <p className="font-medium text-gray-900 break-words max-w-[180px]">{user ? user.name : "Usuari Desconegut"}</p>
+              <p className="font-medium text-gray-900 break-words max-w-[180px]">{user ? user.name : t("sidebar.user_unknown")}</p>
               <p className="text-sm text-gray-500 break-words max-w-[180px]">{user?.email || "email@example.com"}</p>
             </div>
           </div>
@@ -387,14 +448,18 @@ export default function Sidebar() {
         </nav>
 
         {/* Role & Logout button */}
-        <div className="p-4 border-t" style={{ borderColor: primaryColors.light }}>
+        <div className="p-4 border-t space-y-1" style={{ borderColor: primaryColors.light }}>
+          <div className="flex items-center space-x-3 px-4 py-2 border-b border-gray-50 mb-1">
+            <LanguageSelector />
+            <span className="text-sm font-medium text-gray-700">{t("sidebar.nav.language", "Idioma")}</span>
+          </div>
           {hasMultipleRoles && (
             <button
               onClick={() => setIsRoleChangeOpen(true)}
               className="flex w-full items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
             >
               <ShieldCheck size={18} />
-              <span>Canviar rol</span>
+              <span>{t("sidebar.nav.change_role")}</span>
             </button>
           )}
           <button
@@ -402,7 +467,7 @@ export default function Sidebar() {
             className="flex w-full items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200"
           >
             <LogOut size={18} />
-            <span>Tancar sessió</span>
+            <span>{t("sidebar.nav.logout")}</span>
           </button>
         </div>
       </aside>
@@ -442,14 +507,18 @@ export default function Sidebar() {
             </Link>
           ),
         )}
-      </nav>
+          <div className="flex flex-col items-center justify-center p-2">
+            <LanguageSelector />
+            <span className="text-[10px] mt-1 text-gray-500">{t("sidebar.nav.language", "Idioma")}</span>
+          </div>
+        </nav>
 
       {/* Modal de Cierre de Sesión */}
       <Modal
         isOpen={isLogoutOpen}
         onClose={() => setIsLogoutOpen(false)}
-        title="Tancar sessió?"
-        description="Estàs segur que vols tancar la teva sessió actual?"
+        title={t("sidebar.modals.logout.title")}
+        description={t("sidebar.modals.logout.description")}
         icon={<LogOut className="h-8 w-8" />}
         variant="danger"
         size="md"
@@ -459,13 +528,13 @@ export default function Sidebar() {
               onClick={() => setIsLogoutOpen(false)}
               className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              Cancel·lar
+              {t("sidebar.modals.logout.cancel")}
             </button>
             <button
               onClick={handleLogout}
               className="flex items-center justify-center rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2.5 text-sm font-medium text-white hover:from-red-600 hover:to-red-700"
             >
-              Tancar sessió
+              {t("sidebar.modals.logout.confirm")}
             </button>
           </div>
         }
@@ -473,7 +542,7 @@ export default function Sidebar() {
         <div className="flex items-start rounded-lg bg-amber-50 p-4">
           <AlertTriangle className="mr-3 h-5 w-5 text-amber-500" />
           <p className="text-sm text-amber-700">
-            Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al teu compte.
+            {t("sidebar.modals.logout.warning")}
           </p>
         </div>
       </Modal>
@@ -482,8 +551,8 @@ export default function Sidebar() {
       <Modal
         isOpen={isRoleChangeOpen}
         onClose={() => setIsRoleChangeOpen(false)}
-        title="Canviar rol"
-        description="Selecciona el rol amb el qual vols accedir:"
+        title={t("sidebar.modals.change_role.title")}
+        description={t("sidebar.modals.change_role.description")}
         icon={<ShieldCheck className="h-8 w-8" />}
         variant="primary"
         size="md" // Cambiado a lg para que quede mejor el RoleSelector

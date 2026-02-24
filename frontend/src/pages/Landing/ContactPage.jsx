@@ -3,8 +3,11 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, MessageSquare } from "lucide-react";
 import Footer from "@components/FooterComponent";
 import AIChatComponent from "@components/AIChatComponent";
+import { useTranslation } from "react-i18next";
 
 export default function ContactPage() {
+  const { t } = useTranslation();
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
@@ -13,21 +16,21 @@ export default function ContactPage() {
   const contactInfo = [
     {
       icon: <Phone className="w-6 h-6" />,
-      title: "Telèfon",
+      title: t("landing.contact.phone.title"),
       detail: "+34 937 12 34 56",
-      description: "Dilluns a Divendres, 9:00 - 18:00",
+      description: t("landing.contact.phone.desc"),
     },
     {
       icon: <Mail className="w-6 h-6" />,
-      title: "Correu Electrònic",
+      title: t("landing.contact.email.title"),
       detail: "info@inwine.cat",
-      description: "Et respondrem en menys de 24 hores",
+      description: t("landing.contact.email.desc"),
     },
     {
       icon: <MapPin className="w-6 h-6" />,
-      title: "Oficina Central",
+      title: t("landing.contact.office.title"),
       detail: "Carrer del Sol, 1, 08201 Sabadell",
-      description: "Barcelona, Espanya",
+      description: t("landing.contact.office.desc"),
     },
   ];
 
@@ -43,11 +46,10 @@ export default function ContactPage() {
             variants={fadeInUp}
           >
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Contacta amb <span className="text-[#9A3E50]">InWine</span>
+              {t("landing.contact.title")} <span className="text-[#9A3E50]">InWine</span>
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Tens algun dubte sobre els nostres serveis o vols formar part de la nostra comunitat? 
-              Estem aquí per ajudar-te.
+              {t("landing.contact.subtitle")}
             </p>
           </motion.div>
 
@@ -90,10 +92,9 @@ export default function ContactPage() {
               >
                 <div className="relative z-10">
                   <MessageSquare className="w-10 h-10 mb-4 opacity-50" />
-                  <h3 className="text-xl font-bold mb-2">Suport Personalitzat</h3>
+                  <h3 className="text-xl font-bold mb-2">{t("landing.contact.support.title")}</h3>
                   <p className="text-white/80 text-sm">
-                    El nostre equip d'experts en vi està disponible per assessorar-te 
-                    en tot moment.
+                    {t("landing.contact.support.desc")}
                   </p>
                 </div>
                 <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>

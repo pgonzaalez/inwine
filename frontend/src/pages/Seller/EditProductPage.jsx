@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate, useParams } from "react-router-dom" 
 import { useFetchUser } from "@components/auth/FetchUser"
+import { useTranslation } from "react-i18next"
 import { ProgressBar } from "@/components/product/ProgressBar"
 import { WineTypeSelector } from "@/components/product/WineTypeSelector"
 import { WineDetailsForm } from "@/components/product/WineDetailsForm"
@@ -10,6 +11,7 @@ import { validateStep } from "@/utils/form-validation"
 export default function EditProduct() {
   const { id: productId } = useParams();
   const { user, loading } = useFetchUser()
+  const { t } = useTranslation()
   const [wineTypes, setWineTypes] = useState([])
   const [formData, setFormData] = useState({
     name: "",
@@ -60,7 +62,7 @@ export default function EditProduct() {
         const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`);
         
         if (!response.ok) {
-          throw new Error("No se pudo obtener la información del producto");
+          throw new Error(t("dashboards.seller.product.error_fetch"));
         }
         
         const data = await response.json();
@@ -112,7 +114,7 @@ export default function EditProduct() {
       } catch (error) {
         // console.error("Error al cargar el producto:", error);
         navigate('/seller/dashboard', { 
-          state: { errorMessage: "No se pudo cargar el producto para editar" } 
+          state: { errorMessage: t("dashboards.seller.product.error_fetch") } 
         });
       } finally {
         setIsLoading(false);
@@ -351,11 +353,11 @@ export default function EditProduct() {
         if (response.status === 422) {
           setErrors(data.errors)
         } else {
-          throw new Error("Error al actualizar el producto")
+          throw new Error(t("dashboards.seller.product.error_edit"))
         }
       } else {
         navigate(`/seller/dashboard`, {
-          state: { successMessage: "Producto actualizado correctamente" }
+          state: { successMessage: t("dashboards.seller.product.success_edit") }
         })
       }
     } catch (error) {
@@ -368,7 +370,7 @@ export default function EditProduct() {
       <div className="flex-1 md:ml-[245px] p-8 flex justify-center items-center h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9A3E50] mx-auto"></div>
-          <p className="mt-4 text-gray-700">Carregant producte...</p>
+          <p className="mt-4 text-gray-700">{t("dashboards.seller.product.loading")}</p>
         </div>
       </div>
     );

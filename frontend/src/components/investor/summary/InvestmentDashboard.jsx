@@ -9,6 +9,7 @@ import { InvestmentReturnChart } from "./InvestmentReturnChart"
 import { InvestmentOriginChart } from "./InvestmentOriginChart"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/tabs"
 import { Calendar, BarChartIcon as ChartBar, CircleDollarSign, Map } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -18,6 +19,7 @@ const primaryColors = {
 }
 
 function InvestmentDashboardComponent() {
+  const { t } = useTranslation()
   const [investments, setInvestments] = useState([])
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -38,7 +40,7 @@ function InvestmentDashboardComponent() {
       const token = getCookie("token")
 
       if (!token) {
-        setNotification("No s'ha trobat el token d'autenticació.")
+        setNotification(t("dashboards.investor.summary.messages.no_token", "No s'ha trobat el token d'autenticació."))
         setIsLoading(false)
         return
       }
@@ -51,7 +53,7 @@ function InvestmentDashboardComponent() {
       })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut connectar amb el servidor")
+        throw new Error(t("dashboards.investor.summary.messages.error_server", "No s'ha pogut connectar amb el servidor"))
       }
 
       const data = await response.json()
@@ -59,7 +61,7 @@ function InvestmentDashboardComponent() {
       setNotification(null)
     } catch (err) {
       setError(err.message)
-      setNotification("Hi ha hagut un error carregant les inversions.")
+      setNotification(t("dashboards.investor.summary.messages.error_fetch", "Hi ha hagut un error carregant les inversions."))
     } finally {
       setIsLoading(false)
     }
@@ -109,7 +111,7 @@ function InvestmentDashboardComponent() {
     // Agrupar por origen para el gráfico de origen
     const originData = {}
     investments.forEach((inv) => {
-      const origin = inv.product.origin || "Desconegut"
+      const origin = inv.product.origin || t("dashboards.investor.details.messages.not_specified", "Desconegut")
       if (!originData[origin]) {
         originData[origin] = {
           origin,
@@ -159,7 +161,7 @@ function InvestmentDashboardComponent() {
 
       <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          Dashboard d'Inversions
+          {t("dashboards.investor.summary.title")}
         </h1>
       </div>
 
@@ -172,46 +174,46 @@ function InvestmentDashboardComponent() {
           <TabsList className="grid grid-cols-4 mb-4">
             <TabsTrigger value="timeline" className="flex items-center gap-2">
               <Calendar size={16} />
-              <span className="hidden sm:inline">Evolució Temporal</span>
+              <span className="hidden sm:inline">{t("dashboards.investor.summary.tabs.timeline")}</span>
             </TabsTrigger>
             <TabsTrigger value="status" className="flex items-center gap-2">
               <ChartBar size={16} />
-              <span className="hidden sm:inline">Estat</span>
+              <span className="hidden sm:inline">{t("dashboards.investor.summary.tabs.status")}</span>
             </TabsTrigger>
             <TabsTrigger value="return" className="flex items-center gap-2">
               <CircleDollarSign size={16} />
-              <span className="hidden sm:inline">Retorn</span>
+              <span className="hidden sm:inline">{t("dashboards.investor.summary.tabs.return")}</span>
             </TabsTrigger>
             <TabsTrigger value="origin" className="flex items-center gap-2">
               <Map size={16} />
-              <span className="hidden sm:inline">Origen</span>
+              <span className="hidden sm:inline">{t("dashboards.investor.summary.tabs.origin")}</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="timeline" className="bg-white p-4 rounded-xl shadow-sm">
             <h2 className="text-xl font-bold mb-4" style={{ color: primaryColors.dark }}>
-              Evolució de les Inversions
+              {t("dashboards.investor.summary.charts.evolution")}
             </h2>
             <InvestmentTimelineChart data={chartData.timelineData} />
           </TabsContent>
 
           <TabsContent value="status" className="bg-white p-4 rounded-xl shadow-sm">
             <h2 className="text-xl font-bold mb-4" style={{ color: primaryColors.dark }}>
-              Distribució per Estat
+              {t("dashboards.investor.summary.charts.distribution")}
             </h2>
             <InvestmentStatusChart data={chartData.statusData} />
           </TabsContent>
 
           <TabsContent value="return" className="bg-white p-4 rounded-xl shadow-sm">
             <h2 className="text-xl font-bold mb-4" style={{ color: primaryColors.dark }}>
-              Inversió vs Retorn Potencial
+              {t("dashboards.investor.summary.charts.comparison")}
             </h2>
             <InvestmentReturnChart data={chartData.returnData} />
           </TabsContent>
 
           <TabsContent value="origin" className="bg-white p-4 rounded-xl shadow-sm">
             <h2 className="text-xl font-bold mb-4" style={{ color: primaryColors.dark }}>
-              Inversions per Origen
+              {t("dashboards.investor.summary.charts.by_origin")}
             </h2>
             <InvestmentOriginChart data={chartData.originData} />
           </TabsContent>

@@ -7,8 +7,10 @@ import FilterSidebar from "@/components/landing/products/FilterSection"
 import ProductGrid from "@/components/landing/products/ProductGrid"
 import RestaurantGrid from "@/components/landing/products/RestaurantGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
+import { useTranslation } from "react-i18next";
 
 export default function ProductPage() {
+  const { t } = useTranslation();
   // State for filters and tabs
   const [selectedType, setSelectedType] = useState("")
   const [priceRange, setPriceRange] = useState([0, 10000])
@@ -443,14 +445,14 @@ export default function ProductPage() {
               <div className="bg-white rounded-xl shadow-md p-6 mb-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                   <h2 className="text-2xl font-bold text-gray-800">
-                    {activeFilter === "Productors" ? "Vins disponibles" : "Demandes de restaurants"}
+                    {activeFilter === "Productors" ? t("landing.products.title_products") : t("landing.products.title_requests")}
                   </h2>
                   <div className="flex items-center gap-4 w-full sm:w-auto">
                     {/* Search input */}
                     <div className="relative flex-1 sm:w-64">
                       <input
                         type="text"
-                        placeholder="Cerca per nom, tipus..."
+                        placeholder={t("landing.products.search_placeholder")}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full py-2 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9A3E50] focus:border-transparent"
@@ -462,14 +464,14 @@ export default function ProductPage() {
                       onClick={() => setShowFilters(true)}
                     >
                       <Filter size={16} />
-                      Filtres
+                      {t("landing.products.btn_filters")}
                     </button>
                     <button
                       onClick={resetFilters}
                       className="flex-none text-[#9A3E50] font-medium text-sm bg-[#9A3E50]/5 hover:bg-[#9A3E50]/10 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
                     >
                       <X size={16} />
-                      Restablir
+                      {t("landing.products.btn_reset")}
                     </button>
                   </div>
                 </div>

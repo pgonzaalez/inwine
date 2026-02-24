@@ -1,6 +1,7 @@
 "use client"
 
 import { ChevronDown, ChevronUp, X } from "lucide-react"
+import { useTranslation } from "react-i18next";
 
 export default function FilterSidebar({
   showFilters,
@@ -20,6 +21,8 @@ export default function FilterSidebar({
   toggleWinery,
   toggleZone,
 }) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={`md:w-72 transition-all duration-300 ${
@@ -28,7 +31,7 @@ export default function FilterSidebar({
     >
       <div className="sticky top-4 bg-white rounded-xl shadow-md overflow-hidden">
         <div className="p-4 bg-[#9A3E50] text-white flex justify-between items-center">
-          <h3 className="font-medium">Filtres</h3>
+          <h3 className="font-medium">{t("landing.products.filters.title")}</h3>
           <button className="md:hidden" onClick={() => setShowFilters(false)}>
             <X size={18} />
           </button>
@@ -38,7 +41,7 @@ export default function FilterSidebar({
           {/* Wine types */}
           <div className="border-b border-gray-100 pb-4">
             <button className="w-full flex justify-between items-center mb-2" onClick={() => toggleAccordion("tipo")}>
-              <h3 className="font-medium text-gray-800">Tipus de vi</h3>
+              <h3 className="font-medium text-gray-800">{t("landing.products.filters.wine_type")}</h3>
               {openAccordion.tipo ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
             {openAccordion.tipo && (
@@ -50,7 +53,7 @@ export default function FilterSidebar({
                     } p-3 flex items-center justify-center transition-all duration-300`}
                     onClick={() => setSelectedType("")}
                   >
-                    <span className="text-sm font-medium">Tots els tipus</span>
+                    <span className="text-sm font-medium">{t("landing.products.filters.all_types")}</span>
                   </button>
                 </div>
                 {wineTypes.map((type) => (
@@ -79,7 +82,7 @@ export default function FilterSidebar({
           {/* Price range */}
           <div className="border-b border-gray-100 pb-4">
             <button className="w-full flex justify-between items-center mb-2" onClick={() => toggleAccordion("precio")}>
-              <h3 className="font-medium text-gray-800">Preu</h3>
+              <h3 className="font-medium text-gray-800">{t("landing.products.filters.price")}</h3>
               {openAccordion.precio ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
             {openAccordion.precio && (
@@ -94,8 +97,8 @@ export default function FilterSidebar({
                     className="w-full h-1 bg-gray-200 rounded-full appearance-none cursor-pointer accent-[#9A3E50]"
                   />
                   <div className="flex justify-between mt-2 text-xs text-gray-500">
-                    <span>De {priceRange[0]},00 €</span>
-                    <span>fins {Math.min(priceRange[1], 2000)},00 €</span>
+                    <span>{t("landing.products.filters.price_from")} {priceRange[0]},00 €</span>
+                    <span>{t("landing.products.filters.price_to")} {Math.min(priceRange[1], 2000)},00 €</span>
                   </div>
                 </div>
               </div>
@@ -105,7 +108,7 @@ export default function FilterSidebar({
           {/* Location */}
           <div>
             <button className="w-full flex justify-between items-center mb-2" onClick={() => toggleAccordion("zona")}>
-              <h3 className="font-medium text-gray-800">{activeFilter === "Productors" ? "Celler" : "Restaurant"}</h3>
+              <h3 className="font-medium text-gray-800">{activeFilter === "Productors" ? t("landing.products.filters.winery") : t("landing.products.filters.restaurant")}</h3>
               {openAccordion.zona ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
             {openAccordion.zona && (

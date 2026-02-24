@@ -1,9 +1,12 @@
+import { useTranslation } from "react-i18next"
+
 export const WineTypeSelector = ({ wineTypes, selectedTypeId, onSelect, error }) => {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg shadow-md">
       <div className="w-full bg-gradient-to-r from-[#F5E6E8] to-[#E8D5D5] p-4 rounded-t-lg border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-[#8C2E2E]">Tria la categoria</h2>
-        <p className="text-sm text-gray-600">Selecciona una opció d'aquest vins per escollir la categoria</p>
+        <h2 className="text-lg font-semibold text-[#8C2E2E]">{t("dashboards.seller.product.type_selector_title")}</h2>
+        <p className="text-sm text-gray-600">{t("dashboards.seller.product.type_selector_desc")}</p>
       </div>
       <div className="p-8">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">

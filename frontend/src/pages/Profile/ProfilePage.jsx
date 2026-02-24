@@ -5,8 +5,10 @@ import RestaurantForm from "@/components/profile/RestaurantForm";
 import InvestorForm from "@/components/profile/InvestorForm";
 import SellerForm from "@/components/profile/SellerForm";
 import { useFetchUser } from "@/components/auth/FetchUser";
+import { useTranslation } from "react-i18next";
 
 export default function ProfilePage() {
+  const { t } = useTranslation("profile");
   const [activeTab, setActiveTab] = useState("profile");
   const [userRoles, setUserRoles] = useState([]);
   const { user, loading } = useFetchUser();
@@ -71,14 +73,9 @@ export default function ProfilePage() {
           style={{ backgroundColor: primaryColors.background }}
         >
           <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
-            <h1
-              className="text-2xl font-bold"
-              style={{ color: primaryColors.dark }}
-            >
-              El Meu Perfil
-            </h1>
-            <p className="text-gray-500">
-              Gestiona la teva informació personal i rols en la plataforma
+            <h1 className="text-3xl font-bold text-gray-800">{t("profile.title")}</h1>
+            <p className="mt-2 text-gray-600">
+                {t("profile.subtitle")}
             </p>
           </div>
 
@@ -100,7 +97,7 @@ export default function ProfilePage() {
                     : {}
                 }
               >
-                Perfil
+                {t("profile.tabs.profile")}
               </button>
 
               {userRoles.includes("restaurant") && (
@@ -119,7 +116,7 @@ export default function ProfilePage() {
                       : {}
                   }
                 >
-                  Restaurant
+                  {t("profile.tabs.restaurant")}
                 </button>
               )}
 
@@ -139,7 +136,7 @@ export default function ProfilePage() {
                       : {}
                   }
                 >
-                  Inversor
+                  {t("profile.tabs.investor")}
                 </button>
               )}
 
@@ -159,7 +156,7 @@ export default function ProfilePage() {
                       : {}
                   }
                 >
-                  Productor
+                  {t("profile.tabs.seller")}
                 </button>
               )}
             </div>
@@ -171,14 +168,9 @@ export default function ProfilePage() {
               <div className="lg:col-span-2">
                 <div className="bg-white p-6 rounded-xl shadow-sm">
                   <div className="mb-4">
-                    <h2
-                      className="text-xl font-bold"
-                      style={{ color: primaryColors.dark }}
-                    >
-                      Informació Personal
-                    </h2>
-                    <p className="text-gray-500 text-sm">
-                      Actualitza les teves dades personals i credencials
+                    <h2 className="text-xl font-semibold mb-2">{t("profile.personal_info_title")}</h2>
+                    <p className="text-gray-600 mb-6">
+                        {t("profile.personal_info_desc")}
                     </p>
                   </div>
                   <UserProfileForm primaryColors={primaryColors} />
@@ -187,14 +179,9 @@ export default function ProfilePage() {
               <div className="lg:col-span-1">
                 <div className="bg-white p-6 rounded-xl shadow-sm">
                   <div className="mb-4">
-                    <h2
-                      className="text-xl font-bold"
-                      style={{ color: primaryColors.dark }}
-                    >
-                      Gestió de Rols
-                    </h2>
-                    <p className="text-gray-500 text-sm">
-                      Afegeix rols adicionals al teu compte
+                    <h3 className="text-lg font-semibold mb-2">{t("profile.role_management_title")}</h3>
+                    <p className="text-gray-600 mb-4">
+                        {t("profile.role_management_desc")}
                     </p>
                   </div>
                   <RoleManagement
@@ -211,14 +198,9 @@ export default function ProfilePage() {
           {activeTab === "restaurant" && (
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <div className="mb-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{ color: primaryColors.dark }}
-                >
-                  Dades de Restaurant
-                </h2>
-                <p className="text-gray-500 text-sm">
-                  Gestiona la informació del teu restaurant
+                <h2 className="text-xl font-semibold mb-2">{t("profile.restaurant_data_title")}</h2>
+                <p className="text-gray-600 mb-6">
+                    {t("profile.restaurant_data_desc")}
                 </p>
               </div>
               <RestaurantForm primaryColors={primaryColors} />
@@ -228,14 +210,9 @@ export default function ProfilePage() {
           {activeTab === "investor" && (
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <div className="mb-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{ color: primaryColors.dark }}
-                >
-                  Dades d'Inversor
-                </h2>
-                <p className="text-gray-500 text-sm">
-                  Gestiona la informació del teu perfil d'inversor
+                <h2 className="text-xl font-semibold mb-2">{t("profile.investor_data_title")}</h2>
+                <p className="text-gray-600 mb-6">
+                    {t("profile.investor_data_desc")}
                 </p>
               </div>
               <InvestorForm primaryColors={primaryColors} />
@@ -245,14 +222,9 @@ export default function ProfilePage() {
           {activeTab === "seller" && (
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <div className="mb-4">
-                <h2
-                  className="text-xl font-bold"
-                  style={{ color: primaryColors.dark }}
-                >
-                  Dades de Productor
-                </h2>
-                <p className="text-gray-500 text-sm">
-                  Gestiona la informació del teu perfil de productor
+                <h2 className="text-xl font-semibold mb-2">{t("profile.seller_data_title")}</h2>
+                <p className="text-gray-600 mb-6">
+                    {t("profile.seller_data_desc")}
                 </p>
               </div>
               <SellerForm primaryColors={primaryColors} />

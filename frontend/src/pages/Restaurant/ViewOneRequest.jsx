@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { Edit, Trash, ArrowLeft, DollarSign, Store, Tag, MapPin, Calendar, Wine } from "lucide-react"
 import { getCookie } from "@/utils/utils";
 import { useFetchUser } from "@components/auth/FetchUser"
@@ -17,6 +18,7 @@ const primaryColors = {
 
 // Componente para el badge de estado
 const StatusBadge = ({ status }) => {
+  const { t } = useTranslation()
   let backgroundColor
   let textColor
   let statusText
@@ -25,37 +27,37 @@ const StatusBadge = ({ status }) => {
     case "pending":
       backgroundColor = "#FFF8E1"
       textColor = "#FFA000"
-      statusText = "Pendent"
+      statusText = t("dashboards.restaurant.status.pending")
       break
     case "accepted":
       backgroundColor = "#E8F5E9"
       textColor = "#2E7D32"
-      statusText = "Acceptat"
+      statusText = t("dashboards.restaurant.status.accepted")
       break
     case "in_transit":
       backgroundColor = "#E3F2FD"
       textColor = "#1565C0"
-      statusText = "En Trànsit"
+      statusText = t("dashboards.restaurant.status.in_transit")
       break
     case "in_my_local":
       backgroundColor = "#E8F5E9"
       textColor = "#2E7D32"
-      statusText = "Al Local"
+      statusText = t("dashboards.restaurant.status.in_my_local")
       break
     case "sold":
       backgroundColor = "#ECEFF1"
       textColor = "#546E7A"
-      statusText = "Venut"
+      statusText = t("dashboards.restaurant.status.sold")
       break
     case "cancelled":
       backgroundColor = "#FFEBEE"
       textColor = "#C62828"
-      statusText = "Cancel·lat"
+      statusText = t("dashboards.restaurant.status.cancelled")
       break
     default:
       backgroundColor = "#ECEFF1"
       textColor = "#546E7A"
-      statusText = "Desconegut"
+      statusText = t("dashboards.restaurant.status.unknown")
   }
 
   return (
@@ -93,6 +95,7 @@ const getWineTypeColor = (type) => {
 export default function ViewOneRequest() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [request, setRequest] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -117,7 +120,7 @@ export default function ViewOneRequest() {
       setIsLoading(true)
       const response = await fetch(`${apiUrl}/v1/${user.id}/restaurant/${id}`)
       if (!response.ok) {
-        throw new Error("No s'ha pogut obtenir la informació de la sol·licitud.")
+        throw new Error(t("dashboards.restaurant.messages.error_fetch"))
       }
       const data = await response.json()
       setRequest(data)
@@ -140,11 +143,11 @@ export default function ViewOneRequest() {
       })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut eliminar la sol·licitud.")
+        throw new Error(t("dashboards.restaurant.messages.error_delete"))
       }
 
       navigate(`/restaurant/dashboard`, {
-        state: { successMessage: "Sol·licitud eliminada correctament." },
+        state: { successMessage: t("dashboards.restaurant.messages.success_delete") },
       })
     } catch (err) {
       console.error(err.message)
@@ -172,7 +175,7 @@ export default function ViewOneRequest() {
       });
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut actualitzar la sol·licitud.");
+        throw new Error(t("dashboards.restaurant.messages.error_update"));
       }
 
       // Actualizar el estado
@@ -207,7 +210,7 @@ export default function ViewOneRequest() {
       })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut actualitzar l'estat de la sol·licitud.")
+        throw new Error(t("dashboards.restaurant.messages.error_update_status", "No s'ha pogut actualitzar l'estat de la sol·licitud."))
       }
 
       // Actualizar la solicitud después de cambiar el estado
@@ -231,7 +234,7 @@ export default function ViewOneRequest() {
       })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut actualitzar l'estat de la sol·licitud.")
+        throw new Error(t("dashboards.restaurant.messages.error_update_status", "No s'ha pogut actualitzar l'estat de la sol·licitud."))
       }
 
       // Actualizar la solicitud después de cambiar el estado
@@ -242,7 +245,7 @@ export default function ViewOneRequest() {
   }
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("ca-ES", {
+    return new Date(dateString).toLocaleDateString(i18n.language === 'ca' ? 'ca-ES' : i18n.language === 'es' ? 'es-ES' : 'en-US', {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -282,7 +285,7 @@ export default function ViewOneRequest() {
   if (!request) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-2xl text-gray-600">Sol·licitud no trobada</p>
+        <p className="text-2xl text-gray-600">{t("dashboards.restaurant.view.not_found")}</p>
       </div>
     )
   }
@@ -312,7 +315,7 @@ export default function ViewOneRequest() {
               className="flex items-center text-gray-500 hover:text-gray-700 mb-6"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Tornar
+              {t("dashboards.restaurant.view.back")}
             </button>
 
             {/* SECTION 1: Request Details Section */}
@@ -357,14 +360,14 @@ export default function ViewOneRequest() {
                       <div className="flex items-center gap-2">
                         <DollarSign className="h-5 w-5 text-gray-400" />
                         <div>
-                          <p className="text-sm text-gray-500">Preu demandat</p>
+                          <p className="text-sm text-gray-500">{t("dashboards.restaurant.view.price_demanded")}</p>
                           <p className="font-medium">{request.product.price_demanded}€</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <Store className="h-5 w-5 text-gray-400" />
                         <div>
-                          <p className="text-sm text-gray-500">Preu restaurant</p>
+                          <p className="text-sm text-gray-500">{t("dashboards.restaurant.view.price_restaurant")}</p>
                           <p className="font-medium" style={{ color: primaryColors.dark }}>
                             {request.price_restaurant}€
                           </p>
@@ -375,27 +378,27 @@ export default function ViewOneRequest() {
                     <div className="flex items-center gap-2">
                       <Calendar className="h-5 w-5 text-gray-400" />
                       <div>
-                        <p className="text-sm text-gray-500">Data de sol·licitud</p>
+                        <p className="text-sm text-gray-500">{t("dashboards.restaurant.view.request_date")}</p>
                         <p className="font-medium">{formatDate(request.created_at)}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="mt-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Detalls del producte</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">{t("dashboards.restaurant.view.product_details")}</h3>
                     <div className="bg-gray-50 p-4 rounded-lg space-y-3">
                       <div className="flex items-start gap-2">
                         <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
-                          <p className="text-sm text-gray-500">Origen</p>
-                          <p className="font-medium">{request.product.origin || "No especificat"}</p>
+                          <p className="text-sm text-gray-500">{t("dashboards.restaurant.view.origin")}</p>
+                          <p className="font-medium">{request.product.origin || t("dashboards.restaurant.view.not_specified")}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-2">
                         <Wine className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
-                          <p className="text-sm text-gray-500">Tipus de vi</p>
-                          <p className="font-medium">{request.product.wine_type || "No especificat"}</p>
+                          <p className="text-sm text-gray-500">{t("dashboards.restaurant.view.wine_type")}</p>
+                          <p className="font-medium">{request.product.wine_type || t("dashboards.restaurant.view.not_specified")}</p>
                         </div>
                       </div>
                     </div>
@@ -410,14 +413,14 @@ export default function ViewOneRequest() {
                           className="bg-blue-500 text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-blue-600"
                         >
                           <Edit className="w-5 h-5" />
-                          Editar
+                          {t("dashboards.restaurant.table.actions.edit")}
                         </button>
                         <button
                           onClick={() => setIsDeleteDialogOpen(true)}
                           className="bg-red-500 text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-red-600"
                         >
                           <Trash className="w-5 h-5" />
-                          Eliminar
+                          {t("dashboards.restaurant.table.actions.delete")}
                         </button>
                       </>
                     )}
@@ -428,7 +431,7 @@ export default function ViewOneRequest() {
                         className="bg-[#9A3E50] text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-[#8A2D40]"
                       >
                         <Store className="w-5 h-5" />
-                        He rebut el producte
+                        {t("dashboards.restaurant.table.actions.receive")}
                       </button>
                     )}
 
@@ -438,7 +441,7 @@ export default function ViewOneRequest() {
                         className="bg-emerald-500 text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-emerald-600"
                       >
                         <DollarSign className="w-5 h-5" />
-                        He venut el producte
+                        {t("dashboards.restaurant.table.actions.sell")}
                       </button>
                     )}
                   </div>

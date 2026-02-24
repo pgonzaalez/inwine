@@ -1,5 +1,6 @@
 import { ShoppingBag, ChevronRight, CreditCard, Trash2, Info } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export function CartSummary({
   orderId,
@@ -12,6 +13,7 @@ export function CartSummary({
   onClearCart,
   cartItems,
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -36,24 +38,24 @@ export function CartSummary({
     <div className="lg:w-96">
       <div className="mb-4">
         <h2 className="text-xl font-semibold text-gray-800">
-          Resum de la comanda
+          {t('cart.summary.title', 'Resum de la comanda')}
         </h2>
       </div>
 
       <div className="bg-white rounded-md shadow-sm overflow-hidden sticky top-24">
         <div className="p-6 space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Subtotal</span>
+            <span className="text-gray-600">{t('cart.summary.subtotal', 'Subtotal')}</span>
             <span className="font-medium">{subtotal.toFixed(2)} €</span>
           </div>
 
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <span className="text-gray-600">Comissió de servei</span>
-              <button
-                className="ml-1 text-gray-400 hover:text-gray-600 focus:outline-none"
-                title="3% del subtotal"
-              >
+                {t('cart.summary.service_fee.label', 'Comissió de servei')}
+                <button
+                  className="ml-1 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  title={t('cart.summary.service_fee.tooltip', '3% del subtotal')}
+                >
                 <Info className="h-4 w-4" />
               </button>
             </div>
@@ -64,24 +66,24 @@ export function CartSummary({
 
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <span className="text-gray-600">Despeses d'enviament</span>
-              {subtotal > 100 && (
-                <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
-                  Gratis
-                </span>
-              )}
+                {t('cart.summary.shipping.label', "Despeses d'enviament")}
+                {subtotal > 100 && (
+                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                    {t('cart.summary.shipping.free', 'Gratis')}
+                  </span>
+                )}
             </div>
             <span className="font-medium">{shippingCost.toFixed(2)} €</span>
           </div>
 
           <div className="border-t pt-4 mt-2">
             <div className="flex justify-between items-center">
-              <span className="font-bold text-lg">Total</span>
+              <span className="font-bold text-lg">{t('cart.summary.total', 'Total')}</span>
               <span className="font-bold text-2xl text-[#9A3E50]">
                 {total.toFixed(2)} €
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">IVA inclòs</p>
+            <p className="text-xs text-gray-500 mt-1">{t('cart.summary.vat_included', 'IVA inclòs')}</p>
           </div>
         </div>
 
@@ -95,7 +97,7 @@ export function CartSummary({
             }`}
             disabled={!hasItems || subtotal === 0}
           >
-            Finalitzar compra
+            {t('cart.summary.checkout_btn', 'Finalitzar compra')}
           </button>
 
           <div className="mt-4 text-center">
@@ -104,7 +106,7 @@ export function CartSummary({
               className="text-[#9A3E50] hover:text-[#7e3241] text-sm font-medium inline-flex items-center"
             >
               <ChevronRight className="h-4 w-4 mr-1 transform rotate-180" />
-              Continuar comprant
+              {t('cart.summary.continue_shopping', 'Continuar comprant')}
             </a>
           </div>
         </div>
@@ -113,7 +115,7 @@ export function CartSummary({
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center text-gray-600">
               <ShoppingBag className="h-4 w-4 mr-1" />
-              <span>Articles seleccionats</span>
+              <span>{t('cart.summary.selected_items', 'Articles seleccionats')}</span>
             </div>
             <span className="font-medium">{selectedItemsCount}</span>
           </div>
@@ -123,7 +125,7 @@ export function CartSummary({
         <div className="p-6 bg-gray-50 border-t">
           <div className="flex items-center text-sm text-gray-600 mb-3">
             <CreditCard className="h-4 w-4 mr-2 text-gray-500" />
-            <span className="font-medium">Pagament segur</span>
+            <span className="font-medium">{t('cart.summary.secure_payment', 'Pagament segur')}</span>
           </div>
           <div className="flex items-center justify-between space-x-2">
             <div className="h-8 w-12 bg-white rounded shadow-sm flex items-center justify-center">
@@ -165,7 +167,7 @@ export function CartSummary({
             className="flex items-center text-gray-600 hover:text-[#9A3E50] py-2 px-4 text-sm rounded-md hover:bg-red-50 transition-colors"
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Esborrar cistella
+            {t('cart.summary.clear_cart', 'Esborrar cistella')}
           </button>
         </div>
       )}

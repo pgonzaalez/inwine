@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { ShoppingBag, Check, CreditCard, Truck, Shield, AlertTriangle } from "lucide-react"
 import Footer from "@/components/FooterComponent"
 import { CartItem } from "@/components/landing/cart/CartItem"
@@ -10,6 +11,7 @@ import { useFetchUser } from "@/components/auth/FetchUser"
 import { getCookie } from "@/utils/utils"
 
 export default function ShoppingCartPage() {
+  const { t } = useTranslation()
   const [cartItems, setCartItems] = useState([])
   const [selectedItems, setSelectedItems] = useState({})
   const [loading, setLoading] = useState(true)
@@ -151,7 +153,7 @@ useEffect(() => {
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center space-y-6">
               <div className="w-16 h-16 border-4 border-[#9A3E50] border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-lg text-gray-600">Carregant la cistella...</p>
+              <p className="text-lg text-gray-600">{t('cart.loading', 'Carregant la cistella...')}</p>
             </div>
           </div>
         </div>
@@ -171,13 +173,13 @@ useEffect(() => {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6">
                   <AlertTriangle className="h-8 w-8 text-red-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Error d'autenticació</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">{t('cart.error_auth.title', "Error d'autenticació")}</h2>
                 <p className="text-gray-600 mb-6">
-                  No s'ha pogut carregar la informació de l'usuari. Si us plau, inicia sessió de nou.
+                  {t('cart.error_auth.message', "No s'ha pogut carregar la informació de l'usuari. Si us plau, inicia sessió de nou.")}
                 </p>
                 <a href="/login">
                   <button className="bg-[#9A3E50] hover:bg-[#7e3241] text-white py-3 px-6 rounded-md font-medium transition-all duration-300">
-                    Iniciar sessió
+                    {t('cart.error_auth.login_btn', 'Iniciar sessió')}
                   </button>
                 </a>
               </div>
@@ -198,7 +200,7 @@ useEffect(() => {
           {/* Page Title with Shopping Cart Icon - styled to match reference */}
           <div className="flex items-center mb-8">
             <ShoppingBag className="text-[#9A3E50] h-6 w-6 mr-2" />
-            <h1 className="text-2xl font-bold">La meva cistella</h1>
+            <h1 className="text-2xl font-bold">{t('cart.title', 'La meva cistella')}</h1>
             {cartItems.length > 0 && (
               <span className="ml-2 bg-[#9A3E50] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 {cartItems.length}
@@ -211,7 +213,7 @@ useEffect(() => {
             <div className="fixed bottom-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-lg z-50 animate-in slide-in-from-right duration-300">
               <div className="flex items-center">
                 <Check className="h-5 w-5 mr-2 text-green-500" />
-                <p>Quantitat actualitzada correctament</p>
+                <p>{t('cart.success_updated', 'Quantitat actualitzada correctament')}</p>
               </div>
             </div>
           )}
@@ -221,13 +223,13 @@ useEffect(() => {
               <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6">
                 <ShoppingBag className="h-12 w-12 text-gray-400" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">La teva cistella es buida</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">{t('cart.empty.title', 'La teva cistella es buida')}</h2>
               <p className="text-gray-500 mb-8 max-w-md mx-auto">
-                Sembla que encara no has afegit cap producte al carret. Torna a la botiga per explorar els nostres vins.
+                {t('cart.empty.message', 'Sembla que encara no has afegit cap producte al carret. Torna a la botiga per explorar els nostres vins.')}
               </p>
               <a href="/productes">
                 <button className="bg-[#9A3E50] hover:bg-[#7e3241] text-white py-3 px-8 rounded-md font-medium transition-all duration-300">
-                  Continuar comprant
+                  {t('cart.empty.continue_btn', 'Continuar comprant')}
                 </button>
               </a>
             </div>
@@ -237,7 +239,7 @@ useEffect(() => {
               <div className="flex-1">
                 <div className="mb-4">
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-                    Productes seleccionats
+                    {t('cart.selected_products', 'Productes seleccionats')}
                     <span className="ml-2 text-sm bg-gray-100 text-gray-700 rounded-full px-2 py-0.5">
                       {selectedItemsCount}
                     </span>
@@ -265,8 +267,8 @@ useEffect(() => {
                       <Truck className="h-5 w-5 text-green-600" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-800 mb-1">Enviament gratuït</h3>
-                      <p className="text-xs text-gray-500">Per a comandes superiors a 100€</p>
+                      <h3 className="font-medium text-gray-800 mb-1">{t('cart.features.free_shipping.title', 'Enviament gratuït')}</h3>
+                      <p className="text-xs text-gray-500">{t('cart.features.free_shipping.desc', 'Per a comandes superiors a 100€')}</p>
                     </div>
                   </div>
                   <div className="bg-white rounded-md shadow-sm p-4 flex items-start">
@@ -274,8 +276,8 @@ useEffect(() => {
                       <CreditCard className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-800 mb-1">Pagament segur</h3>
-                      <p className="text-xs text-gray-500">Transaccions encriptades</p>
+                      <h3 className="font-medium text-gray-800 mb-1">{t('cart.features.secure_payment.title', 'Pagament segur')}</h3>
+                      <p className="text-xs text-gray-500">{t('cart.features.secure_payment.desc', 'Transaccions encriptades')}</p>
                     </div>
                   </div>
                   <div className="bg-white rounded-md shadow-sm p-4 flex items-start">
@@ -283,8 +285,8 @@ useEffect(() => {
                       <Shield className="h-5 w-5 text-purple-600" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-800 mb-1">Garantia de qualitat</h3>
-                      <p className="text-xs text-gray-500">Tots els vins verificats</p>
+                      <h3 className="font-medium text-gray-800 mb-1">{t('cart.features.quality_guarantee.title', 'Garantia de qualitat')}</h3>
+                      <p className="text-xs text-gray-500">{t('cart.features.quality_guarantee.desc', 'Tots els vins verificats')}</p>
                     </div>
                   </div>
                 </div>

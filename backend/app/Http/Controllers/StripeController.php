@@ -13,7 +13,7 @@ class StripeController extends Controller
 {
     public function createPaymentIntent(Request $request)
     {
-        $key = env('STRIPE_SECRET');
+        $key = config('services.stripe.secret');
 
         if (!$key) {
             return response()->json(['error' => 'Stripe API key is missing.'], 500);
@@ -29,35 +29,35 @@ class StripeController extends Controller
 
             $orderIds = $request->orderIds;
             $totalPrice = $request->totalPrice;
-            
+
             $totalAmount = 0;
-            
+
             $allOrderDetails = [];
-            
+
             foreach ($orderIds as $orderId) {
                 $order = DB::table('orders')->where('id', $orderId)->first();
-                
+
                 if (!$order) {
                     return response()->json(['error' => "Order with ID $orderId not found"], 404);
                 }
-                
+
                 $requestRestaurant = DB::table('request_restaurants')
                     ->where('id', $order->request_restaurant_id)
                     ->first();
-                
+
                 if (!$requestRestaurant) {
                     return response()->json(['error' => "Request restaurant for order $orderId not found"], 404);
                 }
-                
+
                 $product = DB::table('products')
                     ->where('id', $requestRestaurant->product_id)
                     ->first();
-                
+
                 $orderPrice = $totalPrice;
                 $quantity = $requestRestaurant->quantity;
                 $orderTotal = $orderPrice * $quantity;
                 $totalAmount += $orderTotal;
-                
+
                 $allOrderDetails[] = [
                     'order_id' => $orderId,
                     'product_name' => $product ? $product->name : "Producto #" . $requestRestaurant->product_id,
@@ -66,16 +66,16 @@ class StripeController extends Controller
                     'total' => $orderTotal
                 ];
             }
-            
+
             if ($totalAmount <= 0) {
                 return response()->json(['error' => 'No valid orders found or total amount is zero'], 400);
             }
-            
+
             $shippingCost = ($totalAmount > 100) ? 0 : 5.0;
             $totalAmount += $shippingCost;
-            
-            $amountInCents = (int)($totalAmount * 100);
-            
+
+            $amountInCents = (int) ($totalAmount * 100);
+
             $paymentIntent = PaymentIntent::create([
                 'amount' => $amountInCents,
                 'currency' => 'eur',
@@ -92,7 +92,7 @@ class StripeController extends Controller
                     'order_id' => $orderId,
                     'stripe_payment_intent_id' => $paymentIntent->id,
                     'status' => $paymentIntent->status,
-                    'amount' => $amountInCents, 
+                    'amount' => $amountInCents,
                     'currency' => $paymentIntent->currency,
                 ]);
             }
@@ -103,11 +103,11 @@ class StripeController extends Controller
                 'totalAmount' => $totalAmount,
                 'shippingCost' => $shippingCost
             ]);
-            
+
         } catch (\Exception $e) {
             Log::error('Payment intent creation failed: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
-            
+
             return response()->json([
                 'error' => 'Payment intent creation failed',
                 'message' => $e->getMessage()

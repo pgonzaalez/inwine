@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next";
 
 const wines = [
   { id: 1, name: "ONDULE", description: "NAPA VALLEY COLOMBARD", image: "https://hips.hearstapps.com/hmg-prod/images/red-wine-being-poured-into-glass-at-sunset-outdoor-royalty-free-image-1738062893.pjpeg?crop=0.667xw:1.00xh;0.219xw,0&resize=640:*" },
@@ -9,13 +10,10 @@ const wines = [
   { id: 4, name: "ELEGANCE", description: "PINOT NOIR", image: "https://covinas.com/wp-content/uploads/2016/10/253-10-CURIOSIDADES.jpg" },
   { id: 5, name: "PRESTIGE", description: "CHARDONNAY RESERVE", image: "https://fishsolutions.pescanova.es/wp-content/uploads/2022/04/formacion-vinos-copa-fish-solutions.jpg" },
   { id: 6, name: "HERITAGE", description: "SYRAH GRAND CRU", image: "https://www.bodegasgongora.com/wp-content/uploads/2023/08/color-del-vino.jpg" },
-  // { id: 7, name: "TERROIR", description: "MALBEC SELECTION", image: "https://distribucionestodobar.es/wp-content/uploads/2024/04/rioja.jpg" },
-  // { id: 8, name: "LEGACY", description: "TEMPRANILLO CRIANZA", image: "https://images.unsplash.com/photo-1605530692359-436bec27a35a" },
-  // { id: 9, name: "ESSENCE", description: "GRENACHE NOIR", image: "https://images.unsplash.com/photo-1571624436278-43d52a7d90fc" },
-  // { id: 10, name: "ALTITUDE", description: "SAUVIGNON BLANC", image: "https://images.unsplash.com/photo-1571939208996-5de7527b64a0" },
 ];
 
 export default function WineShowcase() {
+  const { t } = useTranslation();
   const [currentWine, setCurrentWine] = useState(0);
   const navigate = useNavigate();
 
@@ -68,14 +66,13 @@ export default function WineShowcase() {
               {wines[currentWine].description}
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
-              <h3 className="text-3xl font-medium text-white mb-6">Aconsegueix els millors vins</h3>
+              <h3 className="text-3xl font-medium text-white mb-6">{t("landing.carousel.title")}</h3>
               <p className="text-white/70 mb-8">
-                Descobreix la nostra selecció de vins premium, elaborats amb les millors raïms i tècniques tradicionals.
-                Cada ampolla representa l’excel·lència i passió per la viticultura.
+                {t("landing.carousel.description")}
               </p>
               <button className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
               onClick={() => navigate("/productes")}>
-                Veure més
+                {t("landing.carousel.see_more")}
               </button>
             </motion.div>
           </div>

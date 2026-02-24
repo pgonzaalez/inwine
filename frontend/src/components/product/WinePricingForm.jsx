@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 export const WinePricingForm = ({
   formData,
   onChange,
@@ -7,6 +9,7 @@ export const WinePricingForm = ({
   onPrevious,
   isSubmitEnabled,
 }) => {
+  const { t } = useTranslation()
   // Helper function to check if a field has an error
   const hasError = (fieldName) => {
     return touchedFields[fieldName] && errors[fieldName]
@@ -15,8 +18,8 @@ export const WinePricingForm = ({
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg shadow-md">
       <div className="w-full bg-gradient-to-r from-[#F5E6E8] to-[#E8D5D5] p-4 rounded-t-lg border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-[#8C2E2E]">Preu i disponibilitat</h2>
-        <p className="text-sm text-gray-600">Estableix el preu i la quantitat disponible del teu vi.</p>
+        <h2 className="text-lg font-semibold text-[#8C2E2E]">{t("dashboards.seller.product.pricing_title")}</h2>
+        <p className="text-sm text-gray-600">{t("dashboards.seller.product.pricing_desc")}</p>
       </div>
 
       <div className="p-8">
@@ -42,7 +45,7 @@ export const WinePricingForm = ({
               className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("price_demanded") ? "text-red-500" : "text-gray-500"
                 }`}
             >
-              Preu (€)
+              {t("dashboards.seller.product.field_price")}
             </label>
             {hasError("price_demanded") && (
               <span className="text-red-500 text-xs mt-1">{errors.price_demanded[0]}</span>
@@ -68,40 +71,40 @@ export const WinePricingForm = ({
               className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("quantity") ? "text-red-500" : "text-gray-500"
                 }`}
             >
-              Quantitat disponible
+              {t("dashboards.seller.product.field_quantity")}
             </label>
             {hasError("quantity") && <span className="text-red-500 text-xs mt-1">{errors.quantity[0]}</span>}
           </div>
 
           {/* Preview section */}
           <div className="mt-8 p-6 bg-[#F5E6E8] rounded-lg border border-[#D9A5AD]">
-            <h4 className="text-base font-medium text-[#8C2E2E] mb-4">Resum del vi</h4>
+            <h4 className="text-base font-medium text-[#8C2E2E] mb-4">{t("dashboards.seller.product.summary_title")}</h4>
 
             <div className="space-y-3">
               <div className="flex justify-between items-center pb-2 border-b border-[#E8D5D5]">
-                <span className="text-sm text-gray-600">Nom:</span>
+                <span className="text-sm text-gray-600">{t("dashboards.seller.product.summary_name")}:</span>
                 <span className="font-medium text-[#8C2E2E]">{formData.name || "-"}</span>
               </div>
 
               <div className="flex justify-between items-center pb-2 border-b border-[#E8D5D5]">
-                <span className="text-sm text-gray-600">Origen:</span>
+                <span className="text-sm text-gray-600">{t("dashboards.seller.product.summary_origin")}:</span>
                 <span className="font-medium text-[#8C2E2E]">{formData.origin || "-"}</span>
               </div>
 
               <div className="flex justify-between items-center pb-2 border-b border-[#E8D5D5]">
-                <span className="text-sm text-gray-600">Any:</span>
+                <span className="text-sm text-gray-600">{t("dashboards.seller.product.summary_year")}:</span>
                 <span className="font-medium text-[#8C2E2E]">{formData.year || "-"}</span>
               </div>
 
               <div className="flex justify-between items-center pb-2 border-b border-[#E8D5D5]">
-                <span className="text-sm text-gray-600">Preu:</span>
+                <span className="text-sm text-gray-600">{t("dashboards.seller.product.summary_price")}:</span>
                 <span className="font-bold text-[#8C2E2E] text-lg max-w-[120px] truncate text-right" >
                   {formData.price_demanded ? `${formData.price_demanded}€` : "-"}
                 </span>
               </div>
 
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Quantitat:</span>
+                <span className="text-sm text-gray-600">{t("dashboards.seller.product.summary_quantity")}:</span>
                 <span className="font-bold text-[#8C2E2E]  text-lg max-w-[120px] truncate text-right">
                   {formData.quantity || "-"}</span>
               </div>
@@ -109,7 +112,7 @@ export const WinePricingForm = ({
 
             {selectedImages.length > 0 && (
               <div className="mt-4 pt-4 border-t border-[#E8D5D5]">
-                <p className="text-sm text-gray-600 mb-2">Imatges: {selectedImages.length}</p>
+                <p className="text-sm text-gray-600 mb-2">{t("dashboards.seller.product.section_images")}: {selectedImages.length}</p>
                 <div className="flex overflow-x-auto space-x-2 pb-2">
                   {selectedImages.map((img, index) => (
                     <img
@@ -131,7 +134,7 @@ export const WinePricingForm = ({
               onClick={onPrevious}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
             >
-              Anterior
+              {t("dashboards.seller.product.btn_prev")}
             </button>
             <button
               type="submit"
@@ -141,7 +144,7 @@ export const WinePricingForm = ({
                 }`}
               disabled={!isSubmitEnabled}
             >
-              Puja el teu vi
+              {t("dashboards.seller.product.btn_submit")}
             </button>
           </div>
         </div>

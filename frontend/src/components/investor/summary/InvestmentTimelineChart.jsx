@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -11,12 +12,14 @@ const primaryColors = {
 }
 
 export const InvestmentTimelineChart = ({ data = [] }) => {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === "ca" ? "ca-ES" : i18n.language === "es" ? "es-ES" : "en-US"
   const [dataKey, setDataKey] = useState("amount")
 
   // Formatear fecha para el eje X
   const formatDate = (dateStr) => {
     const date = new Date(dateStr)
-    return new Intl.DateTimeFormat("ca-ES", {
+    return new Intl.DateTimeFormat(locale, {
       day: "2-digit",
       month: "2-digit",
     }).format(date)
@@ -25,7 +28,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
   // Formatear valores para el tooltip
   const formatValue = (value, dataKey) => {
     if (dataKey === "amount") {
-      return new Intl.NumberFormat("ca-ES", {
+      return new Intl.NumberFormat(locale, {
         style: "currency",
         currency: "EUR",
         maximumFractionDigits: 0,
@@ -38,7 +41,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const date = new Date(label)
-      const formattedDate = new Intl.DateTimeFormat("ca-ES", {
+      const formattedDate = new Intl.DateTimeFormat(locale, {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -48,7 +51,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
         <div className="bg-white p-3 border border-gray-200 shadow-md rounded-md">
           <p className="font-medium">{formattedDate}</p>
           <p className="text-sm">
-            <span style={{ color: primaryColors.dark }}>{dataKey === "amount" ? "Import: " : "Nombre: "}</span>
+            <span style={{ color: primaryColors.dark }}>{dataKey === "amount" ? t("dashboards.investor.summary.origin_chart.labels.amount") + ": " : t("dashboards.investor.summary.origin_chart.labels.count") + ": "}</span>
             {formatValue(payload[0].value, dataKey)}
           </p>
         </div>
@@ -60,7 +63,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
   if (data.length === 0) {
     return (
       <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">No hi ha dades disponibles</p>
+        <p className="text-gray-500">{t("dashboards.investor.summary.messages.no_data", "No hi ha dades disponibles")}</p>
       </div>
     )
   }
@@ -76,7 +79,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
             }`}
             onClick={() => setDataKey("amount")}
           >
-            Import
+            {t("dashboards.investor.summary.origin_chart.labels.amount")}
           </button>
           <button
             type="button"
@@ -85,7 +88,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
             }`}
             onClick={() => setDataKey("count")}
           >
-            Nombre
+            {t("dashboards.investor.summary.origin_chart.labels.count")}
           </button>
         </div>
       </div>
@@ -111,7 +114,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
           <Line
             type="monotone"
             dataKey={dataKey}
-            name={dataKey === "amount" ? "Import invertit" : "Nombre d'inversions"}
+            name={dataKey === "amount" ? t("dashboards.investor.summary.charts.evolution_amount", "Import invertit") : t("dashboards.investor.summary.charts.evolution_count", "Nombre d'inversions")}
             stroke={primaryColors.dark}
             activeDot={{ r: 8 }}
             strokeWidth={2}

@@ -1,4 +1,5 @@
 import { TrendingUp, Wallet, Clock, Award } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -8,6 +9,9 @@ const primaryColors = {
 }
 
 export const InvestmentSummaryCards = ({ investments = [] }) => {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === "ca" ? "ca-ES" : i18n.language === "es" ? "es-ES" : "en-US"
+
   // Calcular estadísticas
   const totalInvested = investments.reduce((total, inv) => total + inv.product.price_demanded * inv.quantity, 0)
   const potentialReturn = investments.reduce((total, inv) => total + inv.price_restaurant * inv.quantity, 0)
@@ -19,7 +23,7 @@ export const InvestmentSummaryCards = ({ investments = [] }) => {
   const profitPercentage = totalInvested > 0 ? (potentialProfit / totalInvested) * 100 : 0
 
   // Encontrar la mejor inversión (mayor porcentaje de beneficio)
-  let bestInvestment = { profit: 0, percentage: 0, name: "Cap" }
+  let bestInvestment = { profit: 0, percentage: 0, name: t("dashboards.investor.stats.none", "Cap") }
   investments.forEach((inv) => {
     const investment = inv.product.price_demanded * inv.quantity
     const profit = (inv.price_restaurant - inv.product.price_demanded) * inv.quantity
@@ -51,18 +55,18 @@ export const InvestmentSummaryCards = ({ investments = [] }) => {
             <Wallet size={20} style={{ color: primaryColors.dark }} />
           </div>
           <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
-            Total Invertit
+            {t("dashboards.investor.stats.total_invested")}
           </h3>
         </div>
         <p className="text-2xl font-bold">
-          {new Intl.NumberFormat("ca-ES", {
+          {new Intl.NumberFormat(locale, {
             style: "currency",
             currency: "EUR",
             maximumFractionDigits: 0,
           }).format(totalInvested)}
         </p>
         <p className="text-sm text-gray-500 mt-1">
-          {investments.length} {investments.length === 1 ? "inversió" : "inversions"} en total
+          {t("dashboards.investor.stats.investment_count", { count: investments.length })} {t("dashboards.investor.stats.total_inversions")}
         </p>
       </div>
 
@@ -81,18 +85,20 @@ export const InvestmentSummaryCards = ({ investments = [] }) => {
             <TrendingUp size={20} style={{ color: primaryColors.dark }} />
           </div>
           <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
-            Benefici Potencial
+            {t("dashboards.investor.stats.potential_profit")}
           </h3>
         </div>
         <p className="text-2xl font-bold" style={{ color: potentialProfit > 0 ? "green" : "inherit" }}>
-          {new Intl.NumberFormat("ca-ES", {
+          {new Intl.NumberFormat(locale, {
             style: "currency",
             currency: "EUR",
             maximumFractionDigits: 0,
           }).format(potentialProfit)}
         </p>
         <p className="text-sm text-gray-500 mt-1">
-          {profitPercentage > 0 ? `+${profitPercentage.toFixed(2)}% de rendibilitat` : "Sense benefici encara"}
+          {profitPercentage > 0 
+            ? `+${profitPercentage.toFixed(2)}% ${t("dashboards.investor.stats.profitability")}` 
+            : t("dashboards.investor.stats.profit_none")}
         </p>
       </div>
 
@@ -111,13 +117,13 @@ export const InvestmentSummaryCards = ({ investments = [] }) => {
             <Clock size={20} style={{ color: primaryColors.dark }} />
           </div>
           <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
-            Estat Inversions
+            {t("dashboards.investor.summary.tabs.status")}
           </h3>
         </div>
         <p className="text-2xl font-bold">
           {pendingInvestments} / {completedInvestments}
         </p>
-        <p className="text-sm text-gray-500 mt-1">Pendents / Completades</p>
+        <p className="text-sm text-gray-500 mt-1">{t("dashboards.investor.stats.pendent_completat")}</p>
       </div>
 
       {/* Mejor inversión */}
@@ -135,14 +141,16 @@ export const InvestmentSummaryCards = ({ investments = [] }) => {
             <Award size={20} style={{ color: primaryColors.dark }} />
           </div>
           <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
-            Millor Inversió
+            {t("dashboards.investor.stats.best_investment")}
           </h3>
         </div>
         <p className="text-xl font-bold truncate" title={bestInvestment.name}>
           {bestInvestment.name}
         </p>
         <p className="text-sm text-gray-500 mt-1">
-          {bestInvestment.percentage > 0 ? `+${bestInvestment.percentage.toFixed(2)}% de rendibilitat` : "Sense dades"}
+          {bestInvestment.percentage > 0 
+            ? `+${bestInvestment.percentage.toFixed(2)}% ${t("dashboards.investor.stats.profitability")}` 
+            : t("dashboards.investor.stats.best_investment_none")}
         </p>
       </div>
     </div>

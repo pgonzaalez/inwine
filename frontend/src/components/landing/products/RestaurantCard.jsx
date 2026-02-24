@@ -1,6 +1,9 @@
 import { Heart, MapPin, Clock, Package, Wine, TrendingUp, TrendingDown } from "lucide-react"
+import { useTranslation } from "react-i18next";
 
 export default function RestaurantCard({ restaurante, esFavorito, onToggleFavorito }) {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-md group hover:shadow-lg transition-all duration-300">
       <div className="relative h-48 sm:h-56">
@@ -25,7 +28,7 @@ export default function RestaurantCard({ restaurante, esFavorito, onToggleFavori
 
         {/* Detalles de la solicitud */}
         <div className="bg-gray-50 rounded-lg p-4 mb-4">
-          <h4 className="font-medium text-[#9A3E50] mb-2">Sol·licitud de producte</h4>
+          <h4 className="font-medium text-[#9A3E50] mb-2">{t("landing.products.restaurant_card.request_title")}</h4>
           <p className="text-gray-700 font-medium mb-1">{restaurante.solicitud.nombre}</p>
           <p className="text-gray-600 text-sm mb-3">{restaurante.solicitud.descripcion}</p>
 
@@ -40,11 +43,11 @@ export default function RestaurantCard({ restaurante, esFavorito, onToggleFavori
             </div>
             <div className="flex items-center gap-1">
               <TrendingDown size={16} className="text-[#9A3E50]" />
-              <span className="text-gray-600">Compra: {restaurante.solicitud.precioCompra},00 €</span>
+              <span className="text-gray-600">{t("landing.products.restaurant_card.buy_price")}: {restaurante.solicitud.precioCompra},00 €</span>
             </div>
             <div className="flex items-center gap-1">
               <TrendingUp size={16} className="text-[#9A3E50]" />
-              <span className="text-gray-600">Venda: {restaurante.solicitud.precioVenta},00 €</span>
+              <span className="text-gray-600">{t("landing.products.restaurant_card.sell_price")}: {restaurante.solicitud.precioVenta},00 €</span>
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
 import { StatusBadge } from "@components/investor/StatusBadge"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { getCookie } from "@/utils/utils"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -17,6 +18,8 @@ const primaryColors = {
 }
 
 export default function ShowInvestment() {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === "ca" ? "ca-ES" : i18n.language === "es" ? "es-ES" : "en-US"
   const { id: investmentId } = useParams()
   const navigate = useNavigate()
   const [investment, setInvestment] = useState(null)
@@ -38,7 +41,7 @@ export default function ShowInvestment() {
       const token = getCookie("token")
 
       if (!token) {
-        setError("No s'ha trobat el token d'autenticació.")
+        setError(t("dashboards.investor.summary.messages.no_token", "No s'ha trobat el token d'autenticació."))
         setIsLoading(false)
         return
       }
@@ -51,7 +54,7 @@ export default function ShowInvestment() {
       })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut obtenir la informació de la inversió.")
+        throw new Error(t("dashboards.investor.details.messages.error_fetch", "No s'ha pogut obtenir la informació de la inversió."))
       }
 
       const data = await response.json()
@@ -65,7 +68,7 @@ export default function ShowInvestment() {
 
   // Función para formatear el precio con separador de miles
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("ca-ES", {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "EUR",
       maximumFractionDigits: 0,
@@ -75,7 +78,7 @@ export default function ShowInvestment() {
   // Función para formatear la fecha
   const formatDate = (dateString) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat("ca-ES", {
+    return new Intl.DateTimeFormat(locale, {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -115,7 +118,7 @@ export default function ShowInvestment() {
   if (!investment) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-2xl text-gray-600">Inversió no trobada</p>
+        <p className="text-2xl text-gray-600">{t("dashboards.investor.details.messages.not_found", "Inversió no trobada")}</p>
       </div>
     )
   }
@@ -163,7 +166,7 @@ export default function ShowInvestment() {
             {/* Botón para volver */}
             <button onClick={() => navigate(-1)} className="flex items-center text-gray-500 hover:text-gray-700 mb-6">
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Tornar
+              {t("dashboards.investor.details.back")}
             </button>
 
             {/* Contenido principal */}
@@ -193,7 +196,7 @@ export default function ShowInvestment() {
                                 prev === 0 ? productImages.length - 1 : prev - 1
                               )}
                               className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md hover:bg-white transition-colors"
-                              aria-label="Imagen anterior"
+                              aria-label={t("dashboards.investor.details.aria.previous_image", "Imagen anterior")}
                             >
                               <ChevronLeft className="h-5 w-5" />
                             </button>
@@ -202,7 +205,7 @@ export default function ShowInvestment() {
                                 (prev + 1) % productImages.length
                               )}
                               className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md hover:bg-white transition-colors"
-                              aria-label="Siguiente imagen"
+                              aria-label={t("dashboards.investor.details.aria.next_image", "Siguiente imagen")}
                             >
                               <ChevronRight className="h-5 w-5" />
                             </button>
@@ -247,93 +250,93 @@ export default function ShowInvestment() {
                     {/* Detalles del producto */}
                     <div className="flex flex-col">
                       <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-                        Detalls del Producte
+                        {t("dashboards.investor.details.product_section")}
                       </h3>
 
                       <div className="space-y-3">
                         <div className="flex items-start">
                           <Wine className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
                           <div>
-                            <p className="font-medium">Tipus de Vi</p>
-                            <p className="text-gray-600">{investment.product.wine_type || "No especificat"}</p>
+                            <p className="font-medium">{t("dashboards.investor.details.labels.wine_type")}</p>
+                            <p className="text-gray-600">{investment.product.wine_type || t("dashboards.investor.details.messages.not_specified", "No especificat")}</p>
                           </div>
                         </div>
 
                         <div className="flex items-start">
                           <Tag className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
                           <div>
-                            <p className="font-medium">Preu Demandat</p>
+                            <p className="font-medium">{t("dashboards.investor.details.labels.demanded_price")}</p>
                             <p className="text-gray-600">{formatPrice(investment.product.price_demanded)}</p>
                           </div>
                         </div>
 
                         <div className="flex items-start">
-                          <Calendar
-                            className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0"
-                            style={{ color: primaryColors.dark }}
-                          />
-                          <div>
-                            <p className="font-medium">Any</p>
-                            <p className="text-gray-600">{investment.product.year}</p>
-                          </div>
-                        </div>
+                           <Calendar
+                             className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0"
+                             style={{ color: primaryColors.dark }}
+                           />
+                           <div>
+                             <p className="font-medium">{t("dashboards.investor.details.labels.year")}</p>
+                             <p className="text-gray-600">{investment.product.year}</p>
+                           </div>
+                         </div>
 
-                        <div className="flex items-start">
-                          <User className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
-                          <div>
-                            <p className="font-medium">Venedor</p>
-                            <p className="text-gray-600">{investment.seller_name}</p>
-                          </div>
-                        </div>
+                         <div className="flex items-start">
+                           <User className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
+                           <div>
+                             <p className="font-medium">{t("dashboards.investor.table.headers.seller")}</p>
+                             <p className="text-gray-600">{investment.seller_name}</p>
+                           </div>
+                         </div>
 
-                        <div className="flex items-start">
-                          <Store className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
-                          <div>
-                            <p className="font-medium">Restaurant</p>
-                            <p className="text-gray-600">{investment.restaurant_name}</p>
-                          </div>
-                        </div>
+                         <div className="flex items-start">
+                           <Store className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
+                           <div>
+                             <p className="font-medium">{t("dashboards.investor.table.headers.restaurant")}</p>
+                             <p className="text-gray-600">{investment.restaurant_name}</p>
+                           </div>
+                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Columna derecha - Detalles de la inversión */}
-              <div className="lg:col-span-1">
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-                    Resum de la Inversió
-                  </h3>
+               {/* Columna derecha - Detalles de la inversión */}
+               <div className="lg:col-span-1">
+                 <div className="bg-white rounded-xl shadow-sm p-6">
+                   <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
+                     {t("dashboards.investor.details.summary_section")}
+                   </h3>
 
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                      <span className="text-gray-600">Quantitat</span>
-                      <span className="font-medium">{investment.quantity} unitats</span>
-                    </div>
+                   <div className="space-y-4">
+                     <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                       <span className="text-gray-600">{t("dashboards.investor.table.labels.quantity")}</span>
+                       <span className="font-medium">{investment.quantity} {t("dashboards.investor.details.units")}</span>
+                     </div>
 
-                    <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                      <span className="text-gray-600">Preu per unitat</span>
-                      <span className="font-medium">{formatPrice(investment.product.price_demanded)}</span>
-                    </div>
+                     <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                       <span className="text-gray-600">{t("dashboards.investor.details.labels.unit_price")}</span>
+                       <span className="font-medium">{formatPrice(investment.product.price_demanded)}</span>
+                     </div>
 
-                    <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                      <span className="text-gray-600">Inversió total</span>
-                      <span className="font-medium">{formatPrice(investmentAmount)}</span>
-                    </div>
+                     <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                       <span className="text-gray-600">{t("dashboards.investor.stats.total_invested")}</span>
+                       <span className="font-medium">{formatPrice(investmentAmount)}</span>
+                     </div>
 
-                    <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                      <span className="text-gray-600">Preu restaurant</span>
-                      <span className="font-medium">{formatPrice(investment.price_restaurant)}</span>
-                    </div>
+                     <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                       <span className="text-gray-600">{t("dashboards.investor.details.labels.restaurant_price")}</span>
+                       <span className="font-medium">{formatPrice(investment.price_restaurant)}</span>
+                     </div>
 
-                    <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                      <span className="text-gray-600">Retorn potencial</span>
-                      <span className="font-medium">{formatPrice(potentialReturn)}</span>
-                    </div>
+                     <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                       <span className="text-gray-600">{t("dashboards.investor.table.labels.potential_return")}</span>
+                       <span className="font-medium">{formatPrice(potentialReturn)}</span>
+                     </div>
 
-                    <div className="flex justify-between items-center pb-2">
-                      <span className="text-gray-600">Benefici potencial</span>
+                     <div className="flex justify-between items-center pb-2">
+                       <span className="text-gray-600">{t("dashboards.investor.stats.potential_profit")}</span>
                       <span
                         className="font-bold"
                         style={{ color: profit > 0 ? "green" : profit < 0 ? "red" : "inherit" }}
@@ -344,38 +347,38 @@ export default function ShowInvestment() {
                   </div>
                 </div>
 
-                {/* Estado de la inversión */}
-                <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
-                  <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-                    Estat de la Inversió
-                  </h3>
+                 {/* Estado de la inversión */}
+                 <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
+                   <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
+                     {t("dashboards.investor.details.status_section")}
+                   </h3>
 
                   <div className="space-y-4">
-                    <div className="flex items-start">
-                      <Clock className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
-                      <div>
-                        <p className="font-medium">Data de la inversió</p>
-                        <p className="text-gray-600">{formatDate(investment.created_at)}</p>
-                      </div>
-                    </div>
+                     <div className="flex items-start">
+                       <Clock className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
+                       <div>
+                         <p className="font-medium">{t("dashboards.investor.details.labels.investment_date")}</p>
+                         <p className="text-gray-600">{formatDate(investment.created_at)}</p>
+                       </div>
+                     </div>
 
                     <div className="flex items-start">
-                      <AlertCircle
-                        className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0"
-                        style={{ color: primaryColors.dark }}
-                      />
-                      <div>
-                        <p className="font-medium">Estat actual</p>
+                       <AlertCircle
+                         className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0"
+                         style={{ color: primaryColors.dark }}
+                       />
+                       <div>
+                         <p className="font-medium">{t("dashboards.investor.details.labels.current_status")}</p>
                         <div className="mt-1">
                           <StatusBadge status={investment.status} />
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-start">
-                      <TrendingUp className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
-                      <div>
-                        <p className="font-medium">Rendibilitat</p>
+                     <div className="flex items-start">
+                       <TrendingUp className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
+                       <div>
+                         <p className="font-medium">{t("dashboards.investor.stats.profitability")}</p>
                         <p
                           className="text-gray-600 font-bold"
                           style={{ color: profit > 0 ? "green" : profit < 0 ? "red" : "inherit" }}
@@ -389,27 +392,27 @@ export default function ShowInvestment() {
               </div>
             </div>
 
-            {/* Historial de la inversión (si está disponible) */}
-            {investment.history && investment.history.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
-                <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-                  Historial de la Inversió
-                </h3>
+             {/* Historial de la inversión (si está disponible) */}
+             {investment.history && investment.history.length > 0 && (
+               <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
+                 <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
+                   {t("dashboards.investor.details.history_section")}
+                 </h3>
 
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead>
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Data
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Estat
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Descripció
-                        </th>
-                      </tr>
+                       <tr>
+                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                           {t("dashboards.investor.table.labels.date")}
+                         </th>
+                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                           {t("dashboards.investor.table.headers.status")}
+                         </th>
+                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                           {t("dashboards.investor.details.labels.description")}
+                         </th>
+                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {investment.history.map((item, index) => (
