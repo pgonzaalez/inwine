@@ -35,6 +35,25 @@ import ShowInvestment from "@pages/Inversor/ShowInvestment";
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
 import ViewOneRequest from "@pages/Restaurant/ViewOneRequest";
+import SettingsPage from "@pages/SettingsPage";
+// Info Pages
+import {
+  PrivacyPolicyPage,
+  TermsOfUsePage,
+  CookiesPolicyPage,
+  LegalNoticePage,
+  AboutUsPage,
+  TeamPage,
+  InfluencersPage,
+  AffiliatesPage,
+  MediaPage,
+  BlogPage,
+  CommunityPage,
+  IdeasPage,
+  DevelopersPage,
+  GuaranteePage,
+  ProductDeclarationsPage
+} from "@pages/Info/InfoPages";
 
 export default function App() {
   return (
@@ -49,12 +68,40 @@ export default function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-summary" element={<OrderSummaryPage />} />
           <Route path="/contacte" element={<Contacte />} />
+          
+          <Route path="/settings" element={<SettingsPage />} />
+
+          {/* Info Routes */}
+          <Route path="/privacitat" element={<PrivacyPolicyPage />} />
+          <Route path="/condicions" element={<TermsOfUsePage />} />
+          <Route path="/cookies" element={<CookiesPolicyPage />} />
+          <Route path="/avis-legal" element={<LegalNoticePage />} />
+          <Route path="/sobre-nosaltres" element={<AboutUsPage />} />
+          <Route path="/equip" element={<TeamPage />} />
+          <Route path="/influencers" element={<InfluencersPage />} />
+          <Route path="/afiliats" element={<AffiliatesPage />} />
+          <Route path="/mitjans" element={<MediaPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/comunitat" element={<CommunityPage />} />
+          <Route path="/idees" element={<IdeasPage />} />
+          <Route path="/desenvolupadors" element={<DevelopersPage />} />
+          <Route path="/garantia" element={<GuaranteePage />} />
+          <Route path="/declaracions-producte" element={<ProductDeclarationsPage />} />
         </Route>
 
         {/* Rutas con Sidebar */}
         <Route element={<Layout />}>
           {" "}
           {/* Aquí usas el Layout con Sidebar */}
+          {/* Rutas comunes */}
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Rutas protegidas para Seller */}
           <Route
             path="/create"
@@ -105,6 +152,14 @@ export default function App() {
             }
           />
           <Route
+            path="/seller/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/seller/notificacions"
             element={
               <ProtectedRoute>
@@ -134,6 +189,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurant/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
               </ProtectedRoute>
             }
           />
@@ -168,6 +231,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/investor/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
               </ProtectedRoute>
             }
           />
