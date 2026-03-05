@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next"
 
 export const WineDetailsForm = ({
@@ -16,6 +17,7 @@ export const WineDetailsForm = ({
   isEditMode = false,
 }) => {
   const { t } = useTranslation()
+  const [isDragging, setIsDragging] = useState(false);
   // Helper function to check if a field has an error
   const baseUrl = import.meta.env.VITE_URL_BASE;
   const hasError = (fieldName) => {
@@ -24,6 +26,26 @@ export const WineDetailsForm = ({
 
   // Calcular el total de imágenes (existentes + nuevas)
   const totalImages = existingImages.length + selectedImages.length;
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      onImageSelect({ target: { files: e.dataTransfer.files } });
+      e.dataTransfer.clearData();
+    }
+  };
+
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg shadow-md">
       <div className="w-full bg-gradient-to-r from-[#F5E6E8] to-[#E8D5D5] p-4 rounded-t-lg border-b border-gray-200">
@@ -143,8 +165,16 @@ export const WineDetailsForm = ({
           {/* Imatge */}
           <div className="space-y-4">
             <div
-              className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition-colors ${hasError("image") ? "border-red-300 bg-red-50" : "border-gray-300 hover:border-[#D9A5AD]"
-                }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition-colors ${
+                hasError("image")
+                 ? "border-red-300 bg-red-50"
+                 : isDragging 
+                  ? "border-[#8C2E2E] bg-[#F5E6E8]"
+                  : "border-gray-300 hover:border-[#D9A5AD]"
+              }`}
             >
               <div className="space-y-1 text-center">
                 <svg
@@ -164,7 +194,7 @@ export const WineDetailsForm = ({
                 <div className="flex text-sm text-gray-600">
                   <label
                     htmlFor="file-upload"
-                    className={`relative cursor-pointer bg-white rounded-md font-medium focus-within:outline-none ${hasError("image") ? "text-red-500 hover:text-red-400" : "text-[#9A3E50] hover:text-[#C27D7D]"
+                    className={`relative cursor-pointer bg-transparent rounded-md font-medium focus-within:outline-none ${hasError("image") ? "text-red-500 hover:text-red-400" : "text-[#9A3E50] hover:text-[#C27D7D]"
                       }`}
                    >
                     <span>{totalImages > 0 ? t("dashboards.seller.product.field_image_add") : t("dashboards.seller.product.field_image_upload")}</span>
