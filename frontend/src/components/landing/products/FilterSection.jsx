@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronDown, ChevronUp, X } from "lucide-react"
+import { useState } from "react"
+import { ChevronDown, ChevronUp, X, Search, Check } from "lucide-react"
 import { useTranslation } from "react-i18next";
 
 export default function FilterSidebar({
@@ -22,6 +23,15 @@ export default function FilterSidebar({
   toggleZone,
 }) {
   const { t } = useTranslation();
+
+  const [winerySearch, setWinerySearch] = useState("");
+
+  const visibleWineries = wineries.filter((item) => {
+    const matchesSearch = item.toLowerCase().includes(winerySearch.toLowerCase()) //&& "" !== winerySearch
+    const isSelected = selectedWineries.includes(item)
+    
+    return matchesSearch || isSelected
+  })
 
   return (
     <div
@@ -105,34 +115,72 @@ export default function FilterSidebar({
             )}
           </div>
 
-          {/* Location */}
+          {/* Winery Section with searcher */}
           <div>
-            <button className="w-full flex justify-between items-center mb-2" onClick={() => toggleAccordion("zona")}>
-              <h3 className="font-medium text-gray-800">{activeFilter === "Productors" ? t("landing.products.filters.winery") : t("landing.products.filters.restaurant")}</h3>
+            <button
+              onClick={() => toggleAccordion("zona")}
+              className="flex justify-between items-center w-full text-left"
+            >
+              <h3 className="font-medium text-gray-800">
+                {activeFilter === "Productors" 
+                  ? t("landing.products.filters.winery") 
+                  : t("landing.products.filters.restaurant")}
+              </h3>
               {openAccordion.zona ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
+
             {openAccordion.zona && (
-              <div className="space-y-2 mt-2">
-                {(activeFilter === "Productors" ? wineries : zones).map((item) => (
-                  <label
-                    key={item.id}
-                    className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
-                  >
+              <div className="mt-3 space-y-2">
+                
+                {/* SEARCH BOX */}
+                {activeFilter === "Productors" && (
+                  <div className="relative mb-3">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
                     <input
-                      type="checkbox"
-                      checked={
-                        activeFilter === "Productors"
-                          ? selectedWineries.includes(item.nombre)
-                          : selectedZones.includes(item.nombre)
-                      }
-                      onChange={() =>
-                        activeFilter === "Productors" ? toggleWinery(item.nombre) : toggleZone(item.nombre)
-                      }
-                      className="w-4 h-4 rounded border-gray-300 text-[#9A3E50] focus:ring-[#9A3E50]"
+                      type="text"
+                      placeholder={t("landing.products.filters.search_winery")}
+                      value={winerySearch}
+                      onChange={(e) => setWinerySearch(e.target.value)}
+                      className="w-full text-sm pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#9A3E50] focus:border-[#9A3E50]"
                     />
-                    <span className="text-sm text-gray-700">{item.nombre}</span>
-                  </label>
-                ))}
+                  </div>
+                )}
+
+                {/* CHECKBOXES WITH SCROLL */}
+                <div className="max-h-60 overflow-y-auto pr-1 space-y-1 custom-scrollbar">
+                  {(activeFilter === "Productors" ? visibleWineries : zones).map((item) => (
+                    <label
+                      key={item}
+                      className={`flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors ${
+                        selectedWineries.includes(item) ? "bg-[#9A3E50]/5" : ""
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={
+                          activeFilter === "Productors"
+                            ? selectedWineries.includes(item)
+                            : selectedZones.includes(item)
+                        }
+                        onChange={() =>
+                          activeFilter === "Productors" ? toggleWinery(item) : toggleZone(item)
+                        }
+                        className="w-4 h-4 rounded border-gray-300 text-[#9A3E50] focus:ring-[#9A3E50]"
+                      />
+                      <span className={`text-sm ${
+                        selectedWineries.includes(item) ? "text-[#9A3E50] font-medium" : "text-gray-700"
+                      }`}>
+                        {item}
+                      </span>
+                    </label>
+                  ))}
+
+                  {activeFilter === "Productors" && visibleWineries.length === 0 && (
+                    <p className="text-xs text-gray-400 text-center py-4">
+                      {t("landing.products.filters.no_winery_found")}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </div>

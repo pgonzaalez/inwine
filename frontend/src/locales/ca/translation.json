@@ -127,6 +127,8 @@
         "price_from": "De",
         "price_to": "fins",
         "winery": "Celler",
+        "search_winery": "Cercar celler...",
+        "no_winery_found": "No s'ha trobat cap celler",
         "restaurant": "Restaurant",
         "wineries": "Bodegues"
       },

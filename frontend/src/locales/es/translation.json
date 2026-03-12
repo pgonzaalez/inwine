@@ -127,6 +127,8 @@
         "price_from": "De",
         "price_to": "hasta",
         "winery": "Bodega",
+        "search_winery": "Buscar bodega...",
+        "no_winery_found": "No se ha encontrado ninguna bodega",
         "restaurant": "Restaurante",
         "wineries": "Bodegas"
       },

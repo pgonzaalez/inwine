@@ -127,6 +127,8 @@
         "price_from": "From",
         "price_to": "to",
         "winery": "Winery",
+        "search_winery": "Search winery...",
+        "no_winery_found": "No wineries found",
         "restaurant": "Restaurant",
         "wineries": "Wineries"
       },

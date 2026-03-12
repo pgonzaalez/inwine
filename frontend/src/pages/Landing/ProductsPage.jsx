@@ -283,14 +283,8 @@ export default function ProductPage() {
     { id: 6, nombre: "Penedès" },
   ]
 
-  // Wineries data
-  const wineries = [
-    { id: 1, nombre: "Nom Marca 1" },
-    { id: 2, nombre: "Nom Marca 2" },
-    { id: 3, nombre: "Nom Marca 3" },
-    { id: 4, nombre: "Nom Marca 4" },
-    { id: 5, nombre: "Nom Marca 5" },
-  ]
+  // Cellers disponibles
+  const allWineries = [...new Set(products.map(p => p.user_id).filter(Boolean))];
 
   // Filter products
   const filteredProducts = products.filter((product) => {
@@ -328,9 +322,9 @@ export default function ProductPage() {
       return false
     }
 
-    // Filter by winery (using origin as bodega)
+    // Filter by winery (using user_id as bodega)
     // Only apply if wineries are selected
-    if (selectedWineries.length > 0 && !selectedWineries.includes(product.origin)) {
+    if (selectedWineries.length > 0 && !selectedWineries.includes(product.user_id)) {
       return false
     }
 
@@ -432,7 +426,7 @@ export default function ProductPage() {
               priceRange={priceRange}
               setPriceRange={setPriceRange}
               activeFilter={activeFilter}
-              wineries={wineries}
+              wineries={allWineries}
               zones={zones}
               selectedWineries={selectedWineries}
               selectedZones={selectedZones}
