@@ -14,7 +14,8 @@ import {
   ShoppingBag,
   FileQuestion,
   AlertTriangle,
-  ShieldCheck
+  ShieldCheck,
+  Heart
 } from "lucide-react"
 import { useTranslation } from "react-i18next";
 import { useFetchUser } from "@components/auth/FetchUser"
@@ -210,6 +211,11 @@ export default function Sidebar() {
       //   label: "Peticions",
       //   path: "/restaurant/peticions",
       // },
+      {
+        icon: Heart,
+        label: t("favorites.title", "Els meus Favorits"),
+        path: `/favorites`,
+      },
       // {
       //   icon: ShoppingBag,
       //   label: "Compres",
@@ -250,6 +256,11 @@ export default function Sidebar() {
         label: t("sidebar.nav.back_to_web"),
         path: `/`,
       },
+      {
+        icon: Heart,
+        label: t("favorites.title", "Els meus Favorits"),
+        path: `/favorites`,
+      },
       // {
       //   icon: ShoppingBag,
       //   label: "Compres",
@@ -278,6 +289,11 @@ export default function Sidebar() {
         icon: FileQuestion,
         label: t("sidebar.nav.history"),
         path: "/investor/historic",
+      },
+      {
+        icon: Heart,
+        label: t("favorites.title", "Els meus Favorits"),
+        path: `/favorites`,
       },
       {
         icon: Wine,
@@ -314,6 +330,11 @@ export default function Sidebar() {
         label: t("sidebar.nav.history"),
         path: "/investor/historic",
       },
+      {
+        icon: Heart,
+        label: t("favorites.title", "Els meus Favorits"),
+        path: `/favorites`,
+      },
       // {
       //   icon: Bell,
       //   label: "Alertes",
@@ -343,6 +364,11 @@ export default function Sidebar() {
         icon: ShoppingCart,
         label: t("sidebar.nav.products"),
         path: `/seller/products`,
+      },
+      {
+        icon: Heart,
+        label: t("favorites.title", "Els meus Favorits"),
+        path: `/favorites`,
       },
       // {
       //   icon: Bell,
@@ -383,6 +409,11 @@ export default function Sidebar() {
         icon: ShoppingCart,
         label: t("sidebar.nav.products"),
         path: `/seller/products`,
+      },
+      {
+        icon: Heart,
+        label: t("favorites.title", "Els meus Favorits"),
+        path: `/favorites`,
       },
       // {
       //   icon: Bell,

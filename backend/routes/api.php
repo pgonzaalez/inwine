@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\RestaurantController;
 use App\Http\Controllers\Api\InvestorController;
+use App\Http\Controllers\Api\FavoriteController;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripeController;
@@ -21,6 +22,11 @@ use App\Http\Controllers\StripeController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
+
+    // Favorites routes
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites/{productId}/toggle', [FavoriteController::class, 'toggle']);
+    Route::get('/favorites/ids', [FavoriteController::class, 'ids']);
 
     Route::put('/seller', [SellerController::class, 'update']);
     Route::put('/restaurant', [RestaurantController::class, 'update']);

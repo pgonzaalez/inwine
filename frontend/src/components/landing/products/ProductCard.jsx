@@ -56,17 +56,22 @@ export default function ProductCard({
           alt={producto.name || t("landing.products.product_card.alt")}
           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 z-20">
           <button
+            type="button"
             className="w-9 h-9 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
             onClick={(e) => {
               e.preventDefault();
-              onToggleFavorito(producto.name);
+              e.stopPropagation();
+              console.log("Product clicked for toggle:", producto.id, "esFavorito:", esFavorito);
+              if (onToggleFavorito && producto.id) {
+                onToggleFavorito(String(producto.id));
+              }
             }}
           >
             <Heart
-              className={`w-5 h-5 ${
-                esFavorito ? "fill-[#9A3E50] text-[#9A3E50]" : "text-gray-400"
+              className={`w-5 h-5 transition-colors duration-200 ${
+                esFavorito ? "fill-red-500 text-red-500" : "text-gray-400 hover:text-red-400"
               }`}
             />
           </button>

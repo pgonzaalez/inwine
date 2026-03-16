@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   ShoppingCart,
   ShieldCheck,
+  Heart,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie, deleteCookie } from "@/utils/utils";
@@ -405,6 +406,14 @@ export default function Header() {
                         {t("header.user.change_role")}
                       </button>
                     )}
+
+                    <Link
+                      to="/favorites"
+                      className="flex items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
+                    >
+                      <Heart className="mr-2 h-4 w-4" />
+                      {t("favorites.title", "Els meus Favorits")}
+                    </Link>
 
                     <Link
                       to="/settings"
