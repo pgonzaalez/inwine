@@ -51,7 +51,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
         <div className="bg-white p-3 border border-gray-200 shadow-md rounded-md">
           <p className="font-medium">{formattedDate}</p>
           <p className="text-sm">
-            <span style={{ color: primaryColors.dark }}>{dataKey === "amount" ? t("dashboards.investor.summary.origin_chart.labels.amount") + ": " : t("dashboards.investor.summary.origin_chart.labels.count") + ": "}</span>
+            <span style={{ color: primaryColors.dark }}>{dataKey === "amount" ? t("dashboards.investor.charts.amount") + ": " : t("dashboards.investor.charts.count") + ": "}</span>
             {formatValue(payload[0].value, dataKey)}
           </p>
         </div>
@@ -79,7 +79,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
             }`}
             onClick={() => setDataKey("amount")}
           >
-            {t("dashboards.investor.summary.origin_chart.labels.amount")}
+            {t("dashboards.investor.charts.amount")}
           </button>
           <button
             type="button"
@@ -88,7 +88,7 @@ export const InvestmentTimelineChart = ({ data = [] }) => {
             }`}
             onClick={() => setDataKey("count")}
           >
-            {t("dashboards.investor.summary.origin_chart.labels.count")}
+            {t("dashboards.investor.charts.count")}
           </button>
         </div>
       </div>

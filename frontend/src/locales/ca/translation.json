@@ -199,7 +199,8 @@
           "actions": {
             "details": "Detalls",
             "send": "Enviar",
-            "sending": "Enviant..."
+            "sending": "Enviant...",
+            "delete": "Eliminar"
           }
         }
       },
@@ -487,7 +488,9 @@
         "origin_summary": "Resum per Origen",
         "no_data": "No hi ha dades disponibles",
         "amount": "Import",
-        "count": "Nombre"
+        "count": "Nombre",
+        "total": "Total",
+        "origin": "Origen"
       }
     }
   },
@@ -829,5 +832,14 @@
         "description": "Accedeix al teu compte"
       }
     }
+  },
+  "favorites": {
+    "back_to_shop": "Tornar a la botiga",
+    "title": "Els meus Favorits",
+    "count_label": "productes guardats",
+    "search_placeholder": "Cercar als meus favorits...",
+    "empty_title": "Encara no tens favorits",
+    "empty_desc": "Guarda els teus vins preferits per trobar-los més ràpidament i no perdre'ls de vista.",
+    "explore_btn": "Explorar productes"
   }
 }

@@ -46,7 +46,7 @@ const primaryColors = {
     return (
       <div className="bg-white rounded-xl p-5 shadow-sm">
         <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-          {t("dashboards.seller.management.distribution_title")}
+          {t("dashboards.seller.management.table.distribution_title")}
         </h3>
   
         <div className="space-y-4">

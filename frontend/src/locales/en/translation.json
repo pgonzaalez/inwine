@@ -198,7 +198,8 @@
           "actions": {
             "details": "Details",
             "send": "Send",
-            "sending": "Sending..."
+            "sending": "Sending...",
+            "delete": "Delete"
           }
         }
       },
@@ -280,7 +281,7 @@
         "total": "Total",
         "pending": "Pending",
         "accepted": "Accepted",
-        "in_my_local": "In local",
+        "in_my_local": "In the local",
         "sold": "Sold"
       },
       "filters": {
@@ -289,11 +290,15 @@
         "pending": "Pending",
         "accepted": "Accepted",
         "in_transit": "In transit",
-        "in_local": "In local",
+        "in_my_local": "In the local",
         "sold": "Sold"
       },
       "table": {
-        "headers": {
+        "title": "Your requests",
+        "count_singular": "request",
+        "count_plural": "requests",
+        "empty": "No requests available with this filter",
+        "cols": {
           "image": "Image",
           "details": "Details",
           "type": "Type",
@@ -302,84 +307,73 @@
           "date": "Date",
           "actions": "Actions"
         },
-        "status": {
-          "pending": "Pending",
-          "accepted": "Accepted",
-          "in_transit": "In Transit",
-          "in_local": "In Local",
-          "sold": "Sold"
-        },
         "actions": {
           "view": "View",
           "edit": "Edit",
           "delete": "Delete",
-          "received": "Received",
-          "sold": "Sold"
-        },
-        "empty": "No requests found",
-        "error_unknown": "Unknown error",
-        "invalid_id": "Invalid request ID",
-        "error_update_status": "Error updating status"
+          "receive": "I received",
+          "receiving": "Receiving...",
+          "sell": "I sold",
+          "selling": "Selling..."
+        }
       },
-      "charts": {
-        "wine_type_distribution": "Distribution by type"
+      "status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "in_transit": "In Transit",
+        "in_my_local": "In the Local",
+        "sold": "Sold",
+        "cancelled": "Cancelled",
+        "unknown": "Unknown"
+      },
+      "view": {
+        "price_demanded": "Demanded price",
+        "price_restaurant": "Restaurant price",
+        "request_date": "Request date",
+        "product_details": "Product details",
+        "origin": "Origin",
+        "wine_type": "Wine type",
+        "not_specified": "Not specified",
+        "not_found": "Request not found",
+        "back": "Back"
       },
       "modals": {
         "delete": {
           "title": "Are you sure you want to delete this request?",
-          "description": "This action cannot be undone. Your request will be permanently deleted.",
-          "warning": "By deleting the request, you will have to add it again if you want to sell it later.",
-          "cancel": "Cancel",
-          "confirm": "Delete"
+          "desc": "This action cannot be undone. Your request will be permanently deleted.",
+          "warning": "By deleting the request, you will have to add it again if you want to sell it again.",
+          "btn_cancel": "Cancel",
+          "btn_confirm": "Delete"
         },
         "edit": {
           "title": "Modify price {{name}}",
-          "description": "Enter the new price you want to offer for this product",
-          "label": "New price (€)",
+          "desc": "Enter the new price you want to offer for this product",
+          "field_new_price": "New price (€)",
           "placeholder": "Enter the new price",
-          "error": "Please enter a valid price",
-          "current_price": "Current price:",
-          "your_offer": "Your offer:",
-          "status": {
-            "higher": "(Exceeds current price)",
-            "lower": "(Below current price)",
-            "equal": "(Equal to current price)"
-          },
+          "error_invalid_price": "Please, enter a valid price",
+          "current_price": "Current price",
+          "your_offer": "Your offer",
+          "offer_higher": "(Higher than current price)",
+          "offer_lower": "(Lower than current price)",
+          "offer_equal": "(Equal to current price)",
           "success": "Price updated successfully!",
-          "cancel": "Cancel",
-          "update": "Update price"
+          "btn_cancel": "Cancel",
+          "btn_submit": "Update price"
         }
       },
-      "requests": {
-        "one": {
-          "back": "Back",
-          "title": "Request Details",
-          "sections": {
-            "product_info": "Product Information",
-            "status_timeline": "Status Timeline",
-            "offer_details": "Offer Details"
-          },
-          "labels": {
-            "description": "Description",
-            "wine_type": "Wine type",
-            "origin": "Origin",
-            "year": "Year",
-            "quantity": "Quantity",
-            "seller": "Seller",
-            "investor": "Investor",
-            "buy_price": "Buy price",
-            "sale_price": "Sale price",
-            "profit": "Estimated profit",
-            "current_status": "Current status"
-          },
-          "status": {
-            "pending": "Pending",
-            "accepted": "Accepted",
-            "in_transit": "In transit",
-            "at_restaurant": "At Restaurant",
-            "sold": "Sold"
-          }
-        }
+      "messages": {
+        "error_server": "Could not connect to the server",
+        "error_delete": "Could not delete the request",
+        "success_delete": "Request deleted successfully",
+        "error_update": "Could not update the request",
+        "error_receive": "Error marking as received",
+        "success_receive": "Product received successfully",
+        "error_sell": "Error marking as sold",
+        "success_sell": "Product sold successfully",
+        "error_fetch": "Could not fetch the request information.",
+        "error_unknown": "Unknown error",
+        "invalid_id": "Invalid request ID",
+        "error_update_status": "Error updating status"
       }
     },
     "investor": {
@@ -493,7 +487,9 @@
         "origin_summary": "Summary by Origin",
         "no_data": "No data available",
         "amount": "Amount",
-        "count": "Count"
+        "count": "Count",
+        "total": "Total",
+        "origin": "Origin"
       }
     }
   },
@@ -835,5 +831,14 @@
         "description": "Access your account"
       }
     }
+  },
+  "favorites": {
+    "back_to_shop": "Back to shop",
+    "title": "My Favorites",
+    "count_label": "saved products",
+    "search_placeholder": "Search my favorites...",
+    "empty_title": "You have no favorites yet",
+    "empty_desc": "Save your preferred wines to find them faster and not lose track of them.",
+    "explore_btn": "Explore products"
   }
 }
