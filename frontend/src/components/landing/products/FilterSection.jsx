@@ -131,7 +131,6 @@ export default function FilterSidebar({
 
             {openAccordion.zona && (
               <div className="mt-3 space-y-2">
-                
                 {/* SEARCH BOX */}
                 {activeFilter === "Productors" && (
                   <div className="relative mb-3">
@@ -148,32 +147,50 @@ export default function FilterSidebar({
 
                 {/* CHECKBOXES WITH SCROLL */}
                 <div className="max-h-60 overflow-y-auto pr-1 space-y-1 custom-scrollbar">
-                  {(activeFilter === "Productors" ? visibleWineries : zones).map((item) => (
-                    <label
-                      key={item}
-                      className={`flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors ${
-                        selectedWineries.includes(item) ? "bg-[#9A3E50]/5" : ""
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={
-                          activeFilter === "Productors"
-                            ? selectedWineries.includes(item)
-                            : selectedZones.includes(item)
-                        }
-                        onChange={() =>
-                          activeFilter === "Productors" ? toggleWinery(item) : toggleZone(item)
-                        }
-                        className="w-4 h-4 rounded border-gray-300 text-[#9A3E50] focus:ring-[#9A3E50]"
-                      />
-                      <span className={`text-sm ${
-                        selectedWineries.includes(item) ? "text-[#9A3E50] font-medium" : "text-gray-700"
-                      }`}>
-                        {item}
-                      </span>
-                    </label>
-                  ))}
+                  {activeFilter === "Productors" ? (
+                    visibleWineries.map((item) => (
+                      <label
+                        key={item}
+                        className={`flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors ${
+                          selectedWineries.includes(item) ? "bg-[#9A3E50]/5" : ""
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedWineries.includes(item)}
+                          onChange={() => toggleWinery(item)}
+                          className="w-4 h-4 rounded border-gray-300 text-[#9A3E50] focus:ring-[#9A3E50]"
+                        />
+                        <span className={`text-sm ${selectedWineries.includes(item) ? "text-[#9A3E50] font-medium" : "text-gray-700"}`}>
+                          {item}
+                        </span>
+                      </label>
+                    ))
+                  ) : (
+                    /* 
+                    ** NOTA IMPORTANTE: Si se va a cambiar el filtro de zona de restaurante,
+                    ** habrá que cambiar como usamos el field de item aquí abajo, solamente en
+                    ** EL CASO en que item deje de ser un objeto y pase a ser un simple valor.
+                    */
+                    zones.map((item) => (
+                      <label
+                        key={item.nombre}
+                        className={`flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors ${
+                          selectedZones.includes(item.nombre) ? "bg-[#9A3E50]/5" : ""
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedZones.includes(item.nombre)}
+                          onChange={() => toggleZone(item.nombre)}
+                          className="w-4 h-4 rounded border-gray-300 text-[#9A3E50] focus:ring-[#9A3E50]"
+                        />
+                        <span className={`text-sm ${selectedZones.includes(item.nombre) ? "text-[#9A3E50] font-medium" : "text-gray-700"}`}>
+                          {item.nombre}
+                        </span>
+                      </label>
+                    ))
+                  )}
 
                   {activeFilter === "Productors" && visibleWineries.length === 0 && (
                     <p className="text-xs text-gray-400 text-center py-4">
