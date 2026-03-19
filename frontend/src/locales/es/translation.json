@@ -200,7 +200,8 @@
           "actions": {
             "details": "Detalles",
             "send": "Enviar",
-            "sending": "Enviando..."
+            "sending": "Enviando...",
+            "delete": "Eliminar"
           }
         }
       },
@@ -488,7 +489,9 @@
         "origin_summary": "Resumen por Origen",
         "no_data": "No hay datos disponibles",
         "amount": "Importe",
-        "count": "Número"
+        "count": "Número",
+        "total": "Total",
+        "origin": "Origen"
       }
     }
   },
@@ -830,5 +833,14 @@
         "description": "Accede a tu cuenta"
       }
     }
+  },
+  "favorites": {
+    "back_to_shop": "Volver a la tienda",
+    "title": "Mis Favoritos",
+    "count_label": "productos guardados",
+    "search_placeholder": "Buscar en mis favoritos...",
+    "empty_title": "Aún no tienes favoritos",
+    "empty_desc": "Guarda tus vinos preferidos para encontrarlos más rápido y no perderlos de vista.",
+    "explore_btn": "Explorar productos"
   }
 }

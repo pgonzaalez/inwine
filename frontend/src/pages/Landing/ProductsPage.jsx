@@ -8,6 +8,7 @@ import ProductGrid from "@/components/landing/products/ProductGrid"
 import RestaurantGrid from "@/components/landing/products/RestaurantGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
 import { useTranslation } from "react-i18next";
+import { getCookie } from "@/utils/utils";
 
 export default function ProductPage() {
   const { t } = useTranslation();
@@ -32,21 +33,37 @@ export default function ProductPage() {
   const [wineTypes, setWineTypes] = useState([])
   const [loading, setLoading] = useState(true)
 
-  // Cargar favoritos desde cookies al iniciar
+  // Cargar favoritos al iniciar
   useEffect(() => {
     // Set initial mobile state
     setIsMobile(window.innerWidth < 768)
     setShowFilters(window.innerWidth >= 768)
 
-    const savedFavorites = document.cookie.split("; ").find((row) => row.startsWith("favorites="))
-
-    if (savedFavorites) {
-      try {
-        const parsedFavorites = JSON.parse(savedFavorites.split("=")[1])
-        setFavorites(parsedFavorites)
-      } catch (error) {
-        // console.error("Error parsing favorites from cookie:", error)
-      }
+    const token = getCookie("token")
+    if (token) {
+        const fetchFavorites = async () => {
+            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+            try {
+                const response = await fetch(`${apiUrl}/favorites/ids`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                if (response.ok) {
+                    const data = await response.json()
+                    setFavorites(data.map(id => String(id)))
+                }
+            } catch (error) {}
+        }
+        fetchFavorites()
+    } else {
+        const savedFavorites = document.cookie.split("; ").find((row) => row.startsWith("favorites="))
+        if (savedFavorites) {
+          try {
+            const parsedFavorites = JSON.parse(savedFavorites.split("=")[1])
+            setFavorites(parsedFavorites.map(id => String(id)))
+          } catch (error) {}
+        }
     }
   }, [])
 
@@ -370,14 +387,49 @@ export default function ProductPage() {
   }
 
   // Handle favorites toggle
-  const toggleFavorite = (name) => {
-    setFavorites((prevFavorites) => {
-      if (prevFavorites.includes(name)) {
-        return prevFavorites.filter((favName) => favName !== name)
+  const toggleFavorite = async (productId) => {
+    const pId = String(productId);
+    console.log("Toggle favorite called with ID:", pId, "Current favorites:", favorites);
+    
+    const token = getCookie("token")
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+
+    if (!token) {
+      setFavorites((prevFavorites) => {
+        if (prevFavorites.includes(pId)) {
+          return prevFavorites.filter((id) => id !== pId)
+        } else {
+          return [...prevFavorites, pId]
+        }
+      })
+      return
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/favorites/${pId}/toggle`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        console.log("Toggle response:", data);
+        setFavorites((prevFavorites) => {
+          if (data.is_favorite) {
+            return [...prevFavorites, pId]
+          } else {
+            return prevFavorites.filter((id) => id !== pId)
+          }
+        })
       } else {
-        return [...prevFavorites, name]
+        console.error("Toggle API error:", response.status);
       }
-    })
+    } catch (error) {
+      console.error("Toggle request failed:", error);
+    }
   }
 
   // Handle winery toggle

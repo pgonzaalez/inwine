@@ -250,7 +250,7 @@ export default function ShowInvestment() {
                     {/* Detalles del producto */}
                     <div className="flex flex-col">
                       <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-                        {t("dashboards.investor.details.product_section")}
+                        {t("dashboards.investor.details.product_details")}
                       </h3>
 
                       <div className="space-y-3">
@@ -265,7 +265,7 @@ export default function ShowInvestment() {
                         <div className="flex items-start">
                           <Tag className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
                           <div>
-                            <p className="font-medium">{t("dashboards.investor.details.labels.demanded_price")}</p>
+                            <p className="font-medium">{t("dashboards.investor.details.labels.price_demanded")}</p>
                             <p className="text-gray-600">{formatPrice(investment.product.price_demanded)}</p>
                           </div>
                         </div>
@@ -306,13 +306,13 @@ export default function ShowInvestment() {
                <div className="lg:col-span-1">
                  <div className="bg-white rounded-xl shadow-sm p-6">
                    <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-                     {t("dashboards.investor.details.summary_section")}
+                     {t("dashboards.investor.details.summary_title")}
                    </h3>
 
                    <div className="space-y-4">
                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
                        <span className="text-gray-600">{t("dashboards.investor.table.labels.quantity")}</span>
-                       <span className="font-medium">{investment.quantity} {t("dashboards.investor.details.units")}</span>
+                       <span className="font-medium">{investment.quantity} {t("dashboards.investor.details.messages.units")}</span>
                      </div>
 
                      <div className="flex justify-between items-center pb-2 border-b border-gray-100">
@@ -350,7 +350,7 @@ export default function ShowInvestment() {
                  {/* Estado de la inversión */}
                  <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
                    <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-                     {t("dashboards.investor.details.status_section")}
+                     {t("dashboards.investor.details.status_title")}
                    </h3>
 
                   <div className="space-y-4">
@@ -396,7 +396,7 @@ export default function ShowInvestment() {
              {investment.history && investment.history.length > 0 && (
                <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
                  <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-                   {t("dashboards.investor.details.history_section")}
+                     {t("dashboards.investor.details.history_title")}
                  </h3>
 
                 <div className="overflow-x-auto">
@@ -410,7 +410,7 @@ export default function ShowInvestment() {
                            {t("dashboards.investor.table.headers.status")}
                          </th>
                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                           {t("dashboards.investor.details.labels.description")}
+                                 {t("dashboards.investor.details.table.description")}
                          </th>
                        </tr>
                     </thead>

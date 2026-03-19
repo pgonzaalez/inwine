@@ -43,11 +43,11 @@ export const InvestmentStatusChart = ({ data = [] }) => {
         <div className="bg-white p-3 border border-gray-200 shadow-md rounded-md">
           <p className="font-medium">{data.name}</p>
           <p className="text-sm">
-            <span style={{ color: payload[0].color }}>{t("dashboards.investor.summary.origin_chart.labels.count")}: </span>
+            <span style={{ color: payload[0].color }}>{t("dashboards.investor.charts.count")}: </span>
             {data.count}
           </p>
           <p className="text-sm">
-            <span style={{ color: payload[0].color }}>{t("dashboards.investor.summary.origin_chart.labels.amount")}: </span>
+            <span style={{ color: payload[0].color }}>{t("dashboards.investor.charts.amount")}: </span>
             {new Intl.NumberFormat(locale, {
               style: "currency",
               currency: "EUR",
@@ -158,13 +158,13 @@ export const InvestmentStatusChart = ({ data = [] }) => {
                     {t("dashboards.investor.table.headers.status")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t("dashboards.investor.summary.origin_chart.headers.count")}
+                    {t("dashboards.investor.charts.count")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t("dashboards.investor.summary.origin_chart.headers.amount")}
+                    {t("dashboards.investor.charts.amount")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    % {t("dashboards.investor.summary.origin_chart.headers.total") || "del Total"}
+                    % {t("dashboards.investor.charts.total") || "del Total"}
                   </th>
                 </tr>
               </thead>
