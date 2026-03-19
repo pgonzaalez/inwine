@@ -11,11 +11,11 @@ const primaryColors = {
 const getStatusColor = (status) => {
   switch (status?.toLowerCase()) {
     case "paid":
-      return "#FFC107" // Color amarillo para pagado (pendiente)
+      return "#F4D26E" // Color amarillo para pagado (pendiente)
     case "completed":
-      return "#4CAF50" // Color verde para completado
+      return "#7CC07F" // Color verde para completado
     case "cancelled":
-      return "#F44336" // Color rojo para cancelado
+      return "#DB766E" // Color rojo para cancelado
     default:
       return `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
         primaryColors.dark.slice(3, 5),
@@ -57,8 +57,8 @@ export const InvestmentStatusDistribution = ({ investments = [] }) => {
             const count = statusCount[status] || 0
             const percentage = total > 0 ? Math.round((count / total) * 100) : 0
   
-            // No mostrar estados sin inversiones
-            if (count === 0) return null
+            // No mostrar estado desconocido si no contiene valores
+            if (count === 0 && status === "other") return null
   
             return (
               <div key={status} className="flex items-center">

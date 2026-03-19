@@ -40,7 +40,7 @@ function InvestmentDashboardComponent() {
       const token = getCookie("token")
 
       if (!token) {
-        setNotification(t("dashboards.investor.summary.messages.no_token", "No s'ha trobat el token d'autenticació."))
+        setNotification(t("dashboards.investor.messages.no_token"))
         setIsLoading(false)
         return
       }
@@ -53,7 +53,7 @@ function InvestmentDashboardComponent() {
       })
 
       if (!response.ok) {
-        throw new Error(t("dashboards.investor.summary.messages.error_server", "No s'ha pogut connectar amb el servidor"))
+        throw new Error(t("dashboards.investor.messages.error_server"))
       }
 
       const data = await response.json()
@@ -61,7 +61,7 @@ function InvestmentDashboardComponent() {
       setNotification(null)
     } catch (err) {
       setError(err.message)
-      setNotification(t("dashboards.investor.summary.messages.error_fetch", "Hi ha hagut un error carregant les inversions."))
+      setNotification(t("dashboards.investor.messages.error_fetch"))
     } finally {
       setIsLoading(false)
     }

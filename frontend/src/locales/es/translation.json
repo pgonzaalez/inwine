@@ -404,6 +404,7 @@
         "profit_positive": "Rentabilidad positiva",
         "profit_none": "Sin beneficio aún",
         "profitability": "de rentabilidad",
+        "profitability_percent": "% de rentabilidad",
         "pending_investments": "Inversiones Pendientes",
         "waiting_completion": "Esperando ser completadas",
         "best_investment": "Mejor Inversión",
@@ -492,6 +493,11 @@
         "count": "Número",
         "total": "Total",
         "origin": "Origen"
+      },
+      "messages": {
+        "error_server": "No se pudo conectar con el servidor",
+        "error_fetch": "Se ha producido un error cargando las inversiones.",
+        "no_token": "Authentication token not found."
       }
     }
   },

@@ -30,7 +30,7 @@ import EditProductPage from "@pages/Seller/EditProductPage";
 // Pages Inversor
 import RegisterInversor from "@pages/RegisterInversorPage";
 import Inversor from "@pages/Inversor/InversorDashboardPage";
-import InvestmentHistoryPage from "@pages/Inversor/HIstoricPage";
+import InvestmentHistoryPage from "@pages/Inversor/HistoricPage";
 import ShowInvestment from "@pages/Inversor/ShowInvestment";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";

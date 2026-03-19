@@ -405,6 +405,7 @@
         "profit_positive": "Rendibilitat positiva",
         "profit_none": "Sense benefici encara",
         "profitability": "de rendibilitat",
+        "profitability_percent": "% de rendibilitat",
         "pending_investments": "Inversions Pendents",
         "waiting_completion": "Esperant a ser completades",
         "best_investment": "Millor Inversió",
@@ -493,6 +494,11 @@
         "count": "Nombre",
         "total": "Total",
         "origin": "Origen"
+      },
+      "messages": {
+        "error_server": "No s'ha pogut connectar amb el servidor",
+        "error_fetch": "Hi ha hagut un error carregant les inversions.",
+        "no_token": "No s'ha trobat el token d'autenticació."
       }
     }
   },

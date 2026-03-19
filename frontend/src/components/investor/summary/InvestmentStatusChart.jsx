@@ -10,9 +10,9 @@ const primaryColors = {
 
 // Colores para los diferentes estados
 const STATUS_COLORS = {
-  paid: "#FFC107", // Amarillo para pagado (pendiente)
-  completed: "#4CAF50", // Verde para completado
-  cancelled: "#F44336", // Rojo para cancelado
+  paid: "#F4D26E", // Amarillo para pagado (pendiente)
+  completed: "#7CC07F", // Verde para completado
+  cancelled: "#DB766E", // Rojo para cancelado
   unknown: "#9E9E9E", // Gris para desconocido
 }
 
@@ -85,7 +85,7 @@ export const InvestmentStatusChart = ({ data = [] }) => {
   if (data.length === 0) {
     return (
       <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">{t("dashboards.investor.summary.messages.no_data", "No hi ha dades disponibles")}</p>
+        <p className="text-gray-500">{t("dashboards.investor.charts.no_data")}</p>
       </div>
     )
   }

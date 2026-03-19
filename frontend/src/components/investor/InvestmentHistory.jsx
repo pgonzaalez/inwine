@@ -3,6 +3,7 @@ import { useFetchUser } from "@components/auth/FetchUser"
 import { useState, useEffect } from "react"
 import { Notification } from "@components/seller/wineManagement/Notification"
 import { InvestmentStats } from "./InvestmentStats"
+import { InvestmentStatusDistribution } from "./InvestmentStatusDistribution";
 import { InvestmentTable } from "./InvestmentTable"
 import { getCookie } from "@/utils/utils" // Usando tu utilidad personalizada
 import { useTranslation } from "react-i18next"
@@ -39,7 +40,7 @@ function InvestmentHistoryComponent() {
       const token = getCookie("token")
 
       if (!token) {
-        setNotification(t("dashboards.investor.summary.messages.no_token", "No s'ha trobat el token d'autenticació."))
+        setNotification(t("dashboards.investor.messages.no_token"))
         setIsLoading(false)
         return
       }
@@ -52,7 +53,7 @@ function InvestmentHistoryComponent() {
       })
 
       if (!response.ok) {
-        throw new Error(t("dashboards.investor.summary.messages.error_server", "No s'ha pogut connectar amb el servidor"))
+        throw new Error(t("dashboards.investor.messages.error_server"))
       }
 
       const data = await response.json()
@@ -60,7 +61,7 @@ function InvestmentHistoryComponent() {
       setNotification(null)
     } catch (err) {
       setError(err.message)
-      setNotification(t("dashboards.investor.summary.messages.error_fetch", "Hi ha hagut un error carregant les inversions."))
+      setNotification(t("dashboards.investor.messages.error_fetch"))
     } finally {
       setIsLoading(false)
     }

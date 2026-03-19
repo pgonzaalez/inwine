@@ -41,7 +41,7 @@ export default function ShowInvestment() {
       const token = getCookie("token")
 
       if (!token) {
-        setError(t("dashboards.investor.summary.messages.no_token", "No s'ha trobat el token d'autenticació."))
+        setError(t("dashboards.investor.messages.no_token"))
         setIsLoading(false)
         return
       }
@@ -378,7 +378,7 @@ export default function ShowInvestment() {
                      <div className="flex items-start">
                        <TrendingUp className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color: primaryColors.dark }} />
                        <div>
-                         <p className="font-medium">{t("dashboards.investor.stats.profitability")}</p>
+                         <p className="font-medium">{t("dashboards.investor.stats.profitability_percent")}</p>
                         <p
                           className="text-gray-600 font-bold"
                           style={{ color: profit > 0 ? "green" : profit < 0 ? "red" : "inherit" }}

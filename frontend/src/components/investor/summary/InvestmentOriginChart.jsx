@@ -80,7 +80,7 @@ export const InvestmentOriginChart = ({ data = [] }) => {
   if (data.length === 0) {
     return (
       <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">{t("dashboards.investor.summary.messages.no_data", "No hi ha dades disponibles")}</p>
+        <p className="text-gray-500">{t("dashboards.investor.charts.no_data")}</p>
       </div>
     )
   }

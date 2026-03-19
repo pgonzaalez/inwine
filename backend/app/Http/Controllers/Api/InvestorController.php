@@ -140,10 +140,6 @@ class InvestorController extends Controller
             ])
             ->get();
 
-        if ($investments->isEmpty()) {
-            return response()->json(['message' => 'No se encontraron inversiones para este inversor'], 404);
-        }
-
         $data = $investments->map(function ($investment) {
             $requestRestaurant = $investment->requestRestaurant;
             $product = $requestRestaurant->product;
@@ -169,6 +165,10 @@ class InvestorController extends Controller
                 'created_at' => $investment->created_at,
             ];
         });
+
+        if ($investments->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron inversiones para este inversor', 'investments' => $data], 200);
+        }
 
         return response()->json(['message' => 'Inversiones obtenidas correctamente', 'investments' => $data], 200);
     }
