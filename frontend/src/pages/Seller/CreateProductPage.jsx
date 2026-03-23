@@ -33,6 +33,10 @@ export default function CreateProduct() {
   })
   const navigate = useNavigate()
   const apiUrl = import.meta.env.VITE_API_URL
+
+  const handleCancel = () => {
+    navigate('/seller/dashboard')
+  }
   const formSectionRef = useRef(null)
   const priceSectionRef = useRef(null)
   const [selectedImages, setSelectedImages] = useState([])
@@ -234,7 +238,7 @@ export default function CreateProduct() {
     <div className="flex flex-col md:flex-row">
       <div className="flex-1 md:ml-[245px] p-4 md:p-8 pb-20 bg-gray-50 min-h-screen">
         {/* Progress bar header */}
-        <ProgressBar currentStep={currentStep} totalSteps={3} />
+        <ProgressBar currentStep={currentStep} totalSteps={3} onCancel={handleCancel} />
 
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-semibold text-gray-900 mb-5">{t("dashboards.seller.product.create_title")}</h1>
