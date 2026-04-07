@@ -1,8 +1,10 @@
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
+import { useTranslation } from "react-i18next";
 
 export default function AboutSection() {
+  const { t } = useTranslation();
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: false, amount: 0.3 })
 
@@ -65,26 +67,25 @@ export default function AboutSection() {
         <div className="max-w-6xl mx-auto py-12 px-6">
           <motion.div className="mb-16" variants={leftItemVariants}>
             <div className="flex flex-col items-start">
-              <h2 className="text-[#9A3E50] text-2xl font-normal mb-2">QUI SOM</h2>
+              <h2 className="text-[#9A3E50] text-2xl font-normal mb-2">{t("landing.about.who_we_are")}</h2>
               <div className="w-full h-1 bg-gradient-to-r from-[#9A3E50] mb-6"></div>
             </div>
             <p className="text-black text-lg leading-relaxed text-left">
-              Inwine és una plataforma que permet disposar de qualsevol vi a la carta dels restaurants minimitzant el
-              risc, potenciant les vendes dels cellers i creant valor pel inversors a partir de quantitats molt baixes.
+              {t("landing.about.description")}
             </p>
           </motion.div>
 
           <motion.div className="mt-16" variants={rightItemVariants}>
             <div className="flex flex-col items-end">
-              <h2 className="text-[#9A3E50] text-2xl font-normal mb-2 text-right w-full">QUÈ OFERIM</h2>
+              <h2 className="text-[#9A3E50] text-2xl font-normal mb-2 text-right w-full">{t("landing.about.what_we_offer")}</h2>
               <div className="w-full h-1 bg-gradient-to-l from-[#C27D7D] mb-6"></div>
             </div>
             <p className="text-black text-lg leading-relaxed text-right">
-              Ets un celler? Arriba a més restaurants.
+              {t("landing.about.cellar_question")}
               <br />
-              Tens un restaurant? Amplia la teva carta de vins sense invertir i sense risc.
+              {t("landing.about.restaurant_question")}
               <br />
-              Vols invertir? Inverteix amb opció a altes rendibilitats i amb nul risc. Tu tries el vi i el restaurant!
+              {t("landing.about.investor_question")}
             </p>
           </motion.div>
         </div>

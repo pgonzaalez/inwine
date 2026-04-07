@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useFetchUser } from "@components/auth/FetchUser"
+import { useTranslation } from "react-i18next"
 import { ProgressBar } from "@/components/product/ProgressBar"
 import { WineTypeSelector } from "@/components/product/WineTypeSelector"
 import { WineDetailsForm } from "@/components/product/WineDetailsForm"
@@ -9,6 +10,7 @@ import { validateStep } from "@/utils/form-validation"
 
 export default function CreateProduct() {
   const { user, loading } = useFetchUser()
+  const { t } = useTranslation()
   const [wineTypes, setWineTypes] = useState([])
   const [formData, setFormData] = useState({
     name: "",
@@ -31,6 +33,10 @@ export default function CreateProduct() {
   })
   const navigate = useNavigate()
   const apiUrl = import.meta.env.VITE_API_URL
+
+  const handleCancel = () => {
+    navigate('/seller/dashboard')
+  }
   const formSectionRef = useRef(null)
   const priceSectionRef = useRef(null)
   const [selectedImages, setSelectedImages] = useState([])
@@ -218,7 +224,7 @@ export default function CreateProduct() {
         if (response.status === 422) {
           setErrors(data.errors)
         } else {
-          throw new Error("Error en crear el producto")
+          throw new Error(t("dashboards.seller.product.error_create"))
         }
       } else {
         navigate(`/seller/dashboard`)
@@ -232,10 +238,10 @@ export default function CreateProduct() {
     <div className="flex flex-col md:flex-row">
       <div className="flex-1 md:ml-[245px] p-4 md:p-8 pb-20 bg-gray-50 min-h-screen">
         {/* Progress bar header */}
-        <ProgressBar currentStep={currentStep} totalSteps={3} />
+        <ProgressBar currentStep={currentStep} totalSteps={3} onCancel={handleCancel} />
 
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-5">Que vols vendre?</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 mb-5">{t("dashboards.seller.product.create_title")}</h1>
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Step 1: Wine Type Selection */}
             {currentStep === 1 && (

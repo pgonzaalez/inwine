@@ -1,4 +1,5 @@
 import { BarChart3, Wine, Clock, Check } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -8,6 +9,7 @@ const primaryColors = {
 }
 
 export const WineStats = ({ wines = [] }) => {
+  const { t } = useTranslation()
   // Calcular estadísticas actualizadas según los nuevos estados
   const stats = {
     total: wines.length,
@@ -22,7 +24,7 @@ export const WineStats = ({ wines = [] }) => {
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <BarChart3 size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">Total</p>
+          <p className="text-sm text-gray-600">{t("dashboards.seller.stats.total_products")}</p>
         </div>
         <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
           {stats.total}
@@ -31,7 +33,7 @@ export const WineStats = ({ wines = [] }) => {
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <Wine size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">En Stock</p>
+          <p className="text-sm text-gray-600">{t("dashboards.seller.stats.in_stock")}</p>
         </div>
         <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
           {stats.in_stock}
@@ -40,7 +42,7 @@ export const WineStats = ({ wines = [] }) => {
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <Clock size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">Sol·licitats</p>
+          <p className="text-sm text-gray-600">{t("dashboards.seller.stats.requested")}</p>
         </div>
         <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
           {stats.requested}
@@ -49,7 +51,7 @@ export const WineStats = ({ wines = [] }) => {
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <Clock size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">En Trànsit</p>
+          <p className="text-sm text-gray-600">{t("dashboards.seller.stats.in_transit")}</p>
         </div>
         <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
           {stats.in_transit}
@@ -58,7 +60,7 @@ export const WineStats = ({ wines = [] }) => {
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <Check size={18} style={{ color: primaryColors.dark }} />
-          <p className="text-sm text-gray-600">Venuts</p>
+          <p className="text-sm text-gray-600">{t("dashboards.seller.stats.sold")}</p>
         </div>
         <p className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
           {stats.sold}

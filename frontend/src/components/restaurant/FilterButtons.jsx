@@ -1,15 +1,17 @@
 "use client"
 
 import { Filter } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { primaryColors } from "./utils/colors"
 
 export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
+  const { t } = useTranslation()
   return (
     <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
       <div className="flex items-center gap-2 mb-3">
         <Filter size={18} style={{ color: primaryColors.dark }} />
         <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
-          Filtres
+          {t("dashboards.restaurant.filters.title")}
         </h3>
       </div>
       <div className="flex flex-wrap gap-2">
@@ -26,7 +28,7 @@ export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
           }
           onClick={() => setActiveFilter("all")}
         >
-          Tots
+          {t("dashboards.restaurant.filters.all")}
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -41,7 +43,7 @@ export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
           }
           onClick={() => setActiveFilter("pending")}
         >
-          Pendents
+          {t("dashboards.restaurant.filters.pending")}
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -56,7 +58,7 @@ export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
           }
           onClick={() => setActiveFilter("accepted")}
         >
-          Acceptats
+          {t("dashboards.restaurant.filters.accepted")}
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -71,7 +73,7 @@ export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
           }
           onClick={() => setActiveFilter("in_transit")}
         >
-          En trànsit
+          {t("dashboards.restaurant.filters.in_transit")}
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -86,7 +88,7 @@ export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
           }
           onClick={() => setActiveFilter("in_my_local")}
         >
-          En el local
+          {t("dashboards.restaurant.filters.in_my_local")}
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -101,7 +103,7 @@ export const FilterButtons = ({ activeFilter, setActiveFilter }) => {
           }
           onClick={() => setActiveFilter("sold")}
         >
-          Venuts
+          {t("dashboards.restaurant.filters.sold")}
         </button>
       </div>
     </div>

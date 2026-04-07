@@ -1,8 +1,10 @@
 "use client"
 
 import { X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageUrl }) {
+  const { t } = useTranslation()
   return (
     <div className="py-5 px-4 border-b last:border-b-0 hover:bg-gray-50/30 transition-colors relative">
       {/* Checkbox - mobile (top left) */}
@@ -56,7 +58,7 @@ export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageU
         <div className="h-24 w-24 flex-shrink-0 flex items-center justify-center">
           <img
             src={getImageUrl(item.product?.image) || "/placeholder.svg?height=80&width=80"}
-            alt={item.product?.name || "Product image"}
+            alt={item.product?.name || t('cart.item.placeholder_alt', 'Producte')}
             className="w-full h-full object-contain"
           />
         </div>
@@ -72,11 +74,11 @@ export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageU
 
             <div className="flex flex-col sm:flex-row sm:gap-6 mt-1">
               <div className="flex-1">
-                <p className="text-xs text-gray-500">Productor:</p>
+                <p className="text-xs text-gray-500">{t('cart.item.producer', 'Productor:')}</p>
                 <p className="text-sm font-medium">{item.seller_name}</p>
               </div>
               <div className="flex-1">
-                <p className="text-xs text-gray-500">Restaurant:</p>
+                <p className="text-xs text-gray-500">{t('cart.item.restaurant', 'Restaurant:')}</p>
                 <p className="text-sm font-medium">{item.restaurant_name}</p>
               </div>
             </div>
@@ -92,7 +94,7 @@ export function CartItem({ item, isSelected, onToggleSelect, onRemove, getImageU
               className="hidden md:flex text-gray-400 hover:text-[#9A3E50] transition-colors text-xs items-center"
             >
               <X className="h-3.5 w-3.5 mr-1" />
-              Eliminar
+              {t('cart.item.remove', 'Eliminar')}
             </button>
           </div>
         </div>

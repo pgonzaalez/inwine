@@ -7,8 +7,11 @@ import FilterSidebar from "@/components/landing/products/FilterSection"
 import ProductGrid from "@/components/landing/products/ProductGrid"
 import RestaurantGrid from "@/components/landing/products/RestaurantGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
+import { useTranslation } from "react-i18next";
+import { getCookie } from "@/utils/utils";
 
 export default function ProductPage() {
+  const { t } = useTranslation();
   // State for filters and tabs
   const [selectedType, setSelectedType] = useState("")
   const [priceRange, setPriceRange] = useState([0, 10000])
@@ -30,21 +33,37 @@ export default function ProductPage() {
   const [wineTypes, setWineTypes] = useState([])
   const [loading, setLoading] = useState(true)
 
-  // Cargar favoritos desde cookies al iniciar
+  // Cargar favoritos al iniciar
   useEffect(() => {
     // Set initial mobile state
     setIsMobile(window.innerWidth < 768)
     setShowFilters(window.innerWidth >= 768)
 
-    const savedFavorites = document.cookie.split("; ").find((row) => row.startsWith("favorites="))
-
-    if (savedFavorites) {
-      try {
-        const parsedFavorites = JSON.parse(savedFavorites.split("=")[1])
-        setFavorites(parsedFavorites)
-      } catch (error) {
-        // console.error("Error parsing favorites from cookie:", error)
-      }
+    const token = getCookie("token")
+    if (token) {
+        const fetchFavorites = async () => {
+            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+            try {
+                const response = await fetch(`${apiUrl}/favorites/ids`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                if (response.ok) {
+                    const data = await response.json()
+                    setFavorites(data.map(id => String(id)))
+                }
+            } catch (error) {}
+        }
+        fetchFavorites()
+    } else {
+        const savedFavorites = document.cookie.split("; ").find((row) => row.startsWith("favorites="))
+        if (savedFavorites) {
+          try {
+            const parsedFavorites = JSON.parse(savedFavorites.split("=")[1])
+            setFavorites(parsedFavorites.map(id => String(id)))
+          } catch (error) {}
+        }
     }
   }, [])
 
@@ -281,14 +300,8 @@ export default function ProductPage() {
     { id: 6, nombre: "Penedès" },
   ]
 
-  // Wineries data
-  const wineries = [
-    { id: 1, nombre: "Nom Marca 1" },
-    { id: 2, nombre: "Nom Marca 2" },
-    { id: 3, nombre: "Nom Marca 3" },
-    { id: 4, nombre: "Nom Marca 4" },
-    { id: 5, nombre: "Nom Marca 5" },
-  ]
+  // Cellers disponibles
+  const allWineries = [...new Set(products.map(p => p.user_id).filter(Boolean))];
 
   // Filter products
   const filteredProducts = products.filter((product) => {
@@ -326,9 +339,9 @@ export default function ProductPage() {
       return false
     }
 
-    // Filter by winery (using origin as bodega)
+    // Filter by winery (using user_id as bodega)
     // Only apply if wineries are selected
-    if (selectedWineries.length > 0 && !selectedWineries.includes(product.origin)) {
+    if (selectedWineries.length > 0 && !selectedWineries.includes(product.user_id)) {
       return false
     }
 
@@ -374,14 +387,49 @@ export default function ProductPage() {
   }
 
   // Handle favorites toggle
-  const toggleFavorite = (name) => {
-    setFavorites((prevFavorites) => {
-      if (prevFavorites.includes(name)) {
-        return prevFavorites.filter((favName) => favName !== name)
+  const toggleFavorite = async (productId) => {
+    const pId = String(productId);
+    console.log("Toggle favorite called with ID:", pId, "Current favorites:", favorites);
+    
+    const token = getCookie("token")
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+
+    if (!token) {
+      setFavorites((prevFavorites) => {
+        if (prevFavorites.includes(pId)) {
+          return prevFavorites.filter((id) => id !== pId)
+        } else {
+          return [...prevFavorites, pId]
+        }
+      })
+      return
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/favorites/${pId}/toggle`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        console.log("Toggle response:", data);
+        setFavorites((prevFavorites) => {
+          if (data.is_favorite) {
+            return [...prevFavorites, pId]
+          } else {
+            return prevFavorites.filter((id) => id !== pId)
+          }
+        })
       } else {
-        return [...prevFavorites, name]
+        console.error("Toggle API error:", response.status);
       }
-    })
+    } catch (error) {
+      console.error("Toggle request failed:", error);
+    }
   }
 
   // Handle winery toggle
@@ -430,7 +478,7 @@ export default function ProductPage() {
               priceRange={priceRange}
               setPriceRange={setPriceRange}
               activeFilter={activeFilter}
-              wineries={wineries}
+              wineries={allWineries}
               zones={zones}
               selectedWineries={selectedWineries}
               selectedZones={selectedZones}
@@ -443,14 +491,14 @@ export default function ProductPage() {
               <div className="bg-white rounded-xl shadow-md p-6 mb-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                   <h2 className="text-2xl font-bold text-gray-800">
-                    {activeFilter === "Productors" ? "Vins disponibles" : "Demandes de restaurants"}
+                    {activeFilter === "Productors" ? t("landing.products.title_products") : t("landing.products.title_requests")}
                   </h2>
                   <div className="flex items-center gap-4 w-full sm:w-auto">
                     {/* Search input */}
                     <div className="relative flex-1 sm:w-64">
                       <input
                         type="text"
-                        placeholder="Cerca per nom, tipus..."
+                        placeholder={t("landing.products.search_placeholder")}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full py-2 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9A3E50] focus:border-transparent"
@@ -462,14 +510,14 @@ export default function ProductPage() {
                       onClick={() => setShowFilters(true)}
                     >
                       <Filter size={16} />
-                      Filtres
+                      {t("landing.products.btn_filters")}
                     </button>
                     <button
                       onClick={resetFilters}
                       className="flex-none text-[#9A3E50] font-medium text-sm bg-[#9A3E50]/5 hover:bg-[#9A3E50]/10 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-1"
                     >
                       <X size={16} />
-                      Restablir
+                      {t("landing.products.btn_reset")}
                     </button>
                   </div>
                 </div>

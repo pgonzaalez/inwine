@@ -1,0 +1,852 @@
+{
+  "header": {
+    "nav": {
+      "home": "INICIO",
+      "products": "PRODUCTOS",
+      "contact": "CONTACTO"
+    },
+    "search": "Buscar...",
+    "cart": "Carrito",
+    "user": {
+      "account": "Mi cuenta",
+      "profile": "Perfil",
+      "change_role": "Cambiar rol",
+      "settings": "Configuración",
+      "logout": "Cerrar sesión",
+      "role": "Rol",
+      "email": "Correo"
+    },
+    "login": "Iniciar sesión"
+  },
+  "languages": {
+    "ca": "Catalán",
+    "es": "Castellano",
+    "en": "Inglés"
+  },
+  "footer": {
+    "sections": {
+      "community": "COMUNIDAD",
+      "company": "EMPRESA",
+      "useful_links": "ENLACES ÚTILES"
+    },
+    "links": {
+      "blog": "Blog",
+      "community": "Comunidad",
+      "ideas": "Ideas",
+      "developers": "Desarrolladores",
+      "about": "Sobre nosotros",
+      "team": "Equipo",
+      "influencers": "Influencers",
+      "affiliates": "Afiliados",
+      "media": "Medios",
+      "contact": "Contacto",
+      "guarantee": "Garantía",
+      "product_declarations": "Declaraciones de producto",
+      "terms": "Condiciones de uso",
+      "privacy": "Política de privacidad",
+      "cookies": "Política de cookies"
+    },
+    "rights": "Todos los derechos reservados.",
+    "address": "Calle del Sol, 1, 08201 Sabadell, Barcelona"
+  },
+  "landing": {
+    "about": {
+      "who_we_are": "QUIÉNES SOMOS",
+      "what_we_offer": "QUÉ OFRECEMOS",
+      "description": "Inwine es una plataforma que permite disponer de cualquier vino en la carta de los restaurantes minimizando el riesgo, potenciando las ventas de las bodegas y creando valor para los inversores a partir de cantidades muy bajas.",
+      "cellar_question": "¿Eres una bodega? Llega a más restaurantes.",
+      "restaurant_question": "¿Tienes un restaurante? Amplía tu carta de vinos sin invertir y sin riesgo.",
+      "investor_question": "¿Quieres invertir? ¡Invierte con opción a altas rentabilidades y con nulo riesgo. Tú eliges el vino y el restaurante!"
+    },
+    "carousel": {
+      "title": "Consigue los mejores vinos",
+      "description": "Descubre nuestra selección de vinos premium, elaborados con las mejores uvas y técnicas tradicionales. Cada botella representa la excelencia y pasión por la viticultura.",
+      "see_more": "Ver más"
+    },
+    "interactions": {
+      "title": "Últimas interacciones",
+      "profit": "Beneficio del",
+      "sale_price": "Precio venta",
+      "placeholders": {
+        "investor": "Nombre Inversor",
+        "producer": "Nombre Productor",
+        "restaurant": "Nombre Restaurante",
+        "product": "Nombre del producto"
+      }
+    },
+    "user_cards": {
+      "producer": {
+        "title": "Usuario Productor",
+        "alt": "Almacén"
+      },
+      "investor": {
+        "title": "Usuario Inversor",
+        "alt": "Inversor"
+      },
+      "restaurant": {
+        "title": "Usuario Restaurant",
+        "alt": "Restaurante"
+      },
+      "open_profile": "Abrir Perfil",
+      "start": "Comienza",
+      "features_title": "Características"
+    },
+    "contact": {
+      "title": "Contacta con",
+      "subtitle": "¿Tienes alguna duda sobre nuestros servicios o quieres formar parte de nuestra comunidad? Estamos aquí para ayudarte.",
+      "phone": {
+        "title": "Teléfono",
+        "desc": "Lunes a Viernes, 9:00 - 18:00"
+      },
+      "email": {
+        "title": "Correo Electrónico",
+        "desc": "Te responderemos en menos de 24 horas"
+      },
+      "office": {
+        "title": "Oficina Central",
+        "desc": "Barcelona, España"
+      },
+      "support": {
+        "title": "Soporte Personalizado",
+        "desc": "Nuestro equipo de expertos en vino está disponible para asesorarte en todo momento."
+      }
+    },
+    "products": {
+      "hero": {
+        "title": "Conectamos bodegas y restaurantes",
+        "subtitle": "Descubre vinos únicos de las mejores bodegas o explora las demandas de los restaurantes más exclusivos. Una plataforma que une la oferta y la demanda del sector vinícola.",
+        "question": "¿Qué quieres ver?",
+        "wines": "Vinos disponibles",
+        "requests": "Demandas activas"
+      },
+      "filters": {
+        "title": "Filtros",
+        "wine_type": "Tipo de vino",
+        "all_types": "Todos los tipos",
+        "price": "Precio",
+        "price_from": "De",
+        "price_to": "hasta",
+        "winery": "Bodega",
+        "search_winery": "Buscar bodega...",
+        "no_winery_found": "No se ha encontrado ninguna bodega",
+        "restaurant": "Restaurante",
+        "wineries": "Bodegas"
+      },
+      "product_card": {
+        "requests": "peticiones",
+        "alt": "Vino",
+        "no_name": "Sin nombre",
+        "quantity": "Cantidad"
+      },
+      "restaurant_card": {
+        "request_title": "Solicitud de producto",
+        "buy_price": "Compra",
+        "sell_price": "Venta",
+        "amount_requested": "Cantidad solicitada"
+      },
+      "empty": {
+        "no_products": "No hemos encontrado vinos con estos filtros.",
+        "no_restaurants": "No hemos encontrado restaurantes con estos filtros.",
+        "reset": "Restablecer filtros"
+      },
+      "search_placeholder": "Buscar por nombre, tipo...",
+      "title_products": "Vinos disponibles",
+      "btn_filters": "Filtros",
+      "btn_reset": "Restablecer"
+    }
+  },
+  "dashboards": {
+    "seller": {
+      "welcome": "Bienvenido, {{name}}",
+      "default_name": "Vendedor",
+      "subtitle": "Gestiona tus productos y sigue tus ventas",
+      "stats": {
+        "total_products": "Total Productos",
+        "active_products": "Productos Activos",
+        "total_sales": "Total Ventas",
+        "revenue": "Ingresos (€)",
+        "in_stock": "En Stock",
+        "requested": "Solicitados",
+        "in_transit": "En Tránsito",
+        "sold": "Vendidos"
+      },
+      "latest_wines": {
+        "title": "Últimos vinos creados",
+        "view_all": "Ver todos",
+        "empty": "No hay vinos creados recientemente"
+      },
+      "latest_sold": {
+        "title": "Últimos vinos vendidos",
+        "empty": "No hay vinos vendidos recientemente"
+      },
+      "management": {
+        "title": "Gestiona tus Vinos",
+        "table": {
+          "title": "Tus vinos",
+          "count_singular": "vino",
+          "count_plural": "vinos",
+          "filters_label": "Filtros",
+          "filter_all": "Todos",
+          "empty_filter": "No hay vinos disponibles con este filtro",
+          "distribution_title": "Distribución por tipo",
+          "cols": {
+            "image": "Imagen",
+            "details": "Detalles",
+            "type": "Tipo",
+            "status": "Estado",
+            "price": "Precio",
+            "actions": "Acciones"
+          },
+          "actions": {
+            "details": "Detalles",
+            "send": "Enviar",
+            "sending": "Enviando...",
+            "delete": "Eliminar"
+          }
+        }
+      },
+      "product": {
+        "create_title": "¿Qué quieres vender?",
+        "edit_title": "Edita el vino",
+        "create_subtitle": "Crea el vino",
+        "form_desc_create": "Rellena los siguientes datos para crear tu vino. Proporciona toda la información relevante.",
+        "form_desc_edit": "Rellena los siguientes datos para editar tu vino. Proporciona toda la información relevante.",
+        "section_info": "Información del vino",
+        "section_images": "Imágenes del vino",
+        "section_images_count_singular": "imagen",
+        "section_images_count_plural": "imágenes",
+        "field_name": "Nombre del Vino",
+        "field_origin": "Denominación de Origen",
+        "field_year": "Año",
+        "field_description": "Descripción",
+        "field_description_max": "Máximo de 255 caracteres",
+        "field_image_add": "Añadir más imágenes",
+        "field_image_upload": "Sube imágenes",
+        "field_image_drag": "o arrastra y suelta",
+        "field_image_types": "PNG, JPG, GIF hasta 10MB",
+        "existing_images": "Imágenes existentes",
+        "preview_images": "Previsualización de imágenes",
+        "btn_prev": "Anterior",
+        "btn_next": "Siguiente",
+        "btn_submit": "Sube tu vino",
+        "pricing_title": "Precio y disponibilidad",
+        "pricing_desc": "Establece el precio y la cantidad disponible de tu vino.",
+        "field_price": "Precio (€)",
+        "field_quantity": "Cantidad disponible",
+        "summary_title": "Resumen del vino",
+        "summary_name": "Nombre",
+        "summary_origin": "Origen",
+        "summary_year": "Año",
+        "summary_price": "Precio",
+        "summary_quantity": "Cantidad",
+        "type_selector_title": "Elige la categoría",
+        "type_selector_desc": "Selecciona una opción de estos vinos para elegir la categoría",
+        "error_fetch": "No se pudo obtener la información del producto.",
+        "error_delete": "No se pudo eliminar el producto.",
+        "success_delete": "Producto eliminado correctamente.",
+        "success_edit": "Producto actualizado correctamente",
+        "error_create": "Error al crear el producto",
+        "error_edit": "Error al actualizar el producto",
+        "loading": "Cargando producto...",
+        "not_found": "Producto no encontrado",
+        "back": "Volver",
+        "step_x_of_y": "Paso {{current}} de {{total}}"
+      },
+      "status": {
+        "in_stock": "En Stock",
+        "requested": "Solicitado",
+        "in_transit": "En Tránsito",
+        "sold": "Vendido",
+        "unknown": "Desconocido"
+      },
+      "messages": {
+        "error_server": "No se pudo conectar con el servidor",
+        "error_invalid_id": "ID de producto no válido",
+        "error_delivery": "Error al entregar el producto",
+        "success_sent": "Producto enviado correctamente"
+      },
+      "modals": {
+        "delete": {
+          "title": "¿Estás seguro de que quieres eliminar este producto?",
+          "desc": "Esta acción no se puede deshacer. El producto se eliminará permanentemente.",
+          "warning": "Al eliminar el producto, tendrás que volver a añadirlo si quieres venderlo de nuevo.",
+          "btn_cancel": "Cancelar",
+          "btn_confirm": "Eliminar"
+        }
+      }
+    },
+    "restaurant": {
+      "management": {
+        "title": "Gestiona tus Solicitudes"
+      },
+      "stats": {
+        "total": "Total",
+        "pending": "Pendientes",
+        "accepted": "Aceptados",
+        "in_my_local": "En el local",
+        "sold": "Vendidos"
+      },
+      "filters": {
+        "title": "Filtros",
+        "all": "Todos",
+        "pending": "Pendientes",
+        "accepted": "Aceptados",
+        "in_transit": "En tránsito",
+        "in_my_local": "En el local",
+        "sold": "Vendidos"
+      },
+      "table": {
+        "title": "Tus solicitudes",
+        "count_singular": "solicitud",
+        "count_plural": "solicitudes",
+        "empty": "No hay solicitudes disponibles con este filtro",
+        "cols": {
+          "image": "Imagen",
+          "details": "Detalles",
+          "type": "Tipo",
+          "status": "Estado",
+          "prices": "Precios",
+          "date": "Fecha",
+          "actions": "Acciones"
+        },
+        "actions": {
+          "view": "Ver",
+          "edit": "Editar",
+          "delete": "Eliminar",
+          "receive": "He recibido",
+          "receiving": "Recibiendo...",
+          "sell": "He vendido",
+          "selling": "Vendiendo..."
+        }
+      },
+      "status": {
+        "pending": "Pendiente",
+        "accepted": "Aceptado",
+        "in_transit": "En Tránsito",
+        "in_my_local": "En el Local",
+        "sold": "Vendido",
+        "cancelled": "Cancelado",
+        "unknown": "Desconocido"
+      },
+      "view": {
+        "price_demanded": "Precio demandado",
+        "price_restaurant": "Precio restaurante",
+        "request_date": "Fecha de solicitud",
+        "product_details": "Detalles del producto",
+        "origin": "Origen",
+        "wine_type": "Tipo de vino",
+        "not_specified": "No especificado",
+        "not_found": "Solicitud no encontrada",
+        "back": "Volver"
+      },
+      "modals": {
+        "delete": {
+          "title": "¿Estás seguro de que quieres eliminar esta petición?",
+          "desc": "Esta acción no se puede deshacer. Tu petición se eliminará permanentemente.",
+          "warning": "Al eliminar la petición, tendrás que volver a añadirla si quieres venderlo de nuevo.",
+          "btn_cancel": "Cancelar",
+          "btn_confirm": "Eliminar"
+        },
+        "edit": {
+          "title": "Modificar precio {{name}}",
+          "desc": "Introduce el nuevo precio que quieres ofrecer por este producto",
+          "field_new_price": "Nuevo precio (€)",
+          "placeholder": "Introduce el nuevo precio",
+          "error_invalid_price": "Por favor, introduce un precio válido",
+          "current_price": "Precio actual",
+          "your_offer": "Tu oferta",
+          "offer_higher": "(Supera el precio actual)",
+          "offer_lower": "(Inferior al precio actual)",
+          "offer_equal": "(Igual al precio actual)",
+          "success": "¡Precio actualizado correctamente!",
+          "btn_cancel": "Cancelar",
+          "btn_submit": "Actualizar precio"
+        }
+      },
+      "messages": {
+        "error_server": "No se pudo conectar con el servidor",
+        "error_delete": "No se pudo eliminar la solicitud",
+        "success_delete": "Solicitud eliminada correctamente",
+        "error_update": "No se pudo actualizar la solicitud",
+        "error_receive": "Error al marcar como recibido",
+        "success_receive": "Producto recibido correctamente",
+        "error_sell": "Error al marcar como vendido",
+        "success_sell": "Producto vendido correctamente",
+        "error_fetch": "No se pudo obtener la información de la solicitud.",
+        "error_unknown": "Error desconocido",
+        "invalid_id": "ID de solicitud no válido",
+        "error_update_status": "Error al actualizar el estado"
+      }
+    },
+    "investor": {
+      "summary": {
+        "title": "Dashboard de Inversiones",
+        "history_title": "Historial de Inversiones",
+        "tabs": {
+          "timeline": "Evolución Temporal",
+          "status": "Estado",
+          "return": "Retorno",
+          "origin": "Origen"
+        },
+        "charts": {
+          "evolution": "Evolución de las Inversiones",
+          "distribution": "Distribución por Estado",
+          "comparison": "Inversión vs Retorno Potencial",
+          "by_origin": "Inversiones por Origen"
+        }
+      },
+      "stats": {
+        "total_invested": "Total Invertido",
+        "investment_count": "{{count}} inversión",
+        "investment_count_plural": "{{count}} inversiones",
+        "total_inversions": "en total",
+        "potential_profit": "Beneficio Potencial",
+        "profit_positive": "Rentabilidad positiva",
+        "profit_none": "Sin beneficio aún",
+        "profitability": "de rentabilidad",
+        "profitability_percent": "% de rentabilidad",
+        "pending_investments": "Inversiones Pendientes",
+        "waiting_completion": "Esperando ser completadas",
+        "best_investment": "Mejor Inversión",
+        "best_investment_none": "Sin datos",
+        "none": "Ninguna",
+        "units": "unidades",
+        "pendent_completat": "Pendientes / Completadas"
+      },
+      "table": {
+        "title": "Tus inversiones",
+        "filters_title": "Filtros",
+        "filters": {
+          "all": "Todos",
+          "paid": "Pagado (Pendiente)",
+          "completed": "Completado",
+          "cancelled": "Cancelado"
+        },
+        "count_zero": "0 inversiones",
+        "count_single": "1 inversión",
+        "count_multiple": "{{count}} inversiones",
+        "empty": "No hay inversiones disponibles con este filtro",
+        "headers": {
+          "image": "Imagen",
+          "product": "Producto",
+          "seller": "Vendedor",
+          "restaurant": "Restaurante",
+          "status": "Estado",
+          "investment": "Inversión",
+          "return": "Retorno",
+          "actions": "Acciones"
+        },
+        "labels": {
+          "quantity": "Cantidad",
+          "date": "Fecha",
+          "profit": "Beneficio",
+          "potential_return": "Retorno potencial"
+        },
+        "actions": {
+          "details": "Detalles"
+        }
+      },
+      "status": {
+        "paid": "Pagado (Pendiente)",
+        "completed": "Completado",
+        "cancelled": "Cancelado",
+        "unknown": "Desconocido",
+        "other": "Otros"
+      },
+      "details": {
+        "back": "Volver",
+        "product_details": "Detalles del Producto",
+        "summary_title": "Resumen de la Inversión",
+        "status_title": "Estado de la Inversión",
+        "history_title": "Historial de la Inversión",
+        "labels": {
+          "wine_type": "Tipo de Vino",
+          "price_demanded": "Precio Demandado",
+          "year": "Año",
+          "seller": "Vendedor",
+          "restaurant": "Restaurante",
+          "quantity": "Cantidad",
+          "unit_price": "Precio por unidad",
+          "total_investment": "Inversión total",
+          "restaurant_price": "Precio restaurante",
+          "potential_return": "Retorno potencial",
+          "potential_profit": "Beneficio potencial",
+          "investment_date": "Fecha de la inversión",
+          "current_status": "Estado actual",
+          "profitability": "Rentabilidad"
+        },
+        "table": {
+          "date": "Fecha",
+          "status": "Estado",
+          "description": "Descripción"
+        },
+        "messages": {
+          "not_specified": "No especificado",
+          "units": "unidades",
+          "not_found": "Inversión no encontrada"
+        }
+      },
+      "charts": {
+        "origin_summary": "Resumen por Origen",
+        "no_data": "No hay datos disponibles",
+        "amount": "Importe",
+        "count": "Número",
+        "total": "Total",
+        "origin": "Origen"
+      },
+      "messages": {
+        "error_server": "No se pudo conectar con el servidor",
+        "error_fetch": "Se ha producido un error cargando las inversiones.",
+        "no_token": "Authentication token not found."
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Inicia sesión",
+      "subtitle": "Introduce tus credenciales para acceder",
+      "email_placeholder": "Correo electrónico",
+      "password_placeholder": "Contraseña",
+      "submit": "Enviar",
+      "loading": "Cargando...",
+      "error_credentials": "Credenciales incorrectas. Comprueba tu correo y contraseña.",
+      "error_too_many_attempts": "Demasiados intentos fallidos. Inténtalo de nuevo más tarde.",
+      "error_generic": "Error al iniciar sesión",
+      "success": "Inicio de sesión correcto",
+      "role_modal_title": "Elegir rol",
+      "role_modal_desc": "Selecciona el rol con el que quieres acceder:"
+    },
+    "register": {
+      "seller_title": "Crear cuenta de usuario productor",
+      "restaurant_title": "Crear cuenta de usuario restaurante",
+      "investor_title": "Crear cuenta de usuario inversor",
+      "have_account": "¿Tienes una cuenta?",
+      "login_link": "Inicia sesión",
+      "personal_info": "Información datos personales",
+      "login_info": "Información inicio de sesión",
+      "bank_info": "Información datos bancarios",
+      "labels": {
+        "name": "Nombre usuario",
+        "nif": "NIF",
+        "address": "Dirección",
+        "phone": "Teléfono contacto",
+        "email": "Email",
+        "password": "Contraseña",
+        "contact_person": "Nombre de contacto",
+        "bank_account": "Número cuenta",
+        "credit_card": "Tarjeta de crédito"
+      },
+      "submit_seller": "Agregar Productor",
+      "submit_restaurant": "Agregar Restaurante",
+      "submit_investor": "Agregar Inversor",
+      "loading": "Procesando...",
+      "success_seller": "¡Productor registrado exitosamente! Redirigiendo...",
+      "success_restaurant": "¡Restaurante registrado exitosamente! Redirigiendo...",
+      "success_investor": "¡Inversor registrado exitosamente! Redirigiendo...",
+      "error_validation": "Hay errores de validación en el formulario. Revisa los campos.",
+      "error_conflict": "Ya existe un usuario con este email o NIF. Por favor, utiliza datos diferentes.",
+      "error_forbidden": "No tienes permisos para realizar esta acción.",
+      "error_generic": "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde."
+    }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "subtitle": "Gestiona tu información personal y roles en la plataforma",
+    "tabs": {
+      "profile": "Perfil",
+      "restaurant": "Restaurante",
+      "investor": "Inversor",
+      "seller": "Productor"
+    },
+    "personal_info_title": "Información Personal",
+    "personal_info_desc": "Actualiza tus datos personales y credenciales",
+    "role_management_title": "Gestión de Roles",
+    "role_management_desc": "Añade roles adicionales a tu cuenta",
+    "restaurant_data_title": "Datos de Restaurante",
+    "restaurant_data_desc": "Gestiona la información de tu restaurante",
+    "investor_data_title": "Datos de Inversor",
+    "investor_data_desc": "Gestiona la información de tu perfil de inversor",
+    "seller_data_title": "Datos de Productor",
+    "seller_data_desc": "Gestiona la información de tu perfil de productor"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona la seguridad y las preferencias de tu cuenta",
+    "success_message": "Configuración actualizada correctamente",
+    "menu": {
+      "security": "Seguridad",
+      "notifications": "Notificaciones",
+      "preferences": "Preferencias"
+    },
+    "security": {
+      "title": "Seguridad de la Cuenta",
+      "current_password": "Contraseña Actual",
+      "new_password": "Nueva Contraseña",
+      "confirm_password": "Confirmar Nueva Contraseña",
+      "update_btn": "Actualizar Contraseña"
+    },
+    "notifications": {
+      "title": "Preferencias de Notificaciones",
+      "email_label": "Notificaciones por Email",
+      "email_desc": "Recibe actualizaciones de tus pedidos",
+      "push_label": "Notificaciones Push",
+      "push_desc": "Alertas en tiempo real en el navegador"
+    },
+    "preferences": {
+      "title": "Configuración Regional",
+      "language_label": "Idioma de la plataforma",
+      "currency_label": "Moneda",
+      "save_btn": "Guardar Preferencias"
+    }
+  },
+  "cart": {
+    "title": "Mi cesta",
+    "loading": "Cargando la cesta...",
+    "error_auth": {
+      "title": "Error de autenticación",
+      "message": "No se ha podido cargar la información del usuario. Por favor, inicia sesión de nuevo.",
+      "login_btn": "Iniciar sesión"
+    },
+    "empty": {
+      "title": "Tu cesta está vacía",
+      "message": "Parece que aún no has añadido ningún producto al carrito. Vuelve a la tienda para explorar nuestros vinos.",
+      "continue_btn": "Continuar comprando"
+    },
+    "success_updated": "Cantidad actualizada correctamente",
+    "selected_products": "Productos seleccionados",
+    "features": {
+      "free_shipping": {
+        "title": "Envío gratuito",
+        "desc": "Para pedidos superiores a 100€"
+      },
+      "secure_payment": {
+        "title": "Pago seguro",
+        "desc": "Transacciones encriptadas"
+      },
+      "quality_guarantee": {
+        "title": "Garantía de calidad",
+        "desc": "Todos los vinos verificados"
+      }
+    },
+    "summary": {
+      "title": "Resumen del pedido",
+      "subtotal": "Subtotal",
+      "service_fee": {
+        "label": "Comisión de servicio",
+        "tooltip": "3% del subtotal"
+      },
+      "shipping": {
+        "label": "Gastos de envío",
+        "free": "Gratis"
+      },
+      "total": "Total",
+      "vat_included": "IVA incluido",
+      "checkout_btn": "Finalizar compra",
+      "continue_shopping": "Continuar comprando",
+      "selected_items": "Artículos seleccionados",
+      "secure_payment": "Pago seguro",
+      "clear_cart": "Borrar cesta"
+    },
+    "item": {
+      "producer": "Productor:",
+      "restaurant": "Restaurante:",
+      "remove": "Eliminar",
+      "placeholder_alt": "Producto"
+    },
+    "delete_modal": {
+      "title": "¿Quieres borrar todo?",
+      "message": "Borrarás toda tu cesta. ¿Estás seguro?",
+      "warning": "Al borrar la cesta, tendrás que volver a añadir todas las solicitudes de los restaurantes.",
+      "cancel": "Cancelar",
+      "confirm": "Borrar"
+    }
+  },
+  "info": {
+    "privacy": {
+      "title": "Política de Privacidad",
+      "content": "En INWINE nos tomamos muy en serio tu privacidad. Esta página detalla cómo recopilamos, utilizamos y protegemos tus datos personales.",
+      "section1": {
+        "title": "1. Recopilación de Información",
+        "text": "Recopilamos información cuando te registras en nuestro sitio, realizas un pedido o te suscribes a nuestro boletín. La información incluye tu nombre, correo electrónico y número de teléfono."
+      },
+      "section2": {
+        "title": "2. Uso de la Información",
+        "text": "Cualquier información que recopilemos de ti puede ser utilizada para:",
+        "item1": "Personalizar tu experiencia.",
+        "item2": "Mejorar nuestro sitio web y servicio al cliente.",
+        "item3": "Procesar transacciones y enviar correos electrónicos periódicos."
+      }
+    },
+    "terms": {
+      "title": "Condiciones de Uso",
+      "content": "Bienvenido a INWINE. Al acceder a nuestro sitio web, aceptas cumplir estas condiciones de uso.",
+      "section1": {
+        "title": "1. Uso de la Licencia",
+        "text": "Se concede permiso para descargar temporalmente una copia de los materiales en el sitio web de INWINE solo para visualización transitoria personal y no comercial."
+      },
+      "section2": {
+        "title": "2. Exclusión de Responsabilidad",
+        "text": "Los materiales en el sitio web de INWINE se proporcionan \"tal cual\". INWINE no ofrece ninguna garantía, expresa o implícita."
+      }
+    },
+    "cookies": {
+      "title": "Política de Cookies",
+      "content": "Utilizamos cookies para mejorar tu experiencia en nuestro sitio web.",
+      "what_are": "¿Qué son las cookies?",
+      "what_are_text": "Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web para recordar tus preferencias.",
+      "types": "Tipos de cookies que utilizamos",
+      "type_necessary": "Necesarias:",
+      "type_necessary_text": "Esenciales para el funcionamiento del sitio.",
+      "type_analysis": "Análisis:",
+      "type_analysis_text": "Para entender cómo interactúan los usuarios con la web.",
+      "type_marketing": "Marketing:",
+      "type_marketing_text": "Para mostrar anuncios relevantes."
+    },
+    "legal": {
+      "title": "Aviso Legal",
+      "content": "Información legal obligatoria sobre el propietario de este sitio web.",
+      "owner_data": "Datos del titular",
+      "owner": "Titular:",
+      "nif": "NIF:",
+      "address": "Domicilio:",
+      "email": "Email:"
+    },
+    "about": {
+      "title": "Sobre nosotros",
+      "content": "INWINE es la plataforma líder para conectar productores de vino, inversores y restaurantes.",
+      "mission": "Nuestra misión",
+      "mission_text": "Queremos revolucionar el sector vinícola utilizando la tecnología para conectar la excelencia del campo con la mesa y el mercado de inversión.",
+      "commitment": "Nuestro compromiso",
+      "commitment_text": "Trabajamos con transparencia y pasión para ofrecer la mejor experiencia a toda nuestra comunidad."
+    },
+    "team": {
+      "title": "Equipo",
+      "content": "Conoce a las personas que hacen posible INWINE.",
+      "talent": "Talento y Pasión",
+      "talent_text": "Nuestro equipo está formado por sommeliers, desarrolladores y expertos en finanzas, todos unidos por el amor al vino."
+    },
+    "influencers": {
+      "title": "Influencers",
+      "content": "Colabora con nosotros y comparte tu pasión por el vino.",
+      "program": "Programa de Embajadores",
+      "program_text": "Buscamos creadores de contenido que se alineen con nuestros valores para llevar la cultura del vino a nuevas audiencias."
+    },
+    "affiliates": {
+      "title": "Afiliados",
+      "content": "Únete a nuestro programa de afiliados y gana comisiones.",
+      "benefits": "Beneficios para socios",
+      "benefits_text": "Obtén ingresos recomendando nuestros servicios a tu red de contactos. Ofrecemos las mejores tasas del sector."
+    },
+    "media": {
+      "title": "Medios",
+      "content": "Recursos para prensa y medios de comunicación.",
+      "press_kit": "Press Kit",
+      "press_kit_text": "Puedes descargar nuestro dossier de prensa y material gráfico oficial directamente desde aquí."
+    },
+    "blog": {
+      "title": "Blog",
+      "content": "Últimas noticias, consejos y curiosidades sobre el mundo del vino.",
+      "explore": "Explora la cultura del vino",
+      "explore_text": "Contenido semanal sobre catas, visitas a bodegas y las mejores prácticas para inversores vitivinícolas."
+    },
+    "community": {
+      "title": "Comunidad",
+      "content": "Conecta con otros amantes del vino e inversores.",
+      "network": "Red INWINE",
+      "network_text": "Participa en eventos exclusivos y comparte conocimientos con otros profesionales y entusiastas del sector."
+    },
+    "ideas": {
+      "title": "Ideas",
+      "content": "Queremos escuchar tus sugerencias para mejorar INWINE.",
+      "co_creation": "Co-creación",
+      "co_creation_text": "Las mejores funcionalidades de nuestra plataforma han surgido directamente de las ideas de nuestros usuarios."
+    },
+    "developers": {
+      "title": "Desarrolladores",
+      "content": "Documentación y herramientas para integrarte con nuestra plataforma.",
+      "api": "API REST",
+      "api_text": "Accede a nuestra documentación técnica para integrar datos de vinos y mercados en tus aplicaciones."
+    },
+    "guarantee": {
+      "title": "Garantía",
+      "content": "Información sobre las garantías de producto y servicio.",
+      "security": "Seguridad y Confianza",
+      "security_text": "Garantizamos la autenticidad de todos los productos listados en nuestra plataforma y la seguridad de tus inversiones."
+    },
+    "product_declarations": {
+      "title": "Declaraciones de producto",
+      "content": "Certificaciones y datos técnicos de nuestros vinos.",
+      "transparency": "Transparencia Total",
+      "transparency_text": "Todos nuestros vinos cuentan con declaraciones nutricionales y de procedencia detalladas según la normativa vigente."
+    }
+  },
+  "sidebar": {
+    "user_unknown": "Usuario Desconocido",
+    "nav": {
+      "home": "Inicio",
+      "back_to_web": "Volver a la web",
+      "profile": "Perfil",
+      "settings": "Configuración",
+      "history": "Histórico",
+      "upload_product": "Subir Producto",
+      "upload": "Subir",
+      "products": "Productos",
+      "logout": "Cerrar sesión",
+      "change_role": "Cambiar rol",
+      "language": "Idioma"
+    },
+    "modals": {
+      "logout": {
+        "title": "¿Cerrar sesión?",
+        "description": "¿Estás seguro de que quieres cerrar tu sesión actual?",
+        "warning": "Al cerrar sesión, tendrás que volver a iniciar sesión para acceder a tu cuenta.",
+        "cancel": "Cancelar",
+        "confirm": "Cerrar sesión"
+      },
+      "change_role": {
+        "title": "Cambiar rol",
+        "description": "Selecciona el rol con el que quieres acceder:"
+      }
+    }
+  },
+  "common": {
+    "close": "Cerrar",
+    "continue": "Continuar",
+    "wine_types": {
+      "negre": "Tinto",
+      "blanc": "Blanco",
+      "rossat": "Rosado",
+      "espumós": "Espumoso",
+      "dolç": "Dulce"
+    }
+  },
+  "role_selector": {
+    "roles": {
+      "seller": {
+        "label": "Productor",
+        "description": "Gestiona tus productos y ventas"
+      },
+      "restaurant": {
+        "label": "Restaurante",
+        "description": "Administra tu restaurante"
+      },
+      "investor": {
+        "label": "Inversor",
+        "description": "Sigue tus inversiones"
+      },
+      "default": {
+        "label": "Cuenta",
+        "description": "Accede a tu cuenta"
+      }
+    }
+  },
+  "favorites": {
+    "back_to_shop": "Volver a la tienda",
+    "title": "Mis Favoritos",
+    "count_label": "productos guardados",
+    "search_placeholder": "Buscar en mis favoritos...",
+    "empty_title": "Aún no tienes favoritos",
+    "empty_desc": "Guarda tus vinos preferidos para encontrarlos más rápido y no perderlos de vista.",
+    "explore_btn": "Explorar productos"
+  }
+}

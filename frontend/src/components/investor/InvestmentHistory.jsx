@@ -3,9 +3,10 @@ import { useFetchUser } from "@components/auth/FetchUser"
 import { useState, useEffect } from "react"
 import { Notification } from "@components/seller/wineManagement/Notification"
 import { InvestmentStats } from "./InvestmentStats"
+import { InvestmentStatusDistribution } from "./InvestmentStatusDistribution";
 import { InvestmentTable } from "./InvestmentTable"
-import { InvestmentStatusDistribution } from "./InvestmentStatusDistribution"
 import { getCookie } from "@/utils/utils" // Usando tu utilidad personalizada
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -15,6 +16,7 @@ const primaryColors = {
 }
 
 function InvestmentHistoryComponent() {
+  const { t } = useTranslation()
   const [investments, setInvestments] = useState([])
   const [error, setError] = useState(null)
   const [activeFilter, setActiveFilter] = useState("all")
@@ -38,7 +40,7 @@ function InvestmentHistoryComponent() {
       const token = getCookie("token")
 
       if (!token) {
-        setNotification("No s'ha trobat el token d'autenticació.")
+        setNotification(t("dashboards.investor.messages.no_token"))
         setIsLoading(false)
         return
       }
@@ -51,7 +53,7 @@ function InvestmentHistoryComponent() {
       })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut connectar amb el servidor")
+        throw new Error(t("dashboards.investor.messages.error_server"))
       }
 
       const data = await response.json()
@@ -59,7 +61,7 @@ function InvestmentHistoryComponent() {
       setNotification(null)
     } catch (err) {
       setError(err.message)
-      setNotification("Hi ha hagut un error carregant les inversions.")
+      setNotification(t("dashboards.investor.messages.error_fetch"))
     } finally {
       setIsLoading(false)
     }
@@ -89,7 +91,7 @@ function InvestmentHistoryComponent() {
 
       <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          Historial d'Inversions
+          {t("dashboards.investor.summary.history_title")}
         </h1>
       </div>
 

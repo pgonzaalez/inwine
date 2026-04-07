@@ -3,8 +3,10 @@
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Trash2, AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function DeleteRequestModal({ isOpen, onClose, onConfirm }) {
+  const { t } = useTranslation()
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -45,10 +47,10 @@ export function DeleteRequestModal({ isOpen, onClose, onConfirm }) {
                     <Trash2 className="h-8 w-8 text-red-500" />
                   </div>
                   <Dialog.Title as="h3" className="text-xl font-semibold text-gray-900 text-center sm:text-left">
-                    Estàs segur que vols eliminar aquesta petició?
+                    {t("dashboards.restaurant.modals.delete.title")}
                   </Dialog.Title>
                   <div className="mt-2 text-gray-500 text-center sm:text-left">
-                    Aquesta acció no es pot desfer. La teva petició s'eliminarà permanentment.
+                    {t("dashboards.restaurant.modals.delete.desc")}
                   </div>
                 </div>
               </div>
@@ -60,7 +62,7 @@ export function DeleteRequestModal({ isOpen, onClose, onConfirm }) {
               <div className="flex items-start rounded-lg bg-amber-50 p-4 mx-6 mt-4">
                 <AlertTriangle className="mr-3 h-5 w-5 text-amber-500 flex-shrink-0" />
                 <p className="text-sm text-amber-700">
-                  En eliminar la petició, hauràs de tornar-lo a afegir si vols vendre’l novament.
+                  {t("dashboards.restaurant.modals.delete.warning")}
                 </p>
               </div>
 
@@ -70,13 +72,13 @@ export function DeleteRequestModal({ isOpen, onClose, onConfirm }) {
                   onClick={onClose}
                   className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  Cancel·lar
+                  {t("dashboards.restaurant.modals.delete.btn_cancel")}
                 </button>
                 <button
                   onClick={onConfirm}
                   className="flex items-center justify-center rounded-md bg-gradient-to-r from-red-500 to-red-600 px-4 py-2.5 text-sm font-medium text-white hover:from-red-600 hover:to-red-700 transition-colors"
                 >
-                  Eliminar
+                  {t("dashboards.restaurant.modals.delete.btn_confirm")}
                 </button>
               </div>
             </div>

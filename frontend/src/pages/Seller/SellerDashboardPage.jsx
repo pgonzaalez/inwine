@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { BarChart3, Wine, ShoppingBag, TrendingUp, Check } from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -50,6 +51,7 @@ const StatCard = ({ title, value, icon, trend, percentage }) => {
 
 // Componente para mostrar los últimos vinos creados
 const LatestWines = ({ wines = [] }) => {
+  const { t } = useTranslation()
   const baseUrl = import.meta.env.VITE_URL_BASE
   const sortedWines = [...wines].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 3)
 
@@ -57,21 +59,21 @@ const LatestWines = ({ wines = [] }) => {
     <div className="bg-white rounded-xl p-5 transition-all duration-300 hover:translate-y-[-2px] shadow-sm">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-bold text-lg" style={{ color: primaryColors.dark }}>
-          Últims vins creats
+          {t("dashboards.seller.latest_wines.title")}
         </h3>
         <Link
           to="/seller/products"
           className="text-sm font-medium hover:underline"
           style={{ color: primaryColors.light }}
         >
-          Veure tots
+          {t("dashboards.seller.latest_wines.view_all")}
         </Link>
       </div>
       <div className="space-y-4">
         {sortedWines.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-gray-500">
             <Wine size={48} style={{ color: primaryColors.light }} />
-            <p className="mt-4">No hi ha vins creats recentment</p>
+            <p className="mt-4">{t("dashboards.seller.latest_wines.empty")}</p>
           </div>
         ) : (
           sortedWines.map((wine) => (
@@ -89,7 +91,7 @@ const LatestWines = ({ wines = [] }) => {
                 <div>
                   <p className="font-medium">{wine.name}</p>
                   <p className="text-sm text-gray-500">
-                    {wine.year} · {wine.type || "Vi"} ·{new Date(wine.created_at).toLocaleDateString("ca-ES")}
+                    {wine.year} · {wine.type || t("dashboards.seller.management.table.count_singular")} ·{new Date(wine.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -106,6 +108,7 @@ const LatestWines = ({ wines = [] }) => {
 
 // Componente para mostrar los últimos vinos vendidos
 const LatestSoldWines = ({ wines = [] }) => {
+  const { t } = useTranslation()
   const baseUrl = import.meta.env.VITE_URL_BASE
   const soldWines = wines
     .filter((wine) => wine.status === "sold")
@@ -116,21 +119,21 @@ const LatestSoldWines = ({ wines = [] }) => {
     <div className="bg-white rounded-xl p-5 transition-all duration-300 hover:translate-y-[-2px] shadow-sm">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-bold text-lg" style={{ color: primaryColors.dark }}>
-          Últims vins venuts
+          {t("dashboards.seller.latest_sold.title")}
         </h3>
         <Link
           to="/seller/wine-management"
           className="text-sm font-medium hover:underline"
           style={{ color: primaryColors.light }}
         >
-          Veure tots
+          {t("dashboards.seller.latest_wines.view_all")}
         </Link>
       </div>
       <div className="space-y-4">
         {soldWines.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-gray-500">
             <Check size={48} style={{ color: primaryColors.light }} />
-            <p className="mt-4">No hi ha vins venuts recentment</p>
+            <p className="mt-4">{t("dashboards.seller.latest_sold.empty")}</p>
           </div>
         ) : (
           soldWines.map((wine) => (
@@ -148,7 +151,7 @@ const LatestSoldWines = ({ wines = [] }) => {
                 <div>
                   <p className="font-medium">{wine.name}</p>
                   <p className="text-sm text-gray-500">
-                    {wine.year} · {wine.type || "Vi"} ·{new Date(wine.updated_at).toLocaleDateString("ca-ES")}
+                    {wine.year} · {wine.type || t("dashboards.seller.management.table.count_singular")} ·{new Date(wine.updated_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -165,6 +168,7 @@ const LatestSoldWines = ({ wines = [] }) => {
 
 // Componente principal del Dashboard
 const SellerDashboardContent = () => {
+  const { t } = useTranslation()
   const [wines, setWines] = useState([])
   const { user } = useFetchUser()
   const apiUrl = import.meta.env.VITE_API_URL
@@ -175,7 +179,7 @@ const SellerDashboardContent = () => {
       try {
         const response = await fetch(`${apiUrl}/v1/${user.id}/products`)
         if (!response.ok) {
-          throw new Error("No s'ha pogut connectar amb el servidor")
+          throw new Error(t("dashboards.seller.messages.error_server"))
         }
         const data = await response.json()
         if (data) {
@@ -204,36 +208,36 @@ const SellerDashboardContent = () => {
       {/* Cabecera del dashboard */}
       <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          Benvingut, {user?.name || "Venedor"}
+          {t("dashboards.seller.welcome", { name: user?.name || t("dashboards.seller.default_name") })}
         </h1>
-        <p className="text-gray-600">Gestiona els teus productes i segueix les teves vendes</p>
+        <p className="text-gray-600">{t("dashboards.seller.subtitle")}</p>
       </div>
 
       {/* Tarjetas de estadísticas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
-          title="Total Productes"
+          title={t("dashboards.seller.stats.total_products")}
           value={stats.totalProducts}
           icon={<Wine size={20} style={{ color: primaryColors.dark }} />}
           trend={true}
           percentage={5}
         />
         <StatCard
-          title="Productes Actius"
+          title={t("dashboards.seller.stats.active_products")}
           value={stats.activeProducts}
           icon={<ShoppingBag size={20} style={{ color: primaryColors.dark }} />}
           trend={true}
           percentage={2}
         />
         <StatCard
-          title="Total Vendes"
+          title={t("dashboards.seller.stats.total_sales")}
           value={stats.totalSales}
           icon={<BarChart3 size={20} style={{ color: primaryColors.dark }} />}
           trend={true}
           percentage={12}
         />
         <StatCard
-          title="Ingressos (€)"
+          title={t("dashboards.seller.stats.revenue")}
           value={stats.revenue.toFixed(2)}
           icon={<TrendingUp size={20} style={{ color: primaryColors.dark }} />}
           trend={true}

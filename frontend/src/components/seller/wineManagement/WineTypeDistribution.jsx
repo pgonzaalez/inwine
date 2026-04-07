@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 // Definimos los colores primarios
 const primaryColors = {
     dark: "#9A3E50",
@@ -27,6 +29,7 @@ const primaryColors = {
   }
   
   export const WineTypeDistribution = ({ wines = [] }) => {
+    const { t } = useTranslation()
     // Contar vinos por tipo
     const wineTypes = ["Negre", "Blanc", "Rossat", "Espumós", "Dolç"]
   
@@ -43,7 +46,7 @@ const primaryColors = {
     return (
       <div className="bg-white rounded-xl p-5 shadow-sm">
         <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-          Distribució per tipus
+          {t("dashboards.seller.management.table.distribution_title")}
         </h3>
   
         <div className="space-y-4">

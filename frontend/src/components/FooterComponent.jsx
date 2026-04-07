@@ -1,7 +1,10 @@
 import { CheckIcon, HeadphonesIcon, PlaneIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-gray-50">
       {/* Main footer content */}
@@ -68,14 +71,14 @@ export default function Footer() {
           </div>
           {/* Columna de comunitat */}
           <div>
-            <h3 className="font-bold text-lg mb-4">COMUNITAT</h3>
+            <h3 className="font-bold text-lg mb-4">{t("footer.sections.community")}</h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   to="/blog"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Blog
+                  {t("footer.links.blog")}
                 </Link>
               </li>
               <li>
@@ -83,7 +86,7 @@ export default function Footer() {
                   to="/comunitat"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Comunitat
+                  {t("footer.links.community")}
                 </Link>
               </li>
               <li>
@@ -91,7 +94,7 @@ export default function Footer() {
                   to="/idees"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Idees
+                  {t("footer.links.ideas")}
                 </Link>
               </li>
               <li>
@@ -99,7 +102,7 @@ export default function Footer() {
                   to="/desenvolupadors"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Desenvolupadors
+                  {t("footer.links.developers")}
                 </Link>
               </li>
             </ul>
@@ -107,14 +110,14 @@ export default function Footer() {
 
           {/* Columna d'empresa */}
           <div>
-            <h3 className="font-bold text-lg mb-4">EMPRESA</h3>
+            <h3 className="font-bold text-lg mb-4">{t("footer.sections.company")}</h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   to="/sobre-nosaltres"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Sobre nosaltres
+                  {t("footer.links.about")}
                 </Link>
               </li>
               <li>
@@ -122,7 +125,7 @@ export default function Footer() {
                   to="/equip"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Equip
+                  {t("footer.links.team")}
                 </Link>
               </li>
               <li>
@@ -130,7 +133,7 @@ export default function Footer() {
                   to="/influencers"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Influencers
+                  {t("footer.links.influencers")}
                 </Link>
               </li>
               <li>
@@ -138,7 +141,7 @@ export default function Footer() {
                   to="/afiliats"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Afiliats
+                  {t("footer.links.affiliates")}
                 </Link>
               </li>
               <li>
@@ -146,7 +149,7 @@ export default function Footer() {
                   to="/mitjans"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Mitjans
+                  {t("footer.links.media")}
                 </Link>
               </li>
               <li>
@@ -154,7 +157,7 @@ export default function Footer() {
                   to="/contacte"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Contacte
+                  {t("footer.links.contact")}
                 </Link>
               </li>
             </ul>
@@ -162,14 +165,14 @@ export default function Footer() {
 
           {/* Columna d'enllaços útils */}
           <div>
-            <h3 className="font-bold text-lg mb-4">ENLLAÇOS ÚTILS</h3>
+            <h3 className="font-bold text-lg mb-4">{t("footer.sections.useful_links")}</h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   to="/garantia"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Garantia
+                  {t("footer.links.guarantee")}
                 </Link>
               </li>
               <li>
@@ -177,7 +180,7 @@ export default function Footer() {
                   to="/declaracions-producte"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Declaracions de producte
+                  {t("footer.links.product_declarations")}
                 </Link>
               </li>
               <li>
@@ -185,7 +188,7 @@ export default function Footer() {
                   to="/condicions"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Condicions d'ús
+                  {t("footer.links.terms")}
                 </Link>
               </li>
               <li>
@@ -193,7 +196,7 @@ export default function Footer() {
                   to="/privacitat"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Política de privacitat
+                  {t("footer.links.privacy")}
                 </Link>
               </li>
               <li>
@@ -201,7 +204,7 @@ export default function Footer() {
                   to="/cookies"
                   className="hover:text-gray-600 transition-colors"
                 >
-                  Política de cookies
+                  {t("footer.links.cookies")}
                 </Link>
               </li>
             </ul>
@@ -210,8 +213,8 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="mt-12 text-center text-sm text-gray-500">
-          <p> INWINE {new Date().getFullYear()}. Tots els drets reservats.</p>
-          <p className="mt-1">Carrer del Sol, 1, 08201 Sabadell, Barcelona</p>
+          <p> INWINE {new Date().getFullYear()}. {t("footer.rights")}</p>
+          <p className="mt-1">{t("footer.address")}</p>
         </div>
       </div>
     </footer>

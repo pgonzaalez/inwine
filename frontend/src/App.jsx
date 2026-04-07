@@ -15,6 +15,7 @@ import ViewProductsRequest from "@pages/ViewProductsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
 import Contacte from "@pages/Landing/ContactPage";
+import FavoritesPage from "@pages/Landing/FavoritesPage";
 
 import ProtectedRoute from "@components/auth/ProtectedRoute";
 import CheckoutPage from "@pages/Payments/CheckoutPage";
@@ -29,7 +30,7 @@ import EditProductPage from "@pages/Seller/EditProductPage";
 // Pages Inversor
 import RegisterInversor from "@pages/RegisterInversorPage";
 import Inversor from "@pages/Inversor/InversorDashboardPage";
-import InvestmentHistoryPage from "@pages/Inversor/HIstoricPage";
+import InvestmentHistoryPage from "@pages/Inversor/HistoricPage";
 import ShowInvestment from "@pages/Inversor/ShowInvestment";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
@@ -68,6 +69,7 @@ export default function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-summary" element={<OrderSummaryPage />} />
           <Route path="/contacte" element={<Contacte />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
           
           <Route path="/settings" element={<SettingsPage />} />
 

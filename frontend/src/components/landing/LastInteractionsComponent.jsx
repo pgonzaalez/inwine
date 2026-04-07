@@ -1,78 +1,80 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar } from "@heroui/react";
-
-
-const investors = [
-  {
-    id: 1,
-    img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
-    name: "Nom Inversor",
-    producer: "Nom Productor",
-    restaurant: "Nom Restaurant",
-    profit: "28%",
-    productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
-    productName: "Nom del producte",
-    price: "100,00 €",
-  },
-  {
-    id: 2,
-    img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
-    name: "Nom Inversor",
-    producer: "Nom Productor",
-    restaurant: "Nom Restaurant",
-    profit: "28%",
-    productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
-    productName: "Nom del producte",
-    price: "100,00 €",
-  },
-  {
-    id: 3,
-    img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
-    name: "Nom Inversor",
-    producer: "Nom Productor",
-    restaurant: "Nom Restaurant",
-    profit: "28%",
-    productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
-    productName: "Nom del producte",
-    price: "100,00 €",
-  },
-  {
-    id: 4,
-    img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
-    name: "Nom Inversor",
-    producer: "Nom Productor",
-    restaurant: "Nom Restaurant",
-    profit: "28%",
-    productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
-    productName: "Nom del producte",
-    price: "100,00 €",
-  },
-  {
-    id: 5,
-    img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
-    name: "Nom Inversor",
-    producer: "Nom Productor",
-    restaurant: "Nom Restaurant",
-    profit: "28%",
-    productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
-    productName: "Nom del producte",
-    price: "100,00 €",
-  },
-  {
-    id: 6,
-    img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
-    name: "Nom Inversor",
-    producer: "Nom Productor",
-    restaurant: "Nom Restaurant",
-    profit: "28%",
-    productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
-    productName: "Nom del producte",
-    price: "100,00 €",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function Carousel() {
+  const { t } = useTranslation();
+  
+  const investors = [
+    {
+      id: 1,
+      img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
+      name: t("landing.interactions.placeholders.investor"),
+      producer: t("landing.interactions.placeholders.producer"),
+      restaurant: t("landing.interactions.placeholders.restaurant"),
+      profit: "28%",
+      productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
+      productName: t("landing.interactions.placeholders.product"),
+      price: "100,00 €",
+    },
+    {
+      id: 2,
+      img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
+      name: t("landing.interactions.placeholders.investor"),
+      producer: t("landing.interactions.placeholders.producer"),
+      restaurant: t("landing.interactions.placeholders.restaurant"),
+      profit: "28%",
+      productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
+      productName: t("landing.interactions.placeholders.product"),
+      price: "100,00 €",
+    },
+    {
+      id: 3,
+      img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
+      name: t("landing.interactions.placeholders.investor"),
+      producer: t("landing.interactions.placeholders.producer"),
+      restaurant: t("landing.interactions.placeholders.restaurant"),
+      profit: "28%",
+      productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
+      productName: t("landing.interactions.placeholders.product"),
+      price: "100,00 €",
+    },
+    {
+      id: 4,
+      img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
+      name: t("landing.interactions.placeholders.investor"),
+      producer: t("landing.interactions.placeholders.producer"),
+      restaurant: t("landing.interactions.placeholders.restaurant"),
+      profit: "28%",
+      productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
+      productName: t("landing.interactions.placeholders.product"),
+      price: "100,00 €",
+    },
+    {
+      id: 5,
+      img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
+      name: t("landing.interactions.placeholders.investor"),
+      producer: t("landing.interactions.placeholders.producer"),
+      restaurant: t("landing.interactions.placeholders.restaurant"),
+      profit: "28%",
+      productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
+      productName: t("landing.interactions.placeholders.product"),
+      price: "100,00 €",
+    },
+    {
+      id: 6,
+      img: <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />,
+      name: t("landing.interactions.placeholders.investor"),
+      producer: t("landing.interactions.placeholders.producer"),
+      restaurant: t("landing.interactions.placeholders.restaurant"),
+      profit: "28%",
+      productImg: "https://sgfm.elcorteingles.es/SGFM/dctm/MEDIA03/202207/01/00118715401248____9__600x600.jpg",
+      productName: t("landing.interactions.placeholders.product"),
+      price: "100,00 €",
+    },
+  ];
+
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -80,11 +82,11 @@ export default function Carousel() {
       setIndex((prevIndex) => (prevIndex + 3) % investors.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [investors.length]);
 
   return (
     <>
-    <h2 className="text-3xl font-bold">Últimes interaccions</h2>
+    <h2 className="text-3xl font-bold">{t("landing.interactions.title")}</h2>
     <div className="relative w-full flex justify-center items-center overflow-hidden h-96">
       
       <AnimatePresence mode="wait">
@@ -114,7 +116,7 @@ export default function Carousel() {
                 </div>
               </div>
               <div className="mt-4 text-gray-700">
-                Benefici del {investor.profit}
+                {t("landing.interactions.profit")} {investor.profit}
               </div>
               <div className="mt-4 flex items-center gap-4 border p-2 rounded-lg">
                 <img
@@ -125,7 +127,7 @@ export default function Carousel() {
                 <div>
                   <div className="font-bold">{investor.productName}</div>
                   <div className="text-gray-500">
-                    Preu venda: {investor.price}
+                    {t("landing.interactions.sale_price")}: {investor.price}
                   </div>
                 </div>
               </div>

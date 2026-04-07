@@ -14,13 +14,21 @@ import {
   AlertTriangle,
   ShoppingCart,
   ShieldCheck,
+  Heart,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie, deleteCookie } from "@/utils/utils";
 import Modal from "@components/Modal";
 import RoleSelector from '@/components/RoleSelector';
+import { useTranslation } from "react-i18next";
+import {Globe} from "lucide-react";
+
+import flagCA from "@/img/locales/cataluña.png";
+import flagES from "@/img/locales/espana.png";
+import flagEN from "@/img/locales/reino-unido.png";
 
 export default function Header() {
+  const { t, i18n } = useTranslation();
 
   const user = useFetchUser();
   const hasMultipleRoles = user.user?.roles?.length > 1;
@@ -199,10 +207,65 @@ export default function Header() {
   }, []);
 
   const navItems = [
-    { name: "INICI", href: "/" },
-    { name: "PRODUCTES", href: "/productes" },
-    { name: "CONTACTE", href: "/contacte" },
+    { name: t("header.nav.home"), href: "/" },
+    { name: t("header.nav.products"), href: "/productes" },
+    { name: t("header.nav.contact"), href: "/contacte" },
   ];
+
+  const LanguageSelector = () => {
+    const [isLangOpen, setIsLangOpen] = useState(false);
+    const langRef = useRef(null);
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (langRef.current && !langRef.current.contains(event.target)) {
+          setIsLangOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const languages = [
+      { code: 'ca', label: 'CA', flag: flagCA },
+      { code: 'es', label: 'ES', flag: flagES },
+      { code: 'en', label: 'EN', flag: flagEN }
+    ];
+
+    const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
+
+    return (
+      <div className="relative" ref={langRef}>
+        <button
+          onClick={() => setIsLangOpen(!isLangOpen)}
+          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100 overflow-hidden"
+          title={t("languages." + i18n.language)}
+        >
+          <img src={currentLang.flag} alt={currentLang.label} className="h-4 w-6 object-cover rounded-sm" />
+        </button>
+
+        {isLangOpen && (
+          <div className="absolute right-0 mt-2 w-32 origin-top-right rounded-lg shadow-lg bg-white ring-1 ring-gray-200 py-1 z-50">
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  i18n.changeLanguage(lang.code);
+                  setIsLangOpen(false);
+                }}
+                className={`flex w-full items-center px-4 py-2 text-sm transition-colors hover:bg-gray-50 ${
+                  i18n.language === lang.code ? "font-bold text-[#9A3E50]" : "text-gray-700"
+                }`}
+              >
+                <img src={lang.flag} alt={lang.label} className="h-3 w-5 mr-3 object-cover rounded-sm" />
+                {lang.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <header className="bg-white/80 backdrop-blur-md fixed top-0 left-0 z-50 w-full">
@@ -239,7 +302,7 @@ export default function Header() {
               <input
                 ref={searchInputRef}
                 type="search"
-                placeholder="Buscar..."
+                placeholder={t("header.search")}
                 className="w-[200px] rounded-full border-0 bg-transparent py-2 pl-10 pr-4 text-sm outline-none ring-1 ring-gray-200 transition-all duration-300 focus:w-[240px] focus:ring-gray-400 placeholder:text-gray-400 md:w-[220px] md:focus:w-[280px]"
                 onBlur={() => {
                   if (!searchInputRef.current.value) {
@@ -268,6 +331,8 @@ export default function Header() {
               <span className="sr-only">Buscar</span>
             </button>
           )}
+
+          <LanguageSelector />
 
           <Link
             to="/cistella"
@@ -298,10 +363,10 @@ export default function Header() {
                 </div>
                 <div className="hidden md:flex flex-col items-start">
                   <span className="text-sm font-medium text-gray-700">
-                    {user.user?.name || "Usuari"}
+                    {user.user?.name || t("header.user.account")}
                   </span>
                   <span className="text-xs text-gray-500 capitalize">
-                    Rol: {role || "rol"}
+                    {t("header.user.role")}: {role || "rol"}
                   </span>
                 </div>
               </button>
@@ -316,10 +381,10 @@ export default function Header() {
                 >
                   <div className="py-1">
                     <div className="border-b px-4 py-3 text-sm font-medium border-gray-100 text-gray-700">
-                      El meu compte
+                      {t("header.user.account")}
                       <div className="hidden md:flex flex-col items-start">
                         <span className="text-xs text-gray-500 break-words max-w-[180px]">
-                          {user.user?.email || "Correu"}
+                          {user.user?.email || t("header.user.email")}
                         </span>
                       </div>
                     </div>
@@ -329,7 +394,7 @@ export default function Header() {
                       className="flex w-full items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
                     >
                       <User className="mr-2 h-4 w-4" />
-                      Perfil
+                      {t("header.user.profile")}
                     </button>
 
                     {hasMultipleRoles && (
@@ -338,16 +403,24 @@ export default function Header() {
                         className="flex w-full items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
                       >
                         <ShieldCheck className="mr-2 h-4 w-4" />
-                        Canviar rol
+                        {t("header.user.change_role")}
                       </button>
                     )}
+
+                    <Link
+                      to="/favorites"
+                      className="flex items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
+                    >
+                      <Heart className="mr-2 h-4 w-4" />
+                      {t("favorites.title", "Els meus Favorits")}
+                    </Link>
 
                     <Link
                       to="/settings"
                       className="flex items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
                     >
                       <Settings className="mr-2 h-4 w-4" />
-                      Configuració
+                      {t("header.user.settings")}
                     </Link>
 
                     <div className="border-t border-gray-100"></div>
@@ -357,7 +430,7 @@ export default function Header() {
                       className="flex w-full items-center px-4 py-2.5 text-sm transition-colors text-red-600 hover:bg-gray-50"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
-                      Tancar sessió
+                      {t("header.user.logout")}
                     </button>
                   </div>
                 </div>
@@ -369,7 +442,7 @@ export default function Header() {
               className="flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100"
             >
               <User className="h-4 w-4" />
-              <span className="sr-only">Iniciar sesión</span>
+              <span className="sr-only">{t("header.login")}</span>
             </Link>
           )}
 
@@ -379,7 +452,7 @@ export default function Header() {
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <Menu className="h-5 w-5" />
-            <span className="sr-only">Menu</span>
+            <span className="sr-only">{t("header.nav.menu", "Menu")}</span>
           </button>
         </div>
       </div>
@@ -428,7 +501,7 @@ export default function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <X className="h-5 w-5" />
-                  <span className="sr-only">Cerrar menú</span>
+                  <span className="sr-only">{t("common.close")}</span>
                 </button>
               </div>
 
@@ -437,8 +510,8 @@ export default function Header() {
                   <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                   <input
                     type="search"
-                    placeholder="Buscar..."
-                    className="w-full rounded-full border-0 py-3 pl-12 pr-4 text-base outline-none ring-1 bg-gray-50 ring-gray-200 focus:ring-gray-300 placeholder:text-gray-400"
+                    placeholder={t("header.search")}
+                    className="w-full rounded-full border-0 py-3 l-12 pr-4 text-base outline-none ring-1 bg-gray-50 ring-gray-200 focus:ring-gray-300 placeholder:text-gray-400"
                   />
                 </div>
 
@@ -470,12 +543,12 @@ export default function Header() {
                         className="h-10 w-10 rounded-full object-cover"
                       />
                       <div>
-                        <div className="text-sm font-medium">El meu compte</div>
+                        <div className="text-sm font-medium">{t("header.user.account")}</div>
                         <button
                           onClick={handleProfile}
                           className="text-xs text-gray-500"
                         >
-                          Veure perfil
+                          {t("header.user.profile")}
                         </button>
                       </div>
                     </div>
@@ -488,9 +561,29 @@ export default function Header() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
                         <User className="h-5 w-5" />
                       </div>
-                      <span className="text-base font-medium">Iniciar sessió</span>
+                      <span className="text-base font-medium">{t("header.login")}</span>
                     </Link>
                   )}
+                  <div className="h-px w-full bg-gray-100" />
+                  
+                  {/* Selector d'idioma en mòbil */}
+                  <div className="flex items-center justify-around py-4">
+                    {[
+                      { code: 'ca', flag: flagCA },
+                      { code: 'es', flag: flagES },
+                      { code: 'en', flag: flagEN }
+                    ].map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => i18n.changeLanguage(lang.code)}
+                        className={`p-1 rounded-md transition-all ${
+                          i18n.language === lang.code ? "ring-2 ring-[#9A3E50] scale-110" : "opacity-60 grayscale hover:grayscale-0 hover:opacity-100"
+                        }`}
+                      >
+                        <img src={lang.flag} alt={lang.code} className="h-6 w-10 object-cover rounded-sm" />
+                      </button>
+                    ))}
+                  </div>
                   <div className="h-px w-full bg-gray-100" />
                 </div>
 
@@ -502,7 +595,7 @@ export default function Header() {
                     >
                       <span className="flex items-center">
                         <Settings className="mr-2 h-4 w-4" />
-                        Configuració
+                        {t("header.user.settings")}
                       </span>
                       <ChevronDown className="h-4 w-4 opacity-50" />
                     </Link>
@@ -512,7 +605,7 @@ export default function Header() {
                     >
                       <span className="flex items-center">
                         <LogOut className="mr-2 h-4 w-4" />
-                        Tancar sessió
+                        {t("header.user.logout")}
                       </span>
                     </button>
                   </div>
@@ -527,8 +620,8 @@ export default function Header() {
       <Modal
         isOpen={isRoleChangeOpen}
         onClose={() => setIsRoleChangeOpen(false)}
-        title="Canviar rol"
-        description="Selecciona el rol amb el qual vols accedir:"
+        title={t("sidebar.modals.change_role.title")}
+        description={t("sidebar.modals.change_role.description")}
         icon={<ShieldCheck className="h-8 w-8" />}
         variant="primary"
         size="md"
@@ -542,8 +635,8 @@ export default function Header() {
       <Modal
         isOpen={isLogoutOpen}
         onClose={() => setIsLogoutOpen(false)}
-        title="Tancar sessió?"
-        description="Estàs segur que vols tancar la teva sessió actual?"
+        title={t("sidebar.modals.logout.title")}
+        description={t("sidebar.modals.logout.description")}
         icon={<LogOut className="h-8 w-8" />}
         variant="danger"
         size="md"
@@ -553,13 +646,13 @@ export default function Header() {
               onClick={() => setIsLogoutOpen(false)}
               className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              Cancel·lar
+              {t("sidebar.modals.logout.cancel")}
             </button>
             <button
               onClick={handleLogout}
               className="flex items-center justify-center rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-4 py-2.5 text-sm font-medium text-white hover:from-red-600 hover:to-red-700"
             >
-              Tancar sessió
+              {t("sidebar.modals.logout.confirm")}
             </button>
           </div>
         }
@@ -567,8 +660,7 @@ export default function Header() {
         <div className="flex items-start rounded-lg bg-amber-50 p-4">
           <AlertTriangle className="mr-3 h-5 w-5 text-amber-500" />
           <p className="text-sm text-amber-700">
-            Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al
-            teu compte.
+            {t("sidebar.modals.logout.warning")}
           </p>
         </div>
       </Modal>

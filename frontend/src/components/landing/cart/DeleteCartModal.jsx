@@ -3,8 +3,10 @@
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Trash2, AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next"
 
 export function DeleteCartModal({ isOpen, onClose, onConfirm }) {
+  const { t } = useTranslation()
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
@@ -55,10 +57,10 @@ export function DeleteCartModal({ isOpen, onClose, onConfirm }) {
                     as="h3"
                     className="text-xl font-semibold text-gray-900 text-center sm:text-left"
                   >
-                    Vols esborrar tot?
+                    {t('cart.delete_modal.title', 'Vols esborrar tot?')}
                   </Dialog.Title>
                   <div className="mt-2 text-gray-500 text-center sm:text-left">
-                    Esborraras tota la teva cistella. Estàs segur?
+                    {t('cart.delete_modal.message', 'Esborraras tota la teva cistella. Estàs segur?')}
                   </div>
                 </div>
               </div>
@@ -70,8 +72,7 @@ export function DeleteCartModal({ isOpen, onClose, onConfirm }) {
               <div className="flex items-start rounded-lg bg-amber-50 p-4 mx-6 mt-4">
                 <AlertTriangle className="mr-3 h-5 w-5 text-amber-500 flex-shrink-0" />
                 <p className="text-sm text-amber-700">
-                  Al esborrar la cistella, tindràs que tornar a afegir totes les
-                  sol·licituds dels restaurants.
+                  {t('cart.delete_modal.warning', 'Al esborrar la cistella, tindràs que tornar a afegir totes les sol·licituds dels restaurants.')}
                 </p>
               </div>
 
@@ -81,13 +82,13 @@ export function DeleteCartModal({ isOpen, onClose, onConfirm }) {
                   onClick={onClose}
                   className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  Cancel·lar
+                  {t('cart.delete_modal.cancel', 'Cancel·lar')}
                 </button>
                 <button
                   onClick={onConfirm}
                   className="flex items-center justify-center rounded-md bg-gradient-to-r from-red-500 to-red-600 px-4 py-2.5 text-sm font-medium text-white hover:from-red-600 hover:to-red-700 transition-colors"
                 >
-                  Esborrar
+                  {t('cart.delete_modal.confirm', 'Esborrar')}
                 </button>
               </div>
             </div>

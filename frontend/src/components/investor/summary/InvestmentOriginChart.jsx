@@ -1,4 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -25,6 +26,9 @@ const ORIGIN_COLORS = [
 ]
 
 export const InvestmentOriginChart = ({ data = [] }) => {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === "ca" ? "ca-ES" : i18n.language === "es" ? "es-ES" : "en-US"
+
   // Componente personalizado para el tooltip
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -34,12 +38,12 @@ export const InvestmentOriginChart = ({ data = [] }) => {
         <div className="bg-white p-3 border border-gray-200 shadow-md rounded-md">
           <p className="font-medium">{data.origin}</p>
           <p className="text-sm">
-            <span style={{ color: payload[0].color }}>Nombre: </span>
+            <span style={{ color: payload[0].color }}>{t("dashboards.investor.charts.count")}: </span>
             {data.count}
           </p>
           <p className="text-sm">
-            <span style={{ color: payload[0].color }}>Import: </span>
-            {new Intl.NumberFormat("ca-ES", {
+            <span style={{ color: payload[0].color }}>{t("dashboards.investor.charts.amount")}: </span>
+            {new Intl.NumberFormat(locale, {
               style: "currency",
               currency: "EUR",
               maximumFractionDigits: 0,
@@ -76,7 +80,7 @@ export const InvestmentOriginChart = ({ data = [] }) => {
   if (data.length === 0) {
     return (
       <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">No hi ha dades disponibles</p>
+        <p className="text-gray-500">{t("dashboards.investor.charts.no_data")}</p>
       </div>
     )
   }
@@ -116,19 +120,19 @@ export const InvestmentOriginChart = ({ data = [] }) => {
       <div className="h-80">
         <div className="bg-gray-50 p-4 rounded-lg h-full overflow-auto">
           <h3 className="text-lg font-medium mb-2" style={{ color: primaryColors.dark }}>
-            Resum per Origen
+            {t("dashboards.investor.summary.charts.by_origin")}
           </h3>
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               <tr>
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Origen
+                  {t("dashboards.investor.charts.origin")}
                 </th>
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nombre
+                  {t("dashboards.investor.charts.count")}
                 </th>
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Import
+                  {t("dashboards.investor.charts.amount")}
                 </th>
               </tr>
             </thead>
@@ -146,7 +150,7 @@ export const InvestmentOriginChart = ({ data = [] }) => {
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{item.count}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                    {new Intl.NumberFormat("ca-ES", {
+                    {new Intl.NumberFormat(locale, {
                       style: "currency",
                       currency: "EUR",
                       maximumFractionDigits: 0,

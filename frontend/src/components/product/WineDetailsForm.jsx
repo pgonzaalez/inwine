@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next"
+
 export const WineDetailsForm = ({
   formData,
   onChange,
@@ -13,6 +16,8 @@ export const WineDetailsForm = ({
   isNextEnabled,
   isEditMode = false,
 }) => {
+  const { t } = useTranslation()
+  const [isDragging, setIsDragging] = useState(false);
   // Helper function to check if a field has an error
   const baseUrl = import.meta.env.VITE_URL_BASE;
   const hasError = (fieldName) => {
@@ -21,21 +26,41 @@ export const WineDetailsForm = ({
 
   // Calcular el total de imágenes (existentes + nuevas)
   const totalImages = existingImages.length + selectedImages.length;
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      onImageSelect({ target: { files: e.dataTransfer.files } });
+      e.dataTransfer.clearData();
+    }
+  };
+
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg shadow-md">
       <div className="w-full bg-gradient-to-r from-[#F5E6E8] to-[#E8D5D5] p-4 rounded-t-lg border-b border-gray-200">
         <h2 className="text-lg font-semibold text-[#8C2E2E]">
-          {isEditMode ? "Edita el vi" : "Crea el vi"}
+          {isEditMode ? t("dashboards.seller.product.edit_title") : t("dashboards.seller.product.create_subtitle")}
         </h2>
         <p className="text-sm text-gray-600">
-          Omple les següents dades per {isEditMode ? "editar" : "crear"} el teu vi. Proporciona tota la informació rellevant.
+          {isEditMode ? t("dashboards.seller.product.form_desc_edit") : t("dashboards.seller.product.form_desc_create")}
         </p>
       </div>
 
       <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left column - Product Information */}
         <div className="space-y-4">
-          <h3 className="font-medium text-[#8C2E2E] border-b border-[#E8D5D5] pb-2">Informació del vi</h3>
+          <h3 className="font-medium text-[#8C2E2E] border-b border-[#E8D5D5] pb-2">{t("dashboards.seller.product.section_info")}</h3>
 
           {/* Nom del Vi */}
           <div className="relative">
@@ -54,7 +79,7 @@ export const WineDetailsForm = ({
               className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("name") ? "text-red-500" : "text-gray-500"
                 }`}
             >
-              Nom del Vi
+              {t("dashboards.seller.product.field_name")}
             </label>
             {hasError("name") && <span className="text-red-500 text-xs mt-1">{errors.name[0]}</span>}
           </div>
@@ -76,7 +101,7 @@ export const WineDetailsForm = ({
               className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("origin") ? "text-red-500" : "text-gray-500"
                 }`}
             >
-              Denominació d'Origen
+              {t("dashboards.seller.product.field_origin")}
             </label>
             {hasError("origin") && <span className="text-red-500 text-xs mt-1">{errors.origin[0]}</span>}
           </div>
@@ -98,7 +123,7 @@ export const WineDetailsForm = ({
               className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("year") ? "text-red-500" : "text-gray-500"
                 }`}
             >
-              Any
+              {t("dashboards.seller.product.field_year")}
             </label>
             {hasError("year") && <span className="text-red-500 text-xs mt-1">{errors.year[0]}</span>}
           </div>
@@ -119,10 +144,10 @@ export const WineDetailsForm = ({
               className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("description") ? "text-red-500" : "text-gray-500"
                 }`}
             >
-              Descripció
+              {t("dashboards.seller.product.field_description")}
             </label>
             <div className="flex justify-between text-gray-400 text-xs mt-2 px-1">
-              <span>Máxim de 255 caràcters</span>
+              <span>{t("dashboards.seller.product.field_description_max")}</span>
               <span className={formData.description.length > 255 ? "text-red-500 font-medium" : ""}>
                 {formData.description.length}/255
               </span>
@@ -134,14 +159,22 @@ export const WineDetailsForm = ({
         {/* Right column - Images */}
         <div className="space-y-4">
           <h3 className="font-medium text-[#8C2E2E] border-b border-[#E8D5D5] pb-2">
-            Imatges del vi {totalImages > 0 && <span className="text-sm text-gray-600">({totalImages} {totalImages === 1 ? 'imatge' : 'imatges'})</span>}
+            {t("dashboards.seller.product.section_images")} {totalImages > 0 && <span className="text-sm text-gray-600">({totalImages} {totalImages === 1 ? t("dashboards.seller.product.section_images_count_singular") : t("dashboards.seller.product.section_images_count_plural")})</span>}
           </h3>
 
           {/* Imatge */}
           <div className="space-y-4">
             <div
-              className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition-colors ${hasError("image") ? "border-red-300 bg-red-50" : "border-gray-300 hover:border-[#D9A5AD]"
-                }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition-colors ${
+                hasError("image")
+                 ? "border-red-300 bg-red-50"
+                 : isDragging 
+                  ? "border-[#8C2E2E] bg-[#F5E6E8]"
+                  : "border-gray-300 hover:border-[#D9A5AD]"
+              }`}
             >
               <div className="space-y-1 text-center">
                 <svg
@@ -161,10 +194,10 @@ export const WineDetailsForm = ({
                 <div className="flex text-sm text-gray-600">
                   <label
                     htmlFor="file-upload"
-                    className={`relative cursor-pointer bg-white rounded-md font-medium focus-within:outline-none ${hasError("image") ? "text-red-500 hover:text-red-400" : "text-[#9A3E50] hover:text-[#C27D7D]"
+                    className={`relative cursor-pointer bg-transparent rounded-md font-medium focus-within:outline-none ${hasError("image") ? "text-red-500 hover:text-red-400" : "text-[#9A3E50] hover:text-[#C27D7D]"
                       }`}
-                  >
-                    <span>{totalImages > 0 ? "Afegir més imatges" : "Puja imatges"}</span>
+                   >
+                    <span>{totalImages > 0 ? t("dashboards.seller.product.field_image_add") : t("dashboards.seller.product.field_image_upload")}</span>
                     <input
                       id="file-upload"
                       name="file-upload"
@@ -175,16 +208,16 @@ export const WineDetailsForm = ({
                       onChange={onImageSelect}
                     />
                   </label>
-                  <p className="pl-1">o arrossega i deixa anar</p>
+                  <p className="pl-1">{t("dashboards.seller.product.field_image_drag")}</p>
                 </div>
-                <p className="text-xs text-gray-500">PNG, JPG, GIF fins a 10MB</p>
+                <p className="text-xs text-gray-500">{t("dashboards.seller.product.field_image_types")}</p>
               </div>
             </div>
 
             {/* Existing images section (for edit mode) */}
             {existingImages && existingImages.length > 0 && (
               <div className="mt-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Imatges existents</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">{t("dashboards.seller.product.existing_images")}</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {existingImages.map((image, index) => (
                     <div key={`existing-${index}`} className="relative group">
@@ -218,7 +251,7 @@ export const WineDetailsForm = ({
             {/* New images preview section */}
             {selectedImages.length > 0 && (
               <div className="mt-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Previsualització d'imatges</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">{t("dashboards.seller.product.preview_images")}</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {selectedImages.map((img, index) => (
                     <div key={index} className="relative group">
@@ -277,7 +310,7 @@ export const WineDetailsForm = ({
               onClick={onPrevious}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
             >
-              Anterior
+              {t("dashboards.seller.product.btn_prev")}
             </button>
             <button
               type="button"
@@ -288,7 +321,7 @@ export const WineDetailsForm = ({
                 }`}
               disabled={!isNextEnabled}
             >
-              Següent
+              {t("dashboards.seller.product.btn_next")}
             </button>
           </div>
         </div>

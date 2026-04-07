@@ -1,0 +1,853 @@
+{
+  "header": {
+    "nav": {
+      "home": "INICI",
+      "products": "PRODUCTES",
+      "contact": "CONTACTE"
+    },
+    "search": "Buscar...",
+    "cart": "Cistella",
+    "user": {
+      "account": "El meu compte",
+      "profile": "Perfil",
+      "change_role": "Canviar rol",
+      "settings": "Configuració",
+      "logout": "Tancar sessió",
+      "role": "Rol",
+      "email": "Correu"
+    },
+    "login": "Iniciar sessió"
+  },
+  "languages": {
+    "ca": "Català",
+    "es": "Castellà",
+    "en": "Anglès"
+  },
+  "footer": {
+    "sections": {
+      "community": "COMUNITAT",
+      "company": "EMPRESA",
+      "useful_links": "ENLLAÇOS ÚTILS"
+    },
+    "links": {
+      "blog": "Blog",
+      "community": "Comunitat",
+      "ideas": "Idees",
+      "developers": "Desenvolupadors",
+      "about": "Sobre nosaltres",
+      "team": "Equip",
+      "influencers": "Influencers",
+      "affiliates": "Afiliats",
+      "media": "Mitjans",
+      "contact": "Contacte",
+      "guarantee": "Garantia",
+      "product_declarations": "Declaracions de producte",
+      "terms": "Condicions d'ús",
+      "privacy": "Política de privacitat",
+      "cookies": "Política de cookies"
+    },
+    "rights": "Tots els drets reservats.",
+    "address": "Carrer del Sol, 1, 08201 Sabadell, Barcelona"
+  },
+  "landing": {
+    "about": {
+      "who_we_are": "QUI SOM",
+      "what_we_offer": "QUÈ OFERIM",
+      "description": "Inwine és una plataforma que permet disposar de qualsevol vi a la carta dels restaurants minimitzant el risc, potenciant les vendes dels cellers i creant valor pel inversors a partir de quantitats molt baixes.",
+      "cellar_question": "Ets un celler? Arriba a més restaurants.",
+      "restaurant_question": "Tens un restaurant? Amplia la teva carta de vins sense invertir i sense risc.",
+      "investor_question": "Vols invertir? Inverteix amb opció a altes rendibilitats i amb nul risc. Tu tries el vi i el restaurant!"
+    },
+    "carousel": {
+      "title": "Aconsegueix els millors vins",
+      "description": "Descobreix la nostra selecció de vins premium, elaborats amb les millors raïms i tècniques tradicionals. Cada ampolla representa l’excel·lència i passió per la viticultura.",
+      "see_more": "Veure més"
+    },
+    "interactions": {
+      "title": "Últimes interaccions",
+      "profit": "Benefici del",
+      "sale_price": "Preu venda",
+      "placeholders": {
+        "investor": "Nom Inversor",
+        "producer": "Nom Productor",
+        "restaurant": "Nom Restaurant",
+        "product": "Nom del producte"
+      }
+    },
+    "user_cards": {
+      "producer": {
+        "title": "Usuari Productor",
+        "alt": "Magatzem"
+      },
+      "investor": {
+        "title": "Usuari Inversor",
+        "alt": "Inversor"
+      },
+      "restaurant": {
+        "title": "Usuari Restaurant",
+        "alt": "Restaurant"
+      },
+      "open_profile": "Obrir Perfil",
+      "start": "Comença",
+      "features_title": "Característiques"
+    },
+    "contact": {
+      "title": "Contacta amb",
+      "subtitle": "Tens algun dubte sobre els nostres serveis o vols formar part de la nostra comunitat? Estem aquí per ajudar-te.",
+      "phone": {
+        "title": "Telèfon",
+        "desc": "Dilluns a Divendres, 9:00 - 18:00"
+      },
+      "email": {
+        "title": "Correu Electrònic",
+        "desc": "Et respondrem en menys de 24 hores"
+      },
+      "office": {
+        "title": "Oficina Central",
+        "desc": "Barcelona, Espanya"
+      },
+      "support": {
+        "title": "Suport Personalitzat",
+        "desc": "El nostre equip d'experts en vi està disponible per assessorar-te en tot moment."
+      }
+    },
+    "products": {
+      "hero": {
+        "title": "Connectem cellers i restaurants",
+        "subtitle": "Descobreix vins únics dels millors cellers o explora les demandes dels restaurants més exclusius. Una plataforma que uneix l'oferta i la demanda del sector vinícola.",
+        "question": "Què vols veure?",
+        "wines": "Vins disponibles",
+        "requests": "Demandes actives"
+      },
+      "filters": {
+        "title": "Filtres",
+        "wine_type": "Tipus de vi",
+        "all_types": "Tots els tipus",
+        "price": "Preu",
+        "price_from": "De",
+        "price_to": "fins",
+        "winery": "Celler",
+        "search_winery": "Cercar celler...",
+        "no_winery_found": "No s'ha trobat cap celler",
+        "restaurant": "Restaurant",
+        "wineries": "Bodegues"
+      },
+      "product_card": {
+        "requests": "peticions",
+        "alt": "Vi",
+        "no_name": "Sense nom",
+        "quantity": "Quantitat"
+      },
+      "restaurant_card": {
+        "request_title": "Sol·licitud de producte",
+        "buy_price": "Compra",
+        "sell_price": "Venda",
+        "amount_requested": "Quantitat sol·licitada"
+      },
+      "empty": {
+        "no_products": "No hem trobat vins amb aquests filtres.",
+        "no_restaurants": "No hem trobat restaurants amb aquests filtres.",
+        "reset": "Restablir filtres"
+      },
+      "search_placeholder": "Cerca per nom, tipus...",
+      "title_products": "Vins disponibles",
+      "title_requests": "Demandes de restaurants",
+      "btn_filters": "Filtres",
+      "btn_reset": "Restablir"
+    }
+  },
+  "dashboards": {
+    "seller": {
+      "welcome": "Benvingut, {{name}}",
+      "default_name": "Venedor",
+      "subtitle": "Gestiona els teus productes i segueix les teves vendes",
+      "stats": {
+        "total_products": "Total Productes",
+        "active_products": "Productes Actius",
+        "total_sales": "Total Vendes",
+        "revenue": "Ingressos (€)",
+        "in_stock": "En Stock",
+        "requested": "Sol·licitats",
+        "in_transit": "En Trànsit",
+        "sold": "Venuts"
+      },
+      "latest_wines": {
+        "title": "Últims vins creats",
+        "view_all": "Veure tots",
+        "empty": "No hi ha vins creats recentment"
+      },
+      "latest_sold": {
+        "title": "Últims vins venuts",
+        "empty": "No hi ha vins venuts recentment"
+      },
+      "management": {
+        "title": "Gestiona els teus Vins",
+        "table": {
+          "title": "Els teus vins",
+          "count_singular": "vi",
+          "count_plural": "vins",
+          "filters_label": "Filtres",
+          "filter_all": "Tots",
+          "empty_filter": "No hi ha vins disponibles amb aquest filtre",
+          "distribution_title": "Distribució per tipus",
+          "cols": {
+            "image": "Imatge",
+            "details": "Detalls",
+            "type": "Tipus",
+            "status": "Estat",
+            "price": "Preu",
+            "actions": "Accions"
+          },
+          "actions": {
+            "details": "Detalls",
+            "send": "Enviar",
+            "sending": "Enviant...",
+            "delete": "Eliminar"
+          }
+        }
+      },
+      "product": {
+        "create_title": "Què vols vendre?",
+        "edit_title": "Edita el vi",
+        "create_subtitle": "Crea el vi",
+        "form_desc_create": "Omple les següents dades per crear el teu vi. Proporciona tota la informació rellevant.",
+        "form_desc_edit": "Omple les següents dades per editar el teu vi. Proporciona tota la informació rellevant.",
+        "section_info": "Informació del vi",
+        "section_images": "Imatges del vi",
+        "section_images_count_singular": "imatge",
+        "section_images_count_plural": "imatges",
+        "field_name": "Nom del Vi",
+        "field_origin": "Denominació d'Origen",
+        "field_year": "Any",
+        "field_description": "Descripció",
+        "field_description_max": "Màxim de 255 caràcters",
+        "field_image_add": "Afegir més imatges",
+        "field_image_upload": "Puja imatges",
+        "field_image_drag": "o arrossega i deixa anar",
+        "field_image_types": "PNG, JPG, GIF fins a 10MB",
+        "existing_images": "Imatges existents",
+        "preview_images": "Previsualització d'imatges",
+        "btn_prev": "Anterior",
+        "btn_next": "Següent",
+        "btn_submit": "Puja el teu vi",
+        "pricing_title": "Preu i disponibilitat",
+        "pricing_desc": "Estableix el preu i la quantitat disponible del teu vi.",
+        "field_price": "Preu (€)",
+        "field_quantity": "Quantitat disponible",
+        "summary_title": "Resum del vi",
+        "summary_name": "Nom",
+        "summary_origin": "Origen",
+        "summary_year": "Any",
+        "summary_price": "Preu",
+        "summary_quantity": "Quantitat",
+        "type_selector_title": "Tria la categoria",
+        "type_selector_desc": "Selecciona una opció d'aquest vins per escollir la categoria",
+        "error_fetch": "No s'ha pogut obtenir la informació del producte.",
+        "error_delete": "No s'ha pogut eliminar el producte.",
+        "success_delete": "Producte eliminat correctament.",
+        "success_edit": "Producte actualitzat correctament",
+        "error_create": "Error en crear el producte",
+        "error_edit": "Error en actualitzar el producte",
+        "loading": "Carregant producte...",
+        "not_found": "Producte no trobat",
+        "back": "Tornar",
+        "step_x_of_y": "Pas {{current}} de {{total}}"
+      },
+      "status": {
+        "in_stock": "En Stock",
+        "requested": "Sol·licitat",
+        "in_transit": "En Trànsit",
+        "sold": "Venut",
+        "unknown": "Desconegut"
+      },
+      "messages": {
+        "error_server": "No s'ha pogut connectar amb el servidor",
+        "error_invalid_id": "ID de producte no vàlid",
+        "error_delivery": "Error en lliurar el producte",
+        "success_sent": "Producte enviat correctament"
+      },
+      "modals": {
+        "delete": {
+          "title": "Estàs segur que vols eliminar aquest producte?",
+          "desc": "Aquesta acció no es pot desfer. El producte s'eliminarà permanentment.",
+          "warning": "En eliminar el producte, hauràs de tornar-lo a afegir si vols vendre’l novament.",
+          "btn_cancel": "Cancel·lar",
+          "btn_confirm": "Eliminar"
+        }
+      }
+    },
+    "restaurant": {
+      "management": {
+        "title": "Gestiona les teves Sol·licituds"
+      },
+      "stats": {
+        "total": "Total",
+        "pending": "Pendents",
+        "accepted": "Acceptats",
+        "in_my_local": "En el local",
+        "sold": "Venuts"
+      },
+      "filters": {
+        "title": "Filtres",
+        "all": "Tots",
+        "pending": "Pendents",
+        "accepted": "Acceptats",
+        "in_transit": "En trànsit",
+        "in_my_local": "En el local",
+        "sold": "Venuts"
+      },
+      "table": {
+        "title": "Les teves sol·licituds",
+        "count_singular": "sol·licitud",
+        "count_plural": "sol·licituds",
+        "empty": "No hi ha sol·licituds disponibles amb aquest filtre",
+        "cols": {
+          "image": "Imatge",
+          "details": "Detalls",
+          "type": "Tipus",
+          "status": "Estat",
+          "prices": "Preus",
+          "date": "Data",
+          "actions": "Accions"
+        },
+        "actions": {
+          "view": "Veure",
+          "edit": "Editar",
+          "delete": "Eliminar",
+          "receive": "He rebut",
+          "receiving": "Rebent...",
+          "sell": "He venut",
+          "selling": "Venent..."
+        }
+      },
+      "status": {
+        "pending": "Pendent",
+        "accepted": "Acceptat",
+        "in_transit": "En Trànsit",
+        "in_my_local": "Al Local",
+        "sold": "Venut",
+        "cancelled": "Cancel·lat",
+        "unknown": "Desconegut"
+      },
+      "view": {
+        "price_demanded": "Preu demandat",
+        "price_restaurant": "Preu restaurant",
+        "request_date": "Data de sol·licitud",
+        "product_details": "Detalls del producte",
+        "origin": "Origen",
+        "wine_type": "Tipus de vi",
+        "not_specified": "No especificat",
+        "not_found": "Sol·licitud no trobada",
+        "back": "Tornar"
+      },
+      "modals": {
+        "delete": {
+          "title": "Estàs segur que vols eliminar aquesta petició?",
+          "desc": "Aquesta acció no es pot desfer. La teva petició s'eliminarà permanentment.",
+          "warning": "En eliminar la petició, hauràs de tornar-lo a afegir si vols vendre’l novament.",
+          "btn_cancel": "Cancel·lar",
+          "btn_confirm": "Eliminar"
+        },
+        "edit": {
+          "title": "Modificar preu {{name}}",
+          "desc": "Introdueix el nou preu que vols oferir per aquest producte",
+          "field_new_price": "Nou preu (€)",
+          "placeholder": "Introdueix el nou preu",
+          "error_invalid_price": "Si us plau, introdueix un preu vàlid",
+          "current_price": "Preu actual",
+          "your_offer": "La teva oferta",
+          "offer_higher": "(Supera el preu actual)",
+          "offer_lower": "(Inferior al preu actual)",
+          "offer_equal": "(Igual al preu actual)",
+          "success": "Preu actualitzat correctament!",
+          "btn_cancel": "Cancel·lar",
+          "btn_submit": "Actualitzar preu"
+        }
+      },
+      "messages": {
+        "error_server": "No s'ha pogut connectar amb el servidor",
+        "error_delete": "No s'ha pogut eliminar la sol·licitud",
+        "success_delete": "Sol·licitud eliminada correctament",
+        "error_update": "No s'ha pogut actualitzar la sol·licitud",
+        "error_receive": "Error al marcar com rebut",
+        "success_receive": "Producte rebut correctament",
+        "error_sell": "Error al marcar com venut",
+        "success_sell": "Producte venut correctament",
+        "error_fetch": "No s'ha pogut obtenir la informació de la sol·licitud.",
+        "error_unknown": "Error desconegut",
+        "invalid_id": "ID de sol·licitud no vàlid",
+        "error_update_status": "Error en actualitzar l'estat"
+      }
+    },
+    "investor": {
+      "summary": {
+        "title": "Dashboard d'Inversions",
+        "history_title": "Historial d'Inversions",
+        "tabs": {
+          "timeline": "Evolució Temporal",
+          "status": "Estat",
+          "return": "Retorn",
+          "origin": "Origen"
+        },
+        "charts": {
+          "evolution": "Evolució de les Inversions",
+          "distribution": "Distribució per Estat",
+          "comparison": "Inversió vs Retorn Potencial",
+          "by_origin": "Inversions per Origen"
+        }
+      },
+      "stats": {
+        "total_invested": "Total Invertit",
+        "investment_count": "{{count}} inversió",
+        "investment_count_plural": "{{count}} inversions",
+        "total_inversions": "en total",
+        "potential_profit": "Benefici Potencial",
+        "profit_positive": "Rendibilitat positiva",
+        "profit_none": "Sense benefici encara",
+        "profitability": "de rendibilitat",
+        "profitability_percent": "% de rendibilitat",
+        "pending_investments": "Inversions Pendents",
+        "waiting_completion": "Esperant a ser completades",
+        "best_investment": "Millor Inversió",
+        "best_investment_none": "Sense dades",
+        "none": "Cap",
+        "units": "unitats",
+        "pendent_completat": "Pendents / Completades"
+      },
+      "table": {
+        "title": "Les teves inversions",
+        "filters_title": "Filtres",
+        "filters": {
+          "all": "Tots",
+          "paid": "Pagat (Pendent)",
+          "completed": "Completat",
+          "cancelled": "Cancel·lat"
+        },
+        "count_zero": "0 inversions",
+        "count_single": "1 inversió",
+        "count_multiple": "{{count}} inversions",
+        "empty": "No hi ha inversions disponibles amb aquest filtre",
+        "headers": {
+          "image": "Imatge",
+          "product": "Producte",
+          "seller": "Venedor",
+          "restaurant": "Restaurant",
+          "status": "Estat",
+          "investment": "Inversió",
+          "return": "Retorn",
+          "actions": "Accions"
+        },
+        "labels": {
+          "quantity": "Quantitat",
+          "date": "Data",
+          "profit": "Benefici",
+          "potential_return": "Retorn potencial"
+        },
+        "actions": {
+          "details": "Detalls"
+        }
+      },
+      "status": {
+        "paid": "Pagat (Pendent)",
+        "completed": "Completat",
+        "cancelled": "Cancel·lat",
+        "unknown": "Desconegut",
+        "other": "Altres"
+      },
+      "details": {
+        "back": "Tornar",
+        "product_details": "Detalls del Producte",
+        "summary_title": "Resum de la Inversió",
+        "status_title": "Estat de la Inversió",
+        "history_title": "Historial de la Inversió",
+        "labels": {
+          "wine_type": "Tipus de Vi",
+          "price_demanded": "Preu Demandat",
+          "year": "Any",
+          "seller": "Venedor",
+          "restaurant": "Restaurant",
+          "quantity": "Quantitat",
+          "unit_price": "Preu per unitat",
+          "total_investment": "Inversió total",
+          "restaurant_price": "Preu restaurant",
+          "potential_return": "Retorn potencial",
+          "potential_profit": "Benefici potencial",
+          "investment_date": "Data de la inversió",
+          "current_status": "Estat actual",
+          "profitability": "Rendibilitat"
+        },
+        "table": {
+          "date": "Data",
+          "status": "Estat",
+          "description": "Descripció"
+        },
+        "messages": {
+          "not_specified": "No especificat",
+          "units": "unitats",
+          "not_found": "Inversió no trobada"
+        }
+      },
+      "charts": {
+        "origin_summary": "Resum per Origen",
+        "no_data": "No hi ha dades disponibles",
+        "amount": "Import",
+        "count": "Nombre",
+        "total": "Total",
+        "origin": "Origen"
+      },
+      "messages": {
+        "error_server": "No s'ha pogut connectar amb el servidor",
+        "error_fetch": "Hi ha hagut un error carregant les inversions.",
+        "no_token": "No s'ha trobat el token d'autenticació."
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Inicia sessió",
+      "subtitle": "Introdueix les teves credencials per accedir",
+      "email_placeholder": "Correu electrònic",
+      "password_placeholder": "Contrasenya",
+      "submit": "Enviar",
+      "loading": "Carregant...",
+      "error_credentials": "Credencials incorrectes. Comprova el teu correu i contrasenya.",
+      "error_too_many_attempts": "Massa intents fallits. Torna-ho a provar més tard.",
+      "error_generic": "Error al iniciar sessió",
+      "success": "Inici de sessió correcte",
+      "role_modal_title": "Escollir rol",
+      "role_modal_desc": "Selecciona el rol amb el qual vols accedir:"
+    },
+    "register": {
+      "seller_title": "Crear compte d'usuari productor",
+      "restaurant_title": "Crear compte d'usuari restaurant",
+      "investor_title": "Crear compte d'usuari inversor",
+      "have_account": "Tens un compte?",
+      "login_link": "Inicia sessió",
+      "personal_info": "Informació dades personals",
+      "login_info": "Informació inici de sessió",
+      "bank_info": "Informació dades bancàries",
+      "labels": {
+        "name": "Nom usuari",
+        "nif": "NIF",
+        "address": "Adreça",
+        "phone": "Telèfon contacte",
+        "email": "Email",
+        "password": "Contrasenya",
+        "contact_person": "Nom de contacte",
+        "bank_account": "Número compte",
+        "credit_card": "Targeta de crèdit"
+      },
+      "submit_seller": "Agregar Productor",
+      "submit_restaurant": "Agregar Restaurant",
+      "submit_investor": "Agregar Inversor",
+      "loading": "Processant...",
+      "success_seller": "Productor registrat exitosament! Redirigint...",
+      "success_restaurant": "Restaurant registrat exitosament! Redirigint...",
+      "success_investor": "Inversor registrat exitosament! Redirigint...",
+      "error_validation": "Hi ha errors de validació en el formulari. Revisa els camps.",
+      "error_conflict": "Ja existeix un usuari amb aquest email o NIF. Si us plau, utilitza dades diferents.",
+      "error_forbidden": "No teniu permissos per realitzar aquesta acció.",
+      "error_generic": "Ha ocurregut un error inesperat. Si us plau, intentau de nou més tard."
+    }
+  },
+  "profile": {
+    "title": "El Meu Perfil",
+    "subtitle": "Gestiona la teva informació personal i rols en la plataforma",
+    "tabs": {
+      "profile": "Perfil",
+      "restaurant": "Restaurant",
+      "investor": "Inversor",
+      "seller": "Productor"
+    },
+    "personal_info_title": "Informació Personal",
+    "personal_info_desc": "Actualitza les teves dades personals i credencials",
+    "role_management_title": "Gestió de Rols",
+    "role_management_desc": "Afegeix rols adicionals al teu compte",
+    "restaurant_data_title": "Dades de Restaurant",
+    "restaurant_data_desc": "Gestiona la informació del teu restaurant",
+    "investor_data_title": "Dades d'Inversor",
+    "investor_data_desc": "Gestiona la informació del teu perfil d'inversor",
+    "seller_data_title": "Dades de Productor",
+    "seller_data_desc": "Gestiona la informació del teu perfil de productor"
+  },
+  "settings": {
+    "title": "Configuració",
+    "subtitle": "Gestiona la seguretat i les preferències del teu compte",
+    "success_message": "Configuració actualitzada correctament",
+    "menu": {
+      "security": "Seguretat",
+      "notifications": "Notificacions",
+      "preferences": "Preferències"
+    },
+    "security": {
+      "title": "Seguretat del Compte",
+      "current_password": "Contrasenya Actual",
+      "new_password": "Nova Contrasenya",
+      "confirm_password": "Confirmar Nova Contrasenya",
+      "update_btn": "Actualitzar Contrasenya"
+    },
+    "notifications": {
+      "title": "Preferències de Notificacions",
+      "email_label": "Notificacions per Email",
+      "email_desc": "Rep actualitzacions de les teves comandes",
+      "push_label": "Notificacions Push",
+      "push_desc": "Alertes en temps real al navegador"
+    },
+    "preferences": {
+      "title": "Configuració Regional",
+      "language_label": "Idioma de la plataforma",
+      "currency_label": "Moneda",
+      "save_btn": "Desar Preferències"
+    }
+  },
+  "cart": {
+    "title": "La meva cistella",
+    "loading": "Carregant la cistella...",
+    "error_auth": {
+      "title": "Error d'autenticació",
+      "message": "No s'ha pogut carregar la informació de l'usuari. Si us plau, inicia sessió de nou.",
+      "login_btn": "Iniciar sessió"
+    },
+    "empty": {
+      "title": "La teva cistella es buida",
+      "message": "Sembla que encara no has afegit cap producte al carret. Torna a la botiga per explorar els nostres vins.",
+      "continue_btn": "Continuar comprant"
+    },
+    "success_updated": "Quantitat actualitzada correctament",
+    "selected_products": "Productes seleccionats",
+    "features": {
+      "free_shipping": {
+        "title": "Enviament gratuït",
+        "desc": "Per a comandes superiors a 100€"
+      },
+      "secure_payment": {
+        "title": "Pagament segur",
+        "desc": "Transaccions encriptades"
+      },
+      "quality_guarantee": {
+        "title": "Garantia de qualitat",
+        "desc": "Tots els vins verificats"
+      }
+    },
+    "summary": {
+      "title": "Resum de la comanda",
+      "subtotal": "Subtotal",
+      "service_fee": {
+        "label": "Comissió de servei",
+        "tooltip": "3% del subtotal"
+      },
+      "shipping": {
+        "label": "Despeses d'enviament",
+        "free": "Gratis"
+      },
+      "total": "Total",
+      "vat_included": "IVA inclòs",
+      "checkout_btn": "Finalitzar compra",
+      "continue_shopping": "Continuar comprant",
+      "selected_items": "Articles seleccionats",
+      "secure_payment": "Pagament segur",
+      "clear_cart": "Esborrar cistella"
+    },
+    "item": {
+      "producer": "Productor:",
+      "restaurant": "Restaurant:",
+      "remove": "Eliminar",
+      "placeholder_alt": "Producte"
+    },
+    "delete_modal": {
+      "title": "Vols esborrar tot?",
+      "message": "Esborraras tota la teva cistella. Estàs segur?",
+      "warning": "Al esborrar la cistella, tindràs que tornar a afegir totes les sol·licituds dels restaurants.",
+      "cancel": "Cancel·lar",
+      "confirm": "Esborrar"
+    }
+  },
+  "info": {
+    "privacy": {
+      "title": "Política de Privacitat",
+      "content": "A INWINE ens prenem molt seriosament la teva privacitat. Aquesta pàgina detalla com recollim, utilitzem i protegim les teves dades personals.",
+      "section1": {
+        "title": "1. Recollida d'Informació",
+        "text": "Recollim informació quan et registres al nostre lloc, fas una comanda o et subscrius al nostre butlletí. La informació inclou el teu nom, correu electrònic i número de telèfon."
+      },
+      "section2": {
+        "title": "2. Ús de la Informació",
+        "text": "Qualsevol informació que recollim de tu pot ser utilitzada per:",
+        "item1": "Personalitzar la teva experiència.",
+        "item2": "Millorar el nostre lloc web i servei al client.",
+        "item3": "Processar transaccions i enviar correus electrònics periòdics."
+      }
+    },
+    "terms": {
+      "title": "Condicions d'Ús",
+      "content": "Benvingut a INWINE. En accedir al nostre lloc web, acceptes complir aquestes condicions d'ús.",
+      "section1": {
+        "title": "1. Ús de la Llicència",
+        "text": "Es concedeix permís per descarregar temporalment una còpia dels materials al lloc web d'INWINE només per a visualització transitòria personal i no comercial."
+      },
+      "section2": {
+        "title": "2. Exclusió de Responsabilitat",
+        "text": "Els materials al lloc web d'INWINE es proporcionen \"tal com són\". INWINE no ofereix cap garantia, expressa o implícita."
+      }
+    },
+    "cookies": {
+      "title": "Política de Cookies",
+      "content": "Utilitzem cookies per millorar la teva experiència al nostre lloc web.",
+      "what_are": "Què són les cookies?",
+      "what_are_text": "Les cookies són petits fitxers de text que s'emmagatzemen al teu dispositiu quan visites un lloc web per recordar les teves preferències.",
+      "types": "Tipus de cookies que utilitzem",
+      "type_necessary": "Necessàries:",
+      "type_necessary_text": "Essencials per al funcionament del lloc.",
+      "type_analysis": "Anàlisi:",
+      "type_analysis_text": "Per entendre com interactuen els usuaris amb el web.",
+      "type_marketing": "Màrqueting:",
+      "type_marketing_text": "Per mostrar anuncis rellevants."
+    },
+    "legal": {
+      "title": "Avís Legal",
+      "content": "Informació legal obligatòria sobre el propietari d'aquest lloc web.",
+      "owner_data": "Dades del titular",
+      "owner": "Titular:",
+      "nif": "NIF:",
+      "address": "Domicili:",
+      "email": "Email:"
+    },
+    "about": {
+      "title": "Sobre nosaltres",
+      "content": "INWINE és la plataforma líder per connectar productors de vi, inversors i restaurants.",
+      "mission": "La nostra missió",
+      "mission_text": "Volem revolucionar el sector vinícola utilitzant la tecnologia per connectar l'excel·lència del camp amb la taula i el mercat d'inversió.",
+      "commitment": "El nostre compromís",
+      "commitment_text": "Treballem amb transparència i passió per oferir la millor experiència a tota la nostra comunitat."
+    },
+    "team": {
+      "title": "Equip",
+      "content": "Coneix les persones que fan possible INWINE.",
+      "talent": "Talent i Passió",
+      "talent_text": "El nostre equip està format per sommeliers, desenvolupadors i experts en finances, tots units per l'amor al vi."
+    },
+    "influencers": {
+      "title": "Influencers",
+      "content": "Col·labora amb nosaltres i comparteix la teva passió pel vi.",
+      "program": "Programa d'Ambaixadors",
+      "program_text": "Busquem creadors de contingut que s'alineïn amb els nostres valors per portar la cultura del vi a noves audiències."
+    },
+    "affiliates": {
+      "title": "Afiliats",
+      "content": "Uneix-te al nostre programa d'afiliats i guanya comissions.",
+      "benefits": "Beneficis per a socis",
+      "benefits_text": "Obtén ingressos recomanant els nostres serveis a la teva xarxa de contactes. Oferim les millors taxes del sector."
+    },
+    "media": {
+      "title": "Mitjans",
+      "content": "Recursos per a premsa i mitjans de comunicació.",
+      "press_kit": "Press Kit",
+      "press_kit_text": "Pots descarregar el nostre dossier de premsa i material gràfic oficial directament des d'aquí."
+    },
+    "blog": {
+      "title": "Blog",
+      "content": "Últimes notícies, consells i curiositats sobre el món del vi.",
+      "explore": "Explora la cultura del vi",
+      "explore_text": "Contingut setmanal sobre cates, visites a cellers i les millors pràctiques per a inversors vitivinícoles."
+    },
+    "community": {
+      "title": "Comunitat",
+      "content": "Connecta amb altres amants del vi i inversors.",
+      "network": "Xarxa INWINE",
+      "network_text": "Participa en esdeveniments exclusius i comparteix coneixements amb altres professionals i entusiastes del sector."
+    },
+    "ideas": {
+      "title": "Idees",
+      "content": "Volem escoltar els teus suggeriments per millorar INWINE.",
+      "co_creation": "Co-creació",
+      "co_creation_text": "Les millors funcionalitats de la nostra plataforma han sorgit directament de les idees dels nostres usuaris."
+    },
+    "developers": {
+      "title": "Desenvolupadors",
+      "content": "Documentació i eines per integrar-te amb la nostra plataforma.",
+      "api": "API REST",
+      "api_text": "Accedeix a la nostra documentació tècnica per integrar dades de vins i mercats a les teves aplicacions."
+    },
+    "guarantee": {
+      "title": "Garantia",
+      "content": "Informació sobre les garanties de producte i servei.",
+      "security": "Seguretat i Confiança",
+      "security_text": "Garantim l'autenticitat de tots els productes llistats a la nostra plataforma i la seguretat de les teves inversions."
+    },
+    "product_declarations": {
+      "title": "Declaracions de producte",
+      "content": "Certificacions i dades tècniques dels nostres vins.",
+      "transparency": "Transparència Total",
+      "transparency_text": "Tots els nostres vins compten amb declaracions nutricionals i de procedència detallades segons la normativa vigent."
+    }
+  },
+  "sidebar": {
+    "user_unknown": "Usuari Desconegut",
+    "nav": {
+      "home": "Inici",
+      "back_to_web": "Tornar a la web",
+      "profile": "Perfil",
+      "settings": "Configuració",
+      "history": "Històric",
+      "upload_product": "Pujar Producte",
+      "upload": "Pujar",
+      "products": "Productes",
+      "logout": "Tancar sessió",
+      "change_role": "Canviar rol",
+      "language": "Idioma"
+    },
+    "modals": {
+      "logout": {
+        "title": "Tancar sessió?",
+        "description": "Estàs segur que vols tancar la teva sessió actual?",
+        "warning": "Al tancar sessió, tindràs que tornar a iniciar sessió per accedir al teu compte.",
+        "cancel": "Cancel·lar",
+        "confirm": "Tancar sessió"
+      },
+      "change_role": {
+        "title": "Canviar rol",
+        "description": "Selecciona el rol amb el qual vols accedir:"
+      }
+    }
+  },
+  "common": {
+    "close": "Tancar",
+    "continue": "Continuar",
+    "wine_types": {
+      "negre": "Negre",
+      "blanc": "Blanc",
+      "rossat": "Rossat",
+      "espumós": "Espumós",
+      "dolç": "Dolç"
+    }
+  },
+  "role_selector": {
+    "roles": {
+      "seller": {
+        "label": "Productor",
+        "description": "Gestiona els teus productes i vendes"
+      },
+      "restaurant": {
+        "label": "Restaurant",
+        "description": "Administra el teu restaurant"
+      },
+      "investor": {
+        "label": "Inversor",
+        "description": "Segueix les teves inversions"
+      },
+      "default": {
+        "label": "Compte",
+        "description": "Accedeix al teu compte"
+      }
+    }
+  },
+  "favorites": {
+    "back_to_shop": "Tornar a la botiga",
+    "title": "Els meus Favorits",
+    "count_label": "productes guardats",
+    "search_placeholder": "Cercar als meus favorits...",
+    "empty_title": "Encara no tens favorits",
+    "empty_desc": "Guarda els teus vins preferits per trobar-los més ràpidament i no perdre'ls de vista.",
+    "explore_btn": "Explorar productes"
+  }
+}

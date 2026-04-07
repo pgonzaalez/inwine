@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Edit, Trash, ArrowLeft } from "lucide-react"; // Importar el ícono de flecha
 import ProductGallery from "@/components/landing/requests/ProductGallery";
 import ProductInfo from "@/components/landing/requests/ProductInfo";
@@ -11,6 +12,7 @@ import { useFetchUser } from "@components/auth/FetchUser";
 export default function ViewProductPage() {
   const { id: productId } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,7 +32,7 @@ export default function ViewProductPage() {
       setIsLoading(true);
       const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`);
       if (!response.ok) {
-        throw new Error("No se pudo obtener la información del producto.");
+        throw new Error(t("dashboards.seller.product.error_fetch"));
       }
       const data = await response.json();
       setProduct(data.data);
@@ -48,11 +50,11 @@ export default function ViewProductPage() {
       });
 
       if (!response.ok) {
-        throw new Error("No se pudo eliminar el producto.");
+        throw new Error(t("dashboards.seller.product.error_delete"));
       }
 
       navigate(`/seller/products`, {
-        state: { successMessage: "Producto eliminado correctamente." },
+        state: { successMessage: t("dashboards.seller.product.success_delete") },
       });
     } catch (err) {
       console.error(err.message);
@@ -94,7 +96,7 @@ export default function ViewProductPage() {
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-2xl text-gray-600">Producto no encontrado</p>
+        <p className="text-2xl text-gray-600">{t("dashboards.seller.product.not_found")}</p>
       </div>
     );
   }
@@ -123,7 +125,7 @@ export default function ViewProductPage() {
               className="flex items-center text-gray-500 hover:text-gray-700 mb-6"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Tornar
+              {t("dashboards.seller.product.back")}
             </button>
 
             {/* SECTION 1: Product Details Section */}
@@ -143,14 +145,14 @@ export default function ViewProductPage() {
                       className="bg-blue-500 text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-blue-600"
                     >
                       <Edit className="w-5 h-5" />
-                      Editar
+                      {t("dashboards.seller.management.table.actions.details")}
                     </button>
                     <button
                       onClick={() => setIsDeleteDialogOpen(true)}
                       className="bg-red-500 text-white p-3 rounded-md transition-colors flex items-center gap-2 hover:bg-red-600"
                     >
                       <Trash className="w-5 h-5" />
-                      Eliminar
+                      {t("dashboards.seller.management.table.actions.delete")}
                     </button>
                   </div>
                 </div>
