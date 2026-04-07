@@ -1,4 +1,5 @@
 import { TrendingUp, Wallet, Clock } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -8,6 +9,9 @@ const primaryColors = {
 }
 
 export const InvestmentStats = ({ investments = [] }) => {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === "ca" ? "ca-ES" : i18n.language === "es" ? "es-ES" : "en-US"
+
   // Calcular estadísticas
   const totalInvested = investments.reduce((total, inv) => total + inv.product.price_demanded * inv.quantity, 0)
   const potentialReturn = investments.reduce((total, inv) => total + inv.price_restaurant * inv.quantity, 0)
@@ -33,18 +37,18 @@ export const InvestmentStats = ({ investments = [] }) => {
             <Wallet size={20} style={{ color: primaryColors.dark }} />
           </div>
           <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
-            Total Invertit
+            {t("dashboards.investor.stats.total_invested")}
           </h3>
         </div>
         <p className="text-2xl font-bold">
-          {new Intl.NumberFormat("ca-ES", {
+          {new Intl.NumberFormat(locale, {
             style: "currency",
             currency: "EUR",
             maximumFractionDigits: 0,
           }).format(totalInvested)}
         </p>
         <p className="text-sm text-gray-500 mt-1">
-          {investments.length} {investments.length === 1 ? "inversió" : "inversions"} en total
+          {t("dashboards.investor.stats.investment_count", { count: investments.length })} {t("dashboards.investor.stats.total_inversions")}
         </p>
       </div>
 
@@ -63,18 +67,18 @@ export const InvestmentStats = ({ investments = [] }) => {
             <TrendingUp size={20} style={{ color: primaryColors.dark }} />
           </div>
           <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
-            Benefici Potencial
+            {t("dashboards.investor.stats.potential_profit")}
           </h3>
         </div>
         <p className="text-2xl font-bold" style={{ color: potentialProfit > 0 ? "green" : "inherit" }}>
-          {new Intl.NumberFormat("ca-ES", {
+          {new Intl.NumberFormat(locale, {
             style: "currency",
             currency: "EUR",
             maximumFractionDigits: 0,
           }).format(potentialProfit)}
         </p>
         <p className="text-sm text-gray-500 mt-1">
-          {potentialProfit > 0 ? "Rendibilitat positiva" : "Sense benefici encara"}
+          {potentialProfit > 0 ? t("dashboards.investor.stats.profit_positive") : t("dashboards.investor.stats.profit_none")}
         </p>
       </div>
 
@@ -93,11 +97,11 @@ export const InvestmentStats = ({ investments = [] }) => {
             <Clock size={20} style={{ color: primaryColors.dark }} />
           </div>
           <h3 className="text-lg font-bold" style={{ color: primaryColors.dark }}>
-            Inversions Pendents
+            {t("dashboards.investor.stats.pending_investments")}
           </h3>
         </div>
         <p className="text-2xl font-bold">{pendingInvestments}</p>
-        <p className="text-sm text-gray-500 mt-1">Esperant a ser completades</p>
+        <p className="text-sm text-gray-500 mt-1">{t("dashboards.investor.stats.waiting_completion")}</p>
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
 "use client"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { WineStats } from "@components/seller/WineStats"
 import { Notification } from "@components/seller/wineManagement/Notification"
 import { WineTable } from "@components/seller/wineManagement/WineTable"
@@ -20,6 +21,7 @@ function WineManagementComponent() {
   const [loading, setLoading] = useState(false)
   const [sendingProduct, setSendingProduct] = useState(null)
   const { user } = useFetchUser()
+  const { t } = useTranslation()
   const apiUrl = import.meta.env.VITE_API_URL
   const baseUrl = import.meta.env.VITE_URL_BASE
 
@@ -36,7 +38,7 @@ function WineManagementComponent() {
       setLoading(true)
       const response = await fetch(`${apiUrl}/v1/${user.id}/products`)
       if (!response.ok) {
-        throw new Error("No s'ha pogut connectar amb el servidor")
+        throw new Error(t("dashboards.seller.messages.error_server"))
       }
       const data = await response.json()
       if (data) {
@@ -54,7 +56,7 @@ function WineManagementComponent() {
   const handleSendProduct = async (productId) => {
     // Verificación simple del ID
     if (!productId) {
-      setNotification({ type: "error", message: "ID de producto no válido" })
+      setNotification({ type: "error", message: t("dashboards.seller.messages.error_invalid_id") })
       setTimeout(() => setNotification(null), 3000)
       return
     }
@@ -77,14 +79,14 @@ function WineManagementComponent() {
 
       // Procesar la respuesta
       if (!response.ok) {
-        throw new Error("Error al entregar el producto")
+        throw new Error(t("dashboards.seller.messages.error_delivery"))
       }
 
       // Actualizar el estado local
       setWines(wines.map((wine) => (wine.id === productId ? { ...wine, status: "in_transit" } : wine)))
 
       // Mostrar notificación de éxito
-      setNotification({ type: "success", message: "Producte enviat correctament" })
+      setNotification({ type: "success", message: t("dashboards.seller.messages.success_sent") })
       setTimeout(() => setNotification(null), 3000)
     } catch (error) {
       console.error("Error:", error)
@@ -118,7 +120,7 @@ function WineManagementComponent() {
 
       <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          Gestiona els teus Vins
+          {t("dashboards.seller.management.title")}
         </h1>
       </div>
 

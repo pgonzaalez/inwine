@@ -1,37 +1,40 @@
+import { useTranslation } from "react-i18next"
+
 // Definimos los colores primarios
 const primaryColors = {
-    dark: "#9A3E50",
-    light: "#C27D7D",
-    background: "#F9F9F9",
+  dark: "#9A3E50",
+  light: "#C27D7D",
+  background: "#F9F9F9",
+}
+
+// Función para obtener el color de fondo según el estado de la inversión
+const getStatusColor = (status) => {
+  switch (status?.toLowerCase()) {
+    case "paid":
+      return "#F4D26E" // Color amarillo para pagado (pendiente)
+    case "completed":
+      return "#7CC07F" // Color verde para completado
+    case "cancelled":
+      return "#DB766E" // Color rojo para cancelado
+    default:
+      return `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
+        primaryColors.dark.slice(3, 5),
+        16,
+      )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)` // Color por defecto
   }
-  
-  // Función para obtener el color de fondo según el estado de la inversión
-  const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case "paid":
-        return "#FFC107" // Color amarillo para pagado (pendiente)
-      case "completed":
-        return "#4CAF50" // Color verde para completado
-      case "cancelled":
-        return "#F44336" // Color rojo para cancelado
-      default:
-        return `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
-          primaryColors.dark.slice(3, 5),
-          16,
-        )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.1)` // Color por defecto
-    }
+}
+
+export const InvestmentStatusDistribution = ({ investments = [] }) => {
+  const { t } = useTranslation()
+  // Contar inversiones por estado
+  const statusTypes = ["paid", "completed", "cancelled", "other"]
+
+  const statusLabels = {
+    paid: t("dashboards.investor.status.paid"),
+    completed: t("dashboards.investor.status.completed"),
+    cancelled: t("dashboards.investor.status.cancelled"),
+    other: t("dashboards.investor.status.unknown"),
   }
-  
-  export const InvestmentStatusDistribution = ({ investments = [] }) => {
-    // Contar inversiones por estado
-    const statusTypes = ["paid", "completed", "cancelled", "other"]
-  
-    const statusLabels = {
-      paid: "Pagat (Pendent)",
-      completed: "Completat",
-      cancelled: "Cancel·lat",
-      other: "Altres",
-    }
   
     const statusCount = statusTypes.reduce((acc, status) => {
       acc[status] = investments.filter(
@@ -46,7 +49,7 @@ const primaryColors = {
     return (
       <div className="bg-white rounded-xl p-5 shadow-sm">
         <h3 className="text-lg font-bold mb-4" style={{ color: primaryColors.dark }}>
-          Distribució per estat
+          {t("dashboards.investor.summary.charts.distribution")}
         </h3>
   
         <div className="space-y-4">
@@ -54,8 +57,8 @@ const primaryColors = {
             const count = statusCount[status] || 0
             const percentage = total > 0 ? Math.round((count / total) * 100) : 0
   
-            // No mostrar estados sin inversiones
-            if (count === 0) return null
+            // No mostrar estado desconocido si no contiene valores
+            if (count === 0 && status === "other") return null
   
             return (
               <div key={status} className="flex items-center">

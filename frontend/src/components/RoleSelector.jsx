@@ -1,8 +1,9 @@
-// src/components/RoleSelector.jsx
 import { useState } from "react"
 import { ShoppingBag, Utensils, TrendingUp, User } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 const RoleSelector = ({ roles = [], onSelect }) => {
+  const { t } = useTranslation()
   const [selectedRole, setSelectedRole] = useState(null)
 
   const handleContinue = () => {
@@ -16,26 +17,26 @@ const RoleSelector = ({ roles = [], onSelect }) => {
       case "seller":
         return {
           icon: <ShoppingBag size={32} />,
-          label: "Venedor",
-          description: "Gestiona els teus productes i vendes",
+          label: t("role_selector.roles.seller.label"),
+          description: t("role_selector.roles.seller.description"),
         }
       case "restaurant":
         return {
           icon: <Utensils size={32} />,
-          label: "Restaurant",
-          description: "Administra el teu restaurant",
+          label: t("role_selector.roles.restaurant.label"),
+          description: t("role_selector.roles.restaurant.description"),
         }
       case "investor":
         return {
           icon: <TrendingUp size={32} />,
-          label: "Inversor",
-          description: "Segueix les teves inversions",
+          label: t("role_selector.roles.investor.label"),
+          description: t("role_selector.roles.investor.description"),
         }
       default:
         return {
           icon: <User size={32} />,
-          label: role,
-          description: "Accedeix al teu compte",
+          label: t("role_selector.roles.default.label"),
+          description: t("role_selector.roles.default.description"),
         }
     }
   }
@@ -99,7 +100,7 @@ const RoleSelector = ({ roles = [], onSelect }) => {
               selectedRole ? "bg-[#BE6674] hover:bg-[#741C28]" : "bg-gray-300 cursor-not-allowed"
             }`}
           >
-            Continuar
+            {t("common.continue")}
           </button>
         </div>
       </div>

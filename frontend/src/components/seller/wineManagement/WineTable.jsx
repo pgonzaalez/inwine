@@ -2,6 +2,7 @@
 
 import { Filter, Send } from "lucide-react"
 import { StatusBadge } from "@components/seller/wineManagement/StatusBadge"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -32,13 +33,14 @@ const getWineTypeColor = (type) => {
 }
 
 export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, activeFilter, setActiveFilter }) => {
+  const { t } = useTranslation()
   // Array de filtros para evitar el warning de keys
   const filters = [
-    { id: "all", label: "Tots" },
-    { id: "in_stock", label: "En Stock" },
-    { id: "requested", label: "Sol·licitats" },
-    { id: "in_transit", label: "En Trànsit" },
-    { id: "sold", label: "Venuts" },
+    { id: "all", label: t("dashboards.seller.management.table.filter_all") },
+    { id: "in_stock", label: t("dashboards.seller.stats.in_stock") },
+    { id: "requested", label: t("dashboards.seller.stats.requested") },
+    { id: "in_transit", label: t("dashboards.seller.stats.in_transit") },
+    { id: "sold", label: t("dashboards.seller.stats.sold") },
   ]
 
   // Función para formatear el precio con separador de miles
@@ -57,9 +59,9 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
         <div className="border-b">
           <div className="flex justify-between items-center p-4">
             <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
-              Els teus vins
+              {t("dashboards.seller.management.table.title")}
             </h2>
-            <span className="text-sm text-gray-500">0 vins</span>
+            <span className="text-sm text-gray-500">0 {t("dashboards.seller.management.table.count_plural")}</span>
           </div>
 
           {/* Filter section */}
@@ -67,7 +69,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
             <div className="flex items-center gap-2 mb-2">
               <Filter size={16} style={{ color: primaryColors.dark }} />
               <span className="text-sm font-medium" style={{ color: primaryColors.dark }}>
-                Filtres
+                {t("dashboards.seller.management.table.filters_label")}
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -93,7 +95,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
           </div>
         </div>
 
-        <div className="text-center p-8">No hi ha vins disponibles amb aquest filtre</div>
+        <div className="text-center p-8">{t("dashboards.seller.management.table.empty_filter")}</div>
       </div>
     )
   }
@@ -104,10 +106,10 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
       <div className="border-b">
         <div className="flex justify-between items-center p-4">
           <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
-            Els teus vins
+            {t("dashboards.seller.management.table.title")}
           </h2>
           <span className="text-sm text-gray-500">
-            {wines.length} {wines.length === 1 ? "vi" : "vins"}
+            {wines.length} {wines.length === 1 ? t("dashboards.seller.management.table.count_singular") : t("dashboards.seller.management.table.count_plural")}
           </span>
         </div>
 
@@ -116,7 +118,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
           <div className="flex items-center gap-2 mb-2">
             <Filter size={16} style={{ color: primaryColors.dark }} />
             <span className="text-sm font-medium" style={{ color: primaryColors.dark }}>
-              Filtres
+              {t("dashboards.seller.management.table.filters_label")}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -144,12 +146,12 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
 
       {/* Header - Only visible on tablet and desktop */}
       <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] gap-4 bg-gray-50 px-6 py-3">
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Imatge</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Detalls</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Tipus</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Estat</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Preu</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Accions</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.seller.management.table.cols.image")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.seller.management.table.cols.details")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.seller.management.table.cols.type")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.seller.management.table.cols.status")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.seller.management.table.cols.price")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.seller.management.table.cols.actions")}</div>
       </div>
 
       {/* Wine Grid */}
@@ -186,7 +188,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
                           : "white",
                     }}
                   >
-                    {wine.wine_type || "Vi"}
+                    {wine.wine_type || t("dashboards.seller.management.table.count_singular")}
                   </div>
 
                   <StatusBadge status={wine.status} />
@@ -208,7 +210,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
                       color: primaryColors.dark,
                     }}
                   >
-                    Detalls
+                    {t("dashboards.seller.management.table.actions.details")}
                   </button>
 
                   {wine.status === "requested" && (
@@ -227,12 +229,12 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
                       {sendingProduct === wine.id ? (
                         <>
                           <div className="w-3 h-3 rounded-full border-2 border-white border-t-transparent animate-spin mr-1"></div>
-                          Enviant...
+                          {t("dashboards.seller.management.table.actions.sending")}
                         </>
                       ) : (
                         <>
                           <Send size={12} className="mr-1" />
-                          Enviar
+                          {t("dashboards.seller.management.table.actions.send")}
                         </>
                       )}
                     </button>
@@ -265,7 +267,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
                         : "white",
                   }}
                 >
-                  {wine.wine_type || "Vi"}
+                  {wine.wine_type || t("dashboards.seller.management.table.count_singular")}
                 </div>
               </div>
 
@@ -293,7 +295,7 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
                     color: primaryColors.dark,
                   }}
                 >
-                  Detalls
+                  {t("dashboards.seller.management.table.actions.details")}
                 </button>
 
                 {wine.status === "requested" && (
@@ -312,12 +314,12 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
                     {sendingProduct === wine.id ? (
                       <>
                         <div className="w-3 h-3 rounded-full border-2 border-white border-t-transparent animate-spin mr-1"></div>
-                        Enviant...
+                        {t("dashboards.seller.management.table.actions.sending")}
                       </>
                     ) : (
                       <>
                         <Send size={12} className="mr-1" />
-                        Enviar
+                        {t("dashboards.seller.management.table.actions.send")}
                       </>
                     )}
                   </button>

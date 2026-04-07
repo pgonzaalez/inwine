@@ -6,6 +6,7 @@ use App\Models\OrderRequested;
 use Illuminate\Database\Seeder;
 use App\Models\RequestRestaurant;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -64,6 +65,14 @@ class RequestSeeder extends Seeder
                 'price_demanded'=> 50,
                 'quantity'=> 1,
                 'image'=> '/storage/proba/palacio.jpg',
+            ]);
+
+            // 1.5) Guardar imagen en productImage para evitar vacio en el detail
+            ProductImage::create([
+                'product_id' => $product->id,
+                'image_path' => $product->image,
+                'is_primary' => true,
+                'order' => 0
             ]);
 
             // 2) Crear una solicitud de restaurante en estado 'pending'

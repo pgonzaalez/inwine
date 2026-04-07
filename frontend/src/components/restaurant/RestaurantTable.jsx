@@ -1,6 +1,7 @@
 "use client"
 
 import { DollarSignIcon, Store, Trash2, Edit, Filter, Eye } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from 'react-router-dom';
 
 const primaryColors = {
@@ -9,8 +10,8 @@ const primaryColors = {
   background: "#F9F9F9",
 }
 
-const formatDate = (dateString) =>
-  new Date(dateString).toLocaleDateString("ca-ES", {
+const formatDate = (dateString, lang) =>
+  new Date(dateString).toLocaleDateString(lang === 'ca' ? 'ca-ES' : lang === 'es' ? 'es-ES' : 'en-US', {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -53,20 +54,20 @@ const getStatusColor = (status) => {
   }
 }
 
-const getStatusText = (status) => {
+ const getStatusText = (status, t) => {
   switch (status) {
     case "pending":
-      return "Pendent"
+      return t("dashboards.restaurant.status.pending")
     case "in_transit":
-      return "En Trànsit"
+      return t("dashboards.restaurant.status.in_transit")
     case "in_my_local":
-      return "Al Local"
+      return t("dashboards.restaurant.status.in_my_local")
     case "sold":
-      return "Venut"
+      return t("dashboards.restaurant.status.sold")
     case "accepted":
-      return "Acceptat"
+      return t("dashboards.restaurant.status.accepted")
     default:
-      return status.replace(/_/g, " ")
+      return t(`dashboards.restaurant.status.${status}`, { defaultValue: status.replace(/_/g, " ") })
   }
 }
 
@@ -80,15 +81,16 @@ export const RestaurantTable = ({
   receivingProduct,
   sellingProduct,
   activeFilter,
-  setActiveFilter,
+   setActiveFilter,
 }) => {
+  const { t, i18n } = useTranslation()
   const filters = [
-    { id: "all", label: "Tots" },
-    { id: "pending", label: "Pendents" },
-    { id: "accepted", label: "Acceptats" },
-    { id: "in_transit", label: "En Trànsit" },
-    { id: "in_my_local", label: "Al Local" },
-    { id: "sold", label: "Venuts" },
+    { id: "all", label: t("dashboards.restaurant.filters.all") },
+    { id: "pending", label: t("dashboards.restaurant.filters.pending") },
+    { id: "accepted", label: t("dashboards.restaurant.filters.accepted") },
+    { id: "in_transit", label: t("dashboards.restaurant.filters.in_transit") },
+    { id: "in_my_local", label: t("dashboards.restaurant.filters.in_my_local") },
+    { id: "sold", label: t("dashboards.restaurant.filters.sold") },
   ]
 
   const filteredRequests = activeFilter === "all" ? requests : requests.filter((r) => r.status === activeFilter)
@@ -103,20 +105,20 @@ export const RestaurantTable = ({
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
       {/* Header */}
       <div className="border-b">
-        <div className="flex justify-between items-center p-4">
+         <div className="flex justify-between items-center p-4">
           <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
-            Les teves sol·licituds
+            {t("dashboards.restaurant.table.title")}
           </h2>
           <span className="text-sm text-gray-500">
-            {filteredRequests.length} {filteredRequests.length === 1 ? "sol·licitud" : "sol·licituds"}
+            {filteredRequests.length} {filteredRequests.length === 1 ? t("dashboards.restaurant.table.count_singular") : t("dashboards.restaurant.table.count_plural")}
           </span>
         </div>
 
         <div className="px-4 pb-4">
-          <div className="flex items-center gap-2 mb-2">
+           <div className="flex items-center gap-2 mb-2">
             <Filter size={16} style={{ color: primaryColors.dark }} />
             <span className="text-sm font-medium" style={{ color: primaryColors.dark }}>
-              Filtres
+              {t("dashboards.restaurant.filters.title")}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -141,20 +143,20 @@ export const RestaurantTable = ({
         </div>
       </div>
 
-      {/* Desktop Header */}
+       {/* Desktop Header */}
       <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1.5fr_1fr_1.5fr] gap-4 bg-gray-50 px-6 py-3">
-        <div className="text-xs font-medium text-gray-500 uppercase">Imatge</div>
-        <div className="text-xs font-medium text-gray-500 uppercase">Detalls</div>
-        <div className="text-xs font-medium text-gray-500 uppercase">Tipus</div>
-        <div className="text-xs font-medium text-gray-500 uppercase">Estat</div>
-        <div className="text-xs font-medium text-gray-500 uppercase">Preus</div>
-        <div className="text-xs font-medium text-gray-500 uppercase">Data</div>
-        <div className="text-xs font-medium text-gray-500 uppercase">Accions</div>
+        <div className="text-xs font-medium text-gray-500 uppercase">{t("dashboards.restaurant.table.cols.image")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase">{t("dashboards.restaurant.table.cols.details")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase">{t("dashboards.restaurant.table.cols.type")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase">{t("dashboards.restaurant.table.cols.status")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase">{t("dashboards.restaurant.table.cols.prices")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase">{t("dashboards.restaurant.table.cols.date")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase">{t("dashboards.restaurant.table.cols.actions")}</div>
       </div>
 
-      {/* Body */}
+       {/* Body */}
       {filteredRequests.length === 0 ? (
-        <div className="text-center p-8">No hi ha sol·licituds disponibles amb aquest filtre</div>
+        <div className="text-center p-8">{t("dashboards.restaurant.table.empty")}</div>
       ) : (
         <div className="divide-y divide-gray-200">
           {filteredRequests.map((request) => (
@@ -195,20 +197,20 @@ export const RestaurantTable = ({
                           ? "#333"
                           : "white",
                       }}
-                    >
-                      {request.product.wine_type || "Vi"}
+                     >
+                      {request.product.wine_type || t("dashboards.restaurant.view.not_specified")}
                     </span>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}>
-                      {getStatusText(request.status)}
+                      {getStatusText(request.status, t)}
                     </span>
                   </div>
 
                   <div className="flex flex-col gap-1 mb-3">
-                    <div className="text-xs flex items-center">
+                     <div className="text-xs flex items-center">
                       <DollarSignIcon size={12} className="mr-1 text-gray-500" />
-                      <span>Preu demandat: {request.product.price_demanded}€</span>
+                      <span>{t("dashboards.restaurant.view.price_demanded")}: {request.product.price_demanded}€</span>
                     </div>
-                    <div className="text-xs text-gray-500">Data: {formatDate(request.created_at)}</div>
+                    <div className="text-xs text-gray-500">{t("dashboards.restaurant.view.request_date")}: {formatDate(request.created_at, i18n.language)}</div>
                   </div>
 
                   <div className="flex flex-wrap gap-2 mt-auto">
@@ -255,10 +257,10 @@ export const RestaurantTable = ({
                           e.stopPropagation()
                           handleReceiveProduct(request.product.id)
                         }}
-                        disabled={receivingProduct === request.product.id}
+                         disabled={receivingProduct === request.product.id}
                         className="px-3 py-1 text-xs rounded-lg font-medium text-white bg-[#9A3E50] w-full"
                       >
-                        {receivingProduct === request.product.id ? "Rebent..." : "He rebut"}
+                        {receivingProduct === request.product.id ? t("dashboards.restaurant.table.actions.receiving") : t("dashboards.restaurant.table.actions.receive")}
                       </button>
                     )}
                     {request.status === "in_my_local" && (
@@ -268,10 +270,10 @@ export const RestaurantTable = ({
                           e.stopPropagation()
                           handleSellProduct(request.product.id)
                         }}
-                        disabled={sellingProduct === request.product.id}
+                         disabled={sellingProduct === request.product.id}
                         className="px-3 py-1 text-xs rounded-lg font-medium text-white bg-emerald-500 w-full"
                       >
-                        {sellingProduct === request.product.id ? "Venent..." : "He venut"}
+                        {sellingProduct === request.product.id ? t("dashboards.restaurant.table.actions.selling") : t("dashboards.restaurant.table.actions.sell")}
                       </button>
                     )}
                   </div>
@@ -300,13 +302,13 @@ export const RestaurantTable = ({
                       backgroundColor: getWineTypeColor(request.product.wine_type),
                       color: ["blanc", "espumós"].includes(request.product.wine_type?.toLowerCase()) ? "#333" : "white",
                     }}
-                  >
-                    {request.product.wine_type || "Vi"}
+                   >
+                    {request.product.wine_type || t("dashboards.restaurant.view.not_specified")}
                   </span>
                 </div>
                 <div>
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}>
-                    {getStatusText(request.status)}
+                    {getStatusText(request.status, t)}
                   </span>
                 </div>
                 <div className="flex flex-col">
@@ -316,10 +318,10 @@ export const RestaurantTable = ({
                   </span>
                   <span className="text-sm font-bold" style={{ color: primaryColors.dark }}>
                     <Store size={14} className="inline mr-1 text-gray-500" />
-                    {request.price_restaurant}€
+                     {request.price_restaurant}€
                   </span>
                 </div>
-                <div className="text-sm text-gray-500">{formatDate(request.created_at)}</div>
+                <div className="text-sm text-gray-500">{formatDate(request.created_at, i18n.language)}</div>
                 <div className="flex space-x-2">
                   <button
                     onClick={(e) => {
@@ -362,10 +364,10 @@ export const RestaurantTable = ({
                         e.stopPropagation()
                         handleReceiveProduct(request.product.id)
                       }}
-                      disabled={receivingProduct === request.product.id}
+                       disabled={receivingProduct === request.product.id}
                       className="px-4 py-2 rounded-lg font-medium text-white bg-[#9A3E50]"
                     >
-                      {receivingProduct === request.product.id ? "Rebent..." : "He rebut"}
+                      {receivingProduct === request.product.id ? t("dashboards.restaurant.table.actions.receiving") : t("dashboards.restaurant.table.actions.receive")}
                     </button>
                   )}
                   {request.status === "in_my_local" && (
@@ -375,10 +377,10 @@ export const RestaurantTable = ({
                         e.stopPropagation()
                         handleSellProduct(request.product.id)
                       }}
-                      disabled={sellingProduct === request.product.id}
+                       disabled={sellingProduct === request.product.id}
                       className="px-4 py-2 rounded-lg font-medium text-white bg-emerald-500"
                     >
-                      {sellingProduct === request.product.id ? "Venent..." : "He venut"}
+                      {sellingProduct === request.product.id ? t("dashboards.restaurant.table.actions.selling") : t("dashboards.restaurant.table.actions.sell")}
                     </button>
                   )}
                 </div>

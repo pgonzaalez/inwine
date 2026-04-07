@@ -4,8 +4,10 @@ import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie } from "@/utils/utils"
+import { useTranslation } from "react-i18next";
 
 export default function UserCards() {
+  const { t } = useTranslation();
   const user = useFetchUser();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL
@@ -74,9 +76,9 @@ export default function UserCards() {
   const cards = [
     {
       id: 1,
-      title: "Usuari Productor",
+      title: t("landing.user_cards.producer.title"),
       image: "https://www.scmlogistica.es/wp-content/uploads/como-poner-en-marcha-un-pequeno-almacen.jpg",
-      imageAlt: "Almacén",
+      imageAlt: t("landing.user_cards.producer.alt"),
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
       linkUrl: "/register/seller",
@@ -85,9 +87,9 @@ export default function UserCards() {
     },
     {
       id: 2,
-      title: "Usuari Inversor",
+      title: t("landing.user_cards.investor.title"),
       image: "https://es.msi.com/frontend/imgs/aboutus/kv-investor-information-xs.jpg",
-      imageAlt: "Inversor",
+      imageAlt: t("landing.user_cards.investor.alt"),
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
       linkUrl: "/register/investor",
@@ -96,9 +98,9 @@ export default function UserCards() {
     },
     {
       id: 3,
-      title: "Usuari Restaurant",
+      title: t("landing.user_cards.restaurant.title"),
       image: "https://www.antiguarestaurante.com/es/media/ee367c51f9/ee367c51f659c9963f83cba87c831516.cms.jpg",
-      imageAlt: "Restaurant",
+      imageAlt: t("landing.user_cards.restaurant.alt"),
       description:
         "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
       linkUrl: "/register/restaurant",
@@ -142,19 +144,19 @@ export default function UserCards() {
                   {user.user?.roles?.includes(card.role) ? (
                     <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
                       <button className="text-white text-sm font-medium" type="button" onClick={() => handleRoleChange(card.role)}>
-                        Obrir Perfil 
+                        {t("landing.user_cards.open_profile")}
                       </button>
                     </div>
                   ) : (
                     <Link to={user.user ? (user.user.active_role?.[0] + "/profile") : card.linkUrl}>
                       <div className="bg-red-800 hover:bg-red-900 rounded-lg py-2 px-6 flex items-center justify-center transition-colors duration-200">
-                        <span className="text-white text-sm font-medium">Comença</span>
+                        <span className="text-white text-sm font-medium">{t("landing.user_cards.start")}</span>
                       </div>
                     </Link>
                   )}
 
                   <div className="mt-6">
-                    <h4 className="text-black text-md font-medium mb-3">Característiques:</h4>
+                    <h4 className="text-black text-md font-medium mb-3">{t("landing.user_cards.features_title")}:</h4>
                     <div className="flex flex-col gap-3">
                       {card.features.map((feature, index) => (
                         <div key={index} className="flex items-center gap-2">

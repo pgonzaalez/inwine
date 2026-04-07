@@ -3,6 +3,7 @@
 import { Filter, Eye } from "lucide-react"
 import { StatusBadge } from "./StatusBadge"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -12,21 +13,23 @@ const primaryColors = {
 }
 
 export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) => {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === "ca" ? "ca-ES" : i18n.language === "es" ? "es-ES" : "en-US"
   // Get the base URL from environment variables
   const baseUrl = import.meta.env.VITE_URL_BASE
   const navigate = useNavigate()
 
   // Array de filtros para evitar el warning de keys
   const filters = [
-    { id: "all", label: "Tots" },
-    { id: "paid", label: "Pagat (Pendent)" },
-    { id: "completed", label: "Completat" },
-    { id: "cancelled", label: "Cancel·lat" },
+    { id: "all", label: t("dashboards.investor.table.filters.all") },
+    { id: "paid", label: t("dashboards.investor.table.filters.paid") },
+    { id: "completed", label: t("dashboards.investor.table.filters.completed") },
+    { id: "cancelled", label: t("dashboards.investor.table.filters.cancelled") },
   ]
 
   // Función para formatear el precio con separador de miles
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("ca-ES", {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "EUR",
       maximumFractionDigits: 0,
@@ -36,7 +39,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
   // Función para formatear la fecha
   const formatDate = (dateString) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat("ca-ES", {
+    return new Intl.DateTimeFormat(locale, {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -55,9 +58,9 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
         <div className="border-b">
           <div className="flex justify-between items-center p-4">
             <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
-              Les teves inversions
+              {t("dashboards.investor.table.title")}
             </h2>
-            <span className="text-sm text-gray-500">0 inversions</span>
+            <span className="text-sm text-gray-500">{t("dashboards.investor.table.count_zero")}</span>
           </div>
 
           {/* Filter section */}
@@ -65,7 +68,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
             <div className="flex items-center gap-2 mb-2">
               <Filter size={16} style={{ color: primaryColors.dark }} />
               <span className="text-sm font-medium" style={{ color: primaryColors.dark }}>
-                Filtres
+                {t("dashboards.investor.table.filters_title")}
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -90,7 +93,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
           </div>
         </div>
 
-        <div className="text-center p-8">No hi ha inversions disponibles amb aquest filtre</div>
+        <div className="text-center p-8">{t("dashboards.investor.table.empty")}</div>
       </div>
     )
   }
@@ -101,10 +104,12 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
       <div className="border-b">
         <div className="flex justify-between items-center p-4">
           <h2 className="text-xl font-bold" style={{ color: primaryColors.dark }}>
-            Les teves inversions
+            {t("dashboards.investor.table.title")}
           </h2>
           <span className="text-sm text-gray-500">
-            {investments.length} {investments.length === 1 ? "inversió" : "inversions"}
+            {investments.length === 1 
+              ? t("dashboards.investor.table.count_single") 
+              : t("dashboards.investor.table.count_multiple", { count: investments.length })}
           </span>
         </div>
 
@@ -113,7 +118,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
           <div className="flex items-center gap-2 mb-2">
             <Filter size={16} style={{ color: primaryColors.dark }} />
             <span className="text-sm font-medium" style={{ color: primaryColors.dark }}>
-              Filtres
+              {t("dashboards.investor.table.filters_title")}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -140,13 +145,13 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
 
       {/* Header - Only visible on tablet and desktop */}
       <div className="hidden md:grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr_0.5fr] gap-4 bg-gray-50 px-6 py-3">
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Imatge</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Producte</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Venedor</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Estat</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Inversió</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Retorn</div>
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Accions</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.investor.table.headers.image")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.investor.table.headers.product")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.investor.table.headers.seller")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.investor.table.headers.status")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.investor.table.headers.investment")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.investor.table.headers.return")}</div>
+        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("dashboards.investor.table.headers.actions")}</div>
       </div>
 
       {/* Investment Grid */}
@@ -177,18 +182,18 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <div className="text-xs text-gray-500">Venedor: {investment.seller_name}</div>
+                  <div className="text-xs text-gray-500">{t("dashboards.investor.table.headers.seller")}: {investment.seller_name}</div>
                   <StatusBadge status={investment.status} />
                 </div>
 
                 <div className="flex flex-col gap-1 mt-auto">
                   <div className="text-xs text-gray-500">
-                    Inversió: {formatPrice(investment.product.price_demanded * investment.quantity)}
+                    {t("dashboards.investor.table.headers.investment")}: {formatPrice(investment.product.price_demanded * investment.quantity)}
                   </div>
                   <div className="text-xs font-medium" style={{ color: primaryColors.dark }}>
-                    Retorn potencial: {formatPrice(investment.price_restaurant * investment.quantity)}
+                    {t("dashboards.investor.table.labels.potential_return")}: {formatPrice(investment.price_restaurant * investment.quantity)}
                   </div>
-                  <div className="text-xs text-gray-500">Data: {formatDate(investment.created_at)}</div>
+                  <div className="text-xs text-gray-500">{t("dashboards.investor.table.labels.date")}: {formatDate(investment.created_at)}</div>
 
                   {/* Botón de detalles */}
                   <button
@@ -199,7 +204,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
                     }}
                   >
                     <Eye size={12} />
-                    Detalls
+                    {t("dashboards.investor.table.actions.details")}
                   </button>
                 </div>
               </div>
@@ -225,7 +230,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
 
               <div>
                 <div className="text-sm text-gray-700">{investment.seller_name}</div>
-                <div className="text-xs text-gray-500 mt-1">Restaurant: {investment.restaurant_name}</div>
+                <div className="text-xs text-gray-500 mt-1">{t("dashboards.investor.table.headers.restaurant")}: {investment.restaurant_name}</div>
               </div>
 
               <div>
@@ -234,13 +239,13 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
 
               <div className="text-sm font-medium text-gray-700">
                 {formatPrice(investment.product.price_demanded * investment.quantity)}
-                <div className="text-xs text-gray-500 mt-1">Quantitat: {investment.quantity}</div>
+                <div className="text-xs text-gray-500 mt-1">{t("dashboards.investor.table.labels.quantity")}: {investment.quantity}</div>
               </div>
 
               <div className="text-sm font-bold" style={{ color: primaryColors.dark }}>
                 {formatPrice(investment.price_restaurant * investment.quantity)}
                 <div className="text-xs text-gray-500 mt-1">
-                  Benefici:{" "}
+                  {t("dashboards.investor.table.labels.profit")}:{" "}
                   {formatPrice((investment.price_restaurant - investment.product.price_demanded) * investment.quantity)}
                 </div>
               </div>
@@ -257,7 +262,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
                     color: primaryColors.dark,
                   }}
                 >
-                  Detalls
+                  {t("dashboards.investor.table.actions.details")}
                 </button>
               </div>
             </div>

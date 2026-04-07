@@ -7,49 +7,39 @@ export function useFetchUser() {
   const [error, setError] = useState(null);
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  const fetchUser = async () => {
+    const token = getCookie("token");
+
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(`${apiUrl}/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error();
+
+      const data = await response.json();
+      setUser(data);
+    } catch (err) {
+      setUser(null);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = getCookie("token");
-
-      
-      if (!token) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`${apiUrl}/user`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        
-        if (response.status === 401) {
-          setUser(null);
-          setLoading(false);
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-
-        const data = await response.json();
-        setUser(data);
-      } catch (err) {
-        console.error("User fetch error:", err);
-        setUser(null); // fallback
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUser();
   }, []);
 
-  return { user, loading, error };
+  return { user, loading, error, refetchUser: fetchUser };
 }

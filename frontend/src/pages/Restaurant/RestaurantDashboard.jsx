@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { primaryColors } from "@/components/restaurant/utils/colors"
 import { RequestStats } from "@/components/restaurant/RequestStats"
@@ -13,6 +14,7 @@ import { EditRequestModal } from "@/components/restaurant/modals/EditRequestModa
 import { getCookie } from "@/utils/utils"
 
 function RestaurantDashboardComponent() {
+  const { t } = useTranslation()
   const [requests, setRequests] = useState([])
   const [activeFilter, setActiveFilter] = useState("all")
   const [isLoading, setIsLoading] = useState(true)
@@ -46,13 +48,13 @@ function RestaurantDashboardComponent() {
       const response = await fetch(`${apiUrl}/v1/${user.id}/restaurant`)
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut connectar amb el servidor")
+        throw new Error(t("dashboards.restaurant.messages.error_server"))
       }
 
       const data = await response.json()
       setRequests(Array.isArray(data) ? data : [data])
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconegut")
+      setError(err instanceof Error ? err.message : t("dashboards.restaurant.messages.error_unknown", "Error desconegut"))
     } finally {
       setIsLoading(false)
     }
@@ -87,14 +89,14 @@ function RestaurantDashboardComponent() {
       })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut eliminar la sol·licitud")
+        throw new Error(t("dashboards.restaurant.messages.error_delete"))
       }
 
       // Remove the deleted request from state
       setRequests(requests.filter((request) => request.id !== selectedRequestId))
 
       // Mostrar notificación de éxito
-      setNotification({ type: "success", message: "Sol·licitud eliminada correctament" })
+      setNotification({ type: "success", message: t("dashboards.restaurant.messages.success_delete") })
       setTimeout(() => setNotification(null), 3000)
     } catch (err) {
       setNotification({ type: "error", message: err.message })
@@ -125,7 +127,7 @@ function RestaurantDashboardComponent() {
       })
 
       if (!response.ok) {
-        throw new Error("No s'ha pogut actualitzar la sol·licitud")
+        throw new Error(t("dashboards.restaurant.messages.error_update"))
       }
 
       // Actualizar el estado local
@@ -181,7 +183,7 @@ function RestaurantDashboardComponent() {
 
       // Procesar la respuesta
       if (!response.ok) {
-        throw new Error("Error al marcar com rebut")
+        throw new Error(t("dashboards.restaurant.messages.error_receive"))
       }
 
       // Actualizar el estado local
@@ -190,7 +192,7 @@ function RestaurantDashboardComponent() {
       )
 
       // Mostrar notificación de éxito
-      setNotification({ type: "success", message: "Producte rebut correctament" })
+      setNotification({ type: "success", message: t("dashboards.restaurant.messages.success_receive") })
       setTimeout(() => setNotification(null), 3000)
     } catch (error) {
       // console.error("Error:", error)
@@ -228,7 +230,7 @@ function RestaurantDashboardComponent() {
 
       // Procesar la respuesta
       if (!response.ok) {
-        throw new Error("Error al marcar com venut")
+        throw new Error(t("dashboards.restaurant.messages.error_sell"))
       }
 
       // Actualizar el estado local
@@ -237,7 +239,7 @@ function RestaurantDashboardComponent() {
       )
 
       // Mostrar notificación de éxito
-      setNotification({ type: "success", message: "Producte venut correctament" })
+      setNotification({ type: "success", message: t("dashboards.restaurant.messages.success_sell") })
       setTimeout(() => setNotification(null), 3000)
     } catch (error) {
       // console.error("Error:", error)
@@ -293,7 +295,7 @@ function RestaurantDashboardComponent() {
 
       <div className="mb-6 p-6 bg-white rounded-xl shadow-sm">
         <h1 className="text-2xl font-bold" style={{ color: primaryColors.dark }}>
-          Gestiona les teves Sol·licituds
+          {t("dashboards.restaurant.management.title")}
         </h1>
       </div>
 

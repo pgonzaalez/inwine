@@ -5,32 +5,35 @@ const primaryColors = {
     background: "#F9F9F9",
   }
   
-  export const StatusBadge = ({ status }) => {
-    let backgroundColor
-    let textColor
-    let statusText
-  
-    switch (status) {
-      case "paid":
-        backgroundColor = "#FFF8E1"
-        textColor = "#FFA000"
-        statusText = "Pagat (Pendent)"
-        break
-      case "completed":
-        backgroundColor = "#E8F5E9"
-        textColor = "#2E7D32"
-        statusText = "Completat"
-        break
-      case "cancelled":
-        backgroundColor = "#FFEBEE"
-        textColor = "#C62828"
-        statusText = "Cancel·lat"
-        break
-      default:
-        backgroundColor = "#ECEFF1"
-        textColor = "#546E7A"
-        statusText = "Desconegut"
-    }
+import { useTranslation } from "react-i18next"
+
+export const StatusBadge = ({ status }) => {
+  const { t } = useTranslation()
+  let backgroundColor
+  let textColor
+  let statusText
+
+  switch (status) {
+    case "paid":
+      backgroundColor = "#FFF8E1"
+      textColor = "#FFA000"
+      statusText = t("dashboards.investor.status.paid")
+      break
+    case "completed":
+      backgroundColor = "#E8F5E9"
+      textColor = "#2E7D32"
+      statusText = t("dashboards.investor.status.completed")
+      break
+    case "cancelled":
+      backgroundColor = "#FFEBEE"
+      textColor = "#C62828"
+      statusText = t("dashboards.investor.status.cancelled")
+      break
+    default:
+      backgroundColor = "#ECEFF1"
+      textColor = "#546E7A"
+      statusText = t("dashboards.investor.status.unknown")
+  }
   
     return (
       <span

@@ -1,4 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts"
+import { useTranslation } from "react-i18next"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -9,21 +10,24 @@ const primaryColors = {
 
 // Colores para los diferentes estados
 const STATUS_COLORS = {
-  paid: "#FFC107", // Amarillo para pagado (pendiente)
-  completed: "#4CAF50", // Verde para completado
-  cancelled: "#F44336", // Rojo para cancelado
+  paid: "#F4D26E", // Amarillo para pagado (pendiente)
+  completed: "#7CC07F", // Verde para completado
+  cancelled: "#DB766E", // Rojo para cancelado
   unknown: "#9E9E9E", // Gris para desconocido
 }
 
-// Nombres de estado en catalán
-const STATUS_NAMES = {
-  paid: "Pagat (Pendent)",
-  completed: "Completat",
-  cancelled: "Cancel·lat",
-  unknown: "Desconegut",
-}
-
 export const InvestmentStatusChart = ({ data = [] }) => {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === "ca" ? "ca-ES" : i18n.language === "es" ? "es-ES" : "en-US"
+
+  // Nombres de estado localitzats
+  const STATUS_NAMES = {
+    paid: t("dashboards.investor.status.paid"),
+    completed: t("dashboards.investor.status.completed"),
+    cancelled: t("dashboards.investor.status.cancelled"),
+    unknown: t("dashboards.investor.status.unknown"),
+  }
+
   // Formatear datos para el gráfico
   const chartData = data.map((item) => ({
     ...item,
@@ -39,12 +43,12 @@ export const InvestmentStatusChart = ({ data = [] }) => {
         <div className="bg-white p-3 border border-gray-200 shadow-md rounded-md">
           <p className="font-medium">{data.name}</p>
           <p className="text-sm">
-            <span style={{ color: payload[0].color }}>Nombre: </span>
+            <span style={{ color: payload[0].color }}>{t("dashboards.investor.charts.count")}: </span>
             {data.count}
           </p>
           <p className="text-sm">
-            <span style={{ color: payload[0].color }}>Import: </span>
-            {new Intl.NumberFormat("ca-ES", {
+            <span style={{ color: payload[0].color }}>{t("dashboards.investor.charts.amount")}: </span>
+            {new Intl.NumberFormat(locale, {
               style: "currency",
               currency: "EUR",
               maximumFractionDigits: 0,
@@ -81,7 +85,7 @@ export const InvestmentStatusChart = ({ data = [] }) => {
   if (data.length === 0) {
     return (
       <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">No hi ha dades disponibles</p>
+        <p className="text-gray-500">{t("dashboards.investor.charts.no_data")}</p>
       </div>
     )
   }
@@ -144,23 +148,23 @@ export const InvestmentStatusChart = ({ data = [] }) => {
       <div className="md:col-span-2">
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="text-lg font-medium mb-2" style={{ color: primaryColors.dark }}>
-            Resum per Estat
+            {t("dashboards.investor.summary.charts.distribution")}
           </h3>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Estat
+                    {t("dashboards.investor.table.headers.status")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nombre
+                    {t("dashboards.investor.charts.count")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Import Total
+                    {t("dashboards.investor.charts.amount")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    % del Total
+                    % {t("dashboards.investor.charts.total") || "del Total"}
                   </th>
                 </tr>
               </thead>
@@ -182,7 +186,7 @@ export const InvestmentStatusChart = ({ data = [] }) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.count}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Intl.NumberFormat("ca-ES", {
+                        {new Intl.NumberFormat(locale, {
                           style: "currency",
                           currency: "EUR",
                           maximumFractionDigits: 0,

@@ -13,8 +13,10 @@ import {
 } from 'lucide-react';
 import { useFetchUser } from "@/components/auth/FetchUser";
 import Footer from "@components/FooterComponent";
+import { useTranslation } from "react-i18next";
 
 const SettingsPage = () => {
+  const { t } = useTranslation('settings');
   const { user, loading } = useFetchUser();
   const [activeSection, setActiveSection] = useState('security');
   const [successMessage, setSuccessMessage] = useState('');
@@ -26,15 +28,15 @@ const SettingsPage = () => {
   };
 
   const menuItems = [
-    { id: 'security', label: 'Seguretat', icon: Lock },
-    { id: 'notifications', label: 'Notificacions', icon: Bell },
-    { id: 'preferences', label: 'Preferències', icon: Globe },
+    { id: "security", label: t("settings.menu.security"), icon: Shield },
+    { id: "notifications", label: t("settings.menu.notifications"), icon: Bell },
+    { id: "preferences", label: t("settings.menu.preferences"), icon: Globe },
   ];
 
   const handleSave = (e) => {
     e.preventDefault();
-    setSuccessMessage('Configuració actualitzada correctament');
-    setTimeout(() => setSuccessMessage(''), 3000);
+    setSuccessMessage(t("settings.success_message"));
+    setTimeout(() => setSuccessMessage(""), 3000);
   };
 
   if (loading) {
@@ -53,8 +55,8 @@ const SettingsPage = () => {
           {/* Header */}
           <div className="mb-8 p-8 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Configuració</h1>
-              <p className="text-gray-500">Gestiona la seguretat i les preferències del teu compte</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{t("settings.title")}</h1>
+              <p className="text-gray-500">{t("settings.subtitle")}</p>
             </div>
             {successMessage && (
               <motion.div 
@@ -101,12 +103,12 @@ const SettingsPage = () => {
                       <div className="p-3 bg-[#9A3E50]/10 rounded-2xl text-[#9A3E50]">
                         <Shield size={24} />
                       </div>
-                      <h2 className="text-2xl font-bold text-gray-900">Seguretat del Compte</h2>
+                      <h2 className="text-2xl font-bold text-gray-900">{t("settings.security.title")}</h2>
                     </div>
 
                     <form onSubmit={handleSave} className="space-y-6 max-w-md">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Contrasenya Actual</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.security.current_password")}</label>
                         <input 
                           type="password" 
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all"
@@ -114,14 +116,14 @@ const SettingsPage = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Nova Contrasenya</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.security.new_password")}</label>
                         <input 
                           type="password" 
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Nova Contrasenya</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.security.confirm_password")}</label>
                         <input 
                           type="password" 
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all"
@@ -131,7 +133,7 @@ const SettingsPage = () => {
                         type="submit"
                         className="bg-[#9A3E50] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#833444] transition-colors shadow-lg shadow-[#9A3E50]/20"
                       >
-                        Actualitzar Contrasenya
+                        {t("settings.security.update_btn")}
                       </button>
                     </form>
                   </motion.div>
@@ -143,7 +145,7 @@ const SettingsPage = () => {
                       <div className="p-3 bg-[#9A3E50]/10 rounded-2xl text-[#9A3E50]">
                         <Bell size={24} />
                       </div>
-                      <h2 className="text-2xl font-bold text-gray-900">Preferències de Notificacions</h2>
+                      <h2 className="text-2xl font-bold text-gray-900">{t("settings.notifications.title")}</h2>
                     </div>
 
                     <div className="space-y-6">
@@ -153,8 +155,8 @@ const SettingsPage = () => {
                             <Mail size={20} />
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">Notificacions per Email</p>
-                            <p className="text-sm text-gray-500">Rep actualitzacions de les teves comandes</p>
+                            <p className="font-medium text-gray-900">{t("settings.notifications.email_label")}</p>
+                            <p className="text-sm text-gray-500">{t("settings.notifications.email_desc")}</p>
                           </div>
                         </div>
                         <input type="checkbox" defaultChecked className="w-6 h-6 rounded-md text-[#9A3E50] focus:ring-[#9A3E50]" />
@@ -166,8 +168,8 @@ const SettingsPage = () => {
                             <Smartphone size={20} />
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">Notificacions Push</p>
-                            <p className="text-sm text-gray-500">Alertes en temps real al navegador</p>
+                            <p className="font-medium text-gray-900">{t("settings.notifications.push_label")}</p>
+                            <p className="text-sm text-gray-500">{t("settings.notifications.push_desc")}</p>
                           </div>
                         </div>
                         <input type="checkbox" className="w-6 h-6 rounded-md text-[#9A3E50] focus:ring-[#9A3E50]" />
@@ -182,12 +184,12 @@ const SettingsPage = () => {
                       <div className="p-3 bg-[#9A3E50]/10 rounded-2xl text-[#9A3E50]">
                         <Globe size={24} />
                       </div>
-                      <h2 className="text-2xl font-bold text-gray-900">Configuració Regional</h2>
+                      <h2 className="text-2xl font-bold text-gray-900">{t("settings.preferences.title")}</h2>
                     </div>
 
                     <div className="space-y-6 max-w-md">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Idioma de la plataforma</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.preferences.language_label")}</label>
                         <select className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all">
                           <option>Català</option>
                           <option>Castellano</option>
@@ -195,7 +197,7 @@ const SettingsPage = () => {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Moneda</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.preferences.currency_label")}</label>
                         <select className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all">
                           <option>Euro (€)</option>
                           <option>US Dollar ($)</option>
@@ -205,7 +207,7 @@ const SettingsPage = () => {
                         onClick={handleSave}
                         className="bg-[#9A3E50] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#833444] transition-colors shadow-lg shadow-[#9A3E50]/20"
                       >
-                        Desar Preferències
+                        {t("settings.preferences.save_btn")}
                       </button>
                     </div>
                   </motion.div>

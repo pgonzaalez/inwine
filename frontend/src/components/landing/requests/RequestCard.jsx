@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Home, ShoppingCart, LogIn } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import Modal from "@components/Modal";
 import { useNavigate } from "react-router-dom";
+import { getCookie } from "@/utils/utils";
 
 export default function RequestCard({ request, index, productPrice, isRequestsExpanded }) {
   const apiUrl = import.meta.env.VITE_API_URL;
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isAlreadyInOrder, setIsAlreadyInOrder] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
 
@@ -47,7 +48,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
         throw new Error("Error al crear la comanda");
       }
 
-      setIsSuccess(true);
+      setIsAlreadyInOrder(true);
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -59,7 +60,39 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
     setShowLoginModal(false);
     navigate("/login");
   };
+  
 
+
+  useEffect(() => {
+    const checkIfAlreadyInOrder = async () => {
+      if (!user) return;
+
+      try {
+        const response = await fetch(
+          `${apiUrl}/v1/${user.id}/orders/`,
+          {
+            headers: {
+              Authorization: `Bearer ${getCookie("token")}`,
+            },
+          }
+        );
+
+        if (!response.ok) return;
+
+        const orders = await response.json();
+
+        const exists = orders.some(
+          (order) => order.request_restaurant_id === request.id
+        );
+
+        setIsAlreadyInOrder(exists);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    checkIfAlreadyInOrder();
+  }, [user, request.id]);
   return (
     <>
       <div
@@ -113,11 +146,11 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
 
           <button
             onClick={handleAddToOrder}
-            disabled={isLoading || isSuccess}
-            className={`w-full bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] hover:from-[#7a2e3d] hover:to-[#5a1e2d] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
+            disabled={isLoading || isAlreadyInOrder}
+            className={`w-full bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] hover:from-[#7a2e3d] hover:to-[#5a1e2d] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ${isLoading ? "opacity-70" : ""} ${isAlreadyInOrder ? "bg-green-600 hover:bg-green-700" : ""}`}
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
-            {isLoading ? "Processant..." : isSuccess ? "Afegit!" : "Afegir"}
+            {isLoading ? "Processant..." : isAlreadyInOrder ? "Ja afegit" : "Afegir"}
           </button>
         </div>
 
@@ -147,11 +180,11 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
             <div className="text-right">
               <button
                 onClick={handleAddToOrder}
-                disabled={isLoading || isSuccess}
-                className={`bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] hover:from-[#7a2e3d] hover:to-[#5a1e2d] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ml-auto ${isLoading ? "opacity-70" : ""} ${isSuccess ? "bg-green-600 hover:bg-green-700" : ""}`}
+                disabled={isLoading || isAlreadyInOrder}
+                className={`bg-gradient-to-r from-[#9A3E50] to-[#7a2e3d] hover:from-[#7a2e3d] hover:to-[#5a1e2d] text-white cursor-pointer py-1.5 px-3 rounded-md font-medium flex items-center justify-center transition-colors text-sm ml-auto ${isLoading ? "opacity-70" : ""} ${isAlreadyInOrder ? "bg-green-600 hover:bg-green-700" : ""}`}
               >
                 <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
-                {isLoading ? "Processant..." : isSuccess ? "Afegit!" : "Afegir"}
+                {isLoading ? "Processant..." : isAlreadyInOrder ? "Afegit!" : "Afegir"}
               </button>
             </div>
           </div>

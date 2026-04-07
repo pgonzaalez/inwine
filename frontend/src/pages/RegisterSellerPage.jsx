@@ -17,7 +17,10 @@ import {
 import { useNavigate } from "react-router-dom"
 import { setCookie } from "@/utils/utils"
 
+import { useTranslation } from "react-i18next";
+
 const AddSellerForm = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate()
   const apiUrl = import.meta.env.VITE_API_URL
 
@@ -46,27 +49,27 @@ const AddSellerForm = () => {
 
     // Validar NIF (formato español: 8 dígitos y una letra)
     if (formData.NIF && !/^[0-9]{8}[A-Z]$/.test(formData.NIF)) {
-      newErrors.NIF = ["El NIF ha de ser 8 dígits seguits d'una lletra majúscula"]
+      newErrors.NIF = [t("auth.register.error_validation_nif") || "El NIF ha de ser 8 dígits seguits d'una lletra majúscula"]
     }
 
     // Validar email
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = ["El format del correu electrònic no és vàlid"]
+      newErrors.email = [t("auth.register.error_validation_email") || "El format del correu electrònic no és vàlid"]
     }
 
     // Validar contraseña (mínimo 8 caracteres, al menos una letra y un número)
     if (formData.password && !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(formData.password)) {
-      newErrors.password = ["La contrasenya ha de ser mínim 8 caràcters, inclòs una lletra i un número"]
+      newErrors.password = [t("auth.register.error_validation_password") || "La contrasenya ha de ser mínim 8 caràcters, inclòs una lletra i un número"]
     }
 
     // Validar teléfono (formato español)
     if (formData.phone && !/^[6-9]\d{8}$/.test(formData.phone)) {
-      newErrors.phone = ["El número de telèfon ha de ser 9 dígits i començar per 6, 7, 8 o 9"]
+      newErrors.phone = [t("auth.register.error_validation_phone") || "El número de telèfon ha de ser 9 dígits i començar per 6, 7, 8 o 9"]
     }
 
     // Validar cuenta bancaria (IBAN español simplificado)
     if (formData.bank_account && !/^ES\d{22}$/.test(formData.bank_account)) {
-      newErrors.bank_account = ["El número de compte debe ser format IBAN espanyol: ES seguit de 22 dígits"]
+      newErrors.bank_account = [t("auth.register.error_validation_bank") || "El número de compte debe ser format IBAN espanyol: ES seguit de 22 dígits"]
     }
 
     setFormErrors(newErrors)
@@ -105,7 +108,7 @@ const AddSellerForm = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Error al iniciar sessió");
+        throw new Error(result.message || t("auth.login.error_generic"));
       }
 
       setCookie("token", result.token, 7);
@@ -130,7 +133,7 @@ const AddSellerForm = () => {
 
     // Validar formulario antes de enviar
     if (!validateForm()) {
-      setMessage("Si us plau, corregeix els errors en el formulari abans de continuar.")
+      setMessage(t("auth.register.error_validation"))
       setMessageType("error")
       return
     }
@@ -152,19 +155,19 @@ const AddSellerForm = () => {
       if (!response.ok) {
         if (response.status === 422) {
           setErrors(data.errors || {})
-          setMessage("Hi ha errors de validació en el formulari. Revisa els camps.")
+          setMessage(t("auth.register.error_validation"))
           setMessageType("error")
         } else if (response.status === 409) {
-          setMessage("Ja existeix un usuari amb aquest email o NIF. Si us plau, utilitza dades diferents.")
+          setMessage(t("auth.register.error_conflict"))
           setMessageType("error")
         } else if (response.status === 403) {
-          setMessage("No teniu permissos per realitzar aquesta acció.")
+          setMessage(t("auth.register.error_forbidden"))
           setMessageType("error")
         } else {
-          throw new Error(data.message || "Error al crear el productor")
+          throw new Error(data.message || t("auth.register.error_generic"))
         }
       } else {
-        setMessage("Productor registrat exitosament! Redirigint...")
+        setMessage(t("auth.register.success_seller"))
         setMessageType("success")
 
         //Realizar login una vez registrado
@@ -190,7 +193,7 @@ const AddSellerForm = () => {
       }
     } catch (error) {
       setMessage(
-        `Error: ${error.message || "Ha ocurregut un error inesperat. Si us plau, intentau de nou més tard."}`,
+        `Error: ${error.message || t("auth.register.error_generic")}`,
       )
       setMessageType("error")
     } finally {
@@ -226,12 +229,12 @@ const AddSellerForm = () => {
               >
                 <CornerDownLeft size={20} className="cursor-pointer" />
               </button>
-              <h1 className="text-2xl font-bold text-center w-full">Crear compte d'usuari productor</h1>
+              <h1 className="text-2xl font-bold text-center w-full">{t("auth.register.seller_title")}</h1>
             </div>
             <h4 className="text-gray-600 text-center">
-              Tens un compte?{" "}
+              {t("auth.register.have_account")}{" "}
               <a href="/login" className="text-[#741C28]">
-                Inicia sessió
+                {t("auth.register.login_link")}
               </a>
             </h4>
           </div>
@@ -261,7 +264,7 @@ const AddSellerForm = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h2 className="text-lg font-semibold mb-4">Informació dades personals</h2>
+                <h2 className="text-lg font-semibold mb-4">{t("auth.register.personal_info")}</h2>
                 <div className="space-y-2">
                   {/* Nombre */}
                   <div className="relative">
@@ -290,7 +293,7 @@ const AddSellerForm = () => {
                           hasError("name") ? "text-red-500" : "text-gray-500"
                         }`}
                       >
-                        Nom usuari
+                        {t("auth.register.labels.name")}
                       </label>
                     </div>
                   </div>
@@ -325,7 +328,7 @@ const AddSellerForm = () => {
                           hasError("NIF") ? "text-red-500" : "text-gray-500"
                         }`}
                       >
-                        NIF
+                        {t("auth.register.labels.nif")}
                       </label>
                     </div>
                   </div>
@@ -361,7 +364,7 @@ const AddSellerForm = () => {
                           hasError("address") ? "text-red-500" : "text-gray-500"
                         }`}
                       >
-                        Adreça
+                        {t("auth.register.labels.address")}
                       </label>
                     </div>
                   </div>
@@ -399,7 +402,7 @@ const AddSellerForm = () => {
                           hasError("phone") ? "text-red-500" : "text-gray-500"
                         }`}
                       >
-                        Telèfon contacte
+                        {t("auth.register.labels.phone")}
                       </label>
                     </div>
                   </div>
@@ -412,7 +415,7 @@ const AddSellerForm = () => {
               </div>
 
               <div>
-                <h2 className="text-lg font-semibold mb-4">Informació inici de sessió</h2>
+                <h2 className="text-lg font-semibold mb-4">{t("auth.register.login_info")}</h2>
                 <div className="space-y-2">
                   {/* Email */}
                   <div className="relative">
@@ -443,7 +446,7 @@ const AddSellerForm = () => {
                           hasError("email") ? "text-red-500" : "text-gray-500"
                         }`}
                       >
-                        Email
+                        {t("auth.register.labels.email")}
                       </label>
                     </div>
                   </div>
@@ -482,7 +485,7 @@ const AddSellerForm = () => {
                           hasError("password") ? "text-red-500" : "text-gray-500"
                         }`}
                       >
-                        Contrasenya
+                        {t("auth.register.labels.password")}
                       </label>
                     </div>
                   </div>
@@ -496,7 +499,7 @@ const AddSellerForm = () => {
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold mb-4">Informació dades bancàries</h2>
+              <h2 className="text-lg font-semibold mb-4">{t("auth.register.bank_info")}</h2>
               <div className="space-y-2">
                 {/* Nom de contacto */}
                 <div className="relative">
@@ -525,9 +528,9 @@ const AddSellerForm = () => {
                       className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
                         hasError("name_contact") ? "text-red-500" : "text-gray-500"
                       }`}
-                    >
-                      Nom de contacte
-                    </label>
+                      >
+                        {t("auth.register.labels.contact_person")}
+                      </label>
                   </div>
                 </div>
                 <div className="h-6">
@@ -563,9 +566,9 @@ const AddSellerForm = () => {
                       className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
                         hasError("bank_account") ? "text-red-500" : "text-gray-500"
                       }`}
-                    >
-                      Número compte
-                    </label>
+                      >
+                        {t("auth.register.labels.bank_account")}
+                      </label>
                   </div>
                 </div>
                 <div className="h-6">
@@ -584,10 +587,10 @@ const AddSellerForm = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Procesando...
+                  {t("auth.register.loading")}
                 </>
               ) : (
-                "Agregar Productor"
+                t("auth.register.submit_seller")
               )}
             </button>
           </form>

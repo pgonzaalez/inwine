@@ -12,7 +12,10 @@ import { getCookie, setCookie } from "@/utils/utils";
 import RoleSelector from "@/components/RoleSelector"
 import Modal from "@components/Modal";
 
+import { useTranslation } from "react-i18next";
+
 const LoginForm = () => {
+  const { t } = useTranslation();
   const apiUrl = import.meta.env.VITE_API_URL
 
   // Estado para controlar formulario
@@ -66,16 +69,16 @@ const LoginForm = () => {
       // Manejo de errores
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error("Credencials incorrectes. Comprova el teu correu i contrasenya.")
+          throw new Error(t("auth.login.error_credentials"))
         } else if (response.status === 429) {
-          throw new Error("Massa intents fallits. Torna-ho a provar més tard.")
+          throw new Error(t("auth.login.error_too_many_attempts"))
         } else {
-          throw new Error(result.message || "Error al iniciar sessió")
+          throw new Error(result.message || t("auth.login.error_generic"))
         }
       }
 
       // Guardar token, resetear form, guardar usuario
-      setMessage("Inici de sessió correcte")
+      setMessage(t("auth.login.success"))
       setMessageType("success")
       setCookie("token", result.token, 7)
       setUserData(result.user)
@@ -111,7 +114,7 @@ const LoginForm = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Error al actualizar el rol activo");
+          throw new Error(t("auth.login.error_generic"));
         }
       }
 
@@ -170,9 +173,9 @@ const LoginForm = () => {
 
           {/* Título */}
           <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-gray-800">Inicia sessió</h1>
+            <h1 className="text-3xl font-bold text-gray-800">{t("auth.login.title")}</h1>
             <p className="mt-2 text-sm text-gray-600">
-              Introdueix les teves credencials per accedir
+              {t("auth.login.subtitle")}
             </p>
           </div>
 
@@ -208,7 +211,7 @@ const LoginForm = () => {
                 onChange={handleChange}
                 className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${messageType === "error" ? "border-red-300" : "border-gray-300"
                   }`}
-                placeholder="Correu electrònic"
+                placeholder={t("auth.login.email_placeholder")}
                 required
               />
             </div>
@@ -225,7 +228,7 @@ const LoginForm = () => {
                 onChange={handleChange}
                 className={`w-full h-12 pl-10 pr-4 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${messageType === "error" ? "border-red-300" : "border-gray-300"
                   }`}
-                placeholder="Contrasenya"
+                placeholder={t("auth.login.password_placeholder")}
                 required
               />
             </div>
@@ -236,7 +239,7 @@ const LoginForm = () => {
               disabled={isLoading}
               className="w-full py-3 bg-[#BE6674] text-white rounded-lg hover:bg-[#741C28] transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Carregant..." : "Enviar"}
+              {isLoading ? t("auth.login.loading") : t("auth.login.submit")}
             </button>
           </form>
         </div>
@@ -246,8 +249,8 @@ const LoginForm = () => {
       <Modal
         isOpen={isRoleModalOpen}
         onClose={() => setIsRoleModalOpen(false)}
-        title="Escollir rol"
-        description="Selecciona el rol amb el qual vols accedir:"
+        title={t("auth.login.role_modal_title")}
+        description={t("auth.login.role_modal_desc")}
         icon={<User className="h-8 w-8" />}
         variant="primary"
         size="md" 
