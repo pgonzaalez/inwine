@@ -8,7 +8,7 @@ import { useFetchUser } from "@/components/auth/FetchUser";
 import { useTranslation } from "react-i18next";
 
 export default function ProfilePage() {
-  const { t } = useTranslation("profile");
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("profile");
   const [userRoles, setUserRoles] = useState([]);
   const { user, loading } = useFetchUser();
