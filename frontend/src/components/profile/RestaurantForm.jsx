@@ -1,22 +1,33 @@
 import { useState, useEffect } from "react"
 import { useFetchUser } from "@/components/auth/FetchUser"
 import { getCookie } from "@/utils/utils"
+import { useTranslation } from "react-i18next";
 
 export default function RestaurantForm({ primaryColors }) {
+  const { t } = useTranslation();
   const { user } = useFetchUser()
   const apiUrl = import.meta.env.VITE_API_URL
+  const baseUrl = import.meta.env.VITE_URL_BASE
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     address: "",
     phone_contact: "",
     name_contact: "",
     credit_card: "",
+    business_name: "",
+    province: "",
+    description: "",
+    image: "",
   })
   const [errors, setErrors] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
   const [touchedFields, setTouchedFields] = useState({})
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState("")
+  const [existingImage, setExistingImage] = useState("")
+  const [removeImageFlag, setRemoveImageFlag] = useState(false)
 
-  // Sincronizar datos del restaurante al formulario
   useEffect(() => {
     if (user && user.details && user.details.restaurant) {
       const restaurantData = user.details.restaurant
@@ -25,7 +36,12 @@ export default function RestaurantForm({ primaryColors }) {
         phone_contact: restaurantData.phone_contact || "",
         name_contact: restaurantData.name_contact || "",
         credit_card: restaurantData.credit_card || "",
+        business_name: restaurantData.business_name || "",
+        province: restaurantData.province || "",
+        description: restaurantData.description || "",
+        image: restaurantData.image || "",
       })
+      setExistingImage(restaurantData.image || "")
     }
   }, [user])
 
@@ -62,6 +78,18 @@ export default function RestaurantForm({ primaryColors }) {
       newErrors.credit_card = "La targeta de crèdit ha de tenir al menys 16 dígits"
     }
 
+    if (!formData.business_name || formData.business_name.length < 5) {
+      newErrors.business_name = "El nom de l\'empresa ha de tenir al menys 5 caràcters"
+    }
+
+    if (!formData.province || formData.province.length < 3) {
+      newErrors.province = "El nom de la provincia ha de tenir al menys 3 caràcters"
+    }
+
+    if (!formData.description || formData.description.length < 20 || formData.description.length > 100) {
+      newErrors.description = "La descripció ha de tenir al menys 20 i no més de 100 caràcters"
+    }
+
     // Marcar todos los campos como tocados
     const allTouched = Object.keys(formData).reduce((acc, key) => {
       acc[key] = true;
@@ -73,6 +101,56 @@ export default function RestaurantForm({ primaryColors }) {
     return Object.keys(newErrors).length === 0
   }
 
+  const handleImageSelect = (e) => {
+    if (!e.target.files?.[0]) return
+
+    const file = e.target.files[0]
+    const preview = URL.createObjectURL(file)
+
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview)
+    }
+
+    setSelectedImage({ file, preview })
+    setImagePreview(preview)
+    setRemoveImageFlag(false)
+    setTouchedFields((prev) => ({ ...prev, image: true }))
+  }
+
+  const removeImage = () => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview)
+    }
+    setSelectedImage(null)
+    setImagePreview("")
+    setTouchedFields((prev) => ({ ...prev, image: true }))
+  }
+
+  const removeExistingImage = () => {
+    setExistingImage("")
+    setRemoveImageFlag(true)
+    setTouchedFields((prev) => ({ ...prev, image: true }))
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleImageSelect({ target: { files: e.dataTransfer.files } });
+      e.dataTransfer.clearData();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSuccessMessage("")
@@ -83,21 +161,46 @@ export default function RestaurantForm({ primaryColors }) {
 
     try {
       const token = getCookie("token")
-      const response = await fetch(`${apiUrl}/restaurant`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
+      const formDataObj = new FormData()
+      formDataObj.append("_method", "PUT")
+
+      Object.keys(formData).forEach((key) => {
+        if (key !== "image") {
+          formDataObj.append(key, formData[key])
+        }
       })
 
+      if (selectedImage) {
+        formDataObj.append("image", selectedImage.file)
+      } else if (removeImageFlag) {
+        formDataObj.append("remove_image", "1")
+      }
+
+      const response = await fetch(`${apiUrl}/restaurant`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formDataObj
+      })
+
+      const data = await response.json()
+
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || "Error al actualitzar les dades del restaurant")
+        if (response.status === 422) {
+          setErrors(data.errors || {})
+          throw new Error(t("profile.restaurant_update_error") || "Error al actualitzar les dades del restaurant")
+        }
+        throw new Error(data.message || "Error al actualitzar les dades del restaurant")
       }
 
       setSuccessMessage("Dades del restaurant actualitzades correctament")
+      setSelectedImage(null)
+      if (imagePreview && (data.seller.image)) {
+        setExistingImage(data.seller.image)
+      }
+      setImagePreview("")
+      setRemoveImageFlag(false)
     } catch (error) {
       setErrors({
         submit: error.message || "Ha ocorregut un error en guardar els canvis"
@@ -221,6 +324,172 @@ export default function RestaurantForm({ primaryColors }) {
         </div>
       </div>
 
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold mb-2">{t("profile.restaurant_public_data_title")}</h2>
+        <p className="text-gray-600 mb-6">
+          {t("profile.restaurant_public_data_desc")}
+        </p>
+      </div>
+      <div className="space-y-4">
+        {/* Nombre */}
+        <div className="relative">
+          <input
+            type="text"
+            name="business_name"
+            value={formData.business_name}
+            onChange={handleChange}
+            className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+              hasError("business_name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+            }`}
+            placeholder=" "
+            id="business_name"
+          />
+          <label
+            htmlFor="business_name"
+            className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+              hasError("business_name") ? "text-red-500" : "text-gray-500"
+            }`}
+          >
+            Nom del negoci
+          </label>
+          {hasError("business_name") && <span className="text-red-500 text-xs mt-1">{errors.business_name}</span>}
+        </div>
+
+        {/* Província */}
+        <div className="relative">
+          <input
+            type="text"
+            name="province"
+            value={formData.province}
+            onChange={handleChange}
+            className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+              hasError("province") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+            }`}
+            placeholder=" "
+            id="province"
+          />
+          <label
+            htmlFor="province"
+            className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+              hasError("province") ? "text-red-500" : "text-gray-500"
+            }`}
+          >
+            Província
+          </label>
+          {hasError("province") && <span className="text-red-500 text-xs mt-1">{errors.business_name}</span>}
+        </div>
+
+        {/* Descripción */}
+        <div className="relative">
+          <input
+            type="text"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+              hasError("description") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+            }`}
+            placeholder=" "
+            id="description"
+          />
+          <label
+            htmlFor="description"
+            className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+              hasError("description") ? "text-red-500" : "text-gray-500"
+            }`}
+          >
+            Descripció
+          </label>
+          {hasError("description") && <span className="text-red-500 text-xs mt-1">{errors.business_name}</span>}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="space-y-4">
+          <label className="block text-sm font-medium text-gray-700">Imatge del restaurant</label>
+          {!(imagePreview || existingImage) && (
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`mt-1 flex justify-center px-12 pt-10 pb-12 border-2 border-dashed rounded-lg transition-colors ${
+                hasError("image")
+                  ? "border-red-300 bg-red-50"
+                  : isDragging 
+                  ? "border-[#8C2E2E] bg-[#F5E6E8]"
+                  : "border-gray-300 hover:border-[#D9A5AD]"
+              }`}
+            >
+              <div className="space-y-1 text-center">
+                <svg
+                  className={`mx-auto h-12 w-12 ${hasError("image") ? "text-red-400" : "text-gray-400"}`}
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 48 48"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <div className="flex text-sm text-gray-600">
+                  <label
+                    htmlFor="file-upload"
+                    className={`relative cursor-pointer bg-transparent rounded-md font-medium focus-within:outline-none ${hasError("image") ? "text-red-500 hover:text-red-400" : "text-[#9A3E50] hover:text-[#C27D7D]"
+                      }`}
+                    >
+                    <span>{t("dashboards.seller.product.field_image_upload_single")}</span>
+                    <input
+                      id="file-upload"
+                      name="file-upload"
+                      type="file"
+                      accept="image/*"
+                      className="sr-only"
+                      onChange={handleImageSelect}
+                    />
+                  </label>
+                  <p className="pl-1">{t("dashboards.seller.product.field_image_drag")}</p>
+                </div>
+                <p className="text-xs text-gray-500">{t("dashboards.seller.product.field_image_types")}</p>
+              </div>
+            </div>
+          )}
+          {(imagePreview || existingImage) && (
+            <div className="mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="relative group h-48 sm:h-56">
+                    <img
+                      src={imagePreview ? imagePreview : `${baseUrl}${existingImage}`}
+                      alt="Restaurant preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={selectedImage ? removeImage : removeExistingImage}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span className="sr-only">Eliminar</span>
+                    </button>
+                  </div>
+              </div>
+            </div>
+          )}
+          {hasError("image") && <span className="text-red-500 text-xs mt-1">{errors.image}</span>}
+        </div>
+      </div>
+
       <button
         type="submit"
         disabled={isLoading}
@@ -231,7 +500,7 @@ export default function RestaurantForm({ primaryColors }) {
           background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
         }}
       >
-        {isLoading ? "Guardant..." : "Guardar canvis"}
+        {isLoading ? t("profile.saving") : t("profile.save_changes")}
       </button>
     </form>
   )

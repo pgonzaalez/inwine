@@ -50,6 +50,17 @@ class RestaurantResource extends Resource
                 Forms\Components\TextInput::make('balance')
                     ->numeric()
                     ->default(null),
+                Forms\Components\TextInput::make('business_name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\FileUpload::make('image')
+                    ->image(),
+                Forms\Components\TextInput::make('province')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Textarea::make('description')
+                    ->rows(3)
+                    ->maxLength(255),
             ]);
     }
 
@@ -80,6 +91,17 @@ class RestaurantResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('business_name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->circular(),
+                Tables\Columns\TextColumn::make('province')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //

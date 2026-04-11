@@ -26,6 +26,9 @@ class RestaurantFactory extends Factory
             'name_contact' => $this->faker->name,
             'credit_card' => $this->faker->creditCardNumber,
             'balance' => $this->faker->randomFloat(2, 0, 100000),
+            'business_name' => $this->faker->company() . ' Restaurant',
+            'province' => $this->faker->randomElement(['Barcelona', 'Girona', 'Lleida', 'Tarragona']),
+            'description' => $this->faker->sentence(10),
         ];
     }
 }

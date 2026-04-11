@@ -17,6 +17,10 @@ class Restaurant extends Model
         'name_contact',
         'credit_card',
         'balance',
+        "business_name",
+        "image",
+        "province",
+        "description",
     ];
 
     public function user()

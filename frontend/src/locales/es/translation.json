@@ -222,6 +222,7 @@
         "field_description_max": "Máximo de 255 caracteres",
         "field_image_add": "Añadir más imágenes",
         "field_image_upload": "Sube imágenes",
+        "field_image_upload_single": "Sube una imagen",
         "field_image_drag": "o arrastra y suelta",
         "field_image_types": "PNG, JPG, GIF hasta 10MB",
         "existing_images": "Imágenes existentes",
@@ -534,7 +535,12 @@
         "password": "Contraseña",
         "contact_person": "Nombre de contacto",
         "bank_account": "Número cuenta",
-        "credit_card": "Tarjeta de crédito"
+        "credit_card": "Tarjeta de crédito",
+        "restaurant_info": "Información del restaurante", 
+        "restaurant_name": "Nombre del restaurante", 
+        "restaurant_zone": "Zona", 
+        "restaurant_description": "Descripción", 
+        "restaurant_image": "Imagen del restaurante"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurante",
@@ -564,10 +570,14 @@
     "role_management_desc": "Añade roles adicionales a tu cuenta",
     "restaurant_data_title": "Datos de Restaurante",
     "restaurant_data_desc": "Gestiona la información de tu restaurante",
+    "restaurant_public_data_title": "Datos Públicos del Restaurante",
+    "restaurant_public_data_desc": "Esta información la podrán ver todos",
     "investor_data_title": "Datos de Inversor",
     "investor_data_desc": "Gestiona la información de tu perfil de inversor",
     "seller_data_title": "Datos de Productor",
-    "seller_data_desc": "Gestiona la información de tu perfil de productor"
+    "seller_data_desc": "Gestiona la información de tu perfil de productor",
+    "save_changes": "Guardar cambios",
+    "saving": "Guardando..."
   },
   "settings": {
     "title": "Configuración",

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Seller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\UserRole;
 
@@ -182,6 +183,10 @@ class AuthController extends Controller
                 'name_contact' => 'nullable|string|max:20',
                 'credit_card' => 'nullable|string|max:34',
                 'balance' => 'nullable|numeric',
+                'business_name' => 'required|string|min:5',
+                'province' => 'required|string|min:3',
+                'description' => 'required|string|min:20|max:100',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             ]);
 
             if ($validatedData->fails()) {
@@ -215,6 +220,11 @@ class AuthController extends Controller
                 'role' => 'restaurant'
             ]);
 
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('restaurants', 'public');
+                $validatedData['image'] = Storage::url($path);
+            }
+
             // Crear restaurante con todos los campos requeridos
             $restaurant = Restaurant::create([
                 'user_id' => $user->id,
@@ -223,6 +233,10 @@ class AuthController extends Controller
                 'name_contact' => $validatedData['name_contact'],
                 'credit_card' => $validatedData['credit_card'] ?? null,
                 'balance' => $validatedData['balance'] ?? 0.00,
+                'business_name' => $validatedData['business_name'],
+                'description' => $validatedData['description'],
+                'province' => $validatedData['province'],
+                'image' => $validatedData['image'] ?? null,
             ]);
 
             Log::info('Restaurante creado exitosamente', ['restaurant' => $restaurant->id]);

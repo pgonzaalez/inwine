@@ -186,4 +186,16 @@ class RequestRestaurantController extends Controller
             ->get();
         return response()->json($request);
     }
+
+    public function searchActiveUserRequests()
+    {
+        $requestCounts = RequestRestaurant::select('user_id')
+            ->selectRaw('count(*) as requests_count')
+            ->where('status', 'pending')
+            ->groupBy('user_id')
+            ->having('requests_count', '>=', 1)
+            ->get();
+
+        return response()->json($requestCounts);
+    }
 }
