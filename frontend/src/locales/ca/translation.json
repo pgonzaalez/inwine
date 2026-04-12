@@ -133,12 +133,14 @@
         "wineries": "Bodegues"
       },
       "product_card": {
-        "requests": "peticions",
+        "petitions": "peticions",
         "alt": "Vi",
         "no_name": "Sense nom",
         "quantity": "Quantitat"
       },
       "restaurant_card": {
+        "requests": "sol·licituts",
+        "extra_info": "Informació addicional",
         "request_title": "Sol·licitud de producte",
         "buy_price": "Compra",
         "sell_price": "Venda",
@@ -328,6 +330,14 @@
         "in_my_local": "Al Local",
         "sold": "Venut",
         "cancelled": "Cancel·lat",
+        "unknown": "Desconegut"
+      },
+      "wine_rotation": {
+        "daily": "Diari",
+        "weekly": "Setmanal",
+        "monthly": "Mensual",
+        "quarterly": "Trimestral",
+        "yearly": "Anual",
         "unknown": "Desconegut"
       },
       "view": {
@@ -541,7 +551,9 @@
         "restaurant_name": "Nom del restaurant",
         "restaurant_zone": "Zona",
         "restaurant_description": "Descripció",
-        "restaurant_image": "Imatge del restaurant"
+        "restaurant_image": "Imatge del restaurant",
+        "restaurant_diners": "Num. Comensals",
+        "restaurant_rotation": "Rotació de vins"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurant",

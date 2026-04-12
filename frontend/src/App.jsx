@@ -12,6 +12,7 @@ import Notifications from "@pages/Notification/NotificationsPage";
 import Main from "@pages/MainPage";
 import ProductPage from "@pages/Landing/ProductsPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
+import ViewRestaurantsRequest from "@pages/ViewRestaurantsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
 import Contacte from "@pages/Landing/ContactPage";
@@ -65,6 +66,7 @@ export default function App() {
           <Route path="/" element={<Main />} />
           <Route path="/productes" element={<ProductPage />} />
           <Route path="/productes/:id" element={<ViewProductsRequest />} />
+          <Route path="/restaurants/:id" element={<ViewRestaurantsRequest />} />
           <Route path="/cistella" element={<OrderCart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-summary" element={<OrderSummaryPage />} />

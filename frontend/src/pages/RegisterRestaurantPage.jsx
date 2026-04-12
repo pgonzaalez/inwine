@@ -16,6 +16,8 @@ import {
   Utensils,
   MapPin,
   MessageSquareText,
+  Users,
+  TimerReset,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "@/utils/utils"
@@ -40,6 +42,8 @@ const AddRestaurantForm = () => {
     business_name: "",
     province: "",
     description: "",
+    number_of_diners: "",
+    wine_rotation: "unknown",
   });
 
   const [errors, setErrors] = useState({});
@@ -78,12 +82,12 @@ const AddRestaurantForm = () => {
 
     // Validar nombre de negocio
     if (!formData.business_name || formData.business_name.length < 5) {
-      newErrors.business_name = ["El nom de l\'empresa ha de tenir al menys 5 caràcters"]
+      newErrors.business_name = ["El nom ha de tenir al menys 5 caràcters"]
     }
 
     // Validar zona
     if (!formData.province || formData.province.length < 3) {
-      newErrors.province = ["El nom de la provincia ha de tenir al menys 3 caràcters"]
+      newErrors.province = ["El la zona ha de tenir al menys 3 caràcters"]
     }
 
     // Validar descripción
@@ -261,6 +265,8 @@ const AddRestaurantForm = () => {
           business_name: "",
           province: "",
           description: "",
+          number_of_diners: "",
+          wine_rotation: "unknown",
         });
         setSelectedImage(null);
         setImagePreview("")
@@ -637,74 +643,79 @@ const AddRestaurantForm = () => {
             <div className="space-y-4">
               <h2 className="text-lg font-semibold mb-4">{t("auth.register.restaurant_info")}</h2>
               <div className="space-y-1">
-                {/* Nombre del Restaurante */}
-                <div className="relative">
-                  <div className="flex items-center">
-                    <Utensils
-                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("business_name") ? "text-red-500" : "text-gray-400"
-                        }`}
-                    />
-                    <input
-                      type="text"
-                      name="business_name"
-                      value={formData.business_name}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("business_name")
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:ring-blue-500"
-                        }`}
-                      placeholder=" "
-                      id="business_name"
-                    />
-                    <label
-                      htmlFor="business_name"
-                      className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("business_name") ? "text-red-500" : "text-gray-500"
-                        }`}
-                    >
-                      {t("auth.register.labels.restaurant_name")}
-                    </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    {/* Nombre del Restaurante */}
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <Utensils
+                          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("business_name") ? "text-red-500" : "text-gray-400"
+                            }`}
+                        />
+                        <input
+                          type="text"
+                          name="business_name"
+                          value={formData.business_name}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("business_name")
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-gray-300 focus:ring-blue-500"
+                            }`}
+                          placeholder=" "
+                          id="business_name"
+                        />
+                        <label
+                          htmlFor="business_name"
+                          className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("business_name") ? "text-red-500" : "text-gray-500"
+                            }`}
+                        >
+                          {t("auth.register.labels.restaurant_name")}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="h-6">
+                      {hasError("business_name") && (
+                        <span className="text-red-500 text-xs mt-1">{getFieldErrors("business_name")[0]}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="h-6">
-                  {hasError("business_name") && (
-                    <span className="text-red-500 text-xs mt-1">{getFieldErrors("business_name")[0]}</span>
-                  )}
-                </div>
-
-                {/* Zona */}
-                <div className="relative">
-                  <div className="flex items-center">
-                    <MapPin
-                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("province") ? "text-red-500" : "text-gray-400"
-                        }`}
-                    />
-                    <input
-                      type="text"
-                      name="province"
-                      value={formData.province}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("province")
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:ring-blue-500"
-                        }`}
-                      placeholder=" "
-                      id="province"
-                    />
-                    <label
-                      htmlFor="province"
-                      className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("province") ? "text-red-500" : "text-gray-500"
-                        }`}
-                    >
-                      {t("auth.register.labels.restaurant_zone")}
-                    </label>
+                  <div>
+                    {/* Zona */}
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <MapPin
+                          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("province") ? "text-red-500" : "text-gray-400"
+                            }`}
+                        />
+                        <input
+                          type="text"
+                          name="province"
+                          value={formData.province}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("province")
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-gray-300 focus:ring-blue-500"
+                            }`}
+                          placeholder=" "
+                          id="province"
+                        />
+                        <label
+                          htmlFor="province"
+                          className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("province") ? "text-red-500" : "text-gray-500"
+                            }`}
+                        >
+                          {t("auth.register.labels.restaurant_zone")}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="h-6">
+                      {hasError("province") && (
+                        <span className="text-red-500 text-xs mt-1">{getFieldErrors("province")[0]}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="h-6">
-                  {hasError("province") && (
-                    <span className="text-red-500 text-xs mt-1">{getFieldErrors("province")[0]}</span>
-                  )}
                 </div>
 
                 {/* Descripción */}
@@ -740,6 +751,84 @@ const AddRestaurantForm = () => {
                   {hasError("description") && (
                     <span className="text-red-500 text-xs mt-1">{getFieldErrors("description")[0]}</span>
                   )}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    {/* Número de Comensales */}
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <Users
+                          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("number_of_diners") ? "text-red-500" : "text-gray-400"
+                            }`}
+                        />
+                        <input
+                          type="number"
+                          min="1"
+                          max="1000"
+                          name="number_of_diners"
+                          value={formData.number_of_diners}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("number_of_diners") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+                            }`}
+                          placeholder=" "
+                          id="number_of_diners"
+                          required
+                        />
+                        <label
+                          htmlFor="number_of_diners"
+                          className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("number_of_diners") ? "text-red-500" : "text-gray-500"
+                            }`}
+                        >
+                          {t("auth.register.labels.restaurant_diners")}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="h-6">
+                      {hasError("number_of_diners") && <span className="text-red-500 text-xs mt-1">{getFieldErrors("number_of_diners")[0]}</span>}
+                    </div>
+                  </div>
+                  <div>
+                    {/* Rotación de Vinos */}
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <TimerReset
+                          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("wine_rotation") ? "text-red-500" : "text-gray-400"
+                            }`}
+                        />
+                        <select
+                          name="wine_rotation"
+                          value={formData.wine_rotation}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          id="wine_rotation"
+                          required
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 focus:outline-none focus:ring-2 appearance-none ${
+                            hasError("wine_rotation") 
+                              ? "border-red-500 focus:ring-red-500" 
+                              : "border-gray-300 focus:ring-blue-500"
+                          }`}
+                        >
+                          <option value="daily">{t("dashboards.restaurant.wine_rotation.daily")}</option>
+                          <option value="weekly">{t("dashboards.restaurant.wine_rotation.weekly")}</option>
+                          <option value="monthly">{t("dashboards.restaurant.wine_rotation.monthly")}</option>
+                          <option value="quarterly">{t("dashboards.restaurant.wine_rotation.quarterly")}</option>
+                          <option value="yearly">{t("dashboards.restaurant.wine_rotation.yearly")}</option>
+                          <option value="unknown" selected>{t("dashboards.restaurant.wine_rotation.unknown")}</option>
+                        </select>
+                        <label
+                          htmlFor="wine_rotation"
+                          className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("wine_rotation") ? "text-red-500" : "text-gray-500"
+                            }`}
+                        >
+                          {t("auth.register.labels.restaurant_rotation")}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="h-6">
+                      {hasError("wine_rotation") && <span className="text-red-500 text-xs mt-1">{getFieldErrors("wine_rotation")[0]}</span>}
+                    </div>
+                  </div>
                 </div>
               </div>
 

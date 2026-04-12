@@ -5,7 +5,7 @@ import { ShoppingCart, ChevronUp, ChevronDown, Plus } from "lucide-react"
 import RequestCard from "./RequestCard"
 import FilterSidebar from "@/components/landing/requests/FilterSidebar"
 
-export default function RequestsSection({ requests, productPrice }) {
+export default function RequestsSection({ requests, mode, productPrice }) {
   const [isRequestsExpanded, setIsRequestsExpanded] = useState(false)
   const [filterOptions, setFilterOptions] = useState({
     minPrice: "",
@@ -173,7 +173,8 @@ export default function RequestsSection({ requests, productPrice }) {
                         key={request.id}
                         request={request}
                         index={index}
-                        productPrice={productPrice}
+                        mode={mode}
+                        productPrice={(mode === "restaurant_view") ? request.product.price_demanded : productPrice}
                         isRequestsExpanded={isRequestsExpanded}
                       />
                     ))}

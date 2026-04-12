@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('province');
             $table->string('description');
+            $table->integer('number_of_diners')->nullable();
+            $table->string('wine_rotation')->default('unknown');
             $table->rememberToken();
             $table->timestamps();
         });

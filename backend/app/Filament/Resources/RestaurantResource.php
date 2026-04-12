@@ -61,6 +61,12 @@ class RestaurantResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->rows(3)
                     ->maxLength(255),
+                Forms\Components\TextInput::make('number_of_diners')
+                    ->numeric()
+                    ->default(null),
+                Forms\Components\TextInput::make('wine_rotation')
+                    ->maxLength(255)
+                    ->default(null),
             ]);
     }
 

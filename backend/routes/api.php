@@ -63,6 +63,7 @@ Route::prefix('v1')->group(function () {
 
     //Sacar información de los restaurantes, OJO no recoge datos comprometedores por seguridad
     Route::get('/restaurants-info', [RestaurantController::class, 'indexInfo']);
+    Route::get('/restaurants-info/{id}', [RestaurantController::class, 'showPublicData']);
     Route::get('/restaurants-requests', [RequestRestaurantController::class, 'searchActiveUserRequests']);
 
     // Rutas para los restaurantes

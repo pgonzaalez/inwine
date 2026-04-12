@@ -37,7 +37,8 @@ class RestaurantController extends Controller
                 'image' => $restaurant->image,
                 'zone' => $restaurant->province,
                 'description' => $restaurant->description,
-
+                'number_of_diners' => $restaurant->number_of_diners,
+                'wine_rotation' => $restaurant->wine_rotation,
             ];
         });
 
@@ -60,6 +61,24 @@ class RestaurantController extends Controller
     {
         $restaurant = Restaurant::find($id);
         return response()->json($restaurant);
+    }
+
+    public function showPublicData(string $id)
+    {
+        $restaurant = Restaurant::find($id);
+        $response = [
+            "id" => $restaurant->id,
+            "user_id" => $restaurant->user_id,
+            'name' => $restaurant->business_name,
+            'address' => $restaurant->address,
+            'image' => $restaurant->image,
+            'zone' => $restaurant->province,
+            'description' => $restaurant->description,
+            'created_at' => $restaurant->created_at,
+            'number_of_diners' => $restaurant->number_of_diners,
+            'wine_rotation' => $restaurant->wine_rotation,
+        ];
+        return response()->json($response);
     }
 
     /**
@@ -87,6 +106,8 @@ class RestaurantController extends Controller
             'province' => 'required|min:3',
             'description' => 'required|min:20|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'number_of_diners' => 'nullable',
+            'wine_rotation' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -104,6 +125,8 @@ class RestaurantController extends Controller
             'business_name' => $request->business_name,
             'province' => $request->province,
             'description' => $request->description,
+            'number_of_diners' => $request->number_of_diners,
+            'wine_rotation' => $request->wine_rotation,
         ];
 
         try {

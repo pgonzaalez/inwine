@@ -47,7 +47,7 @@ export default function ProductCard({
           <div className="absolute top-3 left-3 z-10">
             <div className="bg-white/90 backdrop-blur-sm text-[#9A3E50] text-[10px] font-bold uppercase tracking-wider py-1.5 px-3 flex items-center gap-1.5 rounded-full shadow-sm border border-[#9A3E50]/10">
               <Bell className="w-3.5 h-3.5 fill-[#9A3E50]" />
-              <span>{producto.requests_restaurant_count} {t("landing.products.product_card.requests")}</span>
+              <span>{producto.requests_restaurant_count} {t("landing.products.product_card.petitions")}</span>
             </div>
           </div>
         )}

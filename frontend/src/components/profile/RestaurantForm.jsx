@@ -18,6 +18,8 @@ export default function RestaurantForm({ primaryColors }) {
     province: "",
     description: "",
     image: "",
+    number_of_diners: "",
+    wine_rotation: "unknown",
   })
   const [errors, setErrors] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
@@ -40,6 +42,8 @@ export default function RestaurantForm({ primaryColors }) {
         province: restaurantData.province || "",
         description: restaurantData.description || "",
         image: restaurantData.image || "",
+        number_of_diners: restaurantData.number_of_diners || "",
+        wine_rotation: restaurantData.wine_rotation || "unknown",
       })
       setExistingImage(restaurantData.image || "")
     }
@@ -402,6 +406,59 @@ export default function RestaurantForm({ primaryColors }) {
           </label>
           {hasError("description") && <span className="text-red-500 text-xs mt-1">{errors.business_name}</span>}
         </div>
+      </div>
+
+      {/* Número de Comensales */}
+      <div className="relative">
+        <input
+          type="number"
+          min="1"
+          max="1000"
+          name="number_of_diners"
+          value={formData.number_of_diners}
+          onChange={handleChange}
+          className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+            hasError("number_of_diners") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+          }`}
+          placeholder=" "
+          id="number_of_diners"
+        />
+        <label
+          htmlFor="number_of_diners"
+          className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+            hasError("number_of_diners") ? "text-red-500" : "text-gray-500"
+          }`}
+        >
+          Número de comensals
+        </label>
+        {hasError("number_of_diners") && <span className="text-red-500 text-xs mt-1">{errors.number_of_diners}</span>}
+      </div>
+      <div className="relative">
+        <select
+          name="wine_rotation"
+          value={formData.wine_rotation}
+          onChange={handleChange}
+          id="wine_rotation"
+          className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
+            hasError("business_name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+          }`}
+        >
+          <option value="daily">{t("dashboards.restaurant.wine_rotation.daily")}</option>
+          <option value="weekly">{t("dashboards.restaurant.wine_rotation.weekly")}</option>
+          <option value="monthly">{t("dashboards.restaurant.wine_rotation.monthly")}</option>
+          <option value="quarterly">{t("dashboards.restaurant.wine_rotation.quarterly")}</option>
+          <option value="yearly">{t("dashboards.restaurant.wine_rotation.yearly")}</option>
+          <option value="unknown">{t("dashboards.restaurant.wine_rotation.unknown")}</option>
+        </select>
+        <label
+          htmlFor="business_name"
+          className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
+            hasError("business_name") ? "text-red-500" : "text-gray-500"
+          }`}
+        >
+          Nom del negoci
+        </label>
+        {hasError("business_name") && <span className="text-red-500 text-xs mt-1">{errors.business_name}</span>}
       </div>
 
       <div className="flex items-center gap-4">

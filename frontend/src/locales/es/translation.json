@@ -133,12 +133,14 @@
         "wineries": "Bodegas"
       },
       "product_card": {
-        "requests": "peticiones",
+        "petitions": "peticiones",
         "alt": "Vino",
         "no_name": "Sin nombre",
         "quantity": "Cantidad"
       },
       "restaurant_card": {
+        "requests": "solicitudes",
+        "extra_info": "Información Adicional",
         "request_title": "Solicitud de producto",
         "buy_price": "Compra",
         "sell_price": "Venta",
@@ -327,6 +329,14 @@
         "in_my_local": "En el Local",
         "sold": "Vendido",
         "cancelled": "Cancelado",
+        "unknown": "Desconocido"
+      },
+      "wine_rotation": {
+        "daily": "Diario",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "quarterly": "Trimestral",
+        "yearly": "Anual",
         "unknown": "Desconocido"
       },
       "view": {
@@ -536,11 +546,13 @@
         "contact_person": "Nombre de contacto",
         "bank_account": "Número cuenta",
         "credit_card": "Tarjeta de crédito",
-        "restaurant_info": "Información del restaurante", 
-        "restaurant_name": "Nombre del restaurante", 
-        "restaurant_zone": "Zona", 
-        "restaurant_description": "Descripción", 
-        "restaurant_image": "Imagen del restaurante"
+        "restaurant_info": "Información del restaurante",
+        "restaurant_name": "Nombre del restaurante",
+        "restaurant_zone": "Zona",
+        "restaurant_description": "Descripción",
+        "restaurant_image": "Imagen del restaurante",
+        "restaurant_diners": "Núm. Comensales",
+        "restaurant_rotation": "Rotación de vinos"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurante",

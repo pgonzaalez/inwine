@@ -187,6 +187,8 @@ class AuthController extends Controller
                 'province' => 'required|string|min:3',
                 'description' => 'required|string|min:20|max:100',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+                'number_of_diners' => 'nullable',
+                'wine_rotation' => 'nullable|string',
             ]);
 
             if ($validatedData->fails()) {
@@ -237,6 +239,8 @@ class AuthController extends Controller
                 'description' => $validatedData['description'],
                 'province' => $validatedData['province'],
                 'image' => $validatedData['image'] ?? null,
+                'number_of_diners' => $validatedData['number_of_diners'],
+                'wine_rotation' => $validatedData['wine_rotation'],
             ]);
 
             Log::info('Restaurante creado exitosamente', ['restaurant' => $restaurant->id]);

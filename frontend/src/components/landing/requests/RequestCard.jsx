@@ -7,7 +7,7 @@ import Modal from "@components/Modal";
 import { useNavigate } from "react-router-dom";
 import { getCookie } from "@/utils/utils";
 
-export default function RequestCard({ request, index, productPrice, isRequestsExpanded }) {
+export default function RequestCard({ request, index, mode, productPrice, isRequestsExpanded }) {
   const apiUrl = import.meta.env.VITE_API_URL;
   const [isLoading, setIsLoading] = useState(false);
   const [isAlreadyInOrder, setIsAlreadyInOrder] = useState(false);
@@ -122,7 +122,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
                   />
                 </svg>
               </div>
-              <p className="font-medium">Restaurant {request.user_id}</p>
+              <p className="font-medium">{mode==="restaurant_view" ? `${request.product.name}` : `Restaurant ${request.user_id}`}</p>
             </div>
             <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pendent</span>
           </div>
@@ -169,7 +169,7 @@ export default function RequestCard({ request, index, productPrice, isRequestsEx
               <div className="w-6 h-6 rounded-full bg-[#9A3E50]/10 flex items-center justify-center mr-2">
                 <Home className="h-3 w-3 text-[#9A3E50]" />
               </div>
-              <span className="font-medium whitespace-nowrap">Restaurant {request.user_id}</span>
+              <span className="font-medium whitespace-nowrap">{mode==="restaurant_view" ? `${request.product.name}` : `Restaurant ${request.user_id}`}</span>
             </div>
             <div className="font-normal">{request.quantity} uds.</div>
             <div className="font-normal">€{request.price_restaurant}</div>

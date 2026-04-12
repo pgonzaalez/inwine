@@ -133,12 +133,14 @@
         "wineries": "Wineries"
       },
       "product_card": {
-        "requests": "requests",
+        "petitions": "petitions",
         "alt": "Wine",
         "no_name": "No name",
         "quantity": "Quantity"
       },
       "restaurant_card": {
+        "requested": "requests",
+        "extra_info": "Additional Information",
         "request_title": "Product request",
         "buy_price": "Buy",
         "sell_price": "Sell",
@@ -327,6 +329,14 @@
         "in_my_local": "In the Local",
         "sold": "Sold",
         "cancelled": "Cancelled",
+        "unknown": "Unknown"
+      },
+      "wine_rotation": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly",
         "unknown": "Unknown"
       },
       "view": {
@@ -540,7 +550,9 @@
         "restaurant_name": "Restaurant name",
         "restaurant_zone": "Zone",
         "restaurant_description": "Description",
-        "restaurant_image": "Restaurant image"
+        "restaurant_image": "Restaurant image",
+        "restaurant_diners": "Max. Diners",
+        "restaurant_rotation": "Wine rotation"
       },
       "submit_seller": "Add Producer",
       "submit_restaurant": "Add Restaurant",

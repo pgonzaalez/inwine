@@ -21,6 +21,8 @@ class Restaurant extends Model
         "image",
         "province",
         "description",
+        "number_of_diners",
+        "wine_rotation",
     ];
 
     public function user()
