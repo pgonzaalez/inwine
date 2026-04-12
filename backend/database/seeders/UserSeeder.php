@@ -77,6 +77,15 @@ class UserSeeder extends Seeder
             'role' => 'restaurant'
         ]);
 
+        // Asignar objeto de restaurante al $testRestaurant
+        Restaurant::factory()->create([
+            'user_id' => $testRestaurant->id,
+            'business_name' => 'Ca l\'Isidre',
+            'province' => 'Barcelona',
+            'image' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4',
+            'description' => 'Restaurant d\'alta cuina catalana amb més de 50 anys d\'història',
+        ]);
+
         $testInvestor = User::factory()->create([
             'name' => 'Inversor de Prueba',
             'email' => 'inversor@gmail.com',
@@ -135,8 +144,6 @@ class UserSeeder extends Seeder
 
         // Crear perfiles usando factories
         createProfiles($testSeller, 'seller');
-        createProfiles($testSeller, 'restaurant');
-        createProfiles($testRestaurant, 'restaurant');
         createProfiles($testInvestor, 'investor');
         createProfiles($testInvestor2, 'investor');
         createProfiles($admin, 'seller');
@@ -146,25 +153,11 @@ class UserSeeder extends Seeder
         // Crear usuarios aleatorios
         Investor::factory()->count(20)->create();
         Seller::factory()->count(20)->create();
-        Restaurant::factory()->count(6)->create();
+        Restaurant::factory()->count(8)->create();
 
-        //Crear más usuarios de restaurantes ficticios
-        $sampleRestaurant1 = User::factory()->create([
-            'password' => Hash::make('1234'),
-        ]);
+        // Asignar a seller de prueba el objeto de restaurante (para su rol restaurante)
         Restaurant::factory()->create([
-            'user_id' => $sampleRestaurant1->id,
-            'business_name' => 'Ca l\'Isidre',
-            'province' => 'Barcelona',
-            'image' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4',
-            'description' => 'Restaurant d\'alta cuina catalana amb més de 50 anys d\'història',
-        ]);
-
-        $sampleRestaurant2 = User::factory()->create([
-            'password' => Hash::make('1234'),
-        ]);
-        Restaurant::factory()->create([
-            'user_id' => $sampleRestaurant2->id,
+            'user_id' => $testSeller->id,
             'business_name' => 'Botafumeiro',
             'province' => 'Barcelona',
             'image' => 'https://images.unsplash.com/photo-1514933651103-005eec06c04b',

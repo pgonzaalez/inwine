@@ -140,7 +140,13 @@ export default function RestaurantDetail() {
               <div className="relative bg-gray-50 rounded-lg overflow-hidden h-[500px]">
                 {restaurant.image ? (
                   <img
-                    src={`${baseUrl}${restaurant.image}` || "/placeholder.svg"}
+                    src={
+                      restaurant.image 
+                        ? (restaurant.image.includes("storage") 
+                            ? `${baseUrl}${restaurant.image}` 
+                            : restaurant.image)
+                        : "/placeholder.svg"
+                    }
                     alt={restaurant.name}
                     className="w-full h-full object-contain"
                   />
