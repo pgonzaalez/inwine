@@ -374,8 +374,26 @@
         "success_sell": "Producto vendido correctamente",
         "error_fetch": "No se pudo obtener la información de la solicitud.",
         "error_unknown": "Error desconocido",
-        "invalid_id": "ID de solicitud no válido",
-        "error_update_status": "Error al actualizar el estado"
+        "invalid_id": "ID de solicitud no válido"
+      },
+      "requests": {
+        "description": "Selecciona un vino del catálogo e introduce tu oferta de compra.",
+        "step1_title": "Paso 1: Selecciona un producto",
+        "loading_catalog": "Cargando el catálogo...",
+        "step2_title": "Paso 2: Haz tu oferta por {{name}}",
+        "origin": "Origen",
+        "year": "Año",
+        "current_price": "Precio actual",
+        "your_offer": "Tu oferta (€)",
+        "placeholder_offer": "Ej: 50.00",
+        "offer_higher": "La oferta supera el precio actual.",
+        "offer_lower": "La oferta no puede ser inferior al precio actual.",
+        "offer_equal": "La oferta es igual al precio actual.",
+        "error_invalid_price": "Por favor, introduce un precio válido. Ha ocurrido un error en la solicitud.",
+        "error_low_price": "El precio ofertado no puede ser inferior al precio actual del producto.",
+        "success": "¡Solicitud enviada correctamente! El vendedor revisará tu oferta y te contactará pronto.",
+        "sending": "Enviando...",
+        "make_request": "Hacer solicitud"
       }
     },
     "investor": {
@@ -793,7 +811,8 @@
       "products": "Productos",
       "logout": "Cerrar sesión",
       "change_role": "Cambiar rol",
-      "language": "Idioma"
+      "language": "Idioma",
+      "request_product": "Solicitar producto"
     },
     "modals": {
       "logout": {

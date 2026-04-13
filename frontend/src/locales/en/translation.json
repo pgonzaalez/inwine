@@ -374,8 +374,26 @@
         "success_sell": "Product sold successfully",
         "error_fetch": "Could not fetch the request information.",
         "error_unknown": "Unknown error",
-        "invalid_id": "Invalid request ID",
-        "error_update_status": "Error updating status"
+        "invalid_id": "Invalid request ID"
+      },
+      "requests": {
+        "description": "Select a wine from the catalog and enter your purchase offer.",
+        "step1_title": "Step 1: Select a product",
+        "loading_catalog": "Loading the catalog...",
+        "step2_title": "Step 2: Make your offer for {{name}}",
+        "origin": "Origin",
+        "year": "Year",
+        "current_price": "Current price",
+        "your_offer": "Your offer (€)",
+        "placeholder_offer": "Ex: 50.00",
+        "offer_higher": "The offer exceeds the current price.",
+        "offer_lower": "The offer cannot be lower than the current price.",
+        "offer_equal": "The offer is equal to the current price.",
+        "error_invalid_price": "Please enter a valid price. There was an error with the request.",
+        "error_low_price": "The offered price cannot be lower than the current product price.",
+        "success": "Request sent successfully! The seller will review your offer and contact you soon.",
+        "sending": "Sending...",
+        "make_request": "Make request"
       }
     },
     "investor": {
@@ -793,7 +811,8 @@
       "products": "Products",
       "logout": "Log out",
       "change_role": "Change role",
-      "language": "Language"
+      "language": "Language",
+      "request_product": "Request product"
     },
     "modals": {
       "logout": {
