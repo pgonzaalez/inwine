@@ -133,12 +133,14 @@
         "wineries": "Bodegues"
       },
       "product_card": {
-        "requests": "peticions",
+        "petitions": "peticions",
         "alt": "Vi",
         "no_name": "Sense nom",
         "quantity": "Quantitat"
       },
       "restaurant_card": {
+        "requests": "sol·licituts",
+        "extra_info": "Informació addicional",
         "request_title": "Sol·licitud de producte",
         "buy_price": "Compra",
         "sell_price": "Venda",
@@ -223,6 +225,7 @@
         "field_description_max": "Màxim de 255 caràcters",
         "field_image_add": "Afegir més imatges",
         "field_image_upload": "Puja imatges",
+        "field_image_upload_single": "Puja una imatge",
         "field_image_drag": "o arrossega i deixa anar",
         "field_image_types": "PNG, JPG, GIF fins a 10MB",
         "existing_images": "Imatges existents",
@@ -327,6 +330,14 @@
         "in_my_local": "Al Local",
         "sold": "Venut",
         "cancelled": "Cancel·lat",
+        "unknown": "Desconegut"
+      },
+      "wine_rotation": {
+        "daily": "Diari",
+        "weekly": "Setmanal",
+        "monthly": "Mensual",
+        "quarterly": "Trimestral",
+        "yearly": "Anual",
         "unknown": "Desconegut"
       },
       "view": {
@@ -544,6 +555,7 @@
       "personal_info": "Informació dades personals",
       "login_info": "Informació inici de sessió",
       "bank_info": "Informació dades bancàries",
+      "restaurant_info": "Informació del restaurant",
       "labels": {
         "name": "Nom usuari",
         "nif": "NIF",
@@ -553,7 +565,13 @@
         "password": "Contrasenya",
         "contact_person": "Nom de contacte",
         "bank_account": "Número compte",
-        "credit_card": "Targeta de crèdit"
+        "credit_card": "Targeta de crèdit",
+        "restaurant_name": "Nom del restaurant",
+        "restaurant_zone": "Zona",
+        "restaurant_description": "Descripció",
+        "restaurant_image": "Imatge del restaurant",
+        "restaurant_diners": "Num. Comensals",
+        "restaurant_rotation": "Rotació de vins"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurant",
@@ -583,10 +601,14 @@
     "role_management_desc": "Afegeix rols adicionals al teu compte",
     "restaurant_data_title": "Dades de Restaurant",
     "restaurant_data_desc": "Gestiona la informació del teu restaurant",
+    "restaurant_public_data_title": "Dades Públiques del Restaurant",
+    "restaurant_public_data_desc": "Aquesta informació la podrà veure tothom",
     "investor_data_title": "Dades d'Inversor",
     "investor_data_desc": "Gestiona la informació del teu perfil d'inversor",
     "seller_data_title": "Dades de Productor",
-    "seller_data_desc": "Gestiona la informació del teu perfil de productor"
+    "seller_data_desc": "Gestiona la informació del teu perfil de productor",
+    "save_changes": "Guardar canvis",
+    "saving": "Guardant..."
   },
   "settings": {
     "title": "Configuració",

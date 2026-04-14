@@ -19,6 +19,12 @@ return new class extends Migration
             $table->string('name_contact');
             $table->string('credit_card')->nullable();
             $table->decimal('balance', 10, 2)->nullable();
+            $table->string('business_name');
+            $table->string('image')->nullable();
+            $table->string('province');
+            $table->string('description');
+            $table->integer('number_of_diners')->nullable();
+            $table->string('wine_rotation')->default('unknown');
             $table->rememberToken();
             $table->timestamps();
         });

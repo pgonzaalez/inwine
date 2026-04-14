@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Models\UserRole;
 
 class RestaurantController extends Controller
@@ -21,6 +22,27 @@ class RestaurantController extends Controller
     {
         $restaurant = Restaurant::all();
         return response()->json($restaurant);
+    }
+
+    public function indexInfo()
+    {
+        $restaurants = Restaurant::all();
+
+        $response = $restaurants->map(function ($restaurant) {
+            return [
+                "id" => $restaurant->id,
+                "user_id" => $restaurant->user_id,
+                'name' => $restaurant->business_name,
+                'address' => $restaurant->address,
+                'image' => $restaurant->image,
+                'zone' => $restaurant->province,
+                'description' => $restaurant->description,
+                'number_of_diners' => $restaurant->number_of_diners,
+                'wine_rotation' => $restaurant->wine_rotation,
+            ];
+        });
+
+        return response()->json($response);
     }
 
     /**
@@ -39,6 +61,24 @@ class RestaurantController extends Controller
     {
         $restaurant = Restaurant::find($id);
         return response()->json($restaurant);
+    }
+
+    public function showPublicData(string $id)
+    {
+        $restaurant = Restaurant::find($id);
+        $response = [
+            "id" => $restaurant->id,
+            "user_id" => $restaurant->user_id,
+            'name' => $restaurant->business_name,
+            'address' => $restaurant->address,
+            'image' => $restaurant->image,
+            'zone' => $restaurant->province,
+            'description' => $restaurant->description,
+            'created_at' => $restaurant->created_at,
+            'number_of_diners' => $restaurant->number_of_diners,
+            'wine_rotation' => $restaurant->wine_rotation,
+        ];
+        return response()->json($response);
     }
 
     /**
@@ -62,6 +102,12 @@ class RestaurantController extends Controller
             'phone_contact' => 'required|min:9',
             'name_contact' => 'required|string|min:2',
             'credit_card' => 'nullable|string',
+            'business_name' => 'required|min:5',
+            'province' => 'required|min:3',
+            'description' => 'required|min:20|max:100',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'number_of_diners' => 'nullable',
+            'wine_rotation' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -70,6 +116,18 @@ class RestaurantController extends Controller
         }
 
         Log::info('Datos validados correctamente');
+
+        $restaurantData = [
+            'address' => $request->address,
+            'phone_contact' => $request->phone_contact,
+            'name_contact' => $request->name_contact,
+            'credit_card' => $request->credit_card,
+            'business_name' => $request->business_name,
+            'province' => $request->province,
+            'description' => $request->description,
+            'number_of_diners' => $request->number_of_diners,
+            'wine_rotation' => $request->wine_rotation,
+        ];
 
         try {
             DB::beginTransaction();
@@ -90,12 +148,21 @@ class RestaurantController extends Controller
                 Log::info('Usuario ya tiene rol de restaurante');
             }
 
-            $restaurantData = [
-                'address' => $request->address,
-                'phone_contact' => $request->phone_contact,
-                'name_contact' => $request->name_contact,
-                'credit_card' => $request->credit_card,
-            ];
+            $currentRestaurant = Restaurant::where('user_id', $user->id)->first();
+            $oldImagePath = null;
+
+            if ($request->hasFile('image')) {
+                if ($currentRestaurant && $currentRestaurant->image) {
+                    $oldImagePath = ltrim(str_replace('/storage/', '', parse_url($currentRestaurant->image, PHP_URL_PATH)), '/');
+                }
+                $path = $request->file('image')->store('restaurants', 'public');
+                $restaurantData['image'] = Storage::url($path);
+            } elseif ($request->boolean('remove_image')) {
+                if ($currentRestaurant && $currentRestaurant->image) {
+                    $oldImagePath = ltrim(str_replace('/storage/', '', parse_url($currentRestaurant->image, PHP_URL_PATH)), '/');
+                }
+                $restaurantData['image'] = null;
+            }
 
             Log::info('Creando o actualizando datos del vendedor', ['restaurantData' => $restaurantData]);
 
@@ -103,6 +170,10 @@ class RestaurantController extends Controller
                 ['user_id' => $user->id],
                 $restaurantData
             );
+
+            if ($oldImagePath && Storage::disk('public')->exists($oldImagePath)) {
+                Storage::disk('public')->delete($oldImagePath);
+            }
 
             DB::commit();
 

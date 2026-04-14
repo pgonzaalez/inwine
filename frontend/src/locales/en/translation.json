@@ -133,12 +133,14 @@
         "wineries": "Wineries"
       },
       "product_card": {
-        "requests": "requests",
+        "petitions": "petitions",
         "alt": "Wine",
         "no_name": "No name",
         "quantity": "Quantity"
       },
       "restaurant_card": {
+        "requested": "requests",
+        "extra_info": "Additional Information",
         "request_title": "Product request",
         "buy_price": "Buy",
         "sell_price": "Sell",
@@ -222,6 +224,7 @@
         "field_description_max": "Maximum of 255 characters",
         "field_image_add": "Add more images",
         "field_image_upload": "Upload images",
+        "field_image_upload_single": "Upload an image",
         "field_image_drag": "or drag and drop",
         "field_image_types": "PNG, JPG, GIF up to 10MB",
         "existing_images": "Existing images",
@@ -326,6 +329,14 @@
         "in_my_local": "In the Local",
         "sold": "Sold",
         "cancelled": "Cancelled",
+        "unknown": "Unknown"
+      },
+      "wine_rotation": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly",
         "unknown": "Unknown"
       },
       "view": {
@@ -552,7 +563,14 @@
         "password": "Password",
         "contact_person": "Contact name",
         "bank_account": "Account number",
-        "credit_card": "Credit card"
+        "credit_card": "Credit card",
+        "restaurant_info": "Restaurant information",
+        "restaurant_name": "Restaurant name",
+        "restaurant_zone": "Zone",
+        "restaurant_description": "Description",
+        "restaurant_image": "Restaurant image",
+        "restaurant_diners": "Max. Diners",
+        "restaurant_rotation": "Wine rotation"
       },
       "submit_seller": "Add Producer",
       "submit_restaurant": "Add Restaurant",
@@ -582,10 +600,14 @@
     "role_management_desc": "Add additional roles to your account",
     "restaurant_data_title": "Restaurant Data",
     "restaurant_data_desc": "Manage your restaurant's information",
+    "restaurant_public_data_title": "Public Restaurant Data",
+    "restaurant_public_data_desc": "This information will be visible for everyone",
     "investor_data_title": "Investor Data",
     "investor_data_desc": "Manage your investor profile information",
     "seller_data_title": "Producer Data",
-    "seller_data_desc": "Manage your producer profile information"
+    "seller_data_desc": "Manage your producer profile information",
+    "save_changes": "Save changes",
+    "saving": "Saving..."
   },
   "settings": {
     "title": "Settings",

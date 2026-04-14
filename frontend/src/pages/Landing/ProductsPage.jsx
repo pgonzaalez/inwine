@@ -31,6 +31,7 @@ export default function ProductPage() {
   const [showFilters, setShowFilters] = useState(true)
   const [products, setProducts] = useState([])
   const [wineTypes, setWineTypes] = useState([])
+  const [restaurants, setRestaurants] = useState([])
   const [loading, setLoading] = useState(true)
 
   // Cargar favoritos al iniciar
@@ -191,104 +192,149 @@ export default function ProductPage() {
   }, [])
 
   // Restaurant data
-  const allRestaurants = [
-    {
-      id: 1,
-      nombre: "Ca l'Isidre",
-      descripcion: "Restaurant d'alta cuina catalana amb més de 50 anys d'història",
-      imagen: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
-      zona: "Barcelona",
-      solicitud: {
-        tipo: "Vi negre",
-        nombre: "Priorat Reserva 2019",
-        descripcion: "Vi negre amb cos, anyada 2019-2020, D.O.Q. Priorat",
-        precioCompra: 25,
-        precioVenta: 45,
-        cantidadSolicitada: "120 botellas",
-        tiempoRespuesta: "24-48h",
-      },
-    },
-    {
-      id: 2,
-      nombre: "Botafumeiro",
-      descripcion: "Restaurant especialitzat en peix i marisc de primera qualitat",
-      imagen: "https://images.unsplash.com/photo-1514933651103-005eec06c04b",
-      zona: "Barcelona",
-      solicitud: {
-        tipo: "Vi blanc",
-        nombre: "Blanc de blancs Penedès",
-        descripcion: "Vi blanc sec i fresc, D.O. Penedès, ideal per marisc",
-        precioCompra: 18,
-        precioVenta: 35,
-        cantidadSolicitada: "200 botellas",
-        tiempoRespuesta: "24h",
-      },
-    },
-    {
-      id: 3,
-      nombre: "El Celler de Can Roca",
-      descripcion: "Restaurant amb tres estrelles Michelin, referent de la gastronomia catalana",
-      imagen: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
-      zona: "Girona",
-      solicitud: {
-        tipo: "Cava",
-        nombre: "Gran Reserva Brut Nature",
-        descripcion: "Cava Gran Reserva, mínim 30 mesos de criança",
-        precioCompra: 35,
-        precioVenta: 85,
-        cantidadSolicitada: "150 botellas",
-        tiempoRespuesta: "48h",
-      },
-    },
-    {
-      id: 4,
-      nombre: "Can Jubany",
-      descripcion: "Restaurant amb una estrella Michelin, cuina d'autor amb arrels tradicionals",
-      imagen: "https://images.unsplash.com/photo-1515669097368-22e68427d265",
-      zona: "Vic",
-      solicitud: {
-        tipo: "Vi rosat",
-        nombre: "Rosat Empordà",
-        descripcion: "Vi rosat fresc i afruitat, D.O. Empordà",
-        precioCompra: 15,
-        precioVenta: 32,
-        cantidadSolicitada: "180 botellas",
-        tiempoRespuesta: "24-48h",
-      },
-    },
-    {
-      id: 5,
-      nombre: "Via Veneto",
-      descripcion: "Restaurant clàssic amb una estrella Michelin, referent de la cuina mediterrània",
-      imagen: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c",
-      zona: "Barcelona",
-      solicitud: {
-        tipo: "Vi negre",
-        nombre: "Ribera del Duero Criança",
-        descripcion: "Vi negre amb 12 mesos de criança en roure francès",
-        precioCompra: 22,
-        precioVenta: 48,
-        cantidadSolicitada: "100 botellas",
-        tiempoRespuesta: "24h",
-      },
-    },
-    {
-      id: 6,
-      nombre: "Les Cols",
-      descripcion: "Restaurant amb dues estrelles Michelin, cuina d'avantguarda amb producte local",
-      imagen: "https://images.unsplash.com/photo-1552566626-52f8b828add9",
-      zona: "Girona",
-      solicitud: {
-        tipo: "Vi blanc",
-        nombre: "Blanc Terra Alta",
-        descripcion: "Vi blanc amb criança sobre lies, D.O. Terra Alta",
-        precioCompra: 20,
-        precioVenta: 42,
-        cantidadSolicitada: "150 botellas",
-        tiempoRespuesta: "48h",
-      },
-    },
-  ]
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+        const response = await fetch(`${apiUrl}/v1/restaurants-info`)
+
+        const [restaurantsResponse, requestsResponse] = await Promise.all([
+          fetch(`${apiUrl}/v1/restaurants-info`),
+          fetch(`${apiUrl}/v1/restaurants-requests`),
+        ])
+
+        if (!restaurantsResponse.ok || !requestsResponse.ok) {
+          throw new Error("Error en obtenir les dades dels restaurants")
+        }
+
+        const restaurantsData = await restaurantsResponse.json()
+        const requestsData = await requestsResponse.json()
+        const requestsMap = requestsData.reduce((acc, curr) => {
+          acc[curr.user_id] = curr.requests_count;
+          return acc;
+        }, {});
+        const userIds = Object.keys(requestsMap).map(Number);
+        
+        const restaurantsWithId = restaurantsData.filter(restaurant => userIds.includes(restaurant.user_id))
+          // Asegurarse de que cada restaurant tenga un ID y que sea un número
+        .map((restaurant) => ({
+          ...restaurant,
+          id: Number(restaurant.id), // Convertir el ID a número
+          request_count: requestsMap[restaurant.user_id] || 0
+        }))
+
+        setRestaurants(restaurantsWithId)
+      } catch (error) {
+        // console.error("Error fetching restaurants:", error)
+        // Fallback data for testing
+        setRestaurants([
+          {
+            id: 1,
+            name: "Ca l'Isidre",
+            description: "Restaurant d'alta cuina catalana amb més de 50 anys d'història",
+            image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
+            zone: "Barcelona",
+            request_count: 0,
+            solicitud: {
+              tipo: "Vi negre",
+              nombre: "Priorat Reserva 2019",
+              descripcion: "Vi negre amb cos, anyada 2019-2020, D.O.Q. Priorat",
+              precioCompra: 25,
+              precioVenta: 45,
+              cantidadSolicitada: "120 botellas",
+              tiempoRespuesta: "24-48h",
+            },
+          },
+          {
+            id: 2,
+            name: "Botafumeiro",
+            description: "Restaurant especialitzat en peix i marisc de primera qualitat",
+            image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b",
+            zone: "Barcelona",
+            request_count: 0,
+            solicitud: {
+              tipo: "Vi blanc",
+              nombre: "Blanc de blancs Penedès",
+              descripcion: "Vi blanc sec i fresc, D.O. Penedès, ideal per marisc",
+              precioCompra: 18,
+              precioVenta: 35,
+              cantidadSolicitada: "200 botellas",
+              tiempoRespuesta: "24h",
+            },
+          },
+          {
+            id: 3,
+            name: "El Celler de Can Roca",
+            description: "Restaurant amb tres estrelles Michelin, referent de la gastronomia catalana",
+            image: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
+            zone: "Girona",
+            request_count: 0,
+            solicitud: {
+              tipo: "Cava",
+              nombre: "Gran Reserva Brut Nature",
+              descripcion: "Cava Gran Reserva, mínim 30 mesos de criança",
+              precioCompra: 35,
+              precioVenta: 85,
+              cantidadSolicitada: "150 botellas",
+              tiempoRespuesta: "48h",
+            },
+          },
+          {
+            id: 4,
+            name: "Can Jubany",
+            description: "Restaurant amb una estrella Michelin, cuina d'autor amb arrels tradicionals",
+            image: "https://images.unsplash.com/photo-1515669097368-22e68427d265",
+            zone: "Vic",
+            request_count: 0,
+            solicitud: {
+              tipo: "Vi rosat",
+              nombre: "Rosat Empordà",
+              descripcion: "Vi rosat fresc i afruitat, D.O. Empordà",
+              precioCompra: 15,
+              precioVenta: 32,
+              cantidadSolicitada: "180 botellas",
+              tiempoRespuesta: "24-48h",
+            },
+          },
+          {
+            id: 5,
+            name: "Via Veneto",
+            description: "Restaurant clàssic amb una estrella Michelin, referent de la cuina mediterrània",
+            image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c",
+            zone: "Barcelona",
+            request_count: 0,
+            solicitud: {
+              tipo: "Vi negre",
+              nombre: "Ribera del Duero Criança",
+              descripcion: "Vi negre amb 12 mesos de criança en roure francès",
+              precioCompra: 22,
+              precioVenta: 48,
+              cantidadSolicitada: "100 botellas",
+              tiempoRespuesta: "24h",
+            },
+          },
+          {
+            id: 6,
+            name: "Les Cols",
+            description: "Restaurant amb dues estrelles Michelin, cuina d'avantguarda amb producte local",
+            image: "https://images.unsplash.com/photo-1552566626-52f8b828add9",
+            zone: "Girona",
+            request_count: 0,
+            solicitud: {
+              tipo: "Vi blanc",
+              nombre: "Blanc Terra Alta",
+              descripcion: "Vi blanc amb criança sobre lies, D.O. Terra Alta",
+              precioCompra: 20,
+              precioVenta: 42,
+              cantidadSolicitada: "150 botellas",
+              tiempoRespuesta: "48h",
+            },
+          },
+        ])
+      }
+    }
+    fetchRestaurants()
+  }, [])
 
   // Zonas disponibles
   const zones = [
@@ -349,29 +395,29 @@ export default function ProductPage() {
   })
 
   // Filter restaurants
-  const filteredRestaurants = allRestaurants.filter((restaurant) => {
+  const filteredRestaurants = restaurants.filter((restaurant) => {
     // Search filter
     if (
       searchTerm &&
-      !restaurant.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !restaurant.zona?.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !restaurant.solicitud?.tipo?.toLowerCase().includes(searchTerm.toLowerCase())
+      !restaurant.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !restaurant.zone?.toLowerCase().includes(searchTerm.toLowerCase()) /*&&
+      !restaurant.solicitud?.tipo?.toLowerCase().includes(searchTerm.toLowerCase())*/
     ) {
       return false
     }
 
-    // Filter by wine type
-    if (selectedType && restaurant.solicitud.tipo !== selectedType) {
-      return false
-    }
+    // // Filter by wine type
+    // if (selectedType && restaurant.solicitud.tipo !== selectedType) {
+    //   return false
+    // }
 
-    // Filter by price range
-    if (restaurant.solicitud.precioCompra < priceRange[0] || restaurant.solicitud.precioCompra > priceRange[1]) {
-      return false
-    }
+    // // Filter by price range
+    // if (restaurant.solicitud.precioCompra < priceRange[0] || restaurant.solicitud.precioCompra > priceRange[1]) {
+    //   return false
+    // }
 
     // Filter by zone
-    if (selectedZones.length > 0 && !selectedZones.includes(restaurant.zona)) {
+    if (selectedZones.length > 0 && !selectedZones.includes(restaurant.zone)) {
       return false
     }
 
@@ -536,11 +582,7 @@ export default function ProductPage() {
                 )
               ) : // Restaurants
               filteredRestaurants.length > 0 ? (
-                <RestaurantGrid
-                  restaurants={filteredRestaurants}
-                  favorites={favorites}
-                  toggleFavorite={toggleFavorite}
-                />
+                <RestaurantGrid restaurants={filteredRestaurants} />
               ) : (
                 <EmptyState type="restaurants" resetFilters={resetFilters} />
               )}

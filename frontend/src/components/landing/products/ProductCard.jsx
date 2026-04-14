@@ -49,14 +49,9 @@ export default function ProductCard({
       <div className={`relative ${compact ? 'h-48 sm:h-56' : 'h-64 sm:h-72'}`}>
         {!compact && producto.requests_restaurant_count > 0 && (
           <div className="absolute top-3 left-3 z-10">
-            <div className="relative flex items-center justify-center group">
-              {/* Anillo de pulso expansivo */}
-              <span className="absolute inset-0 bg-[#9A3E50] rounded-full opacity-60 animate-ping"></span>
-              {/* Badge principal brillante */}
-              <div className="relative bg-gradient-to-br from-[#9A3E50] to-[#E53E3E] text-white text-[11px] font-bold uppercase tracking-wider py-1.5 px-3 flex items-center gap-1.5 rounded-full shadow-lg shadow-[#9A3E50]/40 border border-white/20 transform group-hover:scale-105 transition-all">
-                <Bell className="w-3.5 h-3.5 fill-white animate-pulse" />
-                <span>{producto.requests_restaurant_count} {t("landing.products.product_card.requests")}</span>
-              </div>
+            <div className="bg-white/90 backdrop-blur-sm text-[#9A3E50] text-[10px] font-bold uppercase tracking-wider py-1.5 px-3 flex items-center gap-1.5 rounded-full shadow-sm border border-[#9A3E50]/10">
+              <Bell className="w-3.5 h-3.5 fill-[#9A3E50]" />
+              <span>{producto.requests_restaurant_count} {t("landing.products.product_card.petitions")}</span>
             </div>
           </div>
         )}
