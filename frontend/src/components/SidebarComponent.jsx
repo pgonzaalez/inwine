@@ -324,7 +324,7 @@ export default function Sidebar() {
       {
         icon: Wine,
         label: t("sidebar.nav.back_to_web"),
-        path: `/`,
+        path: `/productes`,
       },
       // {
       //   icon: Bell,
@@ -404,7 +404,7 @@ export default function Sidebar() {
       {
         icon: Wine,
         label: t("sidebar.nav.back_to_web"),
-        path: `/`,
+        path: `/productes`,
       },
       {
         icon: User,
