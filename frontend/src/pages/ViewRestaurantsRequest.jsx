@@ -184,8 +184,16 @@ export default function RestaurantDetail() {
                   <p className="font-medium">{restaurant.number_of_diners}</p>
                 </div>
                 <div>
+                  <p className="text-sm font-medium text-gray-500">{t("auth.register.labels.restaurant_shifts")}</p>
+                  <p className="font-medium">{t(`dashboards.restaurant.shifts.${restaurant.shifts}`)}</p>
+                </div>
+                <div>
                   <p className="text-sm font-medium text-gray-500">{t("auth.register.labels.restaurant_rotation")}</p>
-                  <p className="font-medium">{t(`dashboards.restaurant.wine_rotation.${restaurant.wine_rotation}`)}</p>
+                  <p className="font-medium">{restaurant.wine_rotation}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">{t("auth.register.labels.restaurant_wines")}</p>
+                  <p className="font-medium">{restaurant.reference_number} {t("dashboards.seller.management.table.count_plural")}</p>
                 </div>
               </div>
 

@@ -331,13 +331,19 @@
         "cancelled": "Cancelled",
         "unknown": "Unknown"
       },
-      "wine_rotation": {
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "yearly": "Yearly",
-        "unknown": "Unknown"
+      "shifts": {
+        "mond_to_sund_lunch": "Lunch, Monday to Sunday",
+        "mond_to_sund_dinner": "Dinner, Monday to Sunday",
+        "mond_to_sund_lunch_and_dinner": "Lunch and Dinner, Monday to Sunday",
+        "tues_to_sund_lunch": "Lunch, Tuesday to Sunday",
+        "tues_to_sund_dinner": "Dinner, Tuesday to Sunday",
+        "tues_to_sund_lunch_and_dinner": "Tuesday to Sunday Lunch and Dinner",
+        "frid_to_sund_lunch": "Lunch, Friday to Sunday",
+        "frid_to_sund_dinner": "Dinner, Friday to Sunday",
+        "frid_to_sund_lunch_and_dinner": "Lunch and Dinner, Friday to Sunday",
+        "satu_and_sund_lunch": "Lunch, Saturdays and Sundays",
+        "satu_and_sund_dinner": "Dinner, Saturdays and Sundays",
+        "satu_and_sund_lunch_and_dinner": "Lunch and Dinner, Saturdays and Sundays"
       },
       "view": {
         "price_demanded": "Demanded price",
@@ -570,7 +576,9 @@
         "restaurant_description": "Description",
         "restaurant_image": "Restaurant image",
         "restaurant_diners": "Max. Diners",
-        "restaurant_rotation": "Wine rotation"
+        "restaurant_rotation": "Wine rotation",
+        "restaurant_shifts": "Turnos",
+        "restaurant_wines": "Número de referenica"
       },
       "submit_seller": "Add Producer",
       "submit_restaurant": "Add Restaurant",

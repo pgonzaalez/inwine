@@ -23,6 +23,8 @@ class Restaurant extends Model
         "description",
         "number_of_diners",
         "wine_rotation",
+        "reference_number",
+        "shifts",
     ];
 
     public function user()

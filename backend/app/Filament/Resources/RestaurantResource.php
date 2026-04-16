@@ -65,8 +65,14 @@ class RestaurantResource extends Resource
                     ->numeric()
                     ->default(null),
                 Forms\Components\TextInput::make('wine_rotation')
-                    ->maxLength(255)
-                    ->default(null),
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('reference_number')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('shifts')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
