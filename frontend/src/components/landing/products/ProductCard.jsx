@@ -5,6 +5,7 @@ export default function ProductCard({
   producto,
   esFavorito,
   onToggleFavorito,
+  compact = false
 }) {
   const { t } = useTranslation();
   const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000";
@@ -41,13 +42,16 @@ export default function ProductCard({
       : "text-white";
 
   return (
-    <div className="flex flex-col bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300" style={{ width: "300px" }}>
-   <div className="relative h-64 sm:h-72">
-        {producto.requests_restaurant_count > 0 && (
+    <div 
+      className={`flex flex-col bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 ${compact ? 'h-full' : ''}`}
+      style={compact ? {} : { width: "300px" }}
+    >
+      <div className={`relative ${compact ? 'h-48 sm:h-56' : 'h-64 sm:h-72'}`}>
+        {!compact && producto.requests_restaurant_count > 0 && (
           <div className="absolute top-3 left-3 z-10">
             <div className="bg-white/90 backdrop-blur-sm text-[#9A3E50] text-[10px] font-bold uppercase tracking-wider py-1.5 px-3 flex items-center gap-1.5 rounded-full shadow-sm border border-[#9A3E50]/10">
               <Bell className="w-3.5 h-3.5 fill-[#9A3E50]" />
-              <span>{producto.requests_restaurant_count} {t("landing.products.product_card.requests")}</span>
+              <span>{producto.requests_restaurant_count} {t("landing.products.product_card.petitions")}</span>
             </div>
           </div>
         )}
@@ -56,6 +60,7 @@ export default function ProductCard({
           alt={producto.name || t("landing.products.product_card.alt")}
           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
         />
+        {!compact && (
         <div className="absolute top-3 right-3 z-20">
           <button
             type="button"
@@ -76,6 +81,7 @@ export default function ProductCard({
             />
           </button>
         </div>
+        )}
       </div>
 
       <div className="flex flex-col flex-grow p-5">

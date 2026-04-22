@@ -113,7 +113,7 @@ export default function Sidebar() {
     }
   };
 
-  const LanguageSelector = () => {
+  const LanguageSelector = ({ isMobile }) => {
     const [isLangOpen, setIsLangOpen] = useState(false);
     const langRef = useRef(null);
 
@@ -128,25 +128,38 @@ export default function Sidebar() {
     }, []);
 
     const languages = [
-      { code: 'ca', label: 'CA', flag: flagCA },
-      { code: 'es', label: 'ES', flag: flagES },
-      { code: 'en', label: 'EN', flag: flagEN }
+      { code: 'ca', label: 'Català', shortCode: 'CA', flag: flagCA },
+      { code: 'es', label: 'Español', shortCode: 'ES', flag: flagES },
+      { code: 'en', label: 'English', shortCode: 'EN', flag: flagEN }
     ];
 
     const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
 
     return (
-      <div className="relative" ref={langRef}>
-        <button
-          onClick={() => setIsLangOpen(!isLangOpen)}
-          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100 overflow-hidden ring-1 ring-gray-200"
-          title={t("languages." + i18n.language)}
-        >
-          <img src={currentLang.flag} alt={currentLang.label} className="h-4 w-6 object-cover rounded-sm" />
-        </button>
+      <div className={`relative ${isMobile ? '' : 'w-full'}`} ref={langRef}>
+        {isMobile ? (
+          <button
+            onClick={() => setIsLangOpen(!isLangOpen)}
+            className="flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300 hover:bg-gray-100 overflow-hidden ring-1 ring-gray-200 mx-auto"
+            title={t("sidebar.nav.language", "Idioma")}
+          >
+            <img src={currentLang.flag} alt={currentLang.label} className="h-4 w-6 object-cover rounded-sm" />
+          </button>
+        ) : (
+          <button
+            onClick={() => setIsLangOpen(!isLangOpen)}
+            className="flex w-full items-center justify-between px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-100"
+          >
+            <div className="flex items-center space-x-3">
+              <img src={currentLang.flag} alt={currentLang.label} className="h-5 w-7 object-cover rounded-sm ring-1 ring-gray-200 shadow-sm" />
+              <span className="font-medium">{t("sidebar.nav.language", "Idioma")}</span>
+            </div>
+            <span className="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wide">{currentLang.shortCode}</span>
+          </button>
+        )}
 
         {isLangOpen && (
-          <div className="absolute left-0 bottom-full mb-2 w-32 origin-bottom-left rounded-lg shadow-lg bg-white ring-1 ring-gray-200 py-1 z-50">
+          <div className={`absolute ${isMobile ? 'left-1/2 -translate-x-1/2 bottom-full mb-2 w-36 origin-bottom' : 'left-0 bottom-full mb-2 w-full origin-bottom-left'} rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] bg-white ring-1 ring-gray-100 py-1.5 z-50 overflow-hidden`}>
             {languages.map((lang) => (
               <button
                 key={lang.code}
@@ -154,12 +167,15 @@ export default function Sidebar() {
                   i18n.changeLanguage(lang.code);
                   setIsLangOpen(false);
                 }}
-                className={`flex w-full items-center px-4 py-2 text-sm transition-colors hover:bg-gray-50 ${
-                  i18n.language === lang.code ? "font-bold text-[#9A3E50]" : "text-gray-700"
+                className={`flex w-full items-center px-4 py-2.5 text-sm transition-all hover:bg-gray-50 ${
+                  i18n.language === lang.code ? "bg-[#9A3E50]/5 text-[#9A3E50] font-medium" : "text-gray-700"
                 }`}
               >
-                <img src={lang.flag} alt={lang.label} className="h-3 w-5 mr-3 object-cover rounded-sm" />
-                {lang.label}
+                <img src={lang.flag} alt={lang.label} className="h-4 w-6 mr-3 object-cover rounded-sm ring-1 ring-gray-200/50 shadow-sm" />
+                <span className="flex-1 text-left">{lang.label}</span>
+                {i18n.language === lang.code && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#9A3E50] shadow-sm"></div>
+                )}
               </button>
             ))}
           </div>
@@ -200,6 +216,11 @@ export default function Sidebar() {
         icon: Home,
         label: t("sidebar.nav.home"),
         path: `/restaurant/dashboard`,
+      },
+      {
+        icon: ShoppingBag,
+        label: t("sidebar.nav.request_product", "Sol·licitar producte"),
+        path: `/restaurant/products`,
       },
       {
         icon: Wine,
@@ -255,6 +276,11 @@ export default function Sidebar() {
         icon: Wine,
         label: t("sidebar.nav.back_to_web"),
         path: `/`,
+      },
+      {
+        icon: ShoppingBag,
+        label: t("sidebar.nav.request_product", "Sol·licitar producte"),
+        path: `/restaurant/products`,
       },
       {
         icon: Heart,
@@ -480,10 +506,7 @@ export default function Sidebar() {
 
         {/* Role & Logout button */}
         <div className="p-4 border-t space-y-1" style={{ borderColor: primaryColors.light }}>
-          <div className="flex items-center space-x-3 px-4 py-2 border-b border-gray-50 mb-1">
-            <LanguageSelector />
-            <span className="text-sm font-medium text-gray-700">{t("sidebar.nav.language", "Idioma")}</span>
-          </div>
+          <LanguageSelector isMobile={false} />
           {hasMultipleRoles && (
             <button
               onClick={() => setIsRoleChangeOpen(true)}
@@ -539,7 +562,7 @@ export default function Sidebar() {
           ),
         )}
           <div className="flex flex-col items-center justify-center p-2">
-            <LanguageSelector />
+            <LanguageSelector isMobile={true} />
             <span className="text-[10px] mt-1 text-gray-500">{t("sidebar.nav.language", "Idioma")}</span>
           </div>
         </nav>

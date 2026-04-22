@@ -2,17 +2,17 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
+import { useTranslation } from "react-i18next";
 import Footer from "../components/FooterComponent"
-import ProductGallery from "../components/landing/requests/ProductGallery"
-import ProductInfo from "../components/landing/requests/ProductInfo"
 import RequestsSection from "../components/landing/requests/RequestSection"
 
-export default function ProductDetail() {
+export default function RestaurantDetail() {
   const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000"
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+  const { t } = useTranslation();
   const { id } = useParams()
 
-  const [product, setProduct] = useState(null)
+  const [restaurant, setRestaurant] = useState(null)
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [wineTypes, setWineTypes] = useState([])
@@ -22,34 +22,35 @@ export default function ProductDetail() {
     const fetchProductDetails = async () => {
       try {
         if (!id) {
-          // console.error("ID del producte no trobat")
-          setError("ID del producte no trobat")
+          // console.error("ID del restaurant no trobat")
+          setError("ID del restaurant no trobat")
           setLoading(false)
           return
         }
 
-        // console.log("Fetching product with ID:", id)
+        const restaurantResponse = await fetch(`${apiUrl}/v1/restaurants-info/${id}`)
 
-        const [productResponse, requestsResponse] = await Promise.all([
-          fetch(`${apiUrl}/v1/products/${id}`),
-          fetch(`${apiUrl}/v1/request-product/${id}`),
-        ])
-
-        if (!productResponse.ok || !requestsResponse.ok) {
-          throw new Error("Error en obtenir les dades del producte")
+        if (!restaurantResponse.ok) {
+          throw new Error("Error en obtenir les dades del restaurant")
         }
 
-        const productData = await productResponse.json()
+        const restaurantData = await restaurantResponse.json()
+        setRestaurant(restaurantData)
+
+        const requestsResponse = await fetch(`${apiUrl}/v1/${restaurantData.user_id}/restaurant`)
+
+        if (!requestsResponse.ok) {
+          throw new Error("Error en obtenir les dades de les sol·licituts del restaurant")
+        }
+
         const requestsData = await requestsResponse.json()
 
-        // Check if the response has a data property
-        setProduct(productData.data || productData)
         setRequests(Array.isArray(requestsData) ? requestsData : [])
         setError(null)
         setLoading(false)
       } catch (error) {
-        // console.error("Error en obtenir detalls del producte:", error)
-        setError("Error en obtenir detalls del producte")
+        console.error("Error en obtenir detalls del restaurant:", error)
+        // setError("Error en obtenir detalls del restaurant")
         setLoading(false)
       }
     }
@@ -95,7 +96,7 @@ export default function ProductDetail() {
     )
   }
 
-  if (!product) {
+  if (!restaurant) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <p className="text-2xl text-gray-600">Producte no trobat</p>
@@ -105,15 +106,15 @@ export default function ProductDetail() {
 
   // Only include actual images, no placeholders
   const productImages = []
-  if (product.image) {
-    productImages.push(product.image)
+  if (restaurant.image) {
+    productImages.push(restaurant.image)
   }
-  if (product.images && Array.isArray(product.images)) {
-    productImages.push(...product.images)
+  if (restaurant.images && Array.isArray(restaurant.images)) {
+    productImages.push(...restaurant.images)
   }
 
   // Find wine type name
-  const wineType = Array.isArray(wineTypes) ? wineTypes.find((type) => type.id === product.wine_type_id) : null
+  const wineType = Array.isArray(wineTypes) ? wineTypes.find((type) => type.id === restaurant.wine_type_id) : null
   const wineTypeName = wineType ? wineType.name || wineType.type : "Vi"
 
   return (
@@ -128,22 +129,76 @@ export default function ProductDetail() {
           <a href="/vinos" className="hover:text-[#9A3E50] mx-1">
             Vins
           </a>{" "}
-          /<span className="text-gray-700">{product.name}</span>
+          /<span className="text-gray-700">{restaurant.name}</span>
         </div>
 
         {/* SECTION 1: Product Details Section */}
         <section className="mb-8 transition-all duration-500 ease-in-out">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Left Column - Images */}
-            <ProductGallery images={productImages} productName={product.name} baseUrl={baseUrl} />
+            <div className="space-y-4">
+              <div className="relative bg-gray-50 rounded-lg overflow-hidden h-[500px]">
+                {restaurant.image ? (
+                  <img
+                    src={
+                      restaurant.image 
+                        ? (restaurant.image.includes("storage") 
+                            ? `${baseUrl}${restaurant.image}` 
+                            : restaurant.image)
+                        : "/placeholder.svg"
+                    }
+                    alt={restaurant.name}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    No hi ha imatge disponible
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Right Column - Info */}
-            <ProductInfo product={product} wineTypeName={wineTypeName} />
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-16">{restaurant.name}</h1>
+
+                <div className="prose prose-sm max-w-none text-gray-600 mb-10">
+                  <p>
+                    {restaurant.description || `Sense descripció`}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 py-6 border-t border-b border-gray-200">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Adreça</p>
+                  <p className="font-medium">{restaurant.address}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Zona</p>
+                  <p className="font-medium">{restaurant.zone}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">{t("auth.register.labels.restaurant_diners")}</p>
+                  <p className="font-medium">{restaurant.number_of_diners}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">{t("auth.register.labels.restaurant_rotation")}</p>
+                  <p className="font-medium">{t(`dashboards.restaurant.wine_rotation.${restaurant.wine_rotation}`)}</p>
+                </div>
+              </div>
+
+              {/* Additional Info */}
+              <div className="text-sm text-gray-500">
+                <p>Data de creació: {new Date(restaurant.created_at).toLocaleDateString()}</p>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* SECTION 2: Requests Section */}
-        <RequestsSection requests={requests} mode={"product_view"} productPrice={product.price_demanded} />
+        <RequestsSection requests={requests} mode={"restaurant_view"} productPrice={0} />
       </main>
 
       {/* Global styles for animations as a regular style tag */}

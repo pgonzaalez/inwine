@@ -61,6 +61,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
     Route::delete('{userId}/orders/clear', [OrderController::class, 'clear']);
 
+    //Sacar información de los restaurantes, OJO no recoge datos comprometedores por seguridad
+    Route::get('/restaurants-info', [RestaurantController::class, 'indexInfo']);
+    Route::get('/restaurants-info/{id}', [RestaurantController::class, 'showPublicData']);
+    Route::get('/restaurants-requests', [RequestRestaurantController::class, 'searchActiveUserRequests']);
 
     // Rutas para los restaurantes
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
@@ -69,7 +73,7 @@ Route::prefix('v1')->group(function () {
     ->middleware('auth:sanctum');
 
     Route::post('/seller', [AuthController::class, 'storeSeller']);
-    Route::post('/restaurant', [AuthController::class, 'storeRestaurant']);
+    Route::put('/restaurant', [AuthController::class, 'storeRestaurant']);
     Route::post('/investor', [AuthController::class, 'storeInvestor']);
 
     Route::post('products/{id}/duplicate', [ProductController::class, 'duplicate']);

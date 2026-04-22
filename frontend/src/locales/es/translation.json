@@ -133,12 +133,14 @@
         "wineries": "Bodegas"
       },
       "product_card": {
-        "requests": "peticiones",
+        "petitions": "peticiones",
         "alt": "Vino",
         "no_name": "Sin nombre",
         "quantity": "Cantidad"
       },
       "restaurant_card": {
+        "requests": "solicitudes",
+        "extra_info": "Información Adicional",
         "request_title": "Solicitud de producto",
         "buy_price": "Compra",
         "sell_price": "Venta",
@@ -223,6 +225,7 @@
         "field_description_max": "Máximo de 255 caracteres",
         "field_image_add": "Añadir más imágenes",
         "field_image_upload": "Sube imágenes",
+        "field_image_upload_single": "Sube una imagen",
         "field_image_drag": "o arrastra y suelta",
         "field_image_types": "PNG, JPG, GIF hasta 10MB",
         "existing_images": "Imágenes existentes",
@@ -330,6 +333,14 @@
         "cancelled": "Cancelado",
         "unknown": "Desconocido"
       },
+      "wine_rotation": {
+        "daily": "Diario",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "quarterly": "Trimestral",
+        "yearly": "Anual",
+        "unknown": "Desconocido"
+      },
       "view": {
         "price_demanded": "Precio demandado",
         "price_restaurant": "Precio restaurante",
@@ -376,8 +387,26 @@
         "success_sell": "Producto vendido correctamente",
         "error_fetch": "No se pudo obtener la información de la solicitud.",
         "error_unknown": "Error desconocido",
-        "invalid_id": "ID de solicitud no válido",
-        "error_update_status": "Error al actualizar el estado"
+        "invalid_id": "ID de solicitud no válido"
+      },
+      "requests": {
+        "description": "Selecciona un vino del catálogo e introduce tu oferta de compra.",
+        "step1_title": "Paso 1: Selecciona un producto",
+        "loading_catalog": "Cargando el catálogo...",
+        "step2_title": "Paso 2: Haz tu oferta por {{name}}",
+        "origin": "Origen",
+        "year": "Año",
+        "current_price": "Precio actual",
+        "your_offer": "Tu oferta (€)",
+        "placeholder_offer": "Ej: 50.00",
+        "offer_higher": "La oferta supera el precio actual.",
+        "offer_lower": "La oferta no puede ser inferior al precio actual.",
+        "offer_equal": "La oferta es igual al precio actual.",
+        "error_invalid_price": "Por favor, introduce un precio válido. Ha ocurrido un error en la solicitud.",
+        "error_low_price": "El precio ofertado no puede ser inferior al precio actual del producto.",
+        "success": "¡Solicitud enviada correctamente! El vendedor revisará tu oferta y te contactará pronto.",
+        "sending": "Enviando...",
+        "make_request": "Hacer solicitud"
       }
     },
     "investor": {
@@ -536,7 +565,14 @@
         "password": "Contraseña",
         "contact_person": "Nombre de contacto",
         "bank_account": "Número cuenta",
-        "credit_card": "Tarjeta de crédito"
+        "credit_card": "Tarjeta de crédito",
+        "restaurant_info": "Información del restaurante",
+        "restaurant_name": "Nombre del restaurante",
+        "restaurant_zone": "Zona",
+        "restaurant_description": "Descripción",
+        "restaurant_image": "Imagen del restaurante",
+        "restaurant_diners": "Núm. Comensales",
+        "restaurant_rotation": "Rotación de vinos"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurante",
@@ -566,10 +602,14 @@
     "role_management_desc": "Añade roles adicionales a tu cuenta",
     "restaurant_data_title": "Datos de Restaurante",
     "restaurant_data_desc": "Gestiona la información de tu restaurante",
+    "restaurant_public_data_title": "Datos Públicos del Restaurante",
+    "restaurant_public_data_desc": "Esta información la podrán ver todos",
     "investor_data_title": "Datos de Inversor",
     "investor_data_desc": "Gestiona la información de tu perfil de inversor",
     "seller_data_title": "Datos de Productor",
-    "seller_data_desc": "Gestiona la información de tu perfil de productor"
+    "seller_data_desc": "Gestiona la información de tu perfil de productor",
+    "save_changes": "Guardar cambios",
+    "saving": "Guardando..."
   },
   "settings": {
     "title": "Configuración",
@@ -795,7 +835,8 @@
       "products": "Productos",
       "logout": "Cerrar sesión",
       "change_role": "Cambiar rol",
-      "language": "Idioma"
+      "language": "Idioma",
+      "request_product": "Solicitar producto"
     },
     "modals": {
       "logout": {

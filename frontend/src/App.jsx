@@ -12,6 +12,7 @@ import Notifications from "@pages/Notification/NotificationsPage";
 import Main from "@pages/MainPage";
 import ProductPage from "@pages/Landing/ProductsPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
+import ViewRestaurantsRequest from "@pages/ViewRestaurantsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
 import Contacte from "@pages/Landing/ContactPage";
@@ -35,6 +36,7 @@ import ShowInvestment from "@pages/Inversor/ShowInvestment";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
+import RestaurantProductsPage from "@pages/Restaurant/RestaurantProductsPage";
 import ViewOneRequest from "@pages/Restaurant/ViewOneRequest";
 import SettingsPage from "@pages/SettingsPage";
 // Info Pages
@@ -65,6 +67,7 @@ export default function App() {
           <Route path="/" element={<Main />} />
           <Route path="/productes" element={<ProductPage />} />
           <Route path="/productes/:id" element={<ViewProductsRequest />} />
+          <Route path="/restaurants/:id" element={<ViewRestaurantsRequest />} />
           <Route path="/cistella" element={<OrderCart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-summary" element={<OrderSummaryPage />} />
@@ -175,6 +178,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Restaurant />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurant/products"
+            element={
+              <ProtectedRoute>
+                <RestaurantProductsPage />
               </ProtectedRoute>
             }
           />

@@ -120,6 +120,7 @@ class RequestRestaurantController extends Controller
                 return [
                     'id' => $request->id,
                     'price_restaurant' => $request->price_restaurant,
+                    'quantity' => $request->quantity,
                     'status' => $request->status,
                     'created_at' => $request->created_at,
                     'product' => [
@@ -129,7 +130,6 @@ class RequestRestaurantController extends Controller
                         'year' => $request->product->year,
                         'wine_type' => $request->product->wineType->name ?? null,
                         'price_demanded' => $request->product->price_demanded,
-                        'quantity' => $request->quantity,
                         'image' => $request->product->image,
                     ],
                 ];
@@ -185,5 +185,17 @@ class RequestRestaurantController extends Controller
             ->where('status', 'pending')
             ->get();
         return response()->json($request);
+    }
+
+    public function searchActiveUserRequests()
+    {
+        $requestCounts = RequestRestaurant::select('user_id')
+            ->selectRaw('count(*) as requests_count')
+            ->where('status', 'pending')
+            ->groupBy('user_id')
+            ->having('requests_count', '>=', 1)
+            ->get();
+
+        return response()->json($requestCounts);
     }
 }
