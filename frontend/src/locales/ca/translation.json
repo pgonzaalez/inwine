@@ -202,7 +202,8 @@
             "details": "Detalls",
             "send": "Enviar",
             "sending": "Enviant...",
-            "delete": "Eliminar"
+            "delete": "Eliminar",
+            "add_more": "Afegir més"
           }
         }
       },
@@ -264,7 +265,8 @@
         "error_server": "No s'ha pogut connectar amb el servidor",
         "error_invalid_id": "ID de producte no vàlid",
         "error_delivery": "Error en lliurar el producte",
-        "success_sent": "Producte enviat correctament"
+        "success_sent": "Producte enviat correctament",
+        "success_duplicated": "Producte afegit a la cua correctament"
       },
       "modals": {
         "delete": {

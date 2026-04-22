@@ -201,7 +201,8 @@
             "details": "Detalles",
             "send": "Enviar",
             "sending": "Enviando...",
-            "delete": "Eliminar"
+            "delete": "Eliminar",
+            "add_more": "Añadir más"
           }
         }
       },
@@ -263,7 +264,8 @@
         "error_server": "No se pudo conectar con el servidor",
         "error_invalid_id": "ID de producto no válido",
         "error_delivery": "Error al entregar el producto",
-        "success_sent": "Producto enviado correctamente"
+        "success_sent": "Producto enviado correctamente",
+        "success_duplicated": "Producto añadido a la cola correctamente"
       },
       "modals": {
         "delete": {

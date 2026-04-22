@@ -18,7 +18,13 @@ class ProductController extends Controller
      */
     public function index()
     {
+        // Show only one product per stack (oldest in_stock per group)
         $products = Product::where('status', 'in_stock')
+            ->whereRaw('id = (
+                SELECT MIN(p2.id) FROM products p2
+                WHERE p2.status = "in_stock"
+                AND COALESCE(p2.parent_product_id, p2.id) = COALESCE(products.parent_product_id, products.id)
+            )')
             ->withCount('requestsRestaurant')
             ->orderBy('requests_restaurant_count', 'desc')
             ->get();
@@ -38,7 +44,6 @@ class ProductController extends Controller
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at,
                 'requests_restaurant_count' => $product->requests_restaurant_count,
-
             ];
         });
 
@@ -53,6 +58,12 @@ class ProductController extends Controller
         $products = Product::where('user_id', $userId)->get();
 
         $response = $products->map(function ($product) {
+            $stackRootId = $product->parent_product_id ?? $product->id;
+            $stackQueued = Product::where('status', 'in_stock')
+                ->where('id', '!=', $product->id)
+                ->whereRaw('COALESCE(parent_product_id, id) = ?', [$stackRootId])
+                ->count();
+
             return [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -64,6 +75,8 @@ class ProductController extends Controller
                 'image' => $product->image,
                 'status' => $product->status,
                 'user_id' => $product->user_id,
+                'parent_product_id' => $product->parent_product_id,
+                'stack_queued' => $stackQueued,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at
             ];
@@ -357,6 +370,66 @@ class ProductController extends Controller
     
             return response()->json([
                 'message' => 'Error al actualizar el producto: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Duplicate a product into the stack (same data, new ID, parent_product_id set to root).
+     */
+    public function duplicate(string $id)
+    {
+        $product = Product::with('images')->find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+
+        // Always point to the root of the stack
+        $stackRootId = $product->parent_product_id ?? $product->id;
+
+        DB::beginTransaction();
+
+        try {
+            $newProduct = Product::create([
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type_id' => $product->wine_type_id,
+                'description' => $product->description,
+                'price_demanded' => $product->price_demanded,
+                'quantity' => $product->quantity,
+                'image' => $product->image,
+                'status' => 'in_stock',
+                'user_id' => $product->user_id,
+                'parent_product_id' => $stackRootId,
+            ]);
+
+            // Copy image records (same paths, no file duplication needed)
+            foreach ($product->images as $image) {
+                ProductImage::create([
+                    'product_id' => $newProduct->id,
+                    'image_path' => $image->image_path,
+                    'is_primary' => $image->is_primary,
+                    'order' => $image->order,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'data' => $newProduct
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al duplicar el producto: ' . $e->getMessage()
             ], 500);
         }
     }
