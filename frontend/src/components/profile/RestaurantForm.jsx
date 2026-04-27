@@ -19,7 +19,7 @@ export default function RestaurantForm({ primaryColors }) {
     description: "",
     image: "",
     number_of_diners: "",
-    wine_rotation: "unknown",
+    wine_rotation: "",
   })
   const [errors, setErrors] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
@@ -43,7 +43,7 @@ export default function RestaurantForm({ primaryColors }) {
         description: restaurantData.description || "",
         image: restaurantData.image || "",
         number_of_diners: restaurantData.number_of_diners || "",
-        wine_rotation: restaurantData.wine_rotation || "unknown",
+        wine_rotation: restaurantData.wine_rotation ?? "",
       })
       setExistingImage(restaurantData.image || "")
     }
@@ -434,31 +434,27 @@ export default function RestaurantForm({ primaryColors }) {
         {hasError("number_of_diners") && <span className="text-red-500 text-xs mt-1">{errors.number_of_diners}</span>}
       </div>
       <div className="relative">
-        <select
+        <input
+          type="number"
+          min="1"
           name="wine_rotation"
           value={formData.wine_rotation}
           onChange={handleChange}
-          id="wine_rotation"
           className={`peer w-full h-12 bg-white rounded-lg border px-4 pt-4 placeholder-transparent focus:outline-none focus:ring-2 ${
-            hasError("business_name") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+            hasError("wine_rotation") ? "border-red-300 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
           }`}
-        >
-          <option value="daily">{t("dashboards.restaurant.wine_rotation.daily")}</option>
-          <option value="weekly">{t("dashboards.restaurant.wine_rotation.weekly")}</option>
-          <option value="monthly">{t("dashboards.restaurant.wine_rotation.monthly")}</option>
-          <option value="quarterly">{t("dashboards.restaurant.wine_rotation.quarterly")}</option>
-          <option value="yearly">{t("dashboards.restaurant.wine_rotation.yearly")}</option>
-          <option value="unknown">{t("dashboards.restaurant.wine_rotation.unknown")}</option>
-        </select>
+          placeholder=" "
+          id="wine_rotation"
+        />
         <label
-          htmlFor="business_name"
+          htmlFor="wine_rotation"
           className={`absolute left-3 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${
-            hasError("business_name") ? "text-red-500" : "text-gray-500"
+            hasError("wine_rotation") ? "text-red-500" : "text-gray-500"
           }`}
         >
-          Nom del negoci
+          Rotació de vi (dies)
         </label>
-        {hasError("business_name") && <span className="text-red-500 text-xs mt-1">{errors.business_name}</span>}
+        {hasError("wine_rotation") && <span className="text-red-500 text-xs mt-1">{errors.wine_rotation}</span>}
       </div>
 
       <div className="flex items-center gap-4">

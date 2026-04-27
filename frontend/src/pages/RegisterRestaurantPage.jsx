@@ -43,7 +43,7 @@ const AddRestaurantForm = () => {
     province: "",
     description: "",
     number_of_diners: "",
-    wine_rotation: "unknown",
+    wine_rotation: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -266,7 +266,7 @@ const AddRestaurantForm = () => {
           province: "",
           description: "",
           number_of_diners: "",
-          wine_rotation: "unknown",
+          wine_rotation: "",
         });
         setSelectedImage(null);
         setImagePreview("")
@@ -796,26 +796,22 @@ const AddRestaurantForm = () => {
                           className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("wine_rotation") ? "text-red-500" : "text-gray-400"
                             }`}
                         />
-                        <select
+                        <input
+                          type="number"
+                          min="1"
                           name="wine_rotation"
                           value={formData.wine_rotation}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           id="wine_rotation"
                           required
-                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 focus:outline-none focus:ring-2 appearance-none ${
-                            hasError("wine_rotation") 
-                              ? "border-red-500 focus:ring-red-500" 
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${
+                            hasError("wine_rotation")
+                              ? "border-red-500 focus:ring-red-500"
                               : "border-gray-300 focus:ring-blue-500"
                           }`}
-                        >
-                          <option value="daily">{t("dashboards.restaurant.wine_rotation.daily")}</option>
-                          <option value="weekly">{t("dashboards.restaurant.wine_rotation.weekly")}</option>
-                          <option value="monthly">{t("dashboards.restaurant.wine_rotation.monthly")}</option>
-                          <option value="quarterly">{t("dashboards.restaurant.wine_rotation.quarterly")}</option>
-                          <option value="yearly">{t("dashboards.restaurant.wine_rotation.yearly")}</option>
-                          <option value="unknown" selected>{t("dashboards.restaurant.wine_rotation.unknown")}</option>
-                        </select>
+                          placeholder=" "
+                        />
                         <label
                           htmlFor="wine_rotation"
                           className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("wine_rotation") ? "text-red-500" : "text-gray-500"

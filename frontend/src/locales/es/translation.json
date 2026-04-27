@@ -572,7 +572,7 @@
         "restaurant_description": "Descripción",
         "restaurant_image": "Imagen del restaurante",
         "restaurant_diners": "Núm. Comensales",
-        "restaurant_rotation": "Rotación de vinos"
+        "restaurant_rotation": "Rotación de vinos (Días)"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurante",
