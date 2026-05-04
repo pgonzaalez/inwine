@@ -134,6 +134,7 @@
       },
       "product_card": {
         "petitions": "peticions",
+        "requests": "peticions",
         "alt": "Vi",
         "no_name": "Sense nom",
         "quantity": "Quantitat"

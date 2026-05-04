@@ -187,7 +187,7 @@ const AddInvestorForm = () => {
                 setFormErrors({});
 
                 setTimeout(() => {
-                    navigate("/restaurant/dashboard");
+                    navigate("/investor/dashboard");
                 }, 2000);
             }
         } catch (error) {

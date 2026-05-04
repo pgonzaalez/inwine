@@ -134,6 +134,7 @@
       },
       "product_card": {
         "petitions": "peticiones",
+        "requests": "peticiones",
         "alt": "Vino",
         "no_name": "Sin nombre",
         "quantity": "Cantidad"

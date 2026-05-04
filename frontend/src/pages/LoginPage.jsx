@@ -127,7 +127,7 @@ const LoginForm = () => {
             navigate("/restaurant/dashboard");
             break;
           case "investor":
-            navigate("/productes");
+            navigate("/investor/dashboard");
             break;
           default:
             navigate("/login");

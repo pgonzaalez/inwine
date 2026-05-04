@@ -134,6 +134,7 @@
       },
       "product_card": {
         "petitions": "petitions",
+        "requests": "requests",
         "alt": "Wine",
         "no_name": "No name",
         "quantity": "Quantity"
