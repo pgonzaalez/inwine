@@ -333,13 +333,19 @@
         "cancelled": "Cancel·lat",
         "unknown": "Desconegut"
       },
-      "wine_rotation": {
-        "daily": "Diari",
-        "weekly": "Setmanal",
-        "monthly": "Mensual",
-        "quarterly": "Trimestral",
-        "yearly": "Anual",
-        "unknown": "Desconegut"
+      "shifts": {
+        "mond_to_sund_lunch": "Dinar, de Dilluns a Diumenge",
+        "mond_to_sund_dinner": "Sopar, de Dilluns a Diumenge",
+        "mond_to_sund_lunch_and_dinner": "Dinar i Sopar, de Dilluns a Diumenge",
+        "tues_to_sund_lunch": "Dinar, de Dimarts a Diumenge",
+        "tues_to_sund_dinner": "Sopar, de Dimarts a Diumenge",
+        "tues_to_sund_lunch_and_dinner": "Dinar i Sopar, de Dimarts a Diumenge",
+        "frid_to_sund_lunch": "Dinar, de Divendres a Diumenge",
+        "frid_to_sund_dinner": "Sopar, de Divendres a Diumenge",
+        "frid_to_sund_lunch_and_dinner": "Dinar i Sopar, de Divendres a Diumenge",
+        "satu_and_sund_lunch": "Dinar, Dissabtes i Diumenges",
+        "satu_and_sund_dinner": "Sopar, Dissabtes i Diumenges",
+        "satu_and_sund_lunch_and_dinner": "Dinar i Sopar, Dissabtes i Diumenges"
       },
       "view": {
         "price_demanded": "Preu demandat",
@@ -571,8 +577,10 @@
         "restaurant_zone": "Zona",
         "restaurant_description": "Descripció",
         "restaurant_image": "Imatge del restaurant",
-        "restaurant_diners": "Num. Comensals",
-        "restaurant_rotation": "Rotació de vins"
+        "restaurant_diners": "Núm. Comensals",
+        "restaurant_rotation": "Rotació de vins",
+        "restaurant_shifts": "Torns",
+        "restaurant_wines": "Nombre de referènica"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurant",

@@ -18,6 +18,8 @@ import {
   MessageSquareText,
   Users,
   TimerReset,
+  Wine,
+  CalendarClock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "@/utils/utils"
@@ -43,7 +45,9 @@ const AddRestaurantForm = () => {
     province: "",
     description: "",
     number_of_diners: "",
-    wine_rotation: "unknown",
+    wine_rotation: "",
+    reference_number: "",
+    shifts: "unknown",
   });
 
   const [errors, setErrors] = useState({});
@@ -93,6 +97,11 @@ const AddRestaurantForm = () => {
     // Validar descripción
     if (!formData.description || formData.description.length < 20 || formData.description.length > 100) {
       newErrors.description = ["La descripció ha de tenir al menys 20 i no més de 100 caràcters"]
+    }
+
+    // Validar descripción
+    if (!formData.wine_rotation || formData.wine_rotation.length < 4 || formData.wine_rotation.length > 20) {
+      newErrors.wine_rotation = ["Ha de tenir al menys 4 i no més de 20 caràcters"]
     }
 
     setFormErrors(newErrors);
@@ -266,7 +275,9 @@ const AddRestaurantForm = () => {
           province: "",
           description: "",
           number_of_diners: "",
-          wine_rotation: "unknown",
+          wine_rotation: "",
+          reference_number: "",
+          shifts: "unknown",
         });
         setSelectedImage(null);
         setImagePreview("")
@@ -789,6 +800,91 @@ const AddRestaurantForm = () => {
                     </div>
                   </div>
                   <div>
+                    {/* Turnos */}
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <CalendarClock
+                          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("shifts") ? "text-red-500" : "text-gray-400"
+                            }`}
+                        />
+                        <select
+                          name="shifts"
+                          value={formData.shifts}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          id="shifts"
+                          required
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 focus:outline-none focus:ring-2 appearance-none ${
+                            hasError("shifts") 
+                              ? "border-red-500 focus:ring-red-500" 
+                              : "border-gray-300 focus:ring-blue-500"
+                          }`}
+                        >
+                          <option value="unknown">{t(`dashboards.restaurant.status.unknown`)}</option>
+                          <option value="mond_to_sund_lunch">{t(`dashboards.restaurant.shifts.mond_to_sund_lunch`)}</option>
+                          <option value="mond_to_sund_dinner">{t(`dashboards.restaurant.shifts.mond_to_sund_dinner`)}</option>
+                          <option value="mond_to_sund_lunch_and_dinner">{t(`dashboards.restaurant.shifts.mond_to_sund_lunch_and_dinner`)}</option>
+                          <option value="tues_to_sund_lunch">{t(`dashboards.restaurant.shifts.tues_to_sund_lunch`)}</option>
+                          <option value="tues_to_sund_dinner">{t(`dashboards.restaurant.shifts.tues_to_sund_dinner`)}</option>
+                          <option value="tues_to_sund_lunch_and_dinner">{t(`dashboards.restaurant.shifts.tues_to_sund_lunch_and_dinner`)}</option>
+                          <option value="frid_to_sund_lunch">{t(`dashboards.restaurant.shifts.frid_to_sund_lunch`)}</option>
+                          <option value="frid_to_sund_dinner">{t(`dashboards.restaurant.shifts.frid_to_sund_dinner`)}</option>
+                          <option value="frid_to_sund_lunch_and_dinner">{t(`dashboards.restaurant.shifts.frid_to_sund_lunch_and_dinner`)}</option>
+                          <option value="satu_and_sund_lunch">{t(`dashboards.restaurant.shifts.satu_and_sund_lunch`)}</option>
+                          <option value="satu_and_sund_dinner">{t(`dashboards.restaurant.shifts.satu_and_sund_dinner`)}</option>
+                          <option value="satu_and_sund_lunch_and_dinner">{t(`dashboards.restaurant.shifts.satu_and_sund_lunch_and_dinner`)}</option>
+                        </select>
+                        <label
+                          htmlFor="shifts"
+                          className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("shifts") ? "text-red-500" : "text-gray-500"
+                            }`}
+                        >
+                          {t("auth.register.labels.restaurant_shifts")}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="h-6">
+                      {hasError("shifts") && <span className="text-red-500 text-xs mt-1">{getFieldErrors("shifts")[0]}</span>}
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    {/* Número de Comensales */}
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <Wine
+                          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("reference_number") ? "text-red-500" : "text-gray-400"
+                            }`}
+                        />
+                        <input
+                          type="number"
+                          min="1"
+                          max="1000"
+                          name="reference_number"
+                          value={formData.reference_number}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("reference_number") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+                            }`}
+                          placeholder=" "
+                          id="reference_number"
+                          required
+                        />
+                        <label
+                          htmlFor="reference_number"
+                          className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("reference_number") ? "text-red-500" : "text-gray-500"
+                            }`}
+                        >
+                          {t("auth.register.labels.restaurant_wines")}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="h-6">
+                      {hasError("reference_number") && <span className="text-red-500 text-xs mt-1">{getFieldErrors("reference_number")[0]}</span>}
+                    </div>
+                  </div>
+                  <div>
                     {/* Rotación de Vinos */}
                     <div className="relative">
                       <div className="flex items-center">
@@ -796,26 +892,19 @@ const AddRestaurantForm = () => {
                           className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("wine_rotation") ? "text-red-500" : "text-gray-400"
                             }`}
                         />
-                        <select
+                        <input
+                          type="text"
                           name="wine_rotation"
                           value={formData.wine_rotation}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("wine_rotation")
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-gray-300 focus:ring-blue-500"
+                            }`}
+                          placeholder=" "
                           id="wine_rotation"
-                          required
-                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 focus:outline-none focus:ring-2 appearance-none ${
-                            hasError("wine_rotation") 
-                              ? "border-red-500 focus:ring-red-500" 
-                              : "border-gray-300 focus:ring-blue-500"
-                          }`}
-                        >
-                          <option value="daily">{t("dashboards.restaurant.wine_rotation.daily")}</option>
-                          <option value="weekly">{t("dashboards.restaurant.wine_rotation.weekly")}</option>
-                          <option value="monthly">{t("dashboards.restaurant.wine_rotation.monthly")}</option>
-                          <option value="quarterly">{t("dashboards.restaurant.wine_rotation.quarterly")}</option>
-                          <option value="yearly">{t("dashboards.restaurant.wine_rotation.yearly")}</option>
-                          <option value="unknown" selected>{t("dashboards.restaurant.wine_rotation.unknown")}</option>
-                        </select>
+                        />
                         <label
                           htmlFor="wine_rotation"
                           className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("wine_rotation") ? "text-red-500" : "text-gray-500"

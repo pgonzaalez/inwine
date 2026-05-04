@@ -332,13 +332,19 @@
         "cancelled": "Cancelado",
         "unknown": "Desconocido"
       },
-      "wine_rotation": {
-        "daily": "Diario",
-        "weekly": "Semanal",
-        "monthly": "Mensual",
-        "quarterly": "Trimestral",
-        "yearly": "Anual",
-        "unknown": "Desconocido"
+      "shifts": {
+        "mond_to_sund_lunch": "Comida, de Lunes a Domingo",
+        "mond_to_sund_dinner": "Cena, de Lunes a Domingo",
+        "mond_to_sund_lunch_and_dinner": "Comida y Cena, de Lunes a Domingo",
+        "tues_to_sund_lunch": "Comida, de Martes a Domingo",
+        "tues_to_sund_dinner": "Cena, de Martes a Domingo",
+        "tues_to_sund_lunch_and_dinner": "Comida y Cena, de Martes a Domingo",
+        "frid_to_sund_lunch": "Almuerzo, de Viernes a Domingo",
+        "frid_to_sund_dinner": "Cena, de Viernes a Domingo",
+        "frid_to_sund_lunch_and_dinner": "Comida y Cena, de Viernes a Domingo",
+        "satu_and_sund_lunch": "Almuerzo, Sábados y Domingos",
+        "satu_and_sund_dinner": "Cena, Sábados y Domingos",
+        "satu_and_sund_lunch_and_dinner": "Comida y Cena, Sábados y Domingos"
       },
       "view": {
         "price_demanded": "Precio demandado",
@@ -571,7 +577,9 @@
         "restaurant_description": "Descripción",
         "restaurant_image": "Imagen del restaurante",
         "restaurant_diners": "Núm. Comensales",
-        "restaurant_rotation": "Rotación de vinos"
+        "restaurant_rotation": "Rotación de vinos",
+        "restaurant_shifts": "Shifts",
+        "restaurant_wines": "Number for reference"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurante",

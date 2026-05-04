@@ -39,6 +39,8 @@ class RestaurantController extends Controller
                 'description' => $restaurant->description,
                 'number_of_diners' => $restaurant->number_of_diners,
                 'wine_rotation' => $restaurant->wine_rotation,
+                'reference_number' => $restaurant->reference_number,
+                'shifts' => $restaurant->shifts,
             ];
         });
 
@@ -77,6 +79,8 @@ class RestaurantController extends Controller
             'created_at' => $restaurant->created_at,
             'number_of_diners' => $restaurant->number_of_diners,
             'wine_rotation' => $restaurant->wine_rotation,
+            'reference_number' => $restaurant->reference_number,
+            'shifts' => $restaurant->shifts,
         ];
         return response()->json($response);
     }
@@ -106,8 +110,10 @@ class RestaurantController extends Controller
             'province' => 'required|min:3',
             'description' => 'required|min:20|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-            'number_of_diners' => 'nullable',
-            'wine_rotation' => 'nullable|string',
+            'number_of_diners' => 'nullable|numeric',
+            'wine_rotation' => 'required|string|max:20',
+            'reference_number' => 'required|numeric',
+            'shifts' => 'required|string|max:32',
         ]);
 
         if ($validator->fails()) {
@@ -127,6 +133,8 @@ class RestaurantController extends Controller
             'description' => $request->description,
             'number_of_diners' => $request->number_of_diners,
             'wine_rotation' => $request->wine_rotation,
+            'reference_number' => $request->reference_number,
+            'shifts' => $request->shifts,
         ];
 
         try {

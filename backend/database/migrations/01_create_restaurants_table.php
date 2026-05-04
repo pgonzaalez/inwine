@@ -24,7 +24,9 @@ return new class extends Migration
             $table->string('province');
             $table->string('description');
             $table->integer('number_of_diners')->nullable();
-            $table->string('wine_rotation')->default('unknown');
+            $table->string('wine_rotation');
+            $table->integer('reference_number')->nullable();
+            $table->string('shifts')->default('unknown');
             $table->rememberToken();
             $table->timestamps();
         });
