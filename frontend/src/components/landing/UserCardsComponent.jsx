@@ -80,10 +80,10 @@ export default function UserCards() {
       image: "https://www.scmlogistica.es/wp-content/uploads/como-poner-en-marcha-un-pequeno-almacen.jpg",
       imageAlt: t("landing.user_cards.producer.alt"),
       description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
+        "Si ets productor de vins, t’ajudem a  vendre a nous clients.",
       linkUrl: "/register/seller",
       role: "seller",
-      features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
+      features: ["Pujada de vins"],
     },
     {
       id: 2,
@@ -91,10 +91,10 @@ export default function UserCards() {
       image: "https://es.msi.com/frontend/imgs/aboutus/kv-investor-information-xs.jpg",
       imageAlt: t("landing.user_cards.investor.alt"),
       description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
+        "Inverteix en vins. Zero risc i altes rendibilitats. Tu tries el vi i el restaurant que vols que el vengui. ",
       linkUrl: "/register/investor",
       role: "investor",
-      features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
+      features: ["Inverteix en ofertes de vins"],
     },
     {
       id: 3,
@@ -102,10 +102,10 @@ export default function UserCards() {
       image: "https://www.antiguarestaurante.com/es/media/ee367c51f9/ee367c51f659c9963f83cba87c831516.cms.jpg",
       imageAlt: t("landing.user_cards.restaurant.alt"),
       description:
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. In cum, incidunt iure dolore soluta facilis blanditiis quae voluptas praesentium nesciunt labore recusandae nemo quisquam eveniet, provident illo est, ad ab. Suscipit dolorem odit voluptates!",
+        "Disposa d’una carta de vins de qualitat sense invertir i sense risc.",
       linkUrl: "/register/restaurant",
       role: "restaurant",
-      features: ["Lorem ipsum dolor", "Lorem ipsum dolor"],
+      features: ["Crea ofertes per vins"],
     },
   ]
 

@@ -22,6 +22,7 @@ class Product extends Model
         "image",
         'status',
         "user_id",
+        "parent_product_id",
     ];
 
     protected static function booted()

@@ -204,7 +204,8 @@
             "details": "Details",
             "send": "Send",
             "sending": "Sending...",
-            "delete": "Delete"
+            "delete": "Delete",
+            "add_more": "Add More"
           }
         }
       },
@@ -267,7 +268,8 @@
         "error_server": "Could not connect to the server",
         "error_invalid_id": "Invalid product ID",
         "error_delivery": "Error delivering the product",
-        "success_sent": "Product sent successfully"
+        "success_sent": "Product sent successfully",
+        "success_duplicated": "Product added to queue successfully"
       },
       "modals": {
         "delete": {

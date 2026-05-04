@@ -76,6 +76,7 @@ Route::prefix('v1')->group(function () {
     Route::put('/restaurant', [AuthController::class, 'storeRestaurant']);
     Route::post('/investor', [AuthController::class, 'storeInvestor']);
 
+    Route::post('products/{id}/duplicate', [ProductController::class, 'duplicate']);
     Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
     Route::put('products/{productId}/images/{imageId}/primary', [ProductController::class, 'setPrimaryImage']);
 
