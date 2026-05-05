@@ -27,6 +27,14 @@ class Restaurant extends Model
         "shifts",
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'credit_card' => 'encrypted',
+            'phone_contact' => 'encrypted',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

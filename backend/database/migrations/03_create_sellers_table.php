@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('address');
-            $table->integer('phone_contact');
+            $table->text('phone_contact');
             $table->string('name_contact');
-            $table->string('bank_account')->nullable();
+            $table->text('bank_account')->nullable();
             $table->decimal('balance', 10, 2)->nullable();
             $table->rememberToken();
             $table->timestamps();

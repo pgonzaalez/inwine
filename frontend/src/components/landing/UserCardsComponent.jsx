@@ -77,7 +77,7 @@ export default function UserCards() {
     {
       id: 1,
       title: t("landing.user_cards.producer.title"),
-      image: "https://www.scmlogistica.es/wp-content/uploads/como-poner-en-marcha-un-pequeno-almacen.jpg",
+      image: "https://www.cellergrauigrau.com/wp-content/uploads/2022/10/Disen%CC%83o-sin-ti%CC%81tulo-5.png",
       imageAlt: t("landing.user_cards.producer.alt"),
       description:
         "Si ets productor de vins, t’ajudem a  vendre a nous clients.",

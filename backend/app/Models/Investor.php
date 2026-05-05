@@ -23,6 +23,15 @@ class Investor extends Model
         'remember_token',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'credit_card' => 'encrypted',
+            'bank_account' => 'encrypted',
+            'phone_contact' => 'encrypted',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
