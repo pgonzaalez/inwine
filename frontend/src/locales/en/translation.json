@@ -572,7 +572,13 @@
         "restaurant_description": "Description",
         "restaurant_image": "Restaurant image",
         "restaurant_diners": "Max. Diners",
-        "restaurant_rotation": "Wine rotation (Days)"
+        "restaurant_rotation": "Wine rotation (Days)",
+        "restaurant_reference": "Reference number",
+        "restaurant_workdays": "Working days per week",
+        "restaurant_services": "Services offered",
+        "service_breakfast": "Breakfast",
+        "service_lunch": "Lunch",
+        "service_dinner": "Dinner"
       },
       "submit_seller": "Add Producer",
       "submit_restaurant": "Add Restaurant",

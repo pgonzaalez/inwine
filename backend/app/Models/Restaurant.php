@@ -17,12 +17,19 @@ class Restaurant extends Model
         'name_contact',
         'credit_card',
         'balance',
-        "business_name",
-        "image",
-        "province",
-        "description",
-        "number_of_diners",
-        "wine_rotation",
+        'business_name',
+        'image',
+        'province',
+        'description',
+        'number_of_diners',
+        'wine_rotation',
+        'reference_number',
+        'workdays_per_week',
+        'services',
+    ];
+
+    protected $casts = [
+        'services' => 'array',
     ];
 
     public function user()

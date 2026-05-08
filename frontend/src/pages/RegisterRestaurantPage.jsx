@@ -18,6 +18,8 @@ import {
   MessageSquareText,
   Users,
   TimerReset,
+  Hash,
+  CalendarDays,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "@/utils/utils"
@@ -44,6 +46,9 @@ const AddRestaurantForm = () => {
     description: "",
     number_of_diners: "",
     wine_rotation: "",
+    reference_number: "",
+    workdays_per_week: "",
+    services: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -107,10 +112,18 @@ const AddRestaurantForm = () => {
   }, [formData, touched]);
 
   const handleChange = (e) => {
-    console.log("target is: " + e.target.value)
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setTouched({ ...touched, [name]: true });
+  };
+
+  const handleServiceChange = (service) => {
+    const current = formData.services;
+    const updated = current.includes(service)
+      ? current.filter((s) => s !== service)
+      : [...current, service];
+    setFormData({ ...formData, services: updated });
+    setTouched({ ...touched, services: true });
   };
 
   const handleBlur = (e) => {
@@ -212,9 +225,12 @@ const AddRestaurantForm = () => {
       formDataObj.append("_method", "PUT")
 
       Object.keys(formData).forEach((key) => {
-        if (key !== "image") {
-          formDataObj.append(key, formData[key])
-        }
+        if (key === "image" || key === "services") return;
+        formDataObj.append(key, formData[key])
+      })
+
+      formData.services.forEach((service) => {
+        formDataObj.append("services[]", service)
       })
 
       if (selectedImage) {
@@ -267,6 +283,9 @@ const AddRestaurantForm = () => {
           description: "",
           number_of_diners: "",
           wine_rotation: "",
+          reference_number: "",
+          workdays_per_week: "",
+          services: [],
         });
         setSelectedImage(null);
         setImagePreview("")
@@ -824,6 +843,94 @@ const AddRestaurantForm = () => {
                     <div className="h-6">
                       {hasError("wine_rotation") && <span className="text-red-500 text-xs mt-1">{getFieldErrors("wine_rotation")[0]}</span>}
                     </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+                  <div>
+                    {/* Número de referencia */}
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <Hash
+                          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("reference_number") ? "text-red-500" : "text-gray-400"}`}
+                        />
+                        <input
+                          type="text"
+                          name="reference_number"
+                          value={formData.reference_number}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("reference_number") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`}
+                          placeholder=" "
+                          id="reference_number"
+                        />
+                        <label
+                          htmlFor="reference_number"
+                          className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("reference_number") ? "text-red-500" : "text-gray-500"}`}
+                        >
+                          {t("auth.register.labels.restaurant_reference")}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="h-6">
+                      {hasError("reference_number") && <span className="text-red-500 text-xs mt-1">{getFieldErrors("reference_number")[0]}</span>}
+                    </div>
+                  </div>
+                  <div>
+                    {/* Días laborables por semana */}
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <CalendarDays
+                          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${hasError("workdays_per_week") ? "text-red-500" : "text-gray-400"}`}
+                        />
+                        <input
+                          type="number"
+                          min="1"
+                          max="7"
+                          name="workdays_per_week"
+                          value={formData.workdays_per_week}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={`peer w-full h-12 bg-white rounded-lg border pl-10 pr-3 placeholder-transparent focus:outline-none focus:ring-2 ${hasError("workdays_per_week") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`}
+                          placeholder=" "
+                          id="workdays_per_week"
+                        />
+                        <label
+                          htmlFor="workdays_per_week"
+                          className={`absolute left-10 top-2 transition-all transform -translate-y-4 scale-75 origin-top-left bg-white px-1 peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:scale-75 ${hasError("workdays_per_week") ? "text-red-500" : "text-gray-500"}`}
+                        >
+                          {t("auth.register.labels.restaurant_workdays")}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="h-6">
+                      {hasError("workdays_per_week") && <span className="text-red-500 text-xs mt-1">{getFieldErrors("workdays_per_week")[0]}</span>}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Servicios ofrecidos */}
+                <div className="mt-1">
+                  <p className={`text-sm font-medium mb-2 ${hasError("services") ? "text-red-500" : "text-gray-700"}`}>
+                    {t("auth.register.labels.restaurant_services")}
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    {["breakfast", "lunch", "dinner"].map((service) => (
+                      <label key={service} className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={formData.services.includes(service)}
+                          onChange={() => handleServiceChange(service)}
+                          className="w-4 h-4 rounded border-gray-300 text-[#9A3E50] focus:ring-[#9A3E50]"
+                        />
+                        <span className={`text-sm ${hasError("services") ? "text-red-500" : "text-gray-700"}`}>
+                          {t(`auth.register.labels.service_${service}`)}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="h-6">
+                    {hasError("services") && <span className="text-red-500 text-xs mt-1">{getFieldErrors("services")[0]}</span>}
                   </div>
                 </div>
               </div>

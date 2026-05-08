@@ -107,7 +107,11 @@ class RestaurantController extends Controller
             'description' => 'required|min:20|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'number_of_diners' => 'nullable',
-            'wine_rotation' => 'nullable|string',
+            'wine_rotation' => 'nullable|integer',
+            'reference_number' => 'nullable|string|max:50',
+            'workdays_per_week' => 'nullable|integer|min:1|max:7',
+            'services' => 'nullable|array',
+            'services.*' => 'in:breakfast,lunch,dinner',
         ]);
 
         if ($validator->fails()) {
@@ -127,6 +131,9 @@ class RestaurantController extends Controller
             'description' => $request->description,
             'number_of_diners' => $request->number_of_diners,
             'wine_rotation' => $request->wine_rotation,
+            'reference_number' => $request->reference_number,
+            'workdays_per_week' => $request->workdays_per_week,
+            'services' => $request->services,
         ];
 
         try {
