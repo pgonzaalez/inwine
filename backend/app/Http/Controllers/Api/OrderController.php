@@ -21,6 +21,10 @@ class OrderController extends Controller
 
     public function clearForUser(Request $request, $userId)
     {
+        if ((int) $userId !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado'], 403);
+        }
+
         $orderIds = $request->selectedOrderIds ?? [];
 
         Order::where('user_id', $userId)
@@ -37,9 +41,9 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'request_restaurant_id' => 'required|exists:request_restaurants,id',
         ]);
+        $validated['user_id'] = auth()->id();
 
         $existOrder = Order::where('user_id', $validated['user_id'])
             ->where('request_restaurant_id', $validated['request_restaurant_id'])
@@ -79,8 +83,10 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json(['message' => 'Order not found.'], 404);
         }
+        if ($order->user_id !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado para modificar esta orden'], 403);
+        }
         $validated = $request->validate([
-            'user_id' => 'sometimes|required|exists:users,id',
             'request_restaurant_id' => 'sometimes|required|exists:request_restaurants,id',
         ]);
         $order->update($validated);
@@ -95,6 +101,9 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json(['message' => 'Order not found.'], 404);
         }
+        if ($order->user_id !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado para eliminar esta orden'], 403);
+        }
         $order->delete();
         return response()->json(['message' => 'Order deleted successfully.']);
     }
@@ -105,6 +114,10 @@ class OrderController extends Controller
 
     public function showOrderByUser($userId)
     {
+        if ((int) $userId !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado'], 403);
+        }
+
         $orders = Order::where('user_id', $userId)
             ->with([
                 'requestRestaurant.product.seller',
@@ -144,6 +157,10 @@ class OrderController extends Controller
 
         if (!$order) {
             return response()->json(['message' => 'Order not found.'], 404);
+        }
+
+        if ($order->user_id !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado para completar esta orden'], 403);
         }
 
         try {

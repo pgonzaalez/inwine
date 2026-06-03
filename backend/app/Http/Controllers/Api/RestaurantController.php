@@ -209,7 +209,16 @@ class RestaurantController extends Controller
     public function destroy(string $id)
     {
         $restaurant = Restaurant::find($id);
+
+        if (!$restaurant) {
+            return response()->json(['message' => 'Restaurante no encontrado'], 404);
+        }
+
+        if ($restaurant->user_id !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado para eliminar este restaurante'], 403);
+        }
+
         $restaurant->delete();
-        return response()->json($restaurant);
+        return response()->json(['message' => 'Restaurante eliminado correctamente']);
     }
 }

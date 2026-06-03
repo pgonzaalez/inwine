@@ -145,7 +145,6 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240',
-            'user_id' => 'required|exists:users,id'
         ]);
 
         if ($validator->fails()) {
@@ -167,8 +166,8 @@ class ProductController extends Controller
                 'description',
                 'price_demanded',
                 'quantity',
-                'user_id'
             ]);
+            $productData['user_id'] = auth()->id();
 
             $product = Product::create($productData);
 
@@ -254,11 +253,15 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         $product = Product::find($id);
-    
+
         if (!$product) {
             return response()->json([
                 'message' => 'Producto no encontrado'
             ], 404);
+        }
+
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado para modificar este producto'], 403);
         }
     
         $validator = Validator::make($request->all(), [
@@ -275,7 +278,6 @@ class ProductController extends Controller
             'existing_images.*' => 'numeric',
             'removed_images' => 'nullable|array',
             'removed_images.*' => 'numeric',
-            'user_id' => 'sometimes|required|exists:users,id'
         ]);
     
         if ($validator->fails()) {
@@ -296,9 +298,8 @@ class ProductController extends Controller
                 'description',
                 'price_demanded',
                 'quantity',
-                'user_id'
             ]);
-    
+
             $product->update($productData);
     
             // Procesamos las imágenes eliminadas
@@ -388,6 +389,10 @@ class ProductController extends Controller
             ], 404);
         }
 
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado para duplicar este producto'], 403);
+        }
+
         // Always point to the root of the stack
         $stackRootId = $product->parent_product_id ?? $product->id;
 
@@ -448,6 +453,10 @@ class ProductController extends Controller
             ], 404);
         }
 
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado para eliminar este producto'], 403);
+        }
+
         DB::beginTransaction();
 
         try {
@@ -485,6 +494,10 @@ class ProductController extends Controller
      */
     public function destroyAllByUser(string $userId, string $productId)
     {
+        if ((int) $userId !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado'], 403);
+        }
+
         $product = Product::with('images')->where('user_id', $userId)->find($productId);
         if (!$product) {
             return response()->json([
@@ -535,6 +548,10 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Producto no encontrado'
             ], 404);
+        }
+
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado para modificar este producto'], 403);
         }
 
         $image = ProductImage::where('product_id', $productId)
@@ -608,6 +625,10 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Producto no encontrado'
             ], 404);
+        }
+
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado para modificar este producto'], 403);
         }
 
         $image = ProductImage::where('product_id', $productId)
