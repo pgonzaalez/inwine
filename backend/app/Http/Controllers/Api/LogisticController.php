@@ -48,8 +48,8 @@ class LogisticController extends Controller
 
             // 3) Crear una nueva solicitud del inversor con estado 'paid'
             $investorRequest = OrderRequested::create([
-                'user_id' => 3,
-                'request_restaurant_id' => 1,
+                'user_id' => Auth::id(),
+                'request_restaurant_id' => $restaurantRequest->id,
                 'status' => 'paid',
             ]);
 
@@ -193,6 +193,10 @@ class LogisticController extends Controller
                 return response()->json(['error' => 'No se encontró una solicitud de restaurante en estado in_transit.'], 404);
             }
 
+            if ($restaurantRequest->user_id !== Auth::id()) {
+                return response()->json(['error' => 'No tienes permiso para confirmar la entrega de este producto.'], 403);
+            }
+
             $investorRequest = OrderRequested::where('request_restaurant_id', $restaurantRequest->id)
                 ->where('status', 'shipped')
                 ->orderBy('created_at', 'desc')
@@ -257,6 +261,10 @@ class LogisticController extends Controller
             $investorRequest = OrderRequested::where('request_restaurant_id', $restaurantRequest->id)
                 ->orderBy('created_at', 'desc')
                 ->first();
+
+            if (!$investorRequest || $investorRequest->user_id !== Auth::id()) {
+                return response()->json(['error' => 'No tienes permiso para marcar este producto como vendido.'], 403);
+            }
 
             // Actualizamos estados
             $restaurantRequest->update(['status' => 'sold']);

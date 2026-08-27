@@ -17,23 +17,20 @@ class Restaurant extends Model
         'name_contact',
         'credit_card',
         'balance',
-        "business_name",
-        "image",
-        "province",
-        "description",
-        "number_of_diners",
-        "wine_rotation",
-        "reference_number",
-        "shifts",
+        'business_name',
+        'image',
+        'province',
+        'description',
+        'number_of_diners',
+        'wine_rotation',
+        'reference_number',
+        'workdays_per_week',
+        'services',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'credit_card' => 'encrypted',
-            'phone_contact' => 'encrypted',
-        ];
-    }
+    protected $casts = [
+        'services' => 'array',
+    ];
 
     public function user()
     {

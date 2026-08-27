@@ -579,10 +579,14 @@
         "restaurant_zone": "Zona",
         "restaurant_description": "Descripció",
         "restaurant_image": "Imatge del restaurant",
-        "restaurant_diners": "Núm. Comensals",
-        "restaurant_rotation": "Rotació de vins",
-        "restaurant_shifts": "Torns",
-        "restaurant_wines": "Nombre de referènica"
+        "restaurant_diners": "Num. Comensals",
+        "restaurant_rotation": "Rotació de vins (Dies)",
+        "restaurant_reference": "Número de referència",
+        "restaurant_workdays": "Dies laborables per setmana",
+        "restaurant_services": "Serveis oferts",
+        "service_breakfast": "Esmorzar",
+        "service_lunch": "Dinar",
+        "service_dinner": "Sopar"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurant",

@@ -24,11 +24,11 @@ class RequestRestaurantController extends Controller
     {
         // Validar los datos de entrada
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
             'price_restaurant' => 'required|numeric|min:0',
         ]);
+        $validated['user_id'] = auth()->id();
 
         // Crear un nuevo registro en la tabla RequestRestaurant
         $requestRestaurant = RequestRestaurant::create($validated);
@@ -55,16 +55,19 @@ class RequestRestaurantController extends Controller
     {
         $requestRestaurant = RequestRestaurant::findOrFail($id);
 
+        if ($requestRestaurant->user_id !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado para modificar esta solicitud'], 403);
+        }
+
         // Verificar si el producto está en stock
-        $product = $requestRestaurant->product; 
+        $product = $requestRestaurant->product;
         if (!$product || $product->status !== 'in_stock') {
             return response()->json([
                 'message' => 'No se puede actualizar la solicitud porque el producto no está en stock'
             ], 400);
         }
 
-
-        $requestRestaurant->update($httpRequest->all());
+        $requestRestaurant->update($httpRequest->only(['quantity', 'price_restaurant']));
 
         return response()->json($requestRestaurant);
     }

@@ -187,10 +187,12 @@ class AuthController extends Controller
                 'province' => 'required|string|min:3',
                 'description' => 'required|string|min:20|max:100',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-                'number_of_diners' => 'nullable|numeric',
-                'wine_rotation' => 'required|string|max:20',
-                'reference_number' => 'required|numeric',
-                'shifts' => 'required|string|max:32',
+                'number_of_diners' => 'nullable',
+                'wine_rotation' => 'nullable|integer',
+                'reference_number' => 'nullable|string|max:50',
+                'workdays_per_week' => 'nullable|integer|min:1|max:7',
+                'services' => 'nullable|array',
+                'services.*' => 'in:breakfast,lunch,dinner',
             ]);
 
             if ($validatedData->fails()) {
@@ -241,10 +243,11 @@ class AuthController extends Controller
                 'description' => $validatedData['description'],
                 'province' => $validatedData['province'],
                 'image' => $validatedData['image'] ?? null,
-                'number_of_diners' => $validatedData['number_of_diners'] ?? null,
-                'wine_rotation' => $validatedData['wine_rotation'],
-                'reference_number' => $validatedData['reference_number'],
-                'shifts' => $validatedData['shifts'],
+                'number_of_diners' => $validatedData['number_of_diners'],
+                'wine_rotation' => $validatedData['wine_rotation'] ?? null,
+                'reference_number' => $validatedData['reference_number'] ?? null,
+                'workdays_per_week' => $validatedData['workdays_per_week'] ?? null,
+                'services' => $validatedData['services'] ?? null,
             ]);
 
             Log::info('Restaurante creado exitosamente', ['restaurant' => $restaurant->id]);

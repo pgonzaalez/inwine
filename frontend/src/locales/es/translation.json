@@ -579,9 +579,13 @@
         "restaurant_description": "Descripción",
         "restaurant_image": "Imagen del restaurante",
         "restaurant_diners": "Núm. Comensales",
-        "restaurant_rotation": "Rotación de vinos",
-        "restaurant_shifts": "Shifts",
-        "restaurant_wines": "Number for reference"
+        "restaurant_rotation": "Rotación de vinos (Días)",
+        "restaurant_reference": "Número de referencia",
+        "restaurant_workdays": "Días laborables por semana",
+        "restaurant_services": "Servicios ofrecidos",
+        "service_breakfast": "Desayuno",
+        "service_lunch": "Comida",
+        "service_dinner": "Cena"
       },
       "submit_seller": "Agregar Productor",
       "submit_restaurant": "Agregar Restaurante",
