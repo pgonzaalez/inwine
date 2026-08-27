@@ -61,7 +61,7 @@ class LogisticController extends Controller
 
             // Notificar al vendedor
             $sellerUser = User::find($product->user_id);
-            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'),);
+            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'), );
             // Notificar al restaurante
             $restaurantUser = User::find($restaurantRequest->user_id);
             $restaurantUser->notify(new ProductStatusUpdated($product, 'requested'));
@@ -142,7 +142,7 @@ class LogisticController extends Controller
 
             // Notificar al vendedor
             $sellerUser = User::find($product->user_id);
-            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'),);
+            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'), );
             // Notificar al restaurante
             $restaurantUser = User::find($restaurantRequest->user_id);
             $restaurantUser->notify(new ProductStatusUpdated($product, 'requested'));
@@ -166,7 +166,7 @@ class LogisticController extends Controller
     }
 
     /**
-     * 3) Marcar como entregado en el local (El producto llega al restaurante)
+     * 2) Marcar como entregado en el local (El producto llega al restaurante)
      *    - Pasa de:
      *        Product: in_transit   --> sold
      *        RequestRestaurant: in_transit  --> in_my_local
@@ -214,7 +214,7 @@ class LogisticController extends Controller
             DB::commit();
 
             $sellerUser = User::find($product->user_id);
-            $sellerUser->notify(new ProductStatusUpdated($product, 'sold'),);
+            $sellerUser->notify(new ProductStatusUpdated($product, 'sold'), );
             // Notificar al restaurante
             $restaurantUser = User::find($restaurantRequest->user_id);
             $restaurantUser->notify(new ProductStatusUpdated($restaurantRequest, 'en mi local'));
@@ -237,7 +237,7 @@ class LogisticController extends Controller
     }
 
     /**
-     * 4) Marcar el producto como vendido (cliente final compra el vino en el restaurante)
+     * 3) Marcar el producto como vendido (cliente final compra el vino en el restaurante)
      *    - Pasa de:
      *        RequestRestaurant: in_my_local --> sold
      *        Request: waiting     --> completed (sin cambio)
