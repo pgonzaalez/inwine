@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -27,16 +28,28 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName("Panell d'administració d'Inwine")
+            ->brandName("INWine Admin")
             ->favicon(asset('images/logo.webp'))
             ->colors([
-                'primary' => Color::Red,
-                // 'gray' => Color::Pink,
+                'primary' => Color::Rose,
+                'danger' => Color::Red,
+                'gray' => Color::Slate,
+                'info' => Color::Blue,
+                'success' => Color::Emerald,
+                'warning' => Color::Amber,
             ])
             ->navigationGroups([
-                "Gestió d'usuaris",
-                "Gestió de productes",
-                "Comandes",
+                NavigationGroup::make("Gestió d'usuaris")
+                    ->icon('heroicon-o-users'),
+                NavigationGroup::make('Restaurants')
+                    ->icon('heroicon-o-home-modern'),
+                NavigationGroup::make('Catàleg')
+                    ->icon('heroicon-o-cube'),
+                NavigationGroup::make('Comandes i pagaments')
+                    ->icon('heroicon-o-shopping-cart'),
+                NavigationGroup::make('Finances i configuració')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->collapsed(),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -61,6 +74,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth('full')
+            ->spa()
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            ->databaseNotifications();
     }
 }

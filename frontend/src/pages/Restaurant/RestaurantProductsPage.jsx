@@ -4,8 +4,11 @@ import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useFetchUser } from "@components/auth/FetchUser"
-import { Package, Check, ShoppingBag } from "lucide-react"
+import { Package, Check, ShoppingBag, Info } from "lucide-react"
 import ProductGrid from "@/components/landing/products/ProductGrid"
+import { API_URL } from "@/config/api"
+import { getCookie } from "@/utils/utils"
+import { useCommissionPercentage } from "@/hooks/useCommissionPercentage"
 
 const primaryColors = {
   dark: "#9A3E50",
@@ -24,8 +27,9 @@ function RestaurantRequestFormComponent() {
   const [offerPrice, setOfferPrice] = useState("")
   const [requestStatus, setRequestStatus] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { percentage: restaurantCommissionPercentage } = useCommissionPercentage("restaurant")
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+  const apiUrl = API_URL
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -71,6 +75,7 @@ function RestaurantRequestFormComponent() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({
           user_id: user?.id,
@@ -113,6 +118,19 @@ function RestaurantRequestFormComponent() {
           {t("dashboards.restaurant.requests.description")}
         </p>
       </div>
+
+      {restaurantCommissionPercentage > 0 && (
+        <div className="mb-6 bg-amber-50 border border-amber-100 p-4 rounded-md flex items-start gap-2">
+          <Info className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-amber-800">
+            {t(
+              "dashboards.restaurant.requests.commission_notice",
+              "En realitzar el pagament d'aquesta comanda se t'aplicarà una comissió del {{percentage}}%, que s'afegirà al preu ofertat.",
+              { percentage: restaurantCommissionPercentage }
+            )}
+          </p>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8">
         <form onSubmit={handleRequestSubmit} className="space-y-6">
@@ -187,6 +205,22 @@ function RestaurantRequestFormComponent() {
                     </p>
                   )}
                 </div>
+
+                {restaurantCommissionPercentage > 0 && offerPrice && !isNaN(parseFloat(offerPrice)) && (
+                  <div className="bg-amber-50 border border-amber-100 p-3 rounded-md flex items-start gap-2">
+                    <Info className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-amber-800">
+                      {t(
+                        "dashboards.restaurant.requests.commission_notice_amount",
+                        "Amb aquesta oferta, la comissió del {{percentage}}% suposaria aproximadament {{amount}}€.",
+                        {
+                          percentage: restaurantCommissionPercentage,
+                          amount: (parseFloat(offerPrice) * (restaurantCommissionPercentage / 100)).toFixed(2),
+                        }
+                      )}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}

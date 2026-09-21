@@ -6,17 +6,20 @@ import {
   AlertCircle,
   X,
   ShieldCheck,
+  UserPlus,
+  Mail,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { getCookie, setCookie } from "@/utils/utils";
 import RoleSelector from "@/components/RoleSelector"
 import Modal from "@components/Modal";
+import { API_URL } from "@/config/api";
 
 import { useTranslation } from "react-i18next";
 
 const LoginForm = () => {
   const { t } = useTranslation();
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = API_URL
 
   // Estado para controlar formulario
   const [formData, setFormData] = useState({
@@ -33,6 +36,8 @@ const LoginForm = () => {
 
   // Estados relacionados con la selección de rol
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false)
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false)
   // const [showRoleSelection, setShowRoleSelection] = useState(false)
   // const [availableRoles, setAvailableRoles] = useState([])
   // const [selectedRole, setSelectedRole] = useState(null)
@@ -139,6 +144,23 @@ const LoginForm = () => {
     }
   };
 
+  const handleRegisterRoleSelect = (role) => {
+    setIsRegisterModalOpen(false);
+    switch (role) {
+      case "seller":
+        navigate("/register/seller");
+        break;
+      case "restaurant":
+        navigate("/register/restaurant");
+        break;
+      case "investor":
+        navigate("/register/investor");
+        break;
+      default:
+        navigate("/register/seller");
+    }
+  };
+
   // Cierra el mensaje de error o éxito
   const dismissMessage = () => {
     setMessage("")
@@ -233,15 +255,57 @@ const LoginForm = () => {
               />
             </div>
 
+            {/* Enllaç de recuperació de compte */}
+            <div className="text-right -mt-2">
+              <button
+                type="button"
+                onClick={() => setIsForgotPasswordModalOpen(true)}
+                className="text-sm font-medium text-[#BE6674] hover:text-[#741C28] hover:underline cursor-pointer"
+              >
+                {t("auth.login.forgot_password", "Has oblidat la contrasenya?")}
+              </button>
+            </div>
+
             {/* Botón de enviar */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-[#BE6674] text-white rounded-lg hover:bg-[#741C28] transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-[#BE6674] text-white font-medium rounded-lg hover:bg-[#741C28] transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer shadow-sm hover:shadow"
             >
               {isLoading ? t("auth.login.loading") : t("auth.login.submit")}
             </button>
           </form>
+
+          {/* Separador y sección de registro */}
+          <div className="mt-6">
+            <div className="relative flex items-center justify-center my-4">
+              <div className="border-t border-gray-200 w-full"></div>
+              <span className="bg-white px-3 text-xs text-gray-500 uppercase tracking-wider font-medium">
+                {t("auth.login.or_divider", "o")}
+              </span>
+              <div className="border-t border-gray-200 w-full"></div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsRegisterModalOpen(true)}
+              className="w-full py-3 border-2 border-[#BE6674] text-[#BE6674] hover:bg-[#BE6674] hover:text-white rounded-lg font-medium transition duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow"
+            >
+              <UserPlus size={18} />
+              <span>{t("auth.login.register_button", "Crear una cuenta")}</span>
+            </button>
+
+            <p className="mt-4 text-center text-sm text-gray-600">
+              {t("auth.login.no_account", "¿No tienes cuenta?")}{" "}
+              <button
+                type="button"
+                onClick={() => setIsRegisterModalOpen(true)}
+                className="font-medium text-[#BE6674] hover:text-[#741C28] hover:underline cursor-pointer"
+              >
+                {t("auth.login.register_link", "Regístrate aquí")}
+              </button>
+            </p>
+          </div>
         </div>
       </div>
 
@@ -251,19 +315,68 @@ const LoginForm = () => {
         onClose={() => setIsRoleModalOpen(false)}
         title={t("auth.login.role_modal_title")}
         description={t("auth.login.role_modal_desc")}
-        icon={<User className="h-8 w-8" />}
-        variant="primary"
+        icon={<User className="h-8 w-8 text-[#BE6674]" />}
+        iconBackground="bg-[#BE6674]/10"
+        variant="default"
         size="md" 
         footer={null}
       >
         <div className="px-2">
-          <RoleSelector
-            roles={userData?.roles || []}
-            onSelect={(role) => {
-              redirectToDashboard(role);
-              setIsRoleModalOpen(false);
-            }}
-          />
+          {isRoleModalOpen && (
+            <RoleSelector
+              roles={userData?.roles || []}
+              onSelect={(role) => {
+                redirectToDashboard(role);
+                setIsRoleModalOpen(false);
+              }}
+            />
+          )}
+        </div>
+      </Modal>
+
+      {/* Modal de Recuperació de Compte */}
+      <Modal
+        isOpen={isForgotPasswordModalOpen}
+        onClose={() => setIsForgotPasswordModalOpen(false)}
+        title={t("auth.login.forgot_password_modal_title", "Recuperar el teu compte")}
+        description={t(
+          "auth.login.forgot_password_modal_desc",
+          "Per motius de seguretat, la recuperació de contrasenya es gestiona manualment. Escriu-nos i t'ajudarem a recuperar l'accés al teu compte."
+        )}
+        icon={<Mail className="h-8 w-8 text-[#BE6674]" />}
+        iconBackground="bg-[#BE6674]/10"
+        variant="default"
+        size="md"
+        footer={
+          <a
+            href="mailto:administracio@inwine.cat?subject=Recuperaci%C3%B3%20de%20compte"
+            className="flex w-full items-center justify-center rounded-lg bg-[#BE6674] hover:bg-[#741C28] px-4 py-2.5 text-sm font-medium text-white transition-colors"
+          >
+            <Mail size={16} className="mr-2" />
+            administracio@inwine.cat
+          </a>
+        }
+      />
+
+      {/* Modal de Selección de Rol para Registro */}
+      <Modal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        title={t("auth.login.register_modal_title", "Crear una cuenta")}
+        description={t("auth.login.register_modal_desc", "Selecciona el tipo de cuenta con el que deseas registrarte:")}
+        icon={<UserPlus className="h-8 w-8 text-[#BE6674]" />}
+        iconBackground="bg-[#BE6674]/10"
+        variant="default"
+        size="md"
+        footer={null}
+      >
+        <div className="px-2">
+          {isRegisterModalOpen && (
+            <RoleSelector
+              roles={["seller", "restaurant", "investor"]}
+              onSelect={handleRegisterRoleSelect}
+            />
+          )}
         </div>
       </Modal>
     </>

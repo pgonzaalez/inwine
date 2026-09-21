@@ -5,6 +5,9 @@ import "./App.css";
 import Layout from "@layout/Layout";
 import HeaderLayout from "@layout/HeaderLayout";
 import ScrollToTop from "@components/ScrollToTop";
+import RouteAnalytics from "@components/RouteAnalytics";
+import CookieConsent from "@components/CookieConsent";
+import NotFoundPage from "@pages/NotFoundPage";
 // Pages
 import Profile from "@pages/Profile/ProfilePage";
 import Notifications from "@pages/Notification/NotificationsPage";
@@ -32,6 +35,7 @@ import EditProductPage from "@pages/Seller/EditProductPage";
 import RegisterInversor from "@pages/RegisterInversorPage";
 import Inversor from "@pages/Inversor/InversorDashboardPage";
 import ShowInvestment from "@pages/Inversor/ShowInvestment";
+import InvestmentHistoryPage from "@pages/Inversor/InvestmentHistoryPage";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
@@ -61,6 +65,7 @@ export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <RouteAnalytics />
       <Routes>
         <Route element={<HeaderLayout />}>
           <Route path="/" element={<Main />} />
@@ -94,6 +99,9 @@ export default function App() {
             path="/declaracions-producte"
             element={<ProductDeclarationsPage />}
           />
+
+          {/* 404 — catch-all */}
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         {/* Rutas con Sidebar */}
@@ -225,6 +233,14 @@ export default function App() {
             }
           />
           <Route
+            path="/investor/historic"
+            element={
+              <ProtectedRoute>
+                <InvestmentHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/investor/historic/:id"
             element={
               <ProtectedRoute>
@@ -255,6 +271,7 @@ export default function App() {
         <Route path="/register/restaurant" element={<RegisterRestaurant />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+      <CookieConsent />
     </Router>
   );
 }

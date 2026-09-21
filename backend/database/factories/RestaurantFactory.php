@@ -30,7 +30,7 @@ class RestaurantFactory extends Factory
             'province' => $this->faker->randomElement(['Barcelona', 'Girona', 'Lleida', 'Tarragona']),
             'description' => $this->faker->sentence(10),
             'number_of_diners' => $this->faker->numberBetween(1, 120),
-            'wine_rotation' => $this->faker->randomElement(['Cada dia', '2 dies', 'Cada setmana', '4 dies', '3 dies']),
+            'wine_rotation' => $this->faker->numberBetween(1, 7),
             'reference_number' => $this->faker->numberBetween(10, 45),
             'shifts' => $this->faker->randomElement([
                 'mond_to_sund_lunch',

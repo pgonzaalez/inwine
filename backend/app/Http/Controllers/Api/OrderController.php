@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderRequested;
+use App\Models\Payment;
+use Illuminate\Support\Facades\Log;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
 
 
 class OrderController extends Controller
@@ -15,7 +19,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::all();
+        $orders = Order::where('user_id', auth()->id())->get();
         return response()->json($orders);
     }
 
@@ -30,6 +34,8 @@ class OrderController extends Controller
         Order::where('user_id', $userId)
             ->whereIn('id', $orderIds)
             ->delete();
+
+        Log::info('Carrito vaciado', ['user_id' => $userId, 'order_ids' => $orderIds]);
 
         return response()->json(['message' => 'Cart cleared']);
     }
@@ -56,6 +62,9 @@ class OrderController extends Controller
         }
 
         $order = Order::create($validated);
+
+        Log::info('Pedido creado', ['order_id' => $order->id, 'user_id' => $order->user_id, 'request_restaurant_id' => $order->request_restaurant_id]);
+
         return response()->json([
             'message' => 'Orden creada exitosament.',
             'data' => $order
@@ -70,6 +79,9 @@ class OrderController extends Controller
         $order = Order::find($id);
         if (!$order) {
             return response()->json(['message' => 'Order not found.'], 404);
+        }
+        if ($order->user_id !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado para ver esta orden'], 403);
         }
         return response()->json($order);
     }
@@ -90,6 +102,8 @@ class OrderController extends Controller
             'request_restaurant_id' => 'sometimes|required|exists:request_restaurants,id',
         ]);
         $order->update($validated);
+
+        Log::info('Pedido actualizado', ['order_id' => $order->id, 'user_id' => auth()->id()]);
     }
 
     /**
@@ -104,7 +118,11 @@ class OrderController extends Controller
         if ($order->user_id !== auth()->id()) {
             return response()->json(['message' => 'No estás autorizado para eliminar esta orden'], 403);
         }
+        $orderId = $order->id;
         $order->delete();
+
+        Log::info('Pedido eliminado', ['order_id' => $orderId, 'user_id' => auth()->id()]);
+
         return response()->json(['message' => 'Order deleted successfully.']);
     }
 
@@ -163,6 +181,43 @@ class OrderController extends Controller
             return response()->json(['message' => 'No estás autorizado para completar esta orden'], 403);
         }
 
+        // No hay webhook de Stripe todavía, así que esto es lo único que
+        // impide marcar un pedido como pagado sin haberlo pagado de verdad:
+        // se comprueba contra Stripe (no contra lo que guardamos nosotros en
+        // la tabla payments, que se queda con el estado de cuando se creó el
+        // PaymentIntent, antes de que el cliente confirme el pago) que el
+        // PaymentIntent asociado a esta orden está realmente en 'succeeded'.
+        $payment = Payment::where('order_id', $orderId)->latest('id')->first();
+
+        if (!$payment || !$payment->stripe_payment_intent_id) {
+            return response()->json(['message' => 'No se encontró ningún pago para esta orden.'], 402);
+        }
+
+        $key = config('services.stripe.secret');
+        if (!$key) {
+            return response()->json(['message' => 'Stripe API key is missing.'], 500);
+        }
+
+        try {
+            Stripe::setApiKey($key);
+            $paymentIntent = PaymentIntent::retrieve($payment->stripe_payment_intent_id);
+        } catch (\Exception $e) {
+            Log::error('No se pudo verificar el PaymentIntent con Stripe', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se pudo verificar el pago con Stripe.'], 502);
+        }
+
+        if ($paymentIntent->status !== 'succeeded') {
+            return response()->json([
+                'message' => 'El pago todavía no se ha completado.',
+                'stripe_status' => $paymentIntent->status,
+            ], 402);
+        }
+
+        if ($payment->status !== $paymentIntent->status) {
+            $payment->status = $paymentIntent->status;
+            $payment->save();
+        }
+
         try {
             $requestRestaurant = $order->requestRestaurant;
             if (!$requestRestaurant) {
@@ -183,12 +238,38 @@ class OrderController extends Controller
 
             $product = $requestRestaurant->product;
             if ($product) {
-                $product->status = 'requested'; 
+                $product->status = 'requested';
                 $product->save();
             }
 
+            // El email es una cortesía informativa, nunca debe poder tumbar
+            // la respuesta de "pedido completado" si Resend falla o no está
+            // configurado todavía.
+            try {
+                $restaurantUser = $order->user;
+                if ($restaurantUser) {
+                    $restaurantUser->notify(new \App\Notifications\OrderPaymentConfirmed(
+                        productName: $product->name ?? 'Producte',
+                        quantity: $requestRestaurant->quantity,
+                        unitPrice: $requestRestaurant->price_restaurant,
+                        totalPrice: $requestRestaurant->price_restaurant * $requestRestaurant->quantity,
+                        orderReference: $order->id,
+                    ));
+                }
+            } catch (\Exception $e) {
+                Log::error('No se pudo enviar el email de confirmación de pago', ['error' => $e->getMessage()]);
+            }
+
+            Log::info('Pago confirmado y pedido completado', [
+                'order_id' => $orderId,
+                'user_id' => $order->user_id,
+                'product_id' => $product->id ?? null,
+                'total_price' => $requestRestaurant->price_restaurant * $requestRestaurant->quantity,
+            ]);
+
             return response()->json(['message' => 'Order marked as completed.']);
         } catch (\Exception $e) {
+            Log::error('Error al completar pedido', ['order_id' => $orderId, 'error' => $e->getMessage()]);
             return response()->json(['message' => 'Failed to mark order as completed.', 'error' => $e->getMessage()], 500);
         }
     }

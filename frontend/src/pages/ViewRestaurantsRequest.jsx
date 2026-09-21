@@ -5,10 +5,11 @@ import { useParams } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 import Footer from "../components/FooterComponent"
 import RequestsSection from "../components/landing/requests/RequestSection"
+import { API_URL, BASE_URL } from "@/config/api"
 
 export default function RestaurantDetail() {
-  const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000"
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+  const baseUrl = BASE_URL
+  const apiUrl = API_URL
   const { t } = useTranslation();
   const { id } = useParams()
 

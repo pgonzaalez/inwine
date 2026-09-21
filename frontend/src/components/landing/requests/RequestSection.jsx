@@ -108,20 +108,20 @@ export default function RequestsSection({ requests, mode, productPrice }) {
       {/* Collapsible header */}
       <div
         onClick={toggleRequestsSection}
-        className="bg-gradient-to-r from-[#9A3E50]/5 to-gray-50 rounded-t-xl p-5 flex justify-between items-center cursor-pointer hover:from-[#9A3E50]/10 transition-colors border-b border-gray-200"
+        className="bg-gradient-to-r from-[#9A3E50]/5 to-gray-50 rounded-t-xl p-4 sm:p-5 flex flex-wrap justify-between items-center gap-3 cursor-pointer hover:from-[#9A3E50]/10 transition-colors border-b border-gray-200"
       >
-        <h2 className="text-xl font-bold text-gray-800 flex items-center">
-          <div className="bg-[#9A3E50]/10 p-2 rounded-full mr-3">
-            <ShoppingCart className="text-[#9A3E50]" />
+        <h2 className="text-lg sm:text-xl font-bold text-gray-800 flex items-center flex-wrap gap-2 min-w-0">
+          <div className="bg-[#9A3E50]/10 p-2 rounded-full flex-shrink-0">
+            <ShoppingCart className="text-[#9A3E50] h-5 w-5" />
           </div>
-          Sol·licituds pendents
-          <span className="ml-2 bg-[#9A3E50] text-white text-sm py-0.5 px-2 rounded-full flex items-center">
+          <span className="truncate">Sol·licituds pendents</span>
+          <span className="bg-[#9A3E50] text-white text-sm py-0.5 px-2 rounded-full flex items-center flex-shrink-0">
             {filteredRequests.length}
             <span className="text-white/70 mx-1">/</span>
             {pendingRequestsCount}
           </span>
         </h2>
-        <button className="text-gray-700 hover:text-[#9A3E50] transition-colors bg-white rounded-full p-2 shadow-sm hover:shadow flex items-center justify-center">
+        <button className="text-gray-700 hover:text-[#9A3E50] transition-colors bg-white rounded-full p-2 shadow-sm hover:shadow flex items-center justify-center flex-shrink-0">
           {isRequestsExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
         </button>
       </div>
@@ -151,7 +151,7 @@ export default function RequestsSection({ requests, mode, productPrice }) {
               {filteredRequests.length > 0 ? (
                 <div className="space-y-4">
                   <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm mb-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-wrap justify-between items-center gap-2">
                       <h3 className="font-semibold text-gray-800">
                         {filteredRequests.length} {filteredRequests.length === 1 ? "sol·licitud" : "sol·licituds"}{" "}
                         {filterOptions.minPrice ||

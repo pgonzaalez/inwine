@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PaymentResource extends Resource
 {
@@ -19,32 +17,55 @@ class PaymentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static ?string $modelLabel = 'Pagaments';
+    protected static ?string $modelLabel = 'Pagament';
 
-    protected static ?string $navigationGroup = "Comandes";
+    protected static ?string $pluralModelLabel = 'Pagaments';
 
-    protected static ?int $navigationSort =20;
+    protected static ?string $navigationGroup = 'Comandes i pagaments';
+
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('order_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('stripe_payment_intent_id')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('amount')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('currency')
-                    ->required()
-                    ->maxLength(255)
-                    ->default('eur'),
+                Forms\Components\Section::make()
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\Select::make('order_id')
+                            ->label('Comanda')
+                            ->relationship('order', 'id')
+                            ->getOptionLabelFromRecordUsing(fn ($record) => "#{$record->id} — {$record->user?->name}")
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Pot quedar buida si la comanda ja s\'ha convertit en comanda pagada.'),
+                        Forms\Components\TextInput::make('stripe_payment_intent_id')
+                            ->label('Stripe Payment Intent')
+                            ->required()
+                            ->maxLength(255)
+                            ->copyable(),
+                        Forms\Components\Select::make('status')
+                            ->label('Estat')
+                            ->options([
+                                'requires_payment_method' => 'Requereix mètode de pagament',
+                                'requires_confirmation' => 'Requereix confirmació',
+                                'requires_action' => 'Requereix acció',
+                                'processing' => 'Processant',
+                                'succeeded' => 'Completat',
+                                'canceled' => 'Cancel·lat',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('amount')
+                            ->label('Import (cèntims)')
+                            ->numeric()
+                            ->required()
+                            ->helperText('Import en cèntims, tal com el retorna Stripe.'),
+                        Forms\Components\TextInput::make('currency')
+                            ->label('Moneda')
+                            ->required()
+                            ->maxLength(255)
+                            ->default('eur'),
+                    ]),
             ]);
     }
 
@@ -53,30 +74,48 @@ class PaymentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('order_id')
+                    ->label('Comanda')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('—'),
                 Tables\Columns\TextColumn::make('stripe_payment_intent_id')
-                    ->searchable(),
+                    ->label('Payment Intent')
+                    ->searchable()
+                    ->copyable()
+                    ->limit(24),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
+                    ->label('Estat')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'succeeded' => 'success',
+                        'canceled' => 'danger',
+                        'requires_payment_method' => 'gray',
+                        default => 'warning',
+                    }),
                 Tables\Columns\TextColumn::make('amount')
-                    ->numeric()
+                    ->label('Import')
+                    ->money(fn ($record) => $record->currency ?? 'eur', divideBy: 100)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('currency')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Data')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Estat')
+                    ->options([
+                        'requires_payment_method' => 'Requereix mètode de pagament',
+                        'requires_confirmation' => 'Requereix confirmació',
+                        'requires_action' => 'Requereix acció',
+                        'processing' => 'Processant',
+                        'succeeded' => 'Completat',
+                        'canceled' => 'Cancel·lat',
+                    ]),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -88,9 +127,7 @@ class PaymentResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

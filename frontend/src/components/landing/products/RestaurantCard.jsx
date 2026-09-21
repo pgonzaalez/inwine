@@ -1,9 +1,10 @@
 import { Bell, MapPin, Clock, Users, TimerReset, Wine, CalendarClock } from "lucide-react"
 import { useTranslation } from "react-i18next";
+import { BASE_URL } from "@/config/api";
 
 export default function RestaurantCard({ restaurante }) {
   const { t } = useTranslation();
-  const baseUrl = import.meta.env.VITE_URL_BASE;
+  const baseUrl = BASE_URL;
 
   return (
     <main>

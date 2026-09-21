@@ -22,6 +22,7 @@ import { useFetchUser } from "@components/auth/FetchUser"
 import { getCookie, deleteCookie } from "@/utils/utils"
 import Modal from "@components/Modal";
 import RoleSelector from "@/components/RoleSelector"
+import { API_URL } from "@/config/api"
 
 import flagCA from "@/img/locales/cataluña.png";
 import flagES from "@/img/locales/espana.png";
@@ -37,7 +38,7 @@ export default function Sidebar() {
   const { t, i18n } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = API_URL
   const { user, loading, error } = useFetchUser()
 
   const [isLogoutOpen, setIsLogoutOpen] = useState(false)

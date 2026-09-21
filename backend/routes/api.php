@@ -11,17 +11,21 @@ use App\Http\Controllers\Api\SellerController;
 use App\Http\Controllers\Api\RestaurantController;
 use App\Http\Controllers\Api\InvestorController;
 use App\Http\Controllers\Api\FavoriteController;
-use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\CommissionController;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+// Login: throttled to slow down credential-stuffing / brute force attempts.
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
+    Route::put('/user/password', [UserController::class, 'updatePassword'])->middleware('throttle:5,1');
+    Route::put('/user/preferences', [UserController::class, 'updatePreferences']);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/update-active-role', [AuthController::class, 'updateActiveRole']);
 
     // Favorites routes
     Route::get('/favorites', [FavoriteController::class, 'index']);
@@ -36,58 +40,69 @@ Route::middleware('auth:sanctum')->group(function () {
     // Ruta para obtener el historial del inversor
     Route::get('{userId}/investments', [InvestorController::class, 'investments']);
     Route::get('{userId}/investments/{investmentId}', [InvestorController::class, 'showInvestment']);
-
 });
-
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::post('/update-active-role', [AuthController::class, 'updateActiveRole'])->middleware('auth:sanctum');
-
 
 Route::prefix('v1')->group(function () {
 
-    // Route::apiResource('/products', ProductController::class)->middleware('auth:sanctum');
-    // Rutas para los productos
-    Route::get('{userId}/products/', [ProductController::class, 'indexByUser']);
-    Route::get('{userId}/products/{productId}', [ProductController::class, 'showByUser']); 
-    Route::delete('{userId}/products/{productId}', [ProductController::class, 'destroyAllByUser']);
-    Route::apiResource('/products', ProductController::class);
-    Route::apiResource('/winetypes', WineTypeController::class);
-    Route::apiResource('/investor', InvestorController::class);
-    Route::get('/request-product/{id}', [RequestRestaurantController::class, 'searchByProduct']);
-    Route::apiResource('/restaurants', RequestRestaurantController::class);
-    Route::apiResource('/orders', OrderController::class);
-    Route::get('{userId}/orders/', [OrderController::class, 'showOrderByUser']);
-    Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
-    Route::delete('{userId}/orders/clear', [OrderController::class, 'clear']);
+    // ---- Alta de cuenta (público, sin sesión todavía) ----
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::post('/seller', [AuthController::class, 'storeSeller']);
+        Route::put('/restaurant', [AuthController::class, 'storeRestaurant']);
+        Route::post('/investor', [AuthController::class, 'storeInvestor']);
+    });
 
-    //Sacar información de los restaurantes, OJO no recoge datos comprometedores por seguridad
+    // ---- Lectura pública: catálogo e información de marketplace ----
+    // OJO: estas rutas no deben devolver nunca datos sensibles (balances,
+    // tarjetas, cuentas bancarias, NIF...). Cualquier campo nuevo que se
+    // añada a estas respuestas debe revisarse con ese criterio.
+    Route::get('{userId}/products/', [ProductController::class, 'indexByUser']);
+    Route::get('{userId}/products/{productId}', [ProductController::class, 'showByUser']);
+    Route::apiResource('/products', ProductController::class)->only(['index', 'show']);
+    Route::apiResource('/winetypes', WineTypeController::class)->only(['index', 'show']);
+
+    Route::get('/commissions/{type}', [CommissionController::class, 'show']);
+
     Route::get('/restaurants-info', [RestaurantController::class, 'indexInfo']);
     Route::get('/restaurants-info/{id}', [RestaurantController::class, 'showPublicData']);
     Route::get('/restaurants-requests', [RequestRestaurantController::class, 'searchActiveUserRequests']);
-
-    // Rutas para los restaurantes
+    Route::get('/request-product/{id}', [RequestRestaurantController::class, 'searchByProduct']);
     Route::get('/{userId}/restaurant', [RequestRestaurantController::class, 'indexByRestaurant']);
     Route::get('/{userId}/restaurant/{requestId}', [RequestRestaurantController::class, 'showRequestWithProduct']);
-    Route::delete('/restaurant/{id}', [RequestRestaurantController::class, 'destroy'])
-    ->middleware('auth:sanctum');
+    Route::apiResource('/restaurants', RequestRestaurantController::class)->only(['index', 'show']);
 
-    Route::post('/seller', [AuthController::class, 'storeSeller']);
-    Route::put('/restaurant', [AuthController::class, 'storeRestaurant']);
-    Route::post('/investor', [AuthController::class, 'storeInvestor']);
+    // ---- Todo lo demás muta estado o toca datos privados: requiere sesión ----
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::delete('{userId}/products/{productId}', [ProductController::class, 'destroyAllByUser']);
+        Route::apiResource('/products', ProductController::class)->only(['store', 'update', 'destroy']);
+        Route::post('products/{id}/duplicate', [ProductController::class, 'duplicate']);
+        Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
+        Route::put('products/{productId}/images/{imageId}/primary', [ProductController::class, 'setPrimaryImage']);
 
-    Route::post('products/{id}/duplicate', [ProductController::class, 'duplicate']);
-    Route::delete('products/{productId}/images/{imageId}', [ProductController::class, 'deleteImage']);
-    Route::put('products/{productId}/images/{imageId}/primary', [ProductController::class, 'setPrimaryImage']);
+        Route::apiResource('/winetypes', WineTypeController::class)->only(['store', 'update', 'destroy']);
 
-    Route::prefix('logistic')->group(function () {
-        Route::post('/{productId}/approve', [LogisticController::class, 'approve']);
-        Route::post('/{productId}/send', [LogisticController::class, 'send']);
-        Route::post('/{productId}/deliver', [LogisticController::class, 'deliver']);
-        Route::post('/{productId}/sell', [LogisticController::class, 'sell']);
+        // 'store' se excluye a propósito: InvestorController::store() nunca ha
+        // tenido implementación (está vacío) y, si se registrara aquí, su
+        // ruta (POST /v1/investor) pisaría silenciosamente a la ruta de alta
+        // real (AuthController::storeInvestor, pública, definida más arriba)
+        // porque Laravel resuelve una URI+método duplicados con el último
+        // registro, no el primero.
+        Route::apiResource('/investor', InvestorController::class)->except(['store']);
+
+        Route::apiResource('/restaurants', RequestRestaurantController::class)->only(['store', 'update', 'destroy']);
+        Route::delete('/restaurant/{id}', [RequestRestaurantController::class, 'destroy']);
+
+        Route::apiResource('/orders', OrderController::class);
+        Route::get('{userId}/orders/', [OrderController::class, 'showOrderByUser']);
+        Route::post('/orders/{orderId}/completed', [OrderController::class, 'completed']);
+        Route::delete('{userId}/orders/clear', [OrderController::class, 'clearForUser']);
+
+        Route::prefix('logistic')->group(function () {
+            Route::post('/{productId}/approve', [LogisticController::class, 'approve']);
+            Route::post('/{productId}/send', [LogisticController::class, 'send']);
+            Route::post('/{productId}/deliver', [LogisticController::class, 'deliver']);
+            Route::post('/{productId}/sell', [LogisticController::class, 'sell']);
+        });
+
+        Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent']);
     });
-
-    Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent']);
-
-   
 });

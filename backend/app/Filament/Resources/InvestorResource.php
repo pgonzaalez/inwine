@@ -11,45 +11,60 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class InvestorResource extends Resource
 {
     protected static ?string $model = Investor::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
 
-    protected static ?string $modelLabel = 'Inversors';
+    protected static ?string $modelLabel = 'Inversor';
+
+    protected static ?string $pluralModelLabel = 'Inversors';
 
     protected static ?string $navigationGroup = "Gestió d'usuaris";
 
-    protected static ?int $navigationSort = 50;
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->label('Usuari')
-                    ->relationship('user', 'name')
-                    ->searchable()
-                    ->required(),
-                Forms\Components\TextInput::make('address')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone_contact')
-                    ->tel()
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('credit_card')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('bank_account')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('balance')
-                    ->numeric()
-                    ->default(null),
+                Forms\Components\Section::make('Dades de l\'inversor')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\Select::make('user_id')
+                            ->label('Usuari')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('phone_contact')
+                            ->label('Telèfon')
+                            ->tel()
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('address')
+                            ->label('Adreça')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                    ]),
+                Forms\Components\Section::make('Finances')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('balance')
+                            ->label('Saldo')
+                            ->numeric()
+                            ->prefix('€'),
+                        Forms\Components\TextInput::make('bank_account')
+                            ->label('Compte bancari')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('credit_card')
+                            ->label('Targeta de crèdit')
+                            ->maxLength(255),
+                    ]),
             ]);
     }
 
@@ -60,32 +75,32 @@ class InvestorResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuari')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->weight('bold'),
+                Tables\Columns\TextColumn::make('user.email')
+                    ->label('Correu')
+                    ->searchable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('phone_contact')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('credit_card')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('bank_account')
-                    ->searchable(),
+                    ->label('Adreça')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('balance')
-                    ->numeric()
+                    ->label('Saldo')
+                    ->money('EUR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Registrat')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -96,9 +111,7 @@ class InvestorResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -108,5 +121,16 @@ class InvestorResource extends Resource
             'create' => Pages\CreateInvestor::route('/create'),
             'edit' => Pages\EditInvestor::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Investor::whereHas('user', fn (Builder $query) => $query->visibleToAdmins())->count();
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // Amaga l'inversor dels comptes de User::HIDDEN_EMAILS.
+        return parent::getEloquentQuery()->whereHas('user', fn (Builder $query) => $query->visibleToAdmins());
     }
 }

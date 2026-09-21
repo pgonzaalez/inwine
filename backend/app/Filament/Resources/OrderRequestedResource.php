@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderRequestedResource extends Resource
 {
@@ -19,27 +17,56 @@ class OrderRequestedResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
-    protected static ?string $navigationGroup = "Comandes";
+    protected static ?string $navigationGroup = 'Comandes i pagaments';
 
-    protected static ?string $modelLabel = 'Ordres Pagades';
+    protected static ?string $modelLabel = 'Comanda pagada';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?string $pluralModelLabel = 'Comandes pagades';
+
+    protected static ?int $navigationSort = 20;
+
+    public const STATUSES = [
+        'paid' => 'Pagada',
+        'shipped' => 'Enviada',
+        'waiting' => 'En espera',
+        'completed' => 'Completada',
+    ];
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('request_restaurant_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('status')
-                    ->required(),
-                Forms\Components\TextInput::make('total_price')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Section::make('Comanda')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\Select::make('user_id')
+                            ->label('Restaurant')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                        Forms\Components\Select::make('request_restaurant_id')
+                            ->label('Petició')
+                            ->relationship('requestRestaurant', 'id')
+                            ->getOptionLabelFromRecordUsing(fn ($record) => "#{$record->id} — {$record->product?->name}")
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                        Forms\Components\Select::make('status')
+                            ->label('Estat')
+                            ->options(self::STATUSES)
+                            ->required()
+                            ->default('paid'),
+                        Forms\Components\TextInput::make('total_price')
+                            ->label('Preu total')
+                            ->numeric()
+                            ->prefix('€')
+                            ->required(),
+                        Forms\Components\TextInput::make('investor_earnings')
+                            ->label('A pagar a l\'inversor (registrat)')
+                            ->numeric()
+                            ->prefix('€'),
+                    ]),
             ]);
     }
 
@@ -48,31 +75,51 @@ class OrderRequestedResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('request_restaurant_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Restaurant')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('requestRestaurant.product.name')
+                    ->label('Producte')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Estat')
+                    ->badge()
+                    ->colors([
+                        'warning' => 'paid',
+                        'info' => 'shipped',
+                        'gray' => 'waiting',
+                        'success' => 'completed',
+                    ])
+                    ->formatStateUsing(fn (string $state): string => self::STATUSES[$state] ?? $state),
                 Tables\Columns\TextColumn::make('total_price')
-                    ->numeric()
+                    ->label('Total')
+                    ->money('EUR')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('platform_earnings')
+                    ->label('Plataforma')
+                    ->money('EUR')
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('investor_earnings')
+                    ->label('A pagar a l\'inversor')
+                    ->money('EUR')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Data')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Estat')
+                    ->options(self::STATUSES),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -83,9 +130,7 @@ class OrderRequestedResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -95,5 +140,10 @@ class OrderRequestedResource extends Resource
             'create' => Pages\CreateOrderRequested::route('/create'),
             'edit' => Pages\EditOrderRequested::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) OrderRequested::whereIn('status', ['paid', 'waiting'])->count();
     }
 }

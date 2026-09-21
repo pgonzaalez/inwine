@@ -6,10 +6,11 @@ import Footer from "../components/FooterComponent"
 import ProductGallery from "../components/landing/requests/ProductGallery"
 import ProductInfo from "../components/landing/requests/ProductInfo"
 import RequestsSection from "../components/landing/requests/RequestSection"
+import { API_URL, BASE_URL } from "@/config/api"
 
 export default function ProductDetail() {
-  const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000"
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+  const baseUrl = BASE_URL
+  const apiUrl = API_URL
   const { id } = useParams()
 
   const [product, setProduct] = useState(null)

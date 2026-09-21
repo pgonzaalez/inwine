@@ -123,6 +123,16 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        // Manda cada línea de log a un webhook de Discord. Es seguro dejarlo
+        // en LOG_STACK aunque DISCORD_LOG_WEBHOOK_URL esté vacío: sin URL no
+        // hace nada (ver App\Logging\DiscordWebhookHandler).
+        'discord' => [
+            'driver' => 'custom',
+            'via' => \App\Logging\CreateDiscordLogger::class,
+            'url' => env('DISCORD_LOG_WEBHOOK_URL'),
+            'level' => env('LOG_DISCORD_LEVEL', env('LOG_LEVEL', 'debug')),
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],

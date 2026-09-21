@@ -1,0 +1,17 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Private / app areas — no SEO value, keep crawlers out
+Disallow: /login
+Disallow: /register/
+Disallow: /settings
+Disallow: /checkout
+Disallow: /order-summary
+Disallow: /cistella
+Disallow: /favorites
+Disallow: /seller/
+Disallow: /restaurant/
+Disallow: /investor/
+
+Sitemap: https://inwine.cat/sitemap.xml

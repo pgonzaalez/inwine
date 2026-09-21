@@ -9,6 +9,7 @@ import RestaurantGrid from "@/components/landing/products/RestaurantGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
 import { useTranslation } from "react-i18next";
 import { getCookie } from "@/utils/utils";
+import { API_URL } from "@/config/api";
 
 export default function ProductPage() {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ export default function ProductPage() {
     const token = getCookie("token")
     if (token) {
         const fetchFavorites = async () => {
-            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+            const apiUrl = API_URL
             try {
                 const response = await fetch(`${apiUrl}/favorites/ids`, {
                     headers: {
@@ -95,7 +96,7 @@ export default function ProductPage() {
     const fetchProducts = async () => {
       setLoading(true)
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+        const apiUrl = API_URL
         const response = await fetch(`${apiUrl}/v1/products`)
         const data = await response.json()
         
@@ -108,42 +109,9 @@ export default function ProductPage() {
         setProducts(productsWithId)
       } catch (error) {
         // console.error("Error fetching products:", error)
-        // Fallback data for testing
-        setProducts([
-          {
-            name: "Vi Criança",
-            origin: "Catalunya",
-            year: 2020,
-            wine_type: "Negre",
-            price_demanded: 1000,
-            quantity: 1,
-            image: "/storage/proba/caja-de-vino-tinto-toro-vinas-elias-mora-6-botellas.jpg",
-            status: "requested",
-            user_id: "Bodega de Proba",
-          },
-          {
-            name: "Vi i sen va",
-            origin: "Madrid",
-            year: 2018,
-            wine_type: "Blanc",
-            price_demanded: 100,
-            quantity: 1,
-            image: "/storage/proba/botella-rioja-enamorados.jpg",
-            status: "in_stock",
-            user_id: "Bodega de Proba",
-          },
-          {
-            name: "Vi no vi",
-            origin: "França",
-            year: 2017,
-            wine_type: "Rossat",
-            price_demanded: 9900,
-            quantity: 1,
-            image: "/storage/proba/Botella-vino.jpeg",
-            status: "in_stock",
-            user_id: "Bodega de Proba",
-          },
-        ])
+        // Sense dades falses: si l'API falla, la llista queda buida i es
+        // mostra l'EmptyState en comptes de productes inventats.
+        setProducts([])
       } finally {
         setLoading(false)
       }
@@ -155,37 +123,15 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchWineTypes = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+        const apiUrl = API_URL
         const response = await fetch(`${apiUrl}/v1/winetypes`)
         const data = await response.json()
         setWineTypes(data)
       } catch (error) {
         // console.error("Error fetching wine types:", error)
-        // Fallback data for testing
-        setWineTypes([
-          { id: 1, name: "Negre", image: "https://www.elpationeiva.co/wp-content/uploads/2021/06/COPA-DE-VINO.jpg" },
-          {
-            id: 2,
-            name: "Blanc",
-            image: "https://www.blasbermejo.com/wp-content/uploads/2023/06/tipos-vino-blanco.webp",
-          },
-          {
-            id: 3,
-            name: "Rossat",
-            image: "https://s1.elespanol.com/2024/06/13/cocinillas/vinos/862673986_243984786_1706x1280.jpg",
-          },
-          {
-            id: 4,
-            name: "Espumós",
-            image: "https://media.scoolinary.app/blog/images/2022/05/como-servir-un-vino-espumoso.jpg",
-          },
-          {
-            id: 5,
-            name: "Dolç",
-            image:
-              "https://us.123rf.com/450wm/serezniy/serezniy1411/serezniy141101636/33498791-vino-que-vierte-en-la-copa-de-vino-primer-plano.jpg",
-          },
-        ])
+        // Sense dades falses: si l'API falla, el filtre de tipus de vi
+        // queda buit en comptes de mostrar tipus inventats.
+        setWineTypes([])
       }
     }
     fetchWineTypes()
@@ -195,8 +141,7 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
-        const response = await fetch(`${apiUrl}/v1/restaurants-info`)
+        const apiUrl = API_URL
 
         const [restaurantsResponse, requestsResponse] = await Promise.all([
           fetch(`${apiUrl}/v1/restaurants-info`),
@@ -226,111 +171,9 @@ export default function ProductPage() {
         setRestaurants(restaurantsWithId)
       } catch (error) {
         // console.error("Error fetching restaurants:", error)
-        // Fallback data for testing
-        setRestaurants([
-          {
-            id: 1,
-            name: "Ca l'Isidre",
-            description: "Restaurant d'alta cuina catalana amb més de 50 anys d'història",
-            image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
-            zone: "Barcelona",
-            request_count: 0,
-            solicitud: {
-              tipo: "Vi negre",
-              nombre: "Priorat Reserva 2019",
-              descripcion: "Vi negre amb cos, anyada 2019-2020, D.O.Q. Priorat",
-              precioCompra: 25,
-              precioVenta: 45,
-              cantidadSolicitada: "120 botellas",
-              tiempoRespuesta: "24-48h",
-            },
-          },
-          {
-            id: 2,
-            name: "Botafumeiro",
-            description: "Restaurant especialitzat en peix i marisc de primera qualitat",
-            image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b",
-            zone: "Barcelona",
-            request_count: 0,
-            solicitud: {
-              tipo: "Vi blanc",
-              nombre: "Blanc de blancs Penedès",
-              descripcion: "Vi blanc sec i fresc, D.O. Penedès, ideal per marisc",
-              precioCompra: 18,
-              precioVenta: 35,
-              cantidadSolicitada: "200 botellas",
-              tiempoRespuesta: "24h",
-            },
-          },
-          {
-            id: 3,
-            name: "El Celler de Can Roca",
-            description: "Restaurant amb tres estrelles Michelin, referent de la gastronomia catalana",
-            image: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
-            zone: "Girona",
-            request_count: 0,
-            solicitud: {
-              tipo: "Cava",
-              nombre: "Gran Reserva Brut Nature",
-              descripcion: "Cava Gran Reserva, mínim 30 mesos de criança",
-              precioCompra: 35,
-              precioVenta: 85,
-              cantidadSolicitada: "150 botellas",
-              tiempoRespuesta: "48h",
-            },
-          },
-          {
-            id: 4,
-            name: "Can Jubany",
-            description: "Restaurant amb una estrella Michelin, cuina d'autor amb arrels tradicionals",
-            image: "https://images.unsplash.com/photo-1515669097368-22e68427d265",
-            zone: "Vic",
-            request_count: 0,
-            solicitud: {
-              tipo: "Vi rosat",
-              nombre: "Rosat Empordà",
-              descripcion: "Vi rosat fresc i afruitat, D.O. Empordà",
-              precioCompra: 15,
-              precioVenta: 32,
-              cantidadSolicitada: "180 botellas",
-              tiempoRespuesta: "24-48h",
-            },
-          },
-          {
-            id: 5,
-            name: "Via Veneto",
-            description: "Restaurant clàssic amb una estrella Michelin, referent de la cuina mediterrània",
-            image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c",
-            zone: "Barcelona",
-            request_count: 0,
-            solicitud: {
-              tipo: "Vi negre",
-              nombre: "Ribera del Duero Criança",
-              descripcion: "Vi negre amb 12 mesos de criança en roure francès",
-              precioCompra: 22,
-              precioVenta: 48,
-              cantidadSolicitada: "100 botellas",
-              tiempoRespuesta: "24h",
-            },
-          },
-          {
-            id: 6,
-            name: "Les Cols",
-            description: "Restaurant amb dues estrelles Michelin, cuina d'avantguarda amb producte local",
-            image: "https://images.unsplash.com/photo-1552566626-52f8b828add9",
-            zone: "Girona",
-            request_count: 0,
-            solicitud: {
-              tipo: "Vi blanc",
-              nombre: "Blanc Terra Alta",
-              descripcion: "Vi blanc amb criança sobre lies, D.O. Terra Alta",
-              precioCompra: 20,
-              precioVenta: 42,
-              cantidadSolicitada: "150 botellas",
-              tiempoRespuesta: "48h",
-            },
-          },
-        ])
+        // Sense dades falses: si l'API falla, la llista queda buida i es
+        // mostra l'EmptyState en comptes de restaurants inventats.
+        setRestaurants([])
       }
     }
     fetchRestaurants()
@@ -438,7 +281,7 @@ export default function ProductPage() {
     console.log("Toggle favorite called with ID:", pId, "Current favorites:", favorites);
     
     const token = getCookie("token")
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+    const apiUrl = API_URL
 
     if (!token) {
       setFavorites((prevFavorites) => {

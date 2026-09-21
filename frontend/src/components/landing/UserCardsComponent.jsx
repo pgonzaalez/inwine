@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom"
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie } from "@/utils/utils"
 import { useTranslation } from "react-i18next";
+import { API_URL } from "@/config/api"
 
 export default function UserCards() {
   const { t } = useTranslation();
   const user = useFetchUser();
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = API_URL
 
   // Animation variants
   const containerVariants = {

@@ -8,6 +8,8 @@ import ProductGallery from "@/components/landing/requests/ProductGallery";
 import ProductInfo from "@/components/landing/requests/ProductInfo";
 import { DeleteProductModal } from "@/components/seller/modals/DeleteProductModal";
 import { useFetchUser } from "@components/auth/FetchUser";
+import { API_URL, BASE_URL } from "@/config/api";
+import { getCookie } from "@/utils/utils";
 
 export default function ViewProductPage() {
   const { id: productId } = useParams();
@@ -19,8 +21,8 @@ export default function ViewProductPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const { user, loading: userLoading } = useFetchUser();
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const baseUrl = import.meta.env.VITE_URL_BASE;
+  const apiUrl = API_URL;
+  const baseUrl = BASE_URL;
 
   useEffect(() => {
     if (!user || userLoading) return;
@@ -47,6 +49,9 @@ export default function ViewProductPage() {
     try {
       const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
       });
 
       if (!response.ok) {

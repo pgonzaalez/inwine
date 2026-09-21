@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { getCookie } from "@/utils/utils";
+import { API_URL } from "@/config/api";
 
 export function useFetchUser() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = API_URL;
 
   const fetchUser = async () => {
     const token = getCookie("token");

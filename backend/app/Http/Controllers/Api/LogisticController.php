@@ -16,6 +16,44 @@ use Illuminate\Http\Request as HttpRequest;
 class LogisticController extends Controller
 {
     /**
+     * Comprueba que el usuario autenticado tiene el rol activo indicado.
+     */
+    private function hasActiveRole(string $role): bool
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return false;
+        }
+
+        return $user->roles()
+            ->where('role', $role)
+            ->where('is_active', true)
+            ->exists();
+    }
+
+    /**
+     * Manda una notificación (mail + base de datos) sin dejar que un fallo
+     * de envío (Resend caído, sin API key, lo que sea) tumbe la respuesta
+     * de una acción que ya se guardó correctamente en base de datos. Ya nos
+     * pasó antes de añadir esto: al estar el ->notify() después del
+     * DB::commit() pero dentro del mismo try/catch, un fallo de email hacía
+     * responder con un 500 "error al aprobar/enviar/entregar" aunque el
+     * cambio de estado SÍ se hubiera guardado.
+     */
+    private function notifySafely(?User $user, $notification): void
+    {
+        if (!$user) {
+            return;
+        }
+
+        try {
+            $user->notify($notification);
+        } catch (\Throwable $e) {
+            Log::error('No se pudo enviar la notificación de cambio de estado', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
      * 1) Aprobar una solicitud
      *    - Pasa de:
      *        Product: in_stock  --> requested
@@ -28,6 +66,11 @@ class LogisticController extends Controller
         DB::beginTransaction();
 
         try {
+            if (!$this->hasActiveRole('investor')) {
+                DB::rollBack();
+                return response()->json(['error' => 'Solo un inversor puede aprobar esta solicitud.'], 403);
+            }
+
             // 1) Obtenemos el producto
             $product = Product::findOrFail($productId);
 
@@ -59,16 +102,9 @@ class LogisticController extends Controller
 
             DB::commit();
 
-            // Notificar al vendedor
-            $sellerUser = User::find($product->user_id);
-            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'), );
-            // Notificar al restaurante
-            $restaurantUser = User::find($restaurantRequest->user_id);
-            $restaurantUser->notify(new ProductStatusUpdated($product, 'requested'));
-            // Notificar al inversor
-            $investorUser = User::find($investorRequest->user_id);
-            $investorUser->notify(new ProductStatusUpdated($product, 'requested'));
-
+            $this->notifySafely(User::find($product->user_id), new ProductStatusUpdated($product, 'requested'));
+            $this->notifySafely(User::find($restaurantRequest->user_id), new ProductStatusUpdated($product, 'requested'));
+            $this->notifySafely(User::find($investorRequest->user_id), new ProductStatusUpdated($product, 'requested'));
 
             return response()->json([
                 'message' => 'Solicitud aprobada correctamente.',
@@ -100,8 +136,8 @@ class LogisticController extends Controller
             // 1) Obtenemos el producto
             $product = Product::findOrFail($productId);
 
-            // Verificar que el usuario es el propietario (si es necesario)
-            if (Auth::check() && $product->user_id !== Auth::id()) {
+            // Verificar que el usuario autenticado es el propietario (seller) del producto
+            if ($product->user_id !== Auth::id()) {
                 return response()->json(['error' => 'No tienes permiso para enviar este producto.'], 403);
             }
 
@@ -140,16 +176,9 @@ class LogisticController extends Controller
 
             DB::commit();
 
-            // Notificar al vendedor
-            $sellerUser = User::find($product->user_id);
-            $sellerUser->notify(new ProductStatusUpdated($product, 'requested'), );
-            // Notificar al restaurante
-            $restaurantUser = User::find($restaurantRequest->user_id);
-            $restaurantUser->notify(new ProductStatusUpdated($product, 'requested'));
-            // Notificar al inversor
-            $investorUser = User::find($investorRequest->user_id);
-            $investorUser->notify(new ProductStatusUpdated($product, 'requested'));
-
+            $this->notifySafely(User::find($product->user_id), new ProductStatusUpdated($product, 'in_transit'));
+            $this->notifySafely(User::find($restaurantRequest->user_id), new ProductStatusUpdated($product, 'in_transit'));
+            $this->notifySafely(User::find($investorRequest->user_id), new ProductStatusUpdated($product, 'in_transit'));
 
             return response()->json([
                 'message' => 'Producto enviado y en tránsito.',
@@ -213,14 +242,9 @@ class LogisticController extends Controller
 
             DB::commit();
 
-            $sellerUser = User::find($product->user_id);
-            $sellerUser->notify(new ProductStatusUpdated($product, 'sold'), );
-            // Notificar al restaurante
-            $restaurantUser = User::find($restaurantRequest->user_id);
-            $restaurantUser->notify(new ProductStatusUpdated($restaurantRequest, 'en mi local'));
-            // Notificar al inversor
-            $investorUser = User::find($investorRequest->user_id);
-            $investorUser->notify(new ProductStatusUpdated($product, 'sold'));
+            $this->notifySafely(User::find($product->user_id), new ProductStatusUpdated($product, 'in_my_local'));
+            $this->notifySafely(User::find($restaurantRequest->user_id), new ProductStatusUpdated($product, 'in_my_local'));
+            $this->notifySafely(User::find($investorRequest->user_id), new ProductStatusUpdated($product, 'in_my_local'));
 
             return response()->json([
                 'message' => 'Producto entregado al restaurante.',
@@ -241,14 +265,15 @@ class LogisticController extends Controller
      *    - Pasa de:
      *        RequestRestaurant: in_my_local --> sold
      *        Request: waiting     --> completed (sin cambio)
-     *   - Esta peticion la hace el usuario con rol 'investor'
+     *   - Esta petición la hace el usuario con rol 'restaurant': es quien tiene
+     *     la botella en el local y sabe si la ha vendido, igual que en deliver().
      */
     public function sell(HttpRequest $request, $productId)
     {
         DB::beginTransaction();
 
         try {
-            Product::findOrFail($productId);
+            $product = Product::findOrFail($productId);
             $restaurantRequest = RequestRestaurant::where('product_id', $productId)
                 ->where('status', 'in_my_local')
                 ->orderBy('created_at', 'desc')
@@ -258,13 +283,13 @@ class LogisticController extends Controller
                 return response()->json(['error' => 'No se encontró una solicitud de restaurante en estado in_my_local.'], 404);
             }
 
+            if ($restaurantRequest->user_id !== Auth::id()) {
+                return response()->json(['error' => 'No tienes permiso para marcar este producto como vendido.'], 403);
+            }
+
             $investorRequest = OrderRequested::where('request_restaurant_id', $restaurantRequest->id)
                 ->orderBy('created_at', 'desc')
                 ->first();
-
-            if (!$investorRequest || $investorRequest->user_id !== Auth::id()) {
-                return response()->json(['error' => 'No tienes permiso para marcar este producto como vendido.'], 403);
-            }
 
             // Actualizamos estados
             $restaurantRequest->update(['status' => 'sold']);
@@ -276,6 +301,10 @@ class LogisticController extends Controller
             }
 
             DB::commit();
+
+            $this->notifySafely(User::find($product->user_id), new ProductStatusUpdated($product, 'sold'));
+            $this->notifySafely(User::find($restaurantRequest->user_id), new ProductStatusUpdated($product, 'sold'));
+            $this->notifySafely(User::find($investorRequest->user_id ?? null), new ProductStatusUpdated($product, 'sold'));
 
             return response()->json([
                 'message' => 'Producto marcado como vendido.',

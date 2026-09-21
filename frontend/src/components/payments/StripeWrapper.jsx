@@ -4,8 +4,10 @@ import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "./CheckoutForm"
 import { useEffect, useState } from "react"
+import { API_URL } from "@/config/api"
+import { getCookie } from "@/utils/utils"
 
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = API_URL
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
 export default function StripeWrapper() {
@@ -56,7 +58,7 @@ export default function StripeWrapper() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getCookie("token")}`,
       },
       body: JSON.stringify({ orderIds,totalPrice }),
     })
@@ -71,6 +73,21 @@ export default function StripeWrapper() {
         if (data && data.clientSecret) {
           setClientSecret(data.clientSecret);
           setOrderDetails(data.orderDetails);
+
+          // El total mostrat abans de pagar (a CartSummary) és només una
+          // estimació feta al navegador. El càrrec real de Stripe l'ha
+          // calculat el servidor aquí (inclou la comissió del restaurant i el
+          // recàrrec de Stripe), així que substituïm l'estimació pel valor
+          // definitiu perquè la pàgina de confirmació mostri el que
+          // realment s'ha cobrat.
+          if (typeof data.totalAmount === "number") {
+            localStorage.setItem("totalPrice", data.totalAmount.toFixed(2));
+          }
+          localStorage.setItem("shippingCost", (data.shippingCost ?? 0).toFixed(2));
+          localStorage.setItem(
+            "platformFees",
+            ((data.restaurantCommission ?? 0) + (data.stripeFee ?? 0)).toFixed(2),
+          );
         } else {
           throw new Error("Invalid response format: missing clientSecret");
         }
@@ -109,11 +126,9 @@ export default function StripeWrapper() {
   return (
     <div className="w-full max-w-md mx-auto">
       {clientSecret && (
-        <>
-          <Elements stripe={stripePromise} options={options}>
-            <CheckoutForm />
-          </Elements>
-        </>
+        <Elements key={clientSecret} stripe={stripePromise} options={options}>
+          <CheckoutForm />
+        </Elements>
       )}
     </div>
   )

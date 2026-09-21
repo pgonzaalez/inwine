@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.6",
+        "resend/resend-php": "^1.13",
         "stripe/stripe-php": "^17.1"
     },
     "require-dev": {

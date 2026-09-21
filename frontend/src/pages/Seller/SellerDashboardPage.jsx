@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 import { BarChart3, Wine, ShoppingBag, TrendingUp, Check } from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { useTranslation } from "react-i18next"
+import { API_URL, BASE_URL } from "@/config/api"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -52,7 +53,7 @@ const StatCard = ({ title, value, icon, trend, percentage }) => {
 // Componente para mostrar los últimos vinos creados
 const LatestWines = ({ wines = [] }) => {
   const { t } = useTranslation()
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const baseUrl = BASE_URL
   const sortedWines = [...wines].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 3)
 
   return (
@@ -109,7 +110,7 @@ const LatestWines = ({ wines = [] }) => {
 // Componente para mostrar los últimos vinos vendidos
 const LatestSoldWines = ({ wines = [] }) => {
   const { t } = useTranslation()
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const baseUrl = BASE_URL
   const soldWines = wines
     .filter((wine) => wine.status === "sold")
     .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
@@ -171,7 +172,7 @@ const SellerDashboardContent = () => {
   const { t } = useTranslation()
   const [wines, setWines] = useState([])
   const { user } = useFetchUser()
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = API_URL
 
   useEffect(() => {
     const fetchWines = async () => {

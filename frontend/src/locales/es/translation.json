@@ -33,7 +33,7 @@
       "blog": "Blog",
       "community": "Comunidad",
       "ideas": "Ideas",
-      "developers": "Desarrolladores",
+      "developers": "Sobre el proyecto",
       "about": "Sobre nosotros",
       "team": "Equipo",
       "influencers": "Influencers",
@@ -109,7 +109,27 @@
       "support": {
         "title": "Soporte Personalizado",
         "desc": "Nuestro equipo de expertos en vino está disponible para asesorarte en todo momento."
-      }
+      },
+      "form": {
+        "title": "Envíanos un mensaje",
+        "desc": "Rellena el formulario y te responderemos lo antes posible.",
+        "name": "Nombre",
+        "name_ph": "Tu nombre",
+        "email": "Correo electrónico",
+        "email_ph": "tu@correo.com",
+        "subject": "Asunto",
+        "subject_ph": "¿En qué podemos ayudarte?",
+        "message": "Mensaje",
+        "message_ph": "Escribe tu mensaje...",
+        "send": "Enviar mensaje",
+        "sending": "Enviando...",
+        "success_title": "¡Mensaje enviado!",
+        "success_desc": "Gracias por contactar con nosotros. Te responderemos pronto.",
+        "error_required": "Este campo es obligatorio",
+        "error_email": "Introduce un correo electrónico válido"
+      },
+      "hours_title": "Horario de atención",
+      "hours_desc": "Lunes a Viernes · 9:00 - 18:00"
     },
     "products": {
       "hero": {
@@ -552,7 +572,13 @@
       "error_generic": "Error al iniciar sesión",
       "success": "Inicio de sesión correcto",
       "role_modal_title": "Elegir rol",
-      "role_modal_desc": "Selecciona el rol con el que quieres acceder:"
+      "role_modal_desc": "Selecciona el rol con el que quieres acceder:",
+      "no_account": "¿No tienes una cuenta?",
+      "register_link": "Regístrate aquí",
+      "register_button": "Crear una cuenta",
+      "register_modal_title": "Crear una cuenta",
+      "register_modal_desc": "Selecciona el tipo de cuenta con el que deseas registrarte:",
+      "or_divider": "o"
     },
     "register": {
       "seller_title": "Crear cuenta de usuario productor",
@@ -597,7 +623,19 @@
       "error_validation": "Hay errores de validación en el formulario. Revisa los campos.",
       "error_conflict": "Ya existe un usuario con este email o NIF. Por favor, utiliza datos diferentes.",
       "error_forbidden": "No tienes permisos para realizar esta acción.",
-      "error_generic": "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde."
+      "error_generic": "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde.",
+      "terms_section_title": "Términos y Privacidad",
+      "terms_badge_accepted": "Aceptado",
+      "terms_badge_pending": "Pendiente de aceptar",
+      "terms_badge_required": "Lectura requerida",
+      "open_privacy_button": "Abrir Política de Privacidad y Términos",
+      "accept_terms_text": "He leído y acepto la Política de Privacidad y las Condiciones de Uso de Inwine.",
+      "must_open_first": "Antes de aceptarlo, debes abrir y leer la política de privacidad.",
+      "terms_modal_title": "Política de Privacidad y Términos",
+      "terms_modal_desc": "Por favor, revisa atentamente la información legal antes de continuar.",
+      "terms_modal_close": "Cerrar",
+      "terms_modal_accept": "He leído y acepto la Política de Privacidad",
+      "error_terms_required": "Debes abrir y aceptar la Política de Privacidad para registrarte."
     }
   },
   "profile": {
@@ -672,7 +710,7 @@
     "features": {
       "free_shipping": {
         "title": "Envío gratuito",
-        "desc": "Para pedidos superiores a 100€"
+        "desc": "En todos los pedidos"
       },
       "secure_payment": {
         "title": "Pago seguro",
@@ -687,8 +725,8 @@
       "title": "Resumen del pedido",
       "subtotal": "Subtotal",
       "service_fee": {
-        "label": "Comisión de servicio",
-        "tooltip": "3% del subtotal"
+        "label": "Comisiones y tasas",
+        "tooltip": "Comisión de la bodega y recargo de pago"
       },
       "shipping": {
         "label": "Gastos de envío",
@@ -719,43 +757,318 @@
   "info": {
     "privacy": {
       "title": "Política de Privacidad",
-      "content": "En INWINE nos tomamos muy en serio tu privacidad. Esta página detalla cómo recopilamos, utilizamos y protegemos tus datos personales.",
-      "section1": {
-        "title": "1. Recopilación de Información",
-        "text": "Recopilamos información cuando te registras en nuestro sitio, realizas un pedido o te suscribes a nuestro boletín. La información incluye tu nombre, correo electrónico y número de teléfono."
-      },
-      "section2": {
-        "title": "2. Uso de la Información",
-        "text": "Cualquier información que recopilemos de ti puede ser utilizada para:",
-        "item1": "Personalizar tu experiencia.",
-        "item2": "Mejorar nuestro sitio web y servicio al cliente.",
-        "item3": "Procesar transacciones y enviar correos electrónicos periódicos."
-      }
+      "content": "En INWINE nos tomamos en serio tu privacidad. Esta política explica qué datos personales tratamos, con qué finalidad y base jurídica, durante cuánto tiempo y qué derechos tienes.",
+      "updated": "27 de agosto de 2026",
+      "sections": [
+        {
+          "title": "1. Responsable del tratamiento",
+          "body": [
+            "El responsable del tratamiento de tus datos es INWINE S.L. (en adelante, «INWINE»), con NIF B12345678 y domicilio en Carrer del Sol, 1, 08201 Sabadell (Barcelona).",
+            "Para cualquier cuestión relacionada con la protección de datos puedes escribir a privacitat@inwine.cat."
+          ]
+        },
+        {
+          "title": "2. Qué datos tratamos",
+          "body": [
+            "Según tu relación con INWINE, podemos tratar las siguientes categorías de datos:"
+          ],
+          "items": [
+            "Datos identificativos y de contacto: nombre, apellidos, dirección de correo electrónico, teléfono y, en su caso, dirección postal.",
+            "Datos de cuenta: rol (bodega, restaurante o inversor), nombre de usuario, contraseña cifrada y preferencias.",
+            "Datos de transacción y facturación: productos publicados o adquiridos, importes, historial de pedidos y datos fiscales. Los pagos los procesa Stripe; INWINE no almacena los números completos de tarjeta.",
+            "Datos de navegación: dirección IP, identificadores de dispositivo, páginas visitadas e información recogida mediante cookies.",
+            "Comunicaciones: contenido de los mensajes que nos envías a través de formularios o correo electrónico."
+          ]
+        },
+        {
+          "title": "3. Finalidades y base jurídica",
+          "body": [
+            "Tratamos tus datos para las siguientes finalidades:"
+          ],
+          "items": [
+            "Crear y gestionar tu cuenta y prestar los servicios de la plataforma (base: ejecución del contrato).",
+            "Procesar pedidos, pagos e inversiones, y emitir facturas (ejecución del contrato y obligación legal).",
+            "Atender tus consultas y solicitudes de soporte (interés legítimo en dar respuesta).",
+            "Enviarte comunicaciones sobre servicios similares o, si lo autorizas, el boletín (interés legítimo o consentimiento).",
+            "Analizar el uso de la web y mejorarla mediante cookies analíticas (consentimiento).",
+            "Cumplir obligaciones legales en materia fiscal, contable y de prevención del fraude (obligación legal)."
+          ]
+        },
+        {
+          "title": "4. Plazo de conservación",
+          "body": [
+            "Conservamos los datos mientras se mantenga la relación contractual y, una vez finalizada, debidamente bloqueados durante los plazos de prescripción de las obligaciones legales aplicables (con carácter general, hasta 6 años para la documentación mercantil y fiscal). Los datos tratados sobre la base del consentimiento se conservan hasta que lo retiras."
+          ]
+        },
+        {
+          "title": "5. Destinatarios de los datos",
+          "body": [
+            "No cedemos tus datos a terceros, salvo por obligación legal. Sí acceden a ellos, como encargados del tratamiento, los proveedores que nos prestan servicios:"
+          ],
+          "items": [
+            "Proveedores de pago (Stripe Payments Europe, Ltd.) para tramitar cobros y pagos.",
+            "Proveedores de alojamiento e infraestructura en la nube.",
+            "Proveedores de analítica web (Google), únicamente si aceptas las cookies analíticas.",
+            "Asesores legales, fiscales y contables cuando sea necesario."
+          ]
+        },
+        {
+          "title": "6. Transferencias internacionales",
+          "body": [
+            "Algunos de nuestros proveedores pueden tratar datos fuera del Espacio Económico Europeo. En estos casos, INWINE adopta garantías adecuadas, como las cláusulas contractuales tipo aprobadas por la Comisión Europea o la existencia de una decisión de adecuación."
+          ]
+        },
+        {
+          "title": "7. Tus derechos",
+          "body": [
+            "Puedes ejercer en cualquier momento los siguientes derechos escribiendo a privacitat@inwine.cat, indicando el derecho que quieres ejercer y adjuntando una copia de un documento identificativo:"
+          ],
+          "items": [
+            "Acceso a tus datos personales.",
+            "Rectificación de datos inexactos.",
+            "Supresión de los datos cuando ya no sean necesarios.",
+            "Oposición al tratamiento por motivos relacionados con tu situación particular.",
+            "Limitación del tratamiento en determinados supuestos.",
+            "Portabilidad de los datos a otro responsable.",
+            "Retirar el consentimiento prestado, sin efectos retroactivos."
+          ]
+        },
+        {
+          "title": "8. Reclamaciones",
+          "body": [
+            "Si consideras que el tratamiento de tus datos no se ajusta a la normativa, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es)."
+          ]
+        },
+        {
+          "title": "9. Seguridad de los datos",
+          "body": [
+            "INWINE aplica medidas técnicas y organizativas adecuadas para proteger los datos personales frente a la pérdida, el uso indebido, el acceso no autorizado o la alteración, incluyendo el cifrado de las comunicaciones y el control de acceso."
+          ]
+        },
+        {
+          "title": "10. Menores de edad",
+          "body": [
+            "Los servicios de INWINE se dirigen exclusivamente a personas mayores de 18 años. No recogemos de forma consciente datos de menores; si detectamos que lo hemos hecho, los eliminaremos."
+          ]
+        },
+        {
+          "title": "11. Cambios en esta política",
+          "body": [
+            "Podemos actualizar esta Política de Privacidad para adaptarla a cambios normativos u operativos. Publicaremos cualquier cambio en esta página y actualizaremos la fecha del encabezado."
+          ]
+        }
+      ]
     },
     "terms": {
       "title": "Condiciones de Uso",
-      "content": "Bienvenido a INWINE. Al acceder a nuestro sitio web, aceptas cumplir estas condiciones de uso.",
-      "section1": {
-        "title": "1. Uso de la Licencia",
-        "text": "Se concede permiso para descargar temporalmente una copia de los materiales en el sitio web de INWINE solo para visualización transitoria personal y no comercial."
-      },
-      "section2": {
-        "title": "2. Exclusión de Responsabilidad",
-        "text": "Los materiales en el sitio web de INWINE se proporcionan \"tal cual\". INWINE no ofrece ninguna garantía, expresa o implícita."
-      }
+      "content": "Estas condiciones regulan el acceso y el uso de la plataforma INWINE. Al registrarte o utilizar el sitio web aceptas estas condiciones en su totalidad.",
+      "updated": "27 de agosto de 2026",
+      "sections": [
+        {
+          "title": "1. Objeto",
+          "body": [
+            "Estas Condiciones de Uso regulan el acceso y la utilización de la plataforma INWINE, accesible en inwine.cat, que conecta bodegas y vendedores de vino, restaurantes e inversores para la compraventa y la inversión en partidas de vino."
+          ]
+        },
+        {
+          "title": "2. Aceptación",
+          "body": [
+            "El uso de la plataforma atribuye la condición de usuario e implica la aceptación plena de estas condiciones, de la Política de Privacidad y de la Política de Cookies. Si no estás de acuerdo, no utilices el sitio web."
+          ]
+        },
+        {
+          "title": "3. Registro y cuenta",
+          "body": [
+            "Para acceder a determinadas funciones es necesario crear una cuenta. Al registrarte te comprometes a:"
+          ],
+          "items": [
+            "Facilitar información veraz, actualizada y completa.",
+            "Ser mayor de 18 años y tener capacidad legal para contratar.",
+            "Custodiar tus credenciales y no cederlas a terceros.",
+            "Comunicar inmediatamente cualquier uso no autorizado de tu cuenta."
+          ]
+        },
+        {
+          "title": "4. Roles de usuario",
+          "body": [
+            "La plataforma prevé diferentes perfiles con condiciones específicas:"
+          ],
+          "items": [
+            "Bodega / Vendedor: publica partidas de vino con información cierta y actualizada y asume las obligaciones legales que le corresponden como vendedor.",
+            "Restaurante: adquiere producto para su actividad profesional.",
+            "Inversor: participa en la financiación de partidas de vino asumiendo los riesgos asociados descritos en la cláusula 8."
+          ]
+        },
+        {
+          "title": "5. Reglas de uso",
+          "body": [
+            "El usuario se compromete a hacer un uso lícito de la plataforma y se abstendrá de:"
+          ],
+          "items": [
+            "Publicar contenido falso, engañoso, ilícito o que infrinja derechos de terceros.",
+            "Suplantar la identidad de otras personas o entidades.",
+            "Introducir código malicioso o intentar acceder sin autorización a los sistemas.",
+            "Utilizar la plataforma para actividades de blanqueo de capitales o fraude.",
+            "Recoger datos de otros usuarios sin su consentimiento."
+          ]
+        },
+        {
+          "title": "6. Contenido publicado por los usuarios",
+          "body": [
+            "El usuario es el único responsable del contenido que publica y garantiza que dispone de los derechos necesarios para hacerlo. Concede a INWINE una licencia no exclusiva y gratuita para alojar y mostrar dicho contenido con la finalidad de prestar el servicio. INWINE puede retirar cualquier contenido que incumpla estas condiciones."
+          ]
+        },
+        {
+          "title": "7. Precios, pagos y comisiones",
+          "body": [
+            "Los precios se muestran con los impuestos aplicables indicados en cada caso. Los pagos se tramitan a través del proveedor Stripe. INWINE puede aplicar comisiones por los servicios de intermediación, que se informarán antes de formalizar cada operación."
+          ]
+        },
+        {
+          "title": "8. Inversión en vino y riesgo",
+          "body": [
+            "La inversión en partidas de vino conlleva riesgos, incluida la posible pérdida total o parcial del capital aportado, y la rentabilidad pasada no garantiza resultados futuros. INWINE no presta asesoramiento financiero, fiscal ni de inversión; las decisiones son responsabilidad exclusiva del usuario, que debería valorar si la operación se ajusta a su perfil y, si es necesario, buscar asesoramiento profesional."
+          ]
+        },
+        {
+          "title": "9. Propiedad intelectual e industrial",
+          "body": [
+            "La marca INWINE, el software, el diseño, los textos y el resto de elementos del sitio web son titularidad de INWINE o de terceros que han autorizado su uso. Queda prohibida la reproducción, distribución o transformación sin autorización expresa."
+          ]
+        },
+        {
+          "title": "10. Responsabilidad",
+          "body": [
+            "INWINE actúa como intermediario y no es parte en los contratos que celebren los usuarios entre sí. El servicio se presta «tal cual», sin garantizar la disponibilidad ininterrumpida del sitio. En la medida permitida por la ley, INWINE no responde de los daños indirectos ni del lucro cesante derivados del uso de la plataforma."
+          ]
+        },
+        {
+          "title": "11. Suspensión y cancelación",
+          "body": [
+            "INWINE puede suspender o cancelar cuentas que incumplan estas condiciones o la normativa aplicable. El usuario puede dar de baja su cuenta en cualquier momento desde la configuración o escribiendo a info@inwine.cat."
+          ]
+        },
+        {
+          "title": "12. Modificaciones",
+          "body": [
+            "INWINE puede modificar estas condiciones o el servicio. Los cambios sustanciales se comunicarán con una antelación razonable. El uso continuado de la plataforma tras su entrada en vigor implica su aceptación."
+          ]
+        },
+        {
+          "title": "13. Ley aplicable y jurisdicción",
+          "body": [
+            "Estas condiciones se rigen por la legislación española. Para la resolución de cualquier controversia, las partes se someten a los juzgados y tribunales de Sabadell (Barcelona), salvo que la normativa de consumo establezca un fuero distinto. La Comisión Europea ofrece una plataforma de resolución de litigios en línea en ec.europa.eu/consumers/odr."
+          ]
+        }
+      ]
     },
     "cookies": {
       "title": "Política de Cookies",
-      "content": "Utilizamos cookies para mejorar tu experiencia en nuestro sitio web.",
-      "what_are": "¿Qué son las cookies?",
-      "what_are_text": "Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web para recordar tus preferencias.",
-      "types": "Tipos de cookies que utilizamos",
-      "type_necessary": "Necesarias:",
-      "type_necessary_text": "Esenciales para el funcionamiento del sitio.",
-      "type_analysis": "Análisis:",
-      "type_analysis_text": "Para entender cómo interactúan los usuarios con la web.",
-      "type_marketing": "Marketing:",
-      "type_marketing_text": "Para mostrar anuncios relevantes."
+      "content": "Este sitio web utiliza cookies propias y de terceros para garantizar su funcionamiento, recordar tus preferencias y analizar su uso. Aquí te explicamos cuáles utilizamos y cómo puedes gestionarlas.",
+      "updated": "27 de agosto de 2026",
+      "table_title": "Cookies que utilizamos",
+      "col_name": "Cookie",
+      "col_provider": "Proveedor",
+      "col_purpose": "Finalidad",
+      "col_duration": "Duración",
+      "col_category": "Categoría",
+      "manage_title": "Cómo gestionar tus preferencias",
+      "manage_text": "Puedes aceptar, rechazar o configurar las cookies no esenciales en cualquier momento desde el panel de preferencias. También puedes borrarlas o bloquearlas desde la configuración de tu navegador.",
+      "manage_button": "Configurar cookies",
+      "sections": [
+        {
+          "title": "1. Qué son las cookies",
+          "body": [
+            "Las cookies son pequeños archivos de texto que un sitio web instala en el navegador o dispositivo del usuario. Permiten que la web recuerde información sobre la visita, como el idioma o la sesión iniciada, y facilitan la navegación."
+          ]
+        },
+        {
+          "title": "2. Quién utiliza las cookies",
+          "body": [
+            "En este sitio web se utilizan cookies propias, gestionadas por INWINE, y cookies de terceros, gestionadas por proveedores externos como Google, que prestan servicios por cuenta nuestra."
+          ]
+        },
+        {
+          "title": "3. Tipos de cookies según la finalidad",
+          "body": [
+            "Según su finalidad, las cookies que se pueden utilizar se clasifican en:"
+          ],
+          "items": [
+            "Técnicas o necesarias: imprescindibles para que la web funcione (sesión, seguridad, cesta). No se pueden desactivar.",
+            "De preferencias: recuerdan opciones como el idioma o los vinos marcados como favoritos.",
+            "De análisis: permiten medir y analizar el uso de la web de forma agregada para mejorarla.",
+            "De marketing: sirven para mostrar publicidad relevante dentro o fuera del sitio web."
+          ]
+        },
+        {
+          "title": "4. Tipos de cookies según la duración",
+          "body": [
+            "Según el tiempo que permanecen activas, pueden ser de sesión, que se eliminan al cerrar el navegador, o persistentes, que permanecen en el dispositivo durante un periodo determinado o hasta que se eliminan manualmente."
+          ]
+        },
+        {
+          "title": "5. Consentimiento",
+          "body": [
+            "Cuando visitas la web por primera vez se muestra un aviso que te permite aceptar todas las cookies, rechazarlas o configurarlas por categorías. Las cookies no necesarias solo se instalan si das tu consentimiento. Puedes cambiar tu elección en cualquier momento desde el botón «Configurar cookies»."
+          ]
+        },
+        {
+          "title": "6. Cómo desactivar las cookies en el navegador",
+          "body": [
+            "Además de nuestro panel, puedes bloquear o eliminar las cookies desde la configuración de tu navegador (Chrome, Firefox, Safari o Edge). Ten en cuenta que desactivar algunas cookies puede afectar al funcionamiento del sitio."
+          ]
+        },
+        {
+          "title": "7. Actualizaciones",
+          "body": [
+            "Esta Política de Cookies puede modificarse en función de cambios normativos o de las cookies utilizadas. Te recomendamos revisarla periódicamente."
+          ]
+        }
+      ],
+      "table": [
+        {
+          "name": "inwine_cookie_consent",
+          "provider": "INWINE (propia)",
+          "purpose": "Guarda tus preferencias sobre el uso de cookies.",
+          "duration": "6 meses",
+          "category": "Necesaria"
+        },
+        {
+          "name": "token",
+          "provider": "INWINE (propia)",
+          "purpose": "Mantiene la sesión del usuario iniciada.",
+          "duration": "Sesión",
+          "category": "Necesaria"
+        },
+        {
+          "name": "favorites",
+          "provider": "INWINE (propia)",
+          "purpose": "Recuerda los vinos marcados como favoritos sin iniciar sesión.",
+          "duration": "Persistente",
+          "category": "Preferencias"
+        },
+        {
+          "name": "i18nextLng",
+          "provider": "INWINE (propia)",
+          "purpose": "Recuerda el idioma seleccionado.",
+          "duration": "Persistente",
+          "category": "Preferencias"
+        },
+        {
+          "name": "_ga",
+          "provider": "Google",
+          "purpose": "Distingue usuarios para la estadística de visitas (Google Analytics).",
+          "duration": "2 años",
+          "category": "Análisis"
+        },
+        {
+          "name": "_ga_*",
+          "provider": "Google",
+          "purpose": "Mantiene el estado de la sesión para Google Analytics 4.",
+          "duration": "2 años",
+          "category": "Análisis"
+        }
+      ]
     },
     "legal": {
       "title": "Aviso Legal",
@@ -768,17 +1081,49 @@
     },
     "about": {
       "title": "Sobre nosotros",
-      "content": "INWINE es la plataforma líder para conectar productores de vino, inversores y restaurantes.",
-      "mission": "Nuestra misión",
-      "mission_text": "Queremos revolucionar el sector vinícola utilizando la tecnología para conectar la excelencia del campo con la mesa y el mercado de inversión.",
-      "commitment": "Nuestro compromiso",
-      "commitment_text": "Trabajamos con transparencia y pasión para ofrecer la mejor experiencia a toda nuestra comunidad."
+      "content": "INWINE es una plataforma que conecta bodegas, restaurantes e inversores del mundo del vino. Nace de una idea de Pol Santandreu y la ha desarrollado un equipo apasionado por la tecnología y el vino.",
+      "sections": [
+        {
+          "title": "El proyecto",
+          "body": [
+            "INWINE nació para resolver un problema concreto: conectar de forma directa y transparente a las bodegas que producen vino, los restaurantes que quieren ofrecerlo y los inversores interesados en participar en partidas exclusivas.",
+            "La idea y la propiedad del proyecto son de Pol Santandreu. El diseño y el desarrollo de la plataforma los ha llevado a cabo un equipo técnico. Puedes conocer a las personas que han trabajado en él en la página del equipo."
+          ]
+        },
+        {
+          "title": "Cómo está hecho",
+          "body": [
+            "INWINE es una aplicación web moderna construida con el siguiente stack tecnológico:"
+          ],
+          "items": [
+            "Frontend: React 19, Vite, Tailwind CSS, React Router e i18next, con interfaz en catalán, castellano e inglés.",
+            "Backend: Laravel (PHP) con una API REST y base de datos MySQL.",
+            "Pagos: integración con Stripe para transacciones seguras.",
+            "Metodología: control de versiones con Git y despliegue continuo."
+          ]
+        },
+        {
+          "title": "Nuestro compromiso",
+          "body": [
+            "Trabajamos con transparencia y rigor para ofrecer la mejor experiencia a bodegas, restaurantes e inversores, y para hacer crecer una comunidad sana en torno al vino."
+          ]
+        }
+      ]
     },
     "team": {
       "title": "Equipo",
-      "content": "Conoce a las personas que hacen posible INWINE.",
-      "talent": "Talento y Pasión",
-      "talent_text": "Nuestro equipo está formado por sommeliers, desarrolladores y expertos en finanzas, todos unidos por el amor al vino."
+      "content": "Las personas que han hecho posible INWINE.",
+      "founder_badge": "Fundador",
+      "role_founder": "Fundador · Idea y propiedad del proyecto",
+      "role_developer": "Desarrollador",
+      "sections": [
+        {
+          "title": "Un equipo entre producto y tecnología",
+          "body": [
+            "INWINE combina la visión de negocio de Pol Santandreu con el trabajo de un equipo de desarrollo que ha construido la plataforma de principio a fin."
+          ]
+        }
+      ]
     },
     "influencers": {
       "title": "Influencers",
@@ -816,12 +1161,6 @@
       "co_creation": "Co-creación",
       "co_creation_text": "Las mejores funcionalidades de nuestra plataforma han surgido directamente de las ideas de nuestros usuarios."
     },
-    "developers": {
-      "title": "Desarrolladores",
-      "content": "Documentación y herramientas para integrarte con nuestra plataforma.",
-      "api": "API REST",
-      "api_text": "Accede a nuestra documentación técnica para integrar datos de vinos y mercados en tus aplicaciones."
-    },
     "guarantee": {
       "title": "Garantía",
       "content": "Información sobre las garantías de producto y servicio.",
@@ -833,7 +1172,8 @@
       "content": "Certificaciones y datos técnicos de nuestros vinos.",
       "transparency": "Transparencia Total",
       "transparency_text": "Todos nuestros vinos cuentan con declaraciones nutricionales y de procedencia detalladas según la normativa vigente."
-    }
+    },
+    "last_updated_label": "Última actualización"
   },
   "sidebar": {
     "user_unknown": "Usuario Desconocido",
@@ -904,5 +1244,29 @@
     "empty_title": "Aún no tienes favoritos",
     "empty_desc": "Guarda tus vinos preferidos para encontrarlos más rápido y no perderlos de vista.",
     "explore_btn": "Explorar productos"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "subtitle": "Lo sentimos, la página que buscas no existe o se ha movido.",
+    "home": "Volver al inicio",
+    "products": "Ver vinos"
+  },
+  "cookies": {
+    "banner": {
+      "title": "Utilizamos cookies",
+      "text": "Usamos cookies propias y de terceros para garantizar el funcionamiento del sitio, recordar tus preferencias y analizar el uso de la web. Puedes aceptarlas todas, rechazarlas o configurarlas. Si las rechazas, solo usaremos las estrictamente necesarias y no se guardará ningún dato de analítica.",
+      "more": "Más información",
+      "accept": "Aceptar todas",
+      "reject": "Rechazar todas",
+      "configure": "Configurar",
+      "save": "Guardar preferencias",
+      "close": "Cerrar",
+      "necessary_title": "Necesarias (siempre activas)",
+      "necessary_desc": "Imprescindibles para navegar y usar funciones básicas como el inicio de sesión o la cesta.",
+      "analysis_title": "Analíticas",
+      "analysis_desc": "Nos ayudan a entender cómo se usa la web (Google Analytics) para mejorarla.",
+      "marketing_title": "Marketing",
+      "marketing_desc": "Permiten mostrarte contenido y anuncios más relevantes según tus intereses."
+    }
   }
 }

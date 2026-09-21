@@ -9,6 +9,8 @@ import { CartSummary } from "@/components/landing/cart/CartSummary"
 import { DeleteCartModal } from "@/components/landing/cart/DeleteCartModal"
 import { useFetchUser } from "@/components/auth/FetchUser"
 import { getCookie } from "@/utils/utils"
+import { API_URL, BASE_URL } from "@/config/api"
+import { useCommissionPercentage } from "@/hooks/useCommissionPercentage"
 
 export default function ShoppingCartPage() {
   const { t } = useTranslation()
@@ -17,7 +19,8 @@ export default function ShoppingCartPage() {
   const [loading, setLoading] = useState(true)
   const [showAddedMessage, setShowAddedMessage] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-  const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000"
+  const { percentage: commissionPercentage } = useCommissionPercentage("restaurant")
+  const baseUrl = BASE_URL
 
   const { user, loading: userLoading, error: userError } = useFetchUser()
 
@@ -29,7 +32,7 @@ useEffect(() => {
     }
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      const apiUrl = API_URL
       const response = await fetch(`${apiUrl}/v1/${user.id}/orders`, {
         method: "GET",
         headers: {
@@ -71,7 +74,7 @@ useEffect(() => {
     if (!user) return
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      const apiUrl = API_URL
         await fetch(`${apiUrl}/v1/${user.id}/orders/clear`, {
         method: "DELETE",
         headers: {
@@ -101,7 +104,7 @@ useEffect(() => {
 
   const removeItem = async (orderId) => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      const apiUrl = API_URL
       await fetch(`${apiUrl}/v1/orders/${orderId}`, {
         method: "DELETE",
         headers: {
@@ -132,14 +135,22 @@ useEffect(() => {
       return sum + priceInEuros * item.quantity
     }, 0)
 
-  // Service commission (3% of subtotal)
-  const serviceCommission = subtotal * 0.03
+  // Comissió pel restaurant (percentatge configurat al panell d'admin,
+  // "Comissió pel restaurant" — es suma al preu que paga el restaurant)
+  const restaurantCommission = subtotal * (commissionPercentage / 100)
 
-  // Shipping cost
-  const shippingCost = subtotal > 100 ? 0 : 5.0
+  // Recàrrec de Stripe per processar el pagament
+  const stripeFee = (subtotal + restaurantCommission) * 0.03
+
+  // Aquesta és una estimació: l'import final autoritatiu el calcula el
+  // servidor en crear el PaymentIntent (StripeController::createPaymentIntent).
+  const platformFees = restaurantCommission + stripeFee
+
+  // Shipping cost (de moment sempre gratuït)
+  const shippingCost = 0
 
   // Total
-  const total = subtotal + serviceCommission + shippingCost
+  const total = subtotal + platformFees + shippingCost
 
   // Count selected items
   const selectedItemsCount = cartItems
@@ -268,7 +279,7 @@ useEffect(() => {
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-800 mb-1">{t('cart.features.free_shipping.title', 'Enviament gratuït')}</h3>
-                      <p className="text-xs text-gray-500">{t('cart.features.free_shipping.desc', 'Per a comandes superiors a 100€')}</p>
+                      <p className="text-xs text-gray-500">{t('cart.features.free_shipping.desc', 'En totes les comandes')}</p>
                     </div>
                   </div>
                   <div className="bg-white rounded-md shadow-sm p-4 flex items-start">
@@ -296,7 +307,7 @@ useEffect(() => {
               <CartSummary
                 orderId={cartItems[0]?.order_id}
                 subtotal={subtotal}
-                serviceCommission={serviceCommission}
+                platformFees={platformFees}
                 shippingCost={shippingCost}
                 total={total}
                 selectedItemsCount={selectedItemsCount}

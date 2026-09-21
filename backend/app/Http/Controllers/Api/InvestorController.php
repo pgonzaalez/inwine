@@ -35,7 +35,8 @@ class InvestorController extends Controller
      */
     public function update(Request $request)
     {
-        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
+        // Nunca se loguea la tarjeta ni la cuenta bancaria en crudo.
+        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->except(['credit_card', 'bank_account'])]);
 
         $user = Auth::user();
 
@@ -86,7 +87,7 @@ class InvestorController extends Controller
                 'bank_account' => $request->bank_account,
             ];
 
-            Log::info('Creando o actualizando datos del inversor', ['inversorData' => $inversorData]);
+            Log::info('Creando o actualizando datos del inversor', ['inversorData' => collect($inversorData)->except(['credit_card', 'bank_account'])->all()]);
 
             Investor::updateOrCreate(
                 ['user_id' => $user->id],

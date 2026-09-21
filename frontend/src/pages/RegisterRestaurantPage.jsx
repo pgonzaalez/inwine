@@ -20,16 +20,19 @@ import {
   TimerReset,
   Hash,
   CalendarDays,
+  CalendarClock,
+  Wine,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "@/utils/utils";
+import { API_URL } from "@/config/api";
 
 import { useTranslation } from "react-i18next";
 
 const AddRestaurantForm = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = API_URL;
 
   const [formData, setFormData] = useState({
     NIF: "",

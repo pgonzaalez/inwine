@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react"
-import { Star, Heart, Share2, Check, Copy, ShoppingBag, Package } from "lucide-react"
+import { Star, Heart, Share2, Check, Copy, ShoppingBag, Package, Info } from "lucide-react"
 import Modal from "@components/Modal"
 import { useFetchUser } from "@components/auth/FetchUser";
+import { API_URL } from "@/config/api";
+import { getCookie } from "@/utils/utils";
+import { useCommissionPercentage } from "@/hooks/useCommissionPercentage";
 
 export default function ProductInfo({ product, wineTypeName }) {
   const [favorites, setFavorites] = useState([])
@@ -14,10 +17,11 @@ export default function ProductInfo({ product, wineTypeName }) {
   const [requestStatus, setRequestStatus] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = API_URL;
 
   const user = useFetchUser();
   const role = user.user?.active_role?.[0]
+  const { percentage: restaurantCommissionPercentage } = useCommissionPercentage("restaurant")
 
   useEffect(() => {
     // Set initial mobile state
@@ -143,6 +147,7 @@ export default function ProductInfo({ product, wineTypeName }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({
           user_id: user.user?.id,
@@ -345,6 +350,26 @@ export default function ProductInfo({ product, wineTypeName }) {
               </p>
             )}
           </div>
+
+          {restaurantCommissionPercentage > 0 && (
+            <div className="bg-amber-50 border border-amber-100 p-3 rounded-md flex items-start gap-2">
+              <Info className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-amber-800">
+                En realitzar el pagament d'aquesta comanda se t'aplicarà una comissió del{" "}
+                <span className="font-semibold">{restaurantCommissionPercentage}%</span>, que
+                s'afegirà al preu ofertat.
+                {offerPrice && !isNaN(parseFloat(offerPrice)) && (
+                  <>
+                    {" "}Amb la teva oferta actual, això suposaria aproximadament{" "}
+                    <span className="font-semibold">
+                      {(parseFloat(offerPrice) * (restaurantCommissionPercentage / 100)).toFixed(2)}€
+                    </span>{" "}
+                    de comissió.
+                  </>
+                )}
+              </p>
+            </div>
+          )}
 
           {requestStatus === 'success' && (
             <div className="bg-green-50 p-3 rounded-md flex items-start">

@@ -10,30 +10,41 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CommissionResource extends Resource
 {
     protected static ?string $model = Commission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
 
-        protected static ?string $modelLabel = 'Comissions';
+    protected static ?string $modelLabel = 'Comissió';
+
+    protected static ?string $pluralModelLabel = 'Comissions';
+
+    protected static ?string $navigationGroup = 'Finances i configuració';
+
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('percentage')
-                    ->required()
-                    ->numeric()
-                    ->suffix('%')
-                    ->minValue(0)
-                    ->maxValue(100),
+                Forms\Components\Section::make()
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nom')
+                            ->required()
+                            ->maxLength(255)
+                            ->helperText('Els noms "Comissió pel producte", "Comissió pel restaurant" i "Comissió per l\'inversor" els fa servir el sistema pel seu nom exacte (celler, restaurant i inversor respectivament). Si es renombren o s\'esborren, deixa d\'aplicar-se aquell recàrrec sense avisar.'),
+                        Forms\Components\TextInput::make('percentage')
+                            ->label('Percentatge')
+                            ->required()
+                            ->numeric()
+                            ->suffix('%')
+                            ->minValue(0)
+                            ->maxValue(100),
+                    ]),
             ]);
     }
 
@@ -42,24 +53,24 @@ class CommissionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nom')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('percentage')
-                    ->numeric()
+                    ->label('Percentatge')
+                    ->numeric(decimalPlaces: 2)
+                    ->suffix(' %')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Actualitzat')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -70,9 +81,7 @@ class CommissionResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

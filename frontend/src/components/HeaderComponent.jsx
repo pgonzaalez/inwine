@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie, deleteCookie } from "@/utils/utils";
+import { API_URL } from "@/config/api";
 import Modal from "@components/Modal";
 import RoleSelector from '@/components/RoleSelector';
 import { useTranslation } from "react-i18next";
@@ -41,7 +42,7 @@ export default function Header() {
   const dropdownRef = useRef(null);
   const [productCount, setProductCount] = useState(0);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = API_URL;
   const [isRoleChangeOpen, setIsRoleChangeOpen] = useState(false);
   const role = user.user?.active_role?.[0];
 
@@ -131,7 +132,7 @@ export default function Header() {
   useEffect(() => {
     const fetchCartCount = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const apiUrl = API_URL;
         const response = await fetch(`${apiUrl}/v1/${user.user.id}/orders`, {
           method: "GET",
           headers: {

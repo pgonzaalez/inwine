@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class WineTypeResource extends Resource
 {
@@ -19,24 +17,38 @@ class WineTypeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
 
-    protected static ?string $modelLabel = 'Tipus de vins';
+    protected static ?string $modelLabel = 'Tipus de vi';
 
-    protected static ?string $navigationGroup = "Gestió de productes";
+    protected static ?string $pluralModelLabel = 'Tipus de vins';
 
-    protected static ?int $navigationSort = 30;
+    protected static ?string $navigationGroup = 'Catàleg';
+
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('description')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
-                    ->image(),
+                Forms\Components\Section::make()
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nom')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('description')
+                            ->label('Descripció')
+                            ->required()
+                            ->rows(3)
+                            ->columnSpanFull(),
+                        Forms\Components\FileUpload::make('image')
+                            ->label('Imatge')
+                            ->image()
+                            ->disk('public')
+                            ->directory('wine-types')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 
@@ -44,25 +56,35 @@ class WineTypeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('')
+                    ->square(),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Nom')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('description')
+                    ->label('Descripció')
+                    ->limit(60)
                     ->searchable(),
+                Tables\Columns\TextColumn::make('products_count')
+                    ->label('Productes')
+                    ->counts('products')
+                    ->badge()
+                    ->color('gray'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Creat')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('name')
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -74,7 +96,7 @@ class WineTypeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ProductsRelationManager::class,
         ];
     }
 
@@ -85,5 +107,10 @@ class WineTypeResource extends Resource
             'create' => Pages\CreateWineType::route('/create'),
             'edit' => Pages\EditWineType::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) WineType::count();
     }
 }

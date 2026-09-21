@@ -25,6 +25,7 @@ class ProductController extends Controller
                 WHERE p2.status = "in_stock"
                 AND COALESCE(p2.parent_product_id, p2.id) = COALESCE(products.parent_product_id, products.id)
             )')
+            ->whereHas('seller', fn ($query) => $query->visibleToAdmins())
             ->withCount('requestsRestaurant')
             ->orderBy('requests_restaurant_count', 'desc')
             ->get();
@@ -359,16 +360,19 @@ class ProductController extends Controller
             }
     
             DB::commit();
-    
+
+            Log::info('Producto actualizado', ['product_id' => $product->id, 'user_id' => auth()->id()]);
+
             // Cargamos las imágenes para la respuesta
             $product->load('images');
-    
+
             return response()->json([
                 'data' => $product
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-    
+            Log::error('Error al actualizar producto', ['product_id' => $product->id, 'error' => $e->getMessage()]);
+
             return response()->json([
                 'message' => 'Error al actualizar el producto: ' . $e->getMessage()
             ], 500);
@@ -425,12 +429,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Producto duplicado', ['product_id' => $product->id, 'new_product_id' => $newProduct->id, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'data' => $newProduct
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al duplicar producto', ['product_id' => $product->id, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
@@ -475,12 +482,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Producto eliminado', ['product_id' => $product->id, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Producto eliminado correctamente'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al eliminar producto', ['product_id' => $product->id, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
@@ -522,12 +532,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Producto eliminado (destroyAllByUser)', ['product_id' => $product->id, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Producto eliminado correctamente'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al eliminar producto (destroyAllByUser)', ['product_id' => $product->id, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
@@ -599,12 +612,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Imagen de producto eliminada', ['product_id' => $product->id, 'image_id' => $imageId, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Imagen eliminada correctamente'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al eliminar imagen de producto', ['product_id' => $product->id, 'image_id' => $imageId, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
@@ -659,12 +675,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Imagen principal de producto actualizada', ['product_id' => $product->id, 'image_id' => $imageId, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Imagen principal actualizada correctamente'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al actualizar imagen principal', ['product_id' => $product->id, 'image_id' => $imageId, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,

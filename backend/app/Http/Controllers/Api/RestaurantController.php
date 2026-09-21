@@ -20,13 +20,21 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-        $restaurant = Restaurant::all();
+        // OJO: esta ruta no está registrada en routes/api.php hoy (no es
+        // alcanzable), pero se blinda igualmente por si alguien la conecta
+        // en el futuro sin fijarse: nunca debe devolver credit_card/balance.
+        $restaurant = Restaurant::whereHas('user', fn ($query) => $query->visibleToAdmins())
+            ->get([
+                'id', 'user_id', 'business_name', 'address', 'image', 'province',
+                'description', 'number_of_diners', 'wine_rotation',
+                'reference_number', 'services',
+            ]);
         return response()->json($restaurant);
     }
 
     public function indexInfo()
     {
-        $restaurants = Restaurant::all();
+        $restaurants = Restaurant::whereHas('user', fn ($query) => $query->visibleToAdmins())->get();
 
         $response = $restaurants->map(function ($restaurant) {
             return [
@@ -52,8 +60,24 @@ class RestaurantController extends Controller
      */
     public function store(Request $request)
     {
-        $restaurant = Restaurant::create($request->all());
-        return response()->json($restaurant);
+        // OJO: tampoco alcanzable hoy (sin ruta); igual que arriba, se
+        // blinda para no repetir el bug de mass-assignment que tenía el
+        // registro de restaurante (balance/credit_card asignables por el
+        // propio usuario) si algún día se conecta una ruta a este método.
+        $validated = $request->validate([
+            'address' => 'required|string|min:2|max:255',
+            'phone_contact' => 'nullable|string|max:11',
+            'name_contact' => 'nullable|string|max:20',
+            'business_name' => 'required|string|min:5',
+            'province' => 'required|string|min:3',
+            'description' => 'required|string|min:20|max:100',
+        ]);
+        $validated['user_id'] = auth()->id();
+        $validated['balance'] = 0.00;
+        $validated['credit_card'] = null;
+
+        $restaurant = Restaurant::create($validated);
+        return response()->json($restaurant, 201);
     }
 
     /**
@@ -61,13 +85,24 @@ class RestaurantController extends Controller
      */
     public function show(string $id)
     {
-        $restaurant = Restaurant::find($id);
+        // OJO: no alcanzable hoy (sin ruta); blindado igual que index()/store().
+        $restaurant = Restaurant::find($id, [
+            'id', 'user_id', 'business_name', 'address', 'image', 'province',
+            'description', 'number_of_diners', 'wine_rotation',
+            'reference_number', 'services',
+        ]);
+        if (!$restaurant) {
+            return response()->json(['message' => 'Restaurante no encontrado'], 404);
+        }
         return response()->json($restaurant);
     }
 
     public function showPublicData(string $id)
     {
         $restaurant = Restaurant::find($id);
+        if (!$restaurant) {
+            return response()->json(['message' => 'Restaurante no encontrado'], 404);
+        }
         $response = [
             "id" => $restaurant->id,
             "user_id" => $restaurant->user_id,
@@ -90,7 +125,8 @@ class RestaurantController extends Controller
      */
     public function update(Request $request)
     {
-        Log::info('Solicitud recibida para crear un restaurante', ['data' => $request->all()]);
+        // Nunca se loguea la tarjeta en crudo.
+        Log::info('Solicitud recibida para crear un restaurante', ['data' => $request->except(['credit_card'])]);
 
         $user = Auth::user();
 
@@ -110,7 +146,7 @@ class RestaurantController extends Controller
             'province' => 'required|min:3',
             'description' => 'required|min:20|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-            'number_of_diners' => 'nullable',
+            'number_of_diners' => 'nullable|integer|min:0',
             'wine_rotation' => 'nullable|integer',
             'reference_number' => 'nullable|string|max:50',
             'workdays_per_week' => 'nullable|integer|min:1|max:7',
@@ -175,7 +211,7 @@ class RestaurantController extends Controller
                 $restaurantData['image'] = null;
             }
 
-            Log::info('Creando o actualizando datos del vendedor', ['restaurantData' => $restaurantData]);
+            Log::info('Creando o actualizando datos del vendedor', ['restaurantData' => collect($restaurantData)->except('credit_card')->all()]);
 
             Restaurant::updateOrCreate(
                 ['user_id' => $user->id],

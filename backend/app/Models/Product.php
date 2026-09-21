@@ -19,6 +19,7 @@ class Product extends Model
         "price_demanded",
         "price_demanded_with_commission",
         "commission_platform",
+        "seller_payout",
         "quantity",
         "image",
         'status',
@@ -34,6 +35,7 @@ class Product extends Model
                 $product->price_demanded_with_commission - $product->price_demanded,
                 2
             );
+            $product->seller_payout = $product->calculateSellerPayout();
         });
     }
 
@@ -62,6 +64,16 @@ class Product extends Model
         return $this->hasMany(RequestRestaurant::class);
     }
 
+    public function parentProduct()
+    {
+        return $this->belongsTo(Product::class, 'parent_product_id');
+    }
+
+    public function childProducts()
+    {
+        return $this->hasMany(Product::class, 'parent_product_id');
+    }
+
     public function calculatePriceWithCommission(): float
     {
         $commission = Commission::where('name', 'Comissió pel producte')->first();
@@ -69,5 +81,20 @@ class Product extends Model
         if (!$commission) return $this->price_demanded;
 
         return round($this->price_demanded * (1 + $commission->percentage / 100), 2);
+    }
+
+    /**
+     * Import net que rep el celler/bodega quan la plataforma li paga: al
+     * preu que demana se li descompta la seva comissió ("Comissió pel
+     * producte"). Independent de price_demanded_with_commission, que és el
+     * preu que serveix de base per calcular els guanys de l'inversor.
+     */
+    public function calculateSellerPayout(): float
+    {
+        $commission = Commission::where('name', 'Comissió pel producte')->first();
+
+        if (!$commission) return $this->price_demanded;
+
+        return round($this->price_demanded * (1 - $commission->percentage / 100), 2);
     }
 }

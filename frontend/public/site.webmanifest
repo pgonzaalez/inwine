@@ -1,0 +1,17 @@
+{
+  "name": "InWine",
+  "short_name": "InWine",
+  "description": "Descobreix, ven i inverteix en vins únics.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#9A3E50",
+  "icons": [
+    {
+      "src": "/logo.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ]
+}

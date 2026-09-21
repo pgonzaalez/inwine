@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next"
+import { Info } from "lucide-react"
+import { useCommissionPercentage } from "@/hooks/useCommissionPercentage"
 
 export const WinePricingForm = ({
   formData,
@@ -10,6 +12,12 @@ export const WinePricingForm = ({
   isSubmitEnabled,
 }) => {
   const { t } = useTranslation()
+  const { percentage: sellerCommissionPercentage } = useCommissionPercentage("product")
+  const priceDemanded = parseFloat(formData.price_demanded)
+  const hasValidPrice = !isNaN(priceDemanded) && priceDemanded > 0
+  const sellerPayout = hasValidPrice
+    ? (priceDemanded * (1 - sellerCommissionPercentage / 100)).toFixed(2)
+    : null
   // Helper function to check if a field has an error
   const hasError = (fieldName) => {
     return touchedFields[fieldName] && errors[fieldName]
@@ -51,6 +59,19 @@ export const WinePricingForm = ({
               <span className="text-red-500 text-xs mt-1">{errors.price_demanded[0]}</span>
             )}
           </div>
+
+          {sellerCommissionPercentage > 0 && sellerPayout && (
+            <div className="bg-amber-50 border border-amber-100 p-3 rounded-md flex items-start gap-2">
+              <Info className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-amber-800">
+                {t(
+                  "dashboards.seller.product.commission_notice_amount",
+                  "Amb aquest preu, després de la comissió del {{percentage}}% rebràs aproximadament {{amount}}€ per unitat.",
+                  { percentage: sellerCommissionPercentage, amount: sellerPayout }
+                )}
+              </p>
+            </div>
+          )}
 
           {/* Quantitat */}
           <div className="relative">

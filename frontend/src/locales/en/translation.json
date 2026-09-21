@@ -33,7 +33,7 @@
       "blog": "Blog",
       "community": "Community",
       "ideas": "Ideas",
-      "developers": "Developers",
+      "developers": "About the project",
       "about": "About us",
       "team": "Team",
       "influencers": "Influencers",
@@ -109,7 +109,27 @@
       "support": {
         "title": "Personalized Support",
         "desc": "Our team of wine experts is available to advise you at all times."
-      }
+      },
+      "form": {
+        "title": "Send us a message",
+        "desc": "Fill in the form and we'll get back to you as soon as possible.",
+        "name": "Name",
+        "name_ph": "Your name",
+        "email": "Email",
+        "email_ph": "you@email.com",
+        "subject": "Subject",
+        "subject_ph": "How can we help you?",
+        "message": "Message",
+        "message_ph": "Write your message...",
+        "send": "Send message",
+        "sending": "Sending...",
+        "success_title": "Message sent!",
+        "success_desc": "Thanks for reaching out. We'll get back to you soon.",
+        "error_required": "This field is required",
+        "error_email": "Enter a valid email address"
+      },
+      "hours_title": "Support hours",
+      "hours_desc": "Monday to Friday · 9:00 - 18:00"
     },
     "products": {
       "hero": {
@@ -552,7 +572,13 @@
       "error_generic": "Error logging in",
       "success": "Login successful",
       "role_modal_title": "Choose role",
-      "role_modal_desc": "Select the role you want to access with:"
+      "role_modal_desc": "Select the role you want to access with:",
+      "no_account": "Don't have an account?",
+      "register_link": "Sign up here",
+      "register_button": "Create an account",
+      "register_modal_title": "Create an account",
+      "register_modal_desc": "Select the type of account you want to register with:",
+      "or_divider": "or"
     },
     "register": {
       "seller_title": "Create producer user account",
@@ -597,7 +623,19 @@
       "error_validation": "There are validation errors in the form. Please check the fields.",
       "error_conflict": "A user with this email or NIF already exists. Please use different data.",
       "error_forbidden": "You do not have permissions to perform this action.",
-      "error_generic": "An unexpected error occurred. Please try again later."
+      "error_generic": "An unexpected error occurred. Please try again later.",
+      "terms_section_title": "Terms & Privacy",
+      "terms_badge_accepted": "Accepted",
+      "terms_badge_pending": "Pending acceptance",
+      "terms_badge_required": "Reading required",
+      "open_privacy_button": "Open Privacy Policy & Terms",
+      "accept_terms_text": "I have read and accept the Privacy Policy and Terms of Use of Inwine.",
+      "must_open_first": "Before accepting, you must open and read the privacy policy.",
+      "terms_modal_title": "Privacy Policy & Terms",
+      "terms_modal_desc": "Please review the legal information carefully before proceeding.",
+      "terms_modal_close": "Close",
+      "terms_modal_accept": "I have read and accept the Privacy Policy",
+      "error_terms_required": "You must open and accept the Privacy Policy to register."
     }
   },
   "profile": {
@@ -672,7 +710,7 @@
     "features": {
       "free_shipping": {
         "title": "Free shipping",
-        "desc": "For orders over 100€"
+        "desc": "On all orders"
       },
       "secure_payment": {
         "title": "Secure payment",
@@ -687,8 +725,8 @@
       "title": "Order summary",
       "subtotal": "Subtotal",
       "service_fee": {
-        "label": "Service fee",
-        "tooltip": "3% of subtotal"
+        "label": "Fees and commissions",
+        "tooltip": "Winery commission and payment surcharge"
       },
       "shipping": {
         "label": "Shipping costs",
@@ -719,43 +757,318 @@
   "info": {
     "privacy": {
       "title": "Privacy Policy",
-      "content": "At INWINE we take your privacy very seriously. This page details how we collect, use and protect your personal data.",
-      "section1": {
-        "title": "1. Information Collection",
-        "text": "We collect information when you register on our site, place an order or subscribe to our newsletter. Information includes your name, email and phone number."
-      },
-      "section2": {
-        "title": "2. Use of Information",
-        "text": "Any information we collect from you may be used to:",
-        "item1": "Personalize your experience.",
-        "item2": "Improve our website and customer service.",
-        "item3": "Process transactions and send periodic emails."
-      }
+      "content": "At INWINE we take your privacy seriously. This policy explains which personal data we process, for what purpose and legal basis, for how long, and what rights you have.",
+      "updated": "August 27, 2026",
+      "sections": [
+        {
+          "title": "1. Data controller",
+          "body": [
+            "The controller of your data is INWINE S.L. (\"INWINE\"), with tax ID B12345678 and registered office at Carrer del Sol, 1, 08201 Sabadell (Barcelona), Spain.",
+            "For any data protection matter you can write to privacitat@inwine.cat."
+          ]
+        },
+        {
+          "title": "2. What data we process",
+          "body": [
+            "Depending on your relationship with INWINE, we may process the following categories of data:"
+          ],
+          "items": [
+            "Identification and contact data: name, surname, email address, phone and, where applicable, postal address.",
+            "Account data: role (winery, restaurant or investor), username, hashed password and preferences.",
+            "Transaction and billing data: products listed or purchased, amounts, order history and tax details. Payments are processed by Stripe; INWINE does not store full card numbers.",
+            "Browsing data: IP address, device identifiers, pages visited and information collected through cookies.",
+            "Communications: the content of messages you send us through forms or email."
+          ]
+        },
+        {
+          "title": "3. Purposes and legal basis",
+          "body": [
+            "We process your data for the following purposes:"
+          ],
+          "items": [
+            "Creating and managing your account and providing the platform services (basis: performance of the contract).",
+            "Processing orders, payments and investments, and issuing invoices (performance of the contract and legal obligation).",
+            "Handling your enquiries and support requests (legitimate interest in responding).",
+            "Sending you communications about similar services or, if you opt in, the newsletter (legitimate interest or consent).",
+            "Analysing website use and improving it through analytics cookies (consent).",
+            "Complying with legal obligations regarding tax, accounting and fraud prevention (legal obligation)."
+          ]
+        },
+        {
+          "title": "4. Retention period",
+          "body": [
+            "We keep the data for as long as the contractual relationship lasts and, once it ends, duly blocked during the limitation periods of the applicable legal obligations (generally up to 6 years for commercial and tax records). Data processed on the basis of consent is kept until you withdraw it."
+          ]
+        },
+        {
+          "title": "5. Data recipients",
+          "body": [
+            "We do not share your data with third parties except where legally required. The following providers do access it as data processors:"
+          ],
+          "items": [
+            "Payment providers (Stripe Payments Europe, Ltd.) to process charges and payouts.",
+            "Cloud hosting and infrastructure providers.",
+            "Web analytics providers (Google), only if you accept analytics cookies.",
+            "Legal, tax and accounting advisors where necessary."
+          ]
+        },
+        {
+          "title": "6. International transfers",
+          "body": [
+            "Some of our providers may process data outside the European Economic Area. In such cases, INWINE puts appropriate safeguards in place, such as the Standard Contractual Clauses approved by the European Commission or an adequacy decision."
+          ]
+        },
+        {
+          "title": "7. Your rights",
+          "body": [
+            "You can exercise the following rights at any time by writing to privacitat@inwine.cat, stating the right you wish to exercise and attaching a copy of an identity document:"
+          ],
+          "items": [
+            "Access to your personal data.",
+            "Rectification of inaccurate data.",
+            "Erasure of data when it is no longer necessary.",
+            "Objection to processing on grounds relating to your particular situation.",
+            "Restriction of processing in certain cases.",
+            "Portability of your data to another controller.",
+            "Withdrawal of consent, without retroactive effect."
+          ]
+        },
+        {
+          "title": "8. Complaints",
+          "body": [
+            "If you believe that the processing of your data does not comply with the regulations, you can file a complaint with the Spanish Data Protection Agency (www.aepd.es)."
+          ]
+        },
+        {
+          "title": "9. Data security",
+          "body": [
+            "INWINE applies appropriate technical and organisational measures to protect personal data against loss, misuse, unauthorised access or alteration, including encryption of communications and access control."
+          ]
+        },
+        {
+          "title": "10. Minors",
+          "body": [
+            "INWINE services are aimed exclusively at people over 18. We do not knowingly collect data from minors; if we detect that we have, we will delete it."
+          ]
+        },
+        {
+          "title": "11. Changes to this policy",
+          "body": [
+            "We may update this Privacy Policy to reflect regulatory or operational changes. We will post any change on this page and update the date in the header."
+          ]
+        }
+      ]
     },
     "terms": {
       "title": "Terms of Use",
-      "content": "Welcome to INWINE. By accessing our website, you agree to comply with these terms of use.",
-      "section1": {
-        "title": "1. License Use",
-        "text": "Permission is granted to temporarily download one copy of the materials on INWINE's website for personal, non-commercial transitory viewing only."
-      },
-      "section2": {
-        "title": "2. Disclaimer",
-        "text": "The materials on INWINE's website are provided \"as is\". INWINE makes no warranties, expressed or implied."
-      }
+      "content": "These terms govern access to and use of the INWINE platform. By registering or using the website you accept these terms in full.",
+      "updated": "August 27, 2026",
+      "sections": [
+        {
+          "title": "1. Purpose",
+          "body": [
+            "These Terms of Use govern access to and use of the INWINE platform, available at inwine.cat, which connects wineries and wine sellers, restaurants and investors for the sale and investment in wine lots."
+          ]
+        },
+        {
+          "title": "2. Acceptance",
+          "body": [
+            "Use of the platform grants user status and implies full acceptance of these terms, the Privacy Policy and the Cookies Policy. If you do not agree, do not use the website."
+          ]
+        },
+        {
+          "title": "3. Registration and account",
+          "body": [
+            "To access certain features you must create an account. By registering you agree to:"
+          ],
+          "items": [
+            "Provide truthful, up-to-date and complete information.",
+            "Be over 18 and have legal capacity to contract.",
+            "Keep your credentials safe and not share them with third parties.",
+            "Immediately report any unauthorised use of your account."
+          ]
+        },
+        {
+          "title": "4. User roles",
+          "body": [
+            "The platform provides for different profiles with specific conditions:"
+          ],
+          "items": [
+            "Winery / Seller: lists wine lots with accurate, up-to-date information and assumes the legal obligations of a seller.",
+            "Restaurant: purchases product for its professional activity.",
+            "Investor: takes part in financing wine lots, assuming the associated risks described in clause 8."
+          ]
+        },
+        {
+          "title": "5. Rules of use",
+          "body": [
+            "The user agrees to make lawful use of the platform and will refrain from:"
+          ],
+          "items": [
+            "Publishing false, misleading, unlawful content or content that infringes third-party rights.",
+            "Impersonating other people or entities.",
+            "Introducing malicious code or attempting to access systems without authorisation.",
+            "Using the platform for money laundering or fraud.",
+            "Collecting other users' data without their consent."
+          ]
+        },
+        {
+          "title": "6. User-generated content",
+          "body": [
+            "The user is solely responsible for the content they publish and warrants that they hold the necessary rights to do so. They grant INWINE a non-exclusive, royalty-free licence to host and display that content for the purpose of providing the service. INWINE may remove any content that breaches these terms."
+          ]
+        },
+        {
+          "title": "7. Prices, payments and fees",
+          "body": [
+            "Prices are shown with applicable taxes indicated in each case. Payments are processed through the provider Stripe. INWINE may charge fees for its intermediation services, which will be disclosed before each transaction is completed."
+          ]
+        },
+        {
+          "title": "8. Wine investment and risk",
+          "body": [
+            "Investing in wine lots involves risk, including the possible total or partial loss of the capital contributed, and past performance does not guarantee future results. INWINE does not provide financial, tax or investment advice; decisions are the user's sole responsibility, and the user should assess whether the transaction suits their profile and, if necessary, seek professional advice."
+          ]
+        },
+        {
+          "title": "9. Intellectual and industrial property",
+          "body": [
+            "The INWINE brand, software, design, texts and other elements of the website belong to INWINE or to third parties who have authorised their use. Reproduction, distribution or transformation without express authorisation is prohibited."
+          ]
+        },
+        {
+          "title": "10. Liability",
+          "body": [
+            "INWINE acts as an intermediary and is not a party to the contracts users enter into with each other. The service is provided \"as is\", without guaranteeing uninterrupted availability of the site. To the extent permitted by law, INWINE is not liable for indirect damages or loss of profit arising from use of the platform."
+          ]
+        },
+        {
+          "title": "11. Suspension and termination",
+          "body": [
+            "INWINE may suspend or terminate accounts that breach these terms or applicable regulations. The user may close their account at any time from the settings or by writing to info@inwine.cat."
+          ]
+        },
+        {
+          "title": "12. Changes",
+          "body": [
+            "INWINE may modify these terms or the service. Substantial changes will be communicated with reasonable notice. Continued use of the platform after they take effect implies acceptance."
+          ]
+        },
+        {
+          "title": "13. Governing law and jurisdiction",
+          "body": [
+            "These terms are governed by Spanish law. For the resolution of any dispute, the parties submit to the courts of Sabadell (Barcelona), unless consumer regulations establish a different forum. The European Commission provides an online dispute resolution platform at ec.europa.eu/consumers/odr."
+          ]
+        }
+      ]
     },
     "cookies": {
       "title": "Cookies Policy",
-      "content": "We use cookies to improve your experience on our website.",
-      "what_are": "What are cookies?",
-      "what_are_text": "Cookies are small text files that are stored on your device when you visit a website to remember your preferences.",
-      "types": "Types of cookies we use",
-      "type_necessary": "Necessary:",
-      "type_necessary_text": "Essential for the operation of the site.",
-      "type_analysis": "Analysis:",
-      "type_analysis_text": "To understand how users interact with the web.",
-      "type_marketing": "Marketing:",
-      "type_marketing_text": "To show relevant ads."
+      "content": "This website uses first-party and third-party cookies to ensure it works, remember your preferences and analyse its use. Here we explain which ones we use and how you can manage them.",
+      "updated": "August 27, 2026",
+      "table_title": "Cookies we use",
+      "col_name": "Cookie",
+      "col_provider": "Provider",
+      "col_purpose": "Purpose",
+      "col_duration": "Duration",
+      "col_category": "Category",
+      "manage_title": "How to manage your preferences",
+      "manage_text": "You can accept, reject or configure non-essential cookies at any time from the preferences panel. You can also delete or block them from your browser settings.",
+      "manage_button": "Cookie settings",
+      "sections": [
+        {
+          "title": "1. What cookies are",
+          "body": [
+            "Cookies are small text files that a website places on the user's browser or device. They allow the site to remember information about the visit, such as the language or the logged-in session, and make browsing easier."
+          ]
+        },
+        {
+          "title": "2. Who uses cookies",
+          "body": [
+            "This website uses first-party cookies, managed by INWINE, and third-party cookies, managed by external providers such as Google, which provide services on our behalf."
+          ]
+        },
+        {
+          "title": "3. Types of cookies by purpose",
+          "body": [
+            "By purpose, the cookies that may be used are classified as:"
+          ],
+          "items": [
+            "Technical or necessary: essential for the site to work (session, security, cart). They cannot be disabled.",
+            "Preferences: remember options such as the language or wines marked as favourites.",
+            "Analytics: allow measuring and analysing site use in aggregate form to improve it.",
+            "Marketing: used to show relevant advertising inside or outside the website."
+          ]
+        },
+        {
+          "title": "4. Types of cookies by duration",
+          "body": [
+            "Based on how long they stay active, they can be session cookies, deleted when the browser is closed, or persistent cookies, which remain on the device for a set period or until manually deleted."
+          ]
+        },
+        {
+          "title": "5. Consent",
+          "body": [
+            "The first time you visit the site, a notice is shown letting you accept all cookies, reject them or configure them by category. Non-necessary cookies are only installed if you give consent. You can change your choice at any time from the \"Cookie settings\" button."
+          ]
+        },
+        {
+          "title": "6. How to disable cookies in the browser",
+          "body": [
+            "In addition to our panel, you can block or delete cookies from your browser settings (Chrome, Firefox, Safari or Edge). Note that disabling some cookies may affect how the site works."
+          ]
+        },
+        {
+          "title": "7. Updates",
+          "body": [
+            "This Cookies Policy may be amended in response to regulatory changes or changes to the cookies used. We recommend reviewing it periodically."
+          ]
+        }
+      ],
+      "table": [
+        {
+          "name": "inwine_cookie_consent",
+          "provider": "INWINE (first-party)",
+          "purpose": "Stores your cookie preferences.",
+          "duration": "6 months",
+          "category": "Necessary"
+        },
+        {
+          "name": "token",
+          "provider": "INWINE (first-party)",
+          "purpose": "Keeps the user session logged in.",
+          "duration": "Session",
+          "category": "Necessary"
+        },
+        {
+          "name": "favorites",
+          "provider": "INWINE (first-party)",
+          "purpose": "Remembers wines marked as favourites without logging in.",
+          "duration": "Persistent",
+          "category": "Preferences"
+        },
+        {
+          "name": "i18nextLng",
+          "provider": "INWINE (first-party)",
+          "purpose": "Remembers the selected language.",
+          "duration": "Persistent",
+          "category": "Preferences"
+        },
+        {
+          "name": "_ga",
+          "provider": "Google",
+          "purpose": "Distinguishes users for visit statistics (Google Analytics).",
+          "duration": "2 years",
+          "category": "Analytics"
+        },
+        {
+          "name": "_ga_*",
+          "provider": "Google",
+          "purpose": "Persists session state for Google Analytics 4.",
+          "duration": "2 years",
+          "category": "Analytics"
+        }
+      ]
     },
     "legal": {
       "title": "Legal Notice",
@@ -768,17 +1081,49 @@
     },
     "about": {
       "title": "About us",
-      "content": "INWINE is the leading platform for connecting wine producers, investors and restaurants.",
-      "mission": "Our mission",
-      "mission_text": "We want to revolutionize the wine sector using technology to connect field excellence with the table and the investment market.",
-      "commitment": "Our commitment",
-      "commitment_text": "We work with transparency and passion to offer the best experience to our entire community."
+      "content": "INWINE is a platform that connects wineries, restaurants and investors from the wine world. It started as an idea by Pol Santandreu and was built by a team passionate about technology and wine.",
+      "sections": [
+        {
+          "title": "The project",
+          "body": [
+            "INWINE was created to solve a specific problem: directly and transparently connecting the wineries that produce wine, the restaurants that want to offer it, and the investors interested in taking part in exclusive lots.",
+            "The idea and ownership of the project belong to Pol Santandreu. The design and development of the platform were carried out by a technical team. You can meet the people who worked on it on the team page."
+          ]
+        },
+        {
+          "title": "How it's built",
+          "body": [
+            "INWINE is a modern web application built with the following tech stack:"
+          ],
+          "items": [
+            "Frontend: React 19, Vite, Tailwind CSS, React Router and i18next, with the interface in Catalan, Spanish and English.",
+            "Backend: Laravel (PHP) with a REST API and a MySQL database.",
+            "Payments: Stripe integration for secure transactions.",
+            "Methodology: version control with Git and continuous deployment."
+          ]
+        },
+        {
+          "title": "Our commitment",
+          "body": [
+            "We work with transparency and rigour to offer the best experience to wineries, restaurants and investors, and to grow a healthy community around wine."
+          ]
+        }
+      ]
     },
     "team": {
       "title": "Team",
-      "content": "Meet the people who make INWINE possible.",
-      "talent": "Talent and Passion",
-      "talent_text": "Our team consists of sommeliers, developers and finance experts, all united by a love for wine."
+      "content": "The people who made INWINE possible.",
+      "founder_badge": "Founder",
+      "role_founder": "Founder · Idea and project ownership",
+      "role_developer": "Developer",
+      "sections": [
+        {
+          "title": "A team between product and technology",
+          "body": [
+            "INWINE combines Pol Santandreu's business vision with the work of a development team that built the platform from start to finish."
+          ]
+        }
+      ]
     },
     "influencers": {
       "title": "Influencers",
@@ -816,12 +1161,6 @@
       "co_creation": "Co-creation",
       "co_creation_text": "The best features of our platform have emerged directly from our users' ideas."
     },
-    "developers": {
-      "title": "Developers",
-      "content": "Documentation and tools to integrate with our platform.",
-      "api": "REST API",
-      "api_text": "Access our technical documentation to integrate wine and market data into your applications."
-    },
     "guarantee": {
       "title": "Guarantee",
       "content": "Information about product and service guarantees.",
@@ -833,7 +1172,8 @@
       "content": "Certifications and technical data of our wines.",
       "transparency": "Total Transparency",
       "transparency_text": "All our wines have detailed nutritional and provenance declarations according to current regulations."
-    }
+    },
+    "last_updated_label": "Last updated"
   },
   "sidebar": {
     "user_unknown": "Unknown User",
@@ -904,5 +1244,29 @@
     "empty_title": "You have no favorites yet",
     "empty_desc": "Save your preferred wines to find them faster and not lose track of them.",
     "explore_btn": "Explore products"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "subtitle": "Sorry, the page you are looking for doesn't exist or has been moved.",
+    "home": "Back to home",
+    "products": "Browse wines"
+  },
+  "cookies": {
+    "banner": {
+      "title": "We use cookies",
+      "text": "We use first-party and third-party cookies to keep the site working, remember your preferences and analyse website use. You can accept all, reject them or configure them. If you reject, we will only use strictly necessary cookies and no analytics data will be stored.",
+      "more": "Learn more",
+      "accept": "Accept all",
+      "reject": "Reject all",
+      "configure": "Configure",
+      "save": "Save preferences",
+      "close": "Close",
+      "necessary_title": "Necessary (always on)",
+      "necessary_desc": "Essential for browsing and basic features such as login or the cart.",
+      "analysis_title": "Analytics",
+      "analysis_desc": "Help us understand how the site is used (Google Analytics) to improve it.",
+      "marketing_title": "Marketing",
+      "marketing_desc": "Allow us to show you more relevant content and ads based on your interests."
+    }
   }
 }

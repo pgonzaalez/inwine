@@ -2,12 +2,13 @@ import { useState, useEffect } from "react"
 import { useFetchUser } from "@/components/auth/FetchUser"
 import { getCookie } from "@/utils/utils"
 import { useTranslation } from "react-i18next";
+import { API_URL, BASE_URL } from "@/config/api"
 
 export default function RestaurantForm({ primaryColors }) {
   const { t } = useTranslation();
   const { user } = useFetchUser()
-  const apiUrl = import.meta.env.VITE_API_URL
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const apiUrl = API_URL
+  const baseUrl = BASE_URL
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     address: "",
@@ -644,6 +645,7 @@ export default function RestaurantForm({ primaryColors }) {
           )}
           {hasError("image") && <span className="text-red-500 text-xs mt-1">{errors.image}</span>}
         </div>
+      </div>
       </div>
 
       <button

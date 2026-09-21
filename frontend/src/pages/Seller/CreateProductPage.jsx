@@ -2,11 +2,15 @@ import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { useTranslation } from "react-i18next"
+import { Info } from "lucide-react"
 import { ProgressBar } from "@/components/product/ProgressBar"
 import { WineTypeSelector } from "@/components/product/WineTypeSelector"
 import { WineDetailsForm } from "@/components/product/WineDetailsForm"
 import { WinePricingForm } from "@/components/product/WinePricingForm"
 import { validateStep } from "@/utils/form-validation"
+import { API_URL } from "@/config/api"
+import { getCookie } from "@/utils/utils"
+import { useCommissionPercentage } from "@/hooks/useCommissionPercentage"
 
 export default function CreateProduct() {
   const { user, loading } = useFetchUser()
@@ -32,7 +36,8 @@ export default function CreateProduct() {
     4: false,
   })
   const navigate = useNavigate()
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = API_URL
+  const { percentage: sellerCommissionPercentage } = useCommissionPercentage("product")
 
   const handleCancel = () => {
     navigate('/seller/dashboard')
@@ -215,6 +220,9 @@ export default function CreateProduct() {
 
       const response = await fetch(`${apiUrl}/v1/products`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
         body: formDataObj, // Send FormData instead of JSON
       })
 
@@ -242,6 +250,19 @@ export default function CreateProduct() {
 
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-semibold text-gray-900 mb-5">{t("dashboards.seller.product.create_title")}</h1>
+
+          {sellerCommissionPercentage > 0 && (
+            <div className="mb-6 bg-amber-50 border border-amber-100 p-4 rounded-md flex items-start gap-2">
+              <Info className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-amber-800">
+                {t(
+                  "dashboards.seller.product.commission_notice",
+                  "Quan rebis el pagament d'aquest producte se t'aplicarà una comissió del {{percentage}}%.",
+                  { percentage: sellerCommissionPercentage }
+                )}
+              </p>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Step 1: Wine Type Selection */}
             {currentStep === 1 && (

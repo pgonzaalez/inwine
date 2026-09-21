@@ -1,25 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Lock, 
-  Bell, 
-  Globe, 
-  Shield, 
-  User, 
+import { useLocation } from 'react-router-dom';
+import {
+  Lock,
+  Bell,
+  Globe,
+  Shield,
+  User,
   ChevronRight,
   Mail,
-  Smartphone,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { useFetchUser } from "@/components/auth/FetchUser";
 import Footer from "@components/FooterComponent";
 import { useTranslation } from "react-i18next";
+import { API_URL } from "@/config/api";
+import { getCookie } from "@/utils/utils";
 
 const SettingsPage = () => {
-  const { t } = useTranslation('settings');
-  const { user, loading } = useFetchUser();
+  const { t, i18n } = useTranslation('settings');
+  const { user, loading, refetchUser } = useFetchUser();
+  const location = useLocation();
   const [activeSection, setActiveSection] = useState('security');
   const [successMessage, setSuccessMessage] = useState('');
+  const [passwordForm, setPasswordForm] = useState({
+    current_password: '',
+    password: '',
+    password_confirmation: '',
+  });
+  const [passwordError, setPasswordError] = useState('');
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [notifyByEmail, setNotifyByEmail] = useState(true);
+  const [isSavingNotifications, setIsSavingNotifications] = useState(false);
+
+  useEffect(() => {
+    if (user && typeof user.notify_by_email === 'boolean') {
+      setNotifyByEmail(user.notify_by_email);
+    }
+  }, [user]);
+
+  // Aquesta pàgina es munta a /settings (amb el header públic fix, cal
+  // separar el contingut amb pt-24) i també a /seller|restaurant|investor
+  // /settings (dins del Layout amb Sidebar fixa a l'esquerra en md+, cal
+  // ml-64 perquè no quedi tapat i pb-16 perquè el menú mòbil inferior no
+  // el tapi).
+  const isDashboardRoute = /^\/(seller|restaurant|investor)\//.test(location.pathname);
 
   const primaryColors = {
     dark: "#9A3E50",
@@ -33,10 +59,91 @@ const SettingsPage = () => {
     { id: "preferences", label: t("settings.menu.preferences"), icon: Globe },
   ];
 
-  const handleSave = (e) => {
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    setSuccessMessage(t("settings.success_message"));
-    setTimeout(() => setSuccessMessage(""), 3000);
+    setPasswordError('');
+
+    if (passwordForm.password !== passwordForm.password_confirmation) {
+      setPasswordError(t("settings.security.errors.mismatch", "Les contrasenyes noves no coincideixen."));
+      return;
+    }
+
+    if (passwordForm.password.length < 8) {
+      setPasswordError(t("settings.security.errors.too_short", "La nova contrasenya ha de tenir almenys 8 caràcters."));
+      return;
+    }
+
+    setIsSavingPassword(true);
+
+    try {
+      const response = await fetch(`${API_URL}/user/password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify(passwordForm),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const firstError =
+          data?.errors?.current_password?.[0] ||
+          data?.errors?.password?.[0] ||
+          t("settings.security.errors.generic", "No s'ha pogut actualitzar la contrasenya.");
+        setPasswordError(firstError);
+        return;
+      }
+
+      setPasswordForm({ current_password: '', password: '', password_confirmation: '' });
+      setSuccessMessage(t("settings.success_message"));
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      setPasswordError(t("settings.security.errors.generic", "No s'ha pogut actualitzar la contrasenya."));
+    } finally {
+      setIsSavingPassword(false);
+    }
+  };
+
+  const handleNotifyByEmailToggle = async (e) => {
+    const newValue = e.target.checked;
+    const previousValue = notifyByEmail;
+
+    setNotifyByEmail(newValue);
+    setIsSavingNotifications(true);
+
+    try {
+      const response = await fetch(`${API_URL}/user/preferences`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify({ notify_by_email: newValue }),
+      });
+
+      if (!response.ok) {
+        throw new Error();
+      }
+
+      await refetchUser();
+      setSuccessMessage(t("settings.success_message"));
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      setNotifyByEmail(previousValue);
+    } finally {
+      setIsSavingNotifications(false);
+    }
+  };
+
+  const handleLanguageChange = (e) => {
+    i18n.changeLanguage(e.target.value);
   };
 
   if (loading) {
@@ -49,7 +156,9 @@ const SettingsPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <div className="flex-grow pt-24 pb-16">
+      <div
+        className={`flex-grow pb-16 ${isDashboardRoute ? "md:ml-64 pt-8" : "pt-24"}`}
+      >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Header */}
@@ -106,34 +215,60 @@ const SettingsPage = () => {
                       <h2 className="text-2xl font-bold text-gray-900">{t("settings.security.title")}</h2>
                     </div>
 
-                    <form onSubmit={handleSave} className="space-y-6 max-w-md">
+                    <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
+                      {passwordError && (
+                        <div className="flex items-start gap-2 bg-red-50 text-red-700 px-4 py-3 rounded-xl border border-red-100 text-sm">
+                          <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
+                          <span>{passwordError}</span>
+                        </div>
+                      )}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.security.current_password")}</label>
-                        <input 
-                          type="password" 
+                        <input
+                          type="password"
+                          name="current_password"
+                          value={passwordForm.current_password}
+                          onChange={handlePasswordChange}
+                          autoComplete="current-password"
+                          required
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all"
                           placeholder="••••••••"
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.security.new_password")}</label>
-                        <input 
-                          type="password" 
+                        <input
+                          type="password"
+                          name="password"
+                          value={passwordForm.password}
+                          onChange={handlePasswordChange}
+                          autoComplete="new-password"
+                          minLength={8}
+                          required
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all"
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.security.confirm_password")}</label>
-                        <input 
-                          type="password" 
+                        <input
+                          type="password"
+                          name="password_confirmation"
+                          value={passwordForm.password_confirmation}
+                          onChange={handlePasswordChange}
+                          autoComplete="new-password"
+                          minLength={8}
+                          required
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all"
                         />
                       </div>
-                      <button 
+                      <button
                         type="submit"
-                        className="bg-[#9A3E50] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#833444] transition-colors shadow-lg shadow-[#9A3E50]/20"
+                        disabled={isSavingPassword}
+                        className="bg-[#9A3E50] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#833444] transition-colors shadow-lg shadow-[#9A3E50]/20 disabled:opacity-60"
                       >
-                        {t("settings.security.update_btn")}
+                        {isSavingPassword
+                          ? t("settings.security.saving", "Actualitzant...")
+                          : t("settings.security.update_btn")}
                       </button>
                     </form>
                   </motion.div>
@@ -159,20 +294,13 @@ const SettingsPage = () => {
                             <p className="text-sm text-gray-500">{t("settings.notifications.email_desc")}</p>
                           </div>
                         </div>
-                        <input type="checkbox" defaultChecked className="w-6 h-6 rounded-md text-[#9A3E50] focus:ring-[#9A3E50]" />
-                      </div>
-
-                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                        <div className="flex items-center gap-4">
-                          <div className="p-2 bg-white rounded-lg text-gray-400">
-                            <Smartphone size={20} />
-                          </div>
-                          <div>
-                            <p className="font-medium text-gray-900">{t("settings.notifications.push_label")}</p>
-                            <p className="text-sm text-gray-500">{t("settings.notifications.push_desc")}</p>
-                          </div>
-                        </div>
-                        <input type="checkbox" className="w-6 h-6 rounded-md text-[#9A3E50] focus:ring-[#9A3E50]" />
+                        <input
+                          type="checkbox"
+                          checked={notifyByEmail}
+                          onChange={handleNotifyByEmailToggle}
+                          disabled={isSavingNotifications}
+                          className="w-6 h-6 rounded-md text-[#9A3E50] focus:ring-[#9A3E50] disabled:opacity-60"
+                        />
                       </div>
                     </div>
                   </motion.div>
@@ -190,25 +318,16 @@ const SettingsPage = () => {
                     <div className="space-y-6 max-w-md">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.preferences.language_label")}</label>
-                        <select className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all">
-                          <option>Català</option>
-                          <option>Castellano</option>
-                          <option>English</option>
+                        <select
+                          value={i18n.language}
+                          onChange={handleLanguageChange}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all"
+                        >
+                          <option value="ca">Català</option>
+                          <option value="es">Castellano</option>
+                          <option value="en">English</option>
                         </select>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">{t("settings.preferences.currency_label")}</label>
-                        <select className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#9A3E50]/20 focus:border-[#9A3E50] outline-none transition-all">
-                          <option>Euro (€)</option>
-                          <option>US Dollar ($)</option>
-                        </select>
-                      </div>
-                      <button 
-                        onClick={handleSave}
-                        className="bg-[#9A3E50] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#833444] transition-colors shadow-lg shadow-[#9A3E50]/20"
-                      >
-                        {t("settings.preferences.save_btn")}
-                      </button>
                     </div>
                   </motion.div>
                 )}

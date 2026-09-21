@@ -1,5 +1,6 @@
 import { Heart, Store, Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { BASE_URL } from "@/config/api";
 
 export default function ProductCard({
   producto,
@@ -8,7 +9,7 @@ export default function ProductCard({
   compact = false
 }) {
   const { t } = useTranslation();
-  const baseUrl = import.meta.env.VITE_URL_BASE || "http://localhost:8000";
+  const baseUrl = BASE_URL;
 
   if (!producto) return null;
 

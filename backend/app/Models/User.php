@@ -17,6 +17,30 @@ class User extends Authenticatable implements FilamentUser
     use HasFactory, Notifiable, HasApiTokens;
 
     /**
+     * Cuentas con acceso completo al panel de Filament. A diferencia de
+     * HIDDEN_EMAILS (que solo las oculta de los listados), esta lista
+     * decide quién puede entrar.
+     *
+     * @var list<string>
+     */
+    public const ADMIN_PANEL_EMAILS = [
+        'polsantandreu@gmail.com',
+        'pgonzalez@gmail.com',
+    ];
+
+    /**
+     * Cuentas que tienen acceso normal a la aplicación (y, si les toca, al
+     * panel) pero que no deben aparecer en ningún listado del panel de
+     * administración (Usuaris, Rols, Cellers, Restaurants, Inversors...) ni
+     * en directorios públicos. Se excluyen con el scope visibleToAdmins().
+     *
+     * @var list<string>
+     */
+    public const HIDDEN_EMAILS = [
+        'pgonzalez@gmail.com',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -26,7 +50,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
-
+        'notify_by_email',
     ];
 
     /**
@@ -50,12 +74,27 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'NIF' => 'encrypted',
+            'notify_by_email' => 'boolean',
         ];
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return str_ends_with($this->email, 'polsantandreu@gmail.com') && $this->hasVerifiedEmail();
+        // in_array con tercer parámetro strict (true) compara el email
+        // exacto, nunca un sufijo o substring: cualquiercosapolsantandreu@
+        // gmail.com no cuela aunque "contenga" el email de un admin.
+        return in_array($this->email, self::ADMIN_PANEL_EMAILS, true) && $this->hasVerifiedEmail();
+    }
+
+    /**
+     * Excluye de la consulta los correos "ocultos" (ver HIDDEN_EMAILS). Se
+     * usa en los listados del panel de admin y en directorios públicos para
+     * que esas cuentas no aparezcan, sin afectar al login ni a ninguna otra
+     * consulta normal de la aplicación.
+     */
+    public function scopeVisibleToAdmins($query)
+    {
+        return $query->whereNotIn('email', self::HIDDEN_EMAILS);
     }
 
     public function restaurants()

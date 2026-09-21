@@ -15,13 +15,15 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "@/utils/utils"
+import { API_URL } from "@/config/api"
 
 import { useTranslation } from "react-i18next";
+import PrivacyTermsAcceptance from "@components/auth/PrivacyTermsAcceptance";
 
 const AddInvestorForm = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const apiUrl = API_URL;
 
     const [formData, setFormData] = useState({
         NIF: "",
@@ -41,6 +43,8 @@ const AddInvestorForm = () => {
     const [messageType, setMessageType] = useState(""); // 'error' o 'success'
     const [isLoading, setIsLoading] = useState(false);
     const [touched, setTouched] = useState({});
+    const [hasAcceptedPrivacy, setHasAcceptedPrivacy] = useState(false);
+    const [privacyError, setPrivacyError] = useState("");
 
     // Validación del formulario en el lado del cliente
     const validateForm = () => {
@@ -129,6 +133,14 @@ const AddInvestorForm = () => {
             return acc;
         }, {});
         setTouched(allTouched);
+
+        // Validar aceptación de privacidad y términos
+        if (!hasAcceptedPrivacy) {
+            setPrivacyError(t("auth.register.error_terms_required"));
+            setMessage(t("auth.register.error_terms_required"));
+            setMessageType("error");
+            return;
+        }
 
         // Validar formulario antes de enviar
         if (!validateForm()) {
@@ -553,10 +565,20 @@ const AddInvestorForm = () => {
                             </div>
                         </div>
 
+                        <PrivacyTermsAcceptance
+                            accepted={hasAcceptedPrivacy}
+                            onChange={(val) => {
+                                setHasAcceptedPrivacy(val);
+                                if (val) setPrivacyError("");
+                            }}
+                            error={privacyError}
+                            setError={setPrivacyError}
+                        />
+
                         <button
                             type="submit"
-                            disabled={isLoading}
-                            className="w-full bg-[#BE6674] text-white py-3 rounded-lg hover:bg-[#741C28] transition duration-300 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+                            disabled={isLoading || !hasAcceptedPrivacy}
+                            className="w-full bg-[#BE6674] text-white py-3 rounded-lg hover:bg-[#741C28] transition duration-300 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer font-medium shadow-sm hover:shadow"
                         >
                             {isLoading ? (
                                 <>

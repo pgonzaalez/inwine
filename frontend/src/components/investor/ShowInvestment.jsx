@@ -9,6 +9,7 @@ import { StatusBadge } from "@components/investor/StatusBadge"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { getCookie } from "@/utils/utils"
 import { useTranslation } from "react-i18next"
+import { API_URL, BASE_URL } from "@/config/api"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -27,8 +28,8 @@ export default function ShowInvestment() {
   const [error, setError] = useState(null)
   const [activeImage, setActiveImage] = useState(0)
   const { user, loading: userLoading } = useFetchUser()
-  const apiUrl = import.meta.env.VITE_API_URL
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const apiUrl = API_URL
+  const baseUrl = BASE_URL
 
   useEffect(() => {
     if (userLoading || !user) return

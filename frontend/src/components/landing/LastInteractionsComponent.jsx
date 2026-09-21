@@ -76,19 +76,34 @@ export default function Carousel() {
   ];
 
   const [index, setIndex] = useState(0);
+  const [itemsToShow, setItemsToShow] = useState(3);
+
+  // Mostrem menys targetes com més estreta és la pantalla perquè no es
+  // tallin contra les vores del carrusel (overflow-hidden).
+  useEffect(() => {
+    const updateItemsToShow = () => {
+      if (window.innerWidth < 640) setItemsToShow(1);
+      else if (window.innerWidth < 1024) setItemsToShow(2);
+      else setItemsToShow(3);
+    };
+
+    updateItemsToShow();
+    window.addEventListener("resize", updateItemsToShow);
+    return () => window.removeEventListener("resize", updateItemsToShow);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prevIndex) => (prevIndex + 3) % investors.length);
+      setIndex((prevIndex) => (prevIndex + itemsToShow) % investors.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [investors.length]);
+  }, [investors.length, itemsToShow]);
 
   return (
     <>
     <h2 className="text-3xl font-bold">{t("landing.interactions.title")}</h2>
-    <div className="relative w-full flex justify-center items-center overflow-hidden h-96">
-      
+    <div className="relative w-full flex justify-center items-center overflow-hidden h-96 px-4">
+
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
@@ -98,10 +113,10 @@ export default function Carousel() {
           transition={{ duration: 0.5 }}
           className="flex gap-4"
         >
-          {investors.slice(index, index + 3).map((investor) => (
+          {investors.slice(index, index + itemsToShow).map((investor) => (
             <div
               key={investor.id}
-              className="bg-white p-6 rounded-2xl shadow-lg w-80"
+              className="bg-white p-6 rounded-2xl shadow-lg w-72 sm:w-80 max-w-[85vw]"
             >
               <div className="flex items-center gap-4">
                 {investor.img}

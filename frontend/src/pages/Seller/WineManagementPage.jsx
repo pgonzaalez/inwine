@@ -6,6 +6,8 @@ import { WineStats } from "@components/seller/WineStats"
 import { Notification } from "@components/seller/wineManagement/Notification"
 import { WineTable } from "@components/seller/wineManagement/WineTable"
 import { WineTypeDistribution } from "@components/seller/wineManagement/WineTypeDistribution"
+import { API_URL, BASE_URL } from "@/config/api"
+import { getCookie } from "@/utils/utils"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -23,8 +25,8 @@ function WineManagementComponent() {
   const [duplicatingProduct, setDuplicatingProduct] = useState(null)
   const { user } = useFetchUser()
   const { t } = useTranslation()
-  const apiUrl = import.meta.env.VITE_API_URL
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const apiUrl = API_URL
+  const baseUrl = BASE_URL
 
   // Implementación simple de alertas
   const [notification, setNotification] = useState(null)
@@ -75,6 +77,7 @@ function WineManagementComponent() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -104,7 +107,11 @@ function WineManagementComponent() {
       setDuplicatingProduct(productId)
       const response = await fetch(`${apiUrl}/v1/products/${productId}/duplicate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
       })
       if (!response.ok) throw new Error(t("dashboards.seller.messages.error_server"))
       const data = await response.json()

@@ -33,7 +33,7 @@
       "blog": "Blog",
       "community": "Comunitat",
       "ideas": "Idees",
-      "developers": "Desenvolupadors",
+      "developers": "Sobre el projecte",
       "about": "Sobre nosaltres",
       "team": "Equip",
       "influencers": "Influencers",
@@ -109,7 +109,27 @@
       "support": {
         "title": "Suport Personalitzat",
         "desc": "El nostre equip d'experts en vi està disponible per assessorar-te en tot moment."
-      }
+      },
+      "form": {
+        "title": "Envia'ns un missatge",
+        "desc": "Omple el formulari i et respondrem el més aviat possible.",
+        "name": "Nom",
+        "name_ph": "El teu nom",
+        "email": "Correu electrònic",
+        "email_ph": "el.teu@correu.com",
+        "subject": "Assumpte",
+        "subject_ph": "En què et podem ajudar?",
+        "message": "Missatge",
+        "message_ph": "Escriu el teu missatge...",
+        "send": "Enviar missatge",
+        "sending": "Enviant...",
+        "success_title": "Missatge enviat!",
+        "success_desc": "Gràcies per contactar amb nosaltres. Et respondrem aviat.",
+        "error_required": "Aquest camp és obligatori",
+        "error_email": "Introdueix un correu electrònic vàlid"
+      },
+      "hours_title": "Horari d'atenció",
+      "hours_desc": "Dilluns a Divendres · 9:00 - 18:00"
     },
     "products": {
       "hero": {
@@ -553,7 +573,13 @@
       "error_generic": "Error al iniciar sessió",
       "success": "Inici de sessió correcte",
       "role_modal_title": "Escollir rol",
-      "role_modal_desc": "Selecciona el rol amb el qual vols accedir:"
+      "role_modal_desc": "Selecciona el rol amb el qual vols accedir:",
+      "no_account": "No tens un compte?",
+      "register_link": "Registra't aquí",
+      "register_button": "Crear un compte",
+      "register_modal_title": "Crear un compte",
+      "register_modal_desc": "Selecciona el tipus de compte amb el qual et vols registrar:",
+      "or_divider": "o"
     },
     "register": {
       "seller_title": "Crear compte d'usuari productor",
@@ -598,7 +624,19 @@
       "error_validation": "Hi ha errors de validació en el formulari. Revisa els camps.",
       "error_conflict": "Ja existeix un usuari amb aquest email o NIF. Si us plau, utilitza dades diferents.",
       "error_forbidden": "No teniu permissos per realitzar aquesta acció.",
-      "error_generic": "Ha ocurregut un error inesperat. Si us plau, intentau de nou més tard."
+      "error_generic": "Ha ocurregut un error inesperat. Si us plau, intentau de nou més tard.",
+      "terms_section_title": "Termes i Privacitat",
+      "terms_badge_accepted": "Acceptat",
+      "terms_badge_pending": "Pendent d'acceptar",
+      "terms_badge_required": "Lectura requerida",
+      "open_privacy_button": "Obrir Política de Privacitat i Termes",
+      "accept_terms_text": "He llegit i accepto la Política de Privacitat i les Condicions d'Ús d'Inwine.",
+      "must_open_first": "Abans d'acceptar-ho, has d'obrir i llegir la política de privacitat.",
+      "terms_modal_title": "Política de Privacitat i Termes",
+      "terms_modal_desc": "Si us plau, revisa atentament la informació legal abans de continuar.",
+      "terms_modal_close": "Tancar",
+      "terms_modal_accept": "He llegit i accepto la Política de Privacitat",
+      "error_terms_required": "Has d'obrir i acceptar la Política de Privacitat per registrar-te."
     }
   },
   "profile": {
@@ -673,7 +711,7 @@
     "features": {
       "free_shipping": {
         "title": "Enviament gratuït",
-        "desc": "Per a comandes superiors a 100€"
+        "desc": "En totes les comandes"
       },
       "secure_payment": {
         "title": "Pagament segur",
@@ -688,8 +726,8 @@
       "title": "Resum de la comanda",
       "subtotal": "Subtotal",
       "service_fee": {
-        "label": "Comissió de servei",
-        "tooltip": "3% del subtotal"
+        "label": "Comissions i taxes",
+        "tooltip": "Comissió del celler i recàrrec de pagament"
       },
       "shipping": {
         "label": "Despeses d'enviament",
@@ -720,43 +758,318 @@
   "info": {
     "privacy": {
       "title": "Política de Privacitat",
-      "content": "A INWINE ens prenem molt seriosament la teva privacitat. Aquesta pàgina detalla com recollim, utilitzem i protegim les teves dades personals.",
-      "section1": {
-        "title": "1. Recollida d'Informació",
-        "text": "Recollim informació quan et registres al nostre lloc, fas una comanda o et subscrius al nostre butlletí. La informació inclou el teu nom, correu electrònic i número de telèfon."
-      },
-      "section2": {
-        "title": "2. Ús de la Informació",
-        "text": "Qualsevol informació que recollim de tu pot ser utilitzada per:",
-        "item1": "Personalitzar la teva experiència.",
-        "item2": "Millorar el nostre lloc web i servei al client.",
-        "item3": "Processar transaccions i enviar correus electrònics periòdics."
-      }
+      "content": "A INWINE ens prenem seriosament la teva privacitat. Aquesta política explica quines dades personals tractem, amb quina finalitat i base jurídica, durant quant de temps i quins drets tens.",
+      "updated": "27 d'agost de 2026",
+      "sections": [
+        {
+          "title": "1. Responsable del tractament",
+          "body": [
+            "El responsable del tractament de les teves dades és INWINE S.L. (en endavant, «INWINE»), amb NIF B12345678 i domicili al Carrer del Sol, 1, 08201 Sabadell (Barcelona).",
+            "Per a qualsevol qüestió relacionada amb la protecció de dades pots escriure a privacitat@inwine.cat."
+          ]
+        },
+        {
+          "title": "2. Quines dades tractem",
+          "body": [
+            "Segons la teva relació amb INWINE, podem tractar les categories de dades següents:"
+          ],
+          "items": [
+            "Dades identificatives i de contacte: nom, cognoms, adreça electrònica, telèfon i, si escau, adreça postal.",
+            "Dades de compte: rol (celler, restaurant o inversor), nom d'usuari, contrasenya xifrada i preferències.",
+            "Dades de transacció i facturació: productes publicats o adquirits, imports, historial de comandes i dades fiscals. Els pagaments els processa Stripe; INWINE no emmagatzema els números complets de targeta.",
+            "Dades de navegació: adreça IP, identificadors de dispositiu, pàgines visitades i informació recollida mitjançant cookies.",
+            "Comunicacions: contingut dels missatges que ens envies a través de formularis o correu electrònic."
+          ]
+        },
+        {
+          "title": "3. Finalitats i base jurídica",
+          "body": [
+            "Tractem les teves dades per a les finalitats següents:"
+          ],
+          "items": [
+            "Crear i gestionar el teu compte i prestar els serveis de la plataforma (base: execució del contracte).",
+            "Processar comandes, pagaments i inversions, i emetre factures (execució del contracte i obligació legal).",
+            "Atendre les teves consultes i sol·licituds de suport (interès legítim a donar resposta).",
+            "Enviar-te comunicacions sobre serveis similars o, si ho autoritzes, el butlletí (interès legítim o consentiment).",
+            "Analitzar l'ús del web i millorar-lo mitjançant cookies analítiques (consentiment).",
+            "Complir obligacions legals en matèria fiscal, comptable i de prevenció del frau (obligació legal)."
+          ]
+        },
+        {
+          "title": "4. Termini de conservació",
+          "body": [
+            "Conservem les dades mentre es mantingui la relació contractual i, un cop finalitzada, degudament bloquejades durant els terminis de prescripció de les obligacions legals aplicables (amb caràcter general, fins a 6 anys per a la documentació mercantil i fiscal). Les dades tractades sobre la base del consentiment es conserven fins que el retires."
+          ]
+        },
+        {
+          "title": "5. Destinataris de les dades",
+          "body": [
+            "No cedim les teves dades a tercers, excepte per obligació legal. Sí que hi accedeixen, com a encarregats del tractament, els proveïdors que ens presten serveis:"
+          ],
+          "items": [
+            "Proveïdors de pagament (Stripe Payments Europe, Ltd.) per tramitar cobraments i pagaments.",
+            "Proveïdors d'allotjament i infraestructura al núvol.",
+            "Proveïdors d'analítica web (Google), únicament si acceptes les cookies analítiques.",
+            "Assessors legals, fiscals i comptables quan sigui necessari."
+          ]
+        },
+        {
+          "title": "6. Transferències internacionals",
+          "body": [
+            "Alguns dels nostres proveïdors poden tractar dades fora de l'Espai Econòmic Europeu. En aquests casos, INWINE adopta garanties adequades, com les clàusules contractuals tipus aprovades per la Comissió Europea o l'existència d'una decisió d'adequació."
+          ]
+        },
+        {
+          "title": "7. Els teus drets",
+          "body": [
+            "Pots exercir en qualsevol moment els drets següents escrivint a privacitat@inwine.cat, indicant el dret que vols exercir i adjuntant una còpia d'un document identificatiu:"
+          ],
+          "items": [
+            "Accés a les teves dades personals.",
+            "Rectificació de dades inexactes.",
+            "Supressió de les dades quan ja no siguin necessàries.",
+            "Oposició al tractament per motius relacionats amb la teva situació particular.",
+            "Limitació del tractament en determinats supòsits.",
+            "Portabilitat de les dades a un altre responsable.",
+            "Retirar el consentiment prestat, sense efectes retroactius."
+          ]
+        },
+        {
+          "title": "8. Reclamacions",
+          "body": [
+            "Si consideres que el tractament de les teves dades no s'ajusta a la normativa, pots presentar una reclamació davant l'Agència Espanyola de Protecció de Dades (www.aepd.es)."
+          ]
+        },
+        {
+          "title": "9. Seguretat de les dades",
+          "body": [
+            "INWINE aplica mesures tècniques i organitzatives adequades per protegir les dades personals contra la pèrdua, l'ús indegut, l'accés no autoritzat o l'alteració, incloent-hi el xifratge de les comunicacions i el control d'accés."
+          ]
+        },
+        {
+          "title": "10. Menors d'edat",
+          "body": [
+            "Els serveis d'INWINE es dirigeixen exclusivament a persones majors de 18 anys. No recollim de manera conscient dades de menors; si detectem que ho hem fet, les eliminarem."
+          ]
+        },
+        {
+          "title": "11. Canvis en aquesta política",
+          "body": [
+            "Podem actualitzar aquesta Política de Privacitat per adaptar-la a canvis normatius o operatius. Publicarem qualsevol canvi en aquesta pàgina i n'actualitzarem la data de l'encapçalament."
+          ]
+        }
+      ]
     },
     "terms": {
       "title": "Condicions d'Ús",
-      "content": "Benvingut a INWINE. En accedir al nostre lloc web, acceptes complir aquestes condicions d'ús.",
-      "section1": {
-        "title": "1. Ús de la Llicència",
-        "text": "Es concedeix permís per descarregar temporalment una còpia dels materials al lloc web d'INWINE només per a visualització transitòria personal i no comercial."
-      },
-      "section2": {
-        "title": "2. Exclusió de Responsabilitat",
-        "text": "Els materials al lloc web d'INWINE es proporcionen \"tal com són\". INWINE no ofereix cap garantia, expressa o implícita."
-      }
+      "content": "Aquestes condicions regulen l'accés i l'ús de la plataforma INWINE. En registrar-te o utilitzar el lloc web acceptes aquestes condicions en la seva totalitat.",
+      "updated": "27 d'agost de 2026",
+      "sections": [
+        {
+          "title": "1. Objecte",
+          "body": [
+            "Aquestes Condicions d'Ús regulen l'accés i la utilització de la plataforma INWINE, accessible a inwine.cat, que connecta cellers i venedors de vi, restaurants i inversors per a la compravenda i la inversió en partides de vi."
+          ]
+        },
+        {
+          "title": "2. Acceptació",
+          "body": [
+            "L'ús de la plataforma atribueix la condició d'usuari i implica l'acceptació plena d'aquestes condicions, de la Política de Privacitat i de la Política de Cookies. Si no hi estàs d'acord, no utilitzis el lloc web."
+          ]
+        },
+        {
+          "title": "3. Registre i compte",
+          "body": [
+            "Per accedir a determinades funcions cal crear un compte. En registrar-te et compromets a:"
+          ],
+          "items": [
+            "Facilitar informació veraç, actualitzada i completa.",
+            "Ser major de 18 anys i tenir capacitat legal per contractar.",
+            "Custodiar les teves credencials i no cedir-les a tercers.",
+            "Comunicar immediatament qualsevol ús no autoritzat del teu compte."
+          ]
+        },
+        {
+          "title": "4. Rols d'usuari",
+          "body": [
+            "La plataforma preveu diferents perfils amb condicions específiques:"
+          ],
+          "items": [
+            "Celler / Venedor: publica partides de vi amb informació certa i actualitzada i assumeix les obligacions legals que li corresponen com a venedor.",
+            "Restaurant: adquireix producte per a la seva activitat professional.",
+            "Inversor: participa en el finançament de partides de vi assumint els riscos associats descrits a la clàusula 8."
+          ]
+        },
+        {
+          "title": "5. Regles d'ús",
+          "body": [
+            "L'usuari es compromet a fer un ús lícit de la plataforma i s'abstindrà de:"
+          ],
+          "items": [
+            "Publicar contingut fals, enganyós, il·lícit o que infringeixi drets de tercers.",
+            "Suplantar la identitat d'altres persones o entitats.",
+            "Introduir codi maliciós o intentar accedir sense autorització als sistemes.",
+            "Utilitzar la plataforma per a activitats de blanqueig de capitals o frau.",
+            "Recollir dades d'altres usuaris sense el seu consentiment."
+          ]
+        },
+        {
+          "title": "6. Contingut publicat pels usuaris",
+          "body": [
+            "L'usuari és l'únic responsable del contingut que publica i garanteix que disposa dels drets necessaris per fer-ho. Concedeix a INWINE una llicència no exclusiva i gratuïta per allotjar i mostrar aquest contingut amb la finalitat de prestar el servei. INWINE pot retirar qualsevol contingut que incompleixi aquestes condicions."
+          ]
+        },
+        {
+          "title": "7. Preus, pagaments i comissions",
+          "body": [
+            "Els preus es mostren amb els impostos aplicables indicats en cada cas. Els pagaments es tramiten a través del proveïdor Stripe. INWINE pot aplicar comissions pels serveis d'intermediació, que s'informaran abans de formalitzar cada operació."
+          ]
+        },
+        {
+          "title": "8. Inversió en vi i risc",
+          "body": [
+            "La inversió en partides de vi comporta riscos, inclosa la possible pèrdua total o parcial del capital aportat, i la rendibilitat passada no garanteix resultats futurs. INWINE no presta assessorament financer, fiscal ni d'inversió; les decisions són responsabilitat exclusiva de l'usuari, que hauria de valorar si l'operació s'ajusta al seu perfil i, si cal, cercar assessorament professional."
+          ]
+        },
+        {
+          "title": "9. Propietat intel·lectual i industrial",
+          "body": [
+            "La marca INWINE, el programari, el disseny, els textos i la resta d'elements del lloc web són titularitat d'INWINE o de tercers que n'han autoritzat l'ús. Queda prohibida la reproducció, distribució o transformació sense autorització expressa."
+          ]
+        },
+        {
+          "title": "10. Responsabilitat",
+          "body": [
+            "INWINE actua com a intermediari i no és part en els contractes que celebrin els usuaris entre si. El servei es presta «tal com és», sense garantir la disponibilitat ininterrompuda del lloc. En la mesura permesa per la llei, INWINE no respon dels danys indirectes ni del lucre cessant derivats de l'ús de la plataforma."
+          ]
+        },
+        {
+          "title": "11. Suspensió i cancel·lació",
+          "body": [
+            "INWINE pot suspendre o cancel·lar comptes que incompleixin aquestes condicions o la normativa aplicable. L'usuari pot donar de baixa el seu compte en qualsevol moment des de la configuració o escrivint a info@inwine.cat."
+          ]
+        },
+        {
+          "title": "12. Modificacions",
+          "body": [
+            "INWINE pot modificar aquestes condicions o el servei. Els canvis substancials es comunicaran amb una antelació raonable. L'ús continuat de la plataforma després de la seva entrada en vigor n'implica l'acceptació."
+          ]
+        },
+        {
+          "title": "13. Llei aplicable i jurisdicció",
+          "body": [
+            "Aquestes condicions es regeixen per la legislació espanyola. Per a la resolució de qualsevol controvèrsia, les parts se sotmeten als jutjats i tribunals de Sabadell (Barcelona), llevat que la normativa de consum estableixi un fur diferent. La Comissió Europea ofereix una plataforma de resolució de litigis en línia a ec.europa.eu/consumers/odr."
+          ]
+        }
+      ]
     },
     "cookies": {
       "title": "Política de Cookies",
-      "content": "Utilitzem cookies per millorar la teva experiència al nostre lloc web.",
-      "what_are": "Què són les cookies?",
-      "what_are_text": "Les cookies són petits fitxers de text que s'emmagatzemen al teu dispositiu quan visites un lloc web per recordar les teves preferències.",
-      "types": "Tipus de cookies que utilitzem",
-      "type_necessary": "Necessàries:",
-      "type_necessary_text": "Essencials per al funcionament del lloc.",
-      "type_analysis": "Anàlisi:",
-      "type_analysis_text": "Per entendre com interactuen els usuaris amb el web.",
-      "type_marketing": "Màrqueting:",
-      "type_marketing_text": "Per mostrar anuncis rellevants."
+      "content": "Aquest lloc web utilitza cookies pròpies i de tercers per garantir-ne el funcionament, recordar les teves preferències i analitzar-ne l'ús. Aquí t'expliquem quines fem servir i com pots gestionar-les.",
+      "updated": "27 d'agost de 2026",
+      "table_title": "Cookies que utilitzem",
+      "col_name": "Cookie",
+      "col_provider": "Proveïdor",
+      "col_purpose": "Finalitat",
+      "col_duration": "Durada",
+      "col_category": "Categoria",
+      "manage_title": "Com gestionar les teves preferències",
+      "manage_text": "Pots acceptar, rebutjar o configurar les cookies no essencials en qualsevol moment des del panell de preferències. També pots esborrar-les o bloquejar-les des de la configuració del teu navegador.",
+      "manage_button": "Configurar cookies",
+      "sections": [
+        {
+          "title": "1. Què són les cookies",
+          "body": [
+            "Les cookies són petits fitxers de text que un lloc web instal·la al navegador o dispositiu de l'usuari. Permeten que el web recordi informació sobre la visita, com l'idioma o la sessió iniciada, i faciliten la navegació."
+          ]
+        },
+        {
+          "title": "2. Qui utilitza les cookies",
+          "body": [
+            "En aquest lloc web s'utilitzen cookies pròpies, gestionades per INWINE, i cookies de tercers, gestionades per proveïdors externs com Google, que presten serveis per compte nostre."
+          ]
+        },
+        {
+          "title": "3. Tipus de cookies segons la finalitat",
+          "body": [
+            "Segons la seva finalitat, les cookies que es poden utilitzar es classifiquen en:"
+          ],
+          "items": [
+            "Tècniques o necessàries: imprescindibles perquè el web funcioni (sessió, seguretat, cistella). No es poden desactivar.",
+            "De preferències: recorden opcions com l'idioma o els vins marcats com a preferits.",
+            "D'anàlisi: permeten mesurar i analitzar l'ús del web de manera agregada per millorar-lo.",
+            "De màrqueting: serveixen per mostrar publicitat rellevant dins o fora del lloc web."
+          ]
+        },
+        {
+          "title": "4. Tipus de cookies segons la durada",
+          "body": [
+            "Segons el temps que romanen actives, poden ser de sessió, que s'eliminen en tancar el navegador, o persistents, que romanen al dispositiu durant un període determinat o fins que s'eliminen manualment."
+          ]
+        },
+        {
+          "title": "5. Consentiment",
+          "body": [
+            "Quan visites el web per primera vegada es mostra un avís que et permet acceptar totes les cookies, rebutjar-les o configurar-les per categories. Les cookies no necessàries només s'instal·len si hi dones el consentiment. Pots canviar la teva elecció en qualsevol moment des del botó «Configurar cookies»."
+          ]
+        },
+        {
+          "title": "6. Com desactivar les cookies al navegador",
+          "body": [
+            "A més del nostre panell, pots bloquejar o eliminar les cookies des de la configuració del teu navegador (Chrome, Firefox, Safari o Edge). Tingues en compte que desactivar algunes cookies pot afectar el funcionament del lloc."
+          ]
+        },
+        {
+          "title": "7. Actualitzacions",
+          "body": [
+            "Aquesta Política de Cookies es pot modificar en funció de canvis normatius o de les cookies utilitzades. Et recomanem revisar-la periòdicament."
+          ]
+        }
+      ],
+      "table": [
+        {
+          "name": "inwine_cookie_consent",
+          "provider": "INWINE (pròpia)",
+          "purpose": "Desa les teves preferències sobre l'ús de cookies.",
+          "duration": "6 mesos",
+          "category": "Necessària"
+        },
+        {
+          "name": "token",
+          "provider": "INWINE (pròpia)",
+          "purpose": "Manté la sessió de l'usuari iniciada.",
+          "duration": "Sessió",
+          "category": "Necessària"
+        },
+        {
+          "name": "favorites",
+          "provider": "INWINE (pròpia)",
+          "purpose": "Recorda els vins marcats com a preferits sense iniciar sessió.",
+          "duration": "Persistent",
+          "category": "Preferències"
+        },
+        {
+          "name": "i18nextLng",
+          "provider": "INWINE (pròpia)",
+          "purpose": "Recorda l'idioma seleccionat.",
+          "duration": "Persistent",
+          "category": "Preferències"
+        },
+        {
+          "name": "_ga",
+          "provider": "Google",
+          "purpose": "Distingeix usuaris per a l'estadística de visites (Google Analytics).",
+          "duration": "2 anys",
+          "category": "Anàlisi"
+        },
+        {
+          "name": "_ga_*",
+          "provider": "Google",
+          "purpose": "Manté l'estat de la sessió per a Google Analytics 4.",
+          "duration": "2 anys",
+          "category": "Anàlisi"
+        }
+      ]
     },
     "legal": {
       "title": "Avís Legal",
@@ -769,17 +1082,49 @@
     },
     "about": {
       "title": "Sobre nosaltres",
-      "content": "INWINE és la plataforma líder per connectar productors de vi, inversors i restaurants.",
-      "mission": "La nostra missió",
-      "mission_text": "Volem revolucionar el sector vinícola utilitzant la tecnologia per connectar l'excel·lència del camp amb la taula i el mercat d'inversió.",
-      "commitment": "El nostre compromís",
-      "commitment_text": "Treballem amb transparència i passió per oferir la millor experiència a tota la nostra comunitat."
+      "content": "INWINE és una plataforma que connecta cellers, restaurants i inversors del món del vi. Neix d'una idea de Pol Santandreu i l'ha desenvolupada un equip apassionat per la tecnologia i el vi.",
+      "sections": [
+        {
+          "title": "El projecte",
+          "body": [
+            "INWINE va néixer per resoldre un problema concret: connectar de manera directa i transparent els cellers que produeixen vi, els restaurants que el volen oferir i els inversors interessats a participar en partides exclusives.",
+            "La idea i la propietat del projecte són de Pol Santandreu. El disseny i el desenvolupament de la plataforma els ha dut a terme un equip tècnic. Pots conèixer les persones que hi han treballat a la pàgina de l'equip."
+          ]
+        },
+        {
+          "title": "Com està fet",
+          "body": [
+            "INWINE és una aplicació web moderna construïda amb el següent stack tecnològic:"
+          ],
+          "items": [
+            "Frontend: React 19, Vite, Tailwind CSS, React Router i i18next, amb interfície en català, castellà i anglès.",
+            "Backend: Laravel (PHP) amb una API REST i base de dades MySQL.",
+            "Pagaments: integració amb Stripe per a transaccions segures.",
+            "Metodologia: control de versions amb Git i desplegament continu."
+          ]
+        },
+        {
+          "title": "El nostre compromís",
+          "body": [
+            "Treballem amb transparència i rigor per oferir la millor experiència a cellers, restaurants i inversors, i per fer créixer una comunitat sana al voltant del vi."
+          ]
+        }
+      ]
     },
     "team": {
       "title": "Equip",
-      "content": "Coneix les persones que fan possible INWINE.",
-      "talent": "Talent i Passió",
-      "talent_text": "El nostre equip està format per sommeliers, desenvolupadors i experts en finances, tots units per l'amor al vi."
+      "content": "Les persones que han fet possible INWINE.",
+      "founder_badge": "Fundador",
+      "role_founder": "Fundador · Idea i propietat del projecte",
+      "role_developer": "Desenvolupador",
+      "sections": [
+        {
+          "title": "Un equip entre producte i tecnologia",
+          "body": [
+            "INWINE combina la visió de negoci de Pol Santandreu amb el treball d'un equip de desenvolupament que ha construït la plataforma de principi a fi."
+          ]
+        }
+      ]
     },
     "influencers": {
       "title": "Influencers",
@@ -817,12 +1162,6 @@
       "co_creation": "Co-creació",
       "co_creation_text": "Les millors funcionalitats de la nostra plataforma han sorgit directament de les idees dels nostres usuaris."
     },
-    "developers": {
-      "title": "Desenvolupadors",
-      "content": "Documentació i eines per integrar-te amb la nostra plataforma.",
-      "api": "API REST",
-      "api_text": "Accedeix a la nostra documentació tècnica per integrar dades de vins i mercats a les teves aplicacions."
-    },
     "guarantee": {
       "title": "Garantia",
       "content": "Informació sobre les garanties de producte i servei.",
@@ -834,7 +1173,8 @@
       "content": "Certificacions i dades tècniques dels nostres vins.",
       "transparency": "Transparència Total",
       "transparency_text": "Tots els nostres vins compten amb declaracions nutricionals i de procedència detallades segons la normativa vigent."
-    }
+    },
+    "last_updated_label": "Última actualització"
   },
   "sidebar": {
     "user_unknown": "Usuari Desconegut",
@@ -905,5 +1245,29 @@
     "empty_title": "Encara no tens favorits",
     "empty_desc": "Guarda els teus vins preferits per trobar-los més ràpidament i no perdre'ls de vista.",
     "explore_btn": "Explorar productes"
+  },
+  "notFound": {
+    "title": "Pàgina no trobada",
+    "subtitle": "Ho sentim, la pàgina que busques no existeix o s'ha mogut.",
+    "home": "Tornar a l'inici",
+    "products": "Veure vins"
+  },
+  "cookies": {
+    "banner": {
+      "title": "Utilitzem cookies",
+      "text": "Fem servir cookies pròpies i de tercers per garantir el funcionament del lloc, recordar les teves preferències i analitzar l'ús del web. Pots acceptar-les totes, rebutjar-les o configurar-les. Si les rebutges, només farem servir les estrictament necessàries i no es guardarà cap dada d'analítica.",
+      "more": "Més informació",
+      "accept": "Acceptar totes",
+      "reject": "Rebutjar totes",
+      "configure": "Configurar",
+      "save": "Desar preferències",
+      "close": "Tancar",
+      "necessary_title": "Necessàries (sempre actives)",
+      "necessary_desc": "Imprescindibles per navegar i utilitzar funcions bàsiques com l'inici de sessió o la cistella.",
+      "analysis_title": "Analítiques",
+      "analysis_desc": "Ens ajuden a entendre com s'utilitza el web (Google Analytics) per millorar-lo.",
+      "marketing_title": "Màrqueting",
+      "marketing_desc": "Permeten mostrar-te contingut i anuncis més rellevants segons els teus interessos."
+    }
   }
 }

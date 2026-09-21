@@ -1,27 +1,169 @@
-import React from 'react';
+import PropTypes from 'prop-types';
+import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Globe, Github, Linkedin, Mail } from 'lucide-react';
 import BaseInfoPage from './BaseInfoPage';
+import Seo from '@components/Seo';
+import { openCookieSettings } from '@utils/cookieConsent';
+
+// roleKey resolves against info.developers.<roleKey>
+const PEOPLE = [
+  {
+    name: 'Pol Santandreu',
+    roleKey: 'role_founder',
+    featured: true,
+    portfolio: 'https://www.polsantandreu.com',
+  },
+  {
+    name: 'Pol González',
+    roleKey: 'role_developer',
+    portfolio: 'https://polgonzalez.me',
+    github: 'https://github.com/pgonzaalez',
+    linkedin: 'https://www.linkedin.com/in/pol-gonzalez/',
+    email: 'pgmxx04@gmail.com',
+  },
+  {
+    name: 'Juan Francisco Flores Fernández',
+    roleKey: 'role_developer',
+    portfolio: 'https://juanfloresfz.vercel.app',
+    github: 'https://github.com/Juanfonsi',
+  },
+  {
+    name: 'Hugo Romero',
+    roleKey: 'role_developer',
+    portfolio: 'https://portfoli-hugo.vercel.app',
+    github: 'https://github.com/hache2212',
+  },
+  {
+    name: 'Pau Martín Peralta',
+    roleKey: 'role_developer',
+    github: 'https://github.com/pau-mp',
+  },
+  {
+    name: 'Ismael Rosillo',
+    roleKey: 'role_developer',
+    github: 'https://github.com/RosilloDev',
+  },
+];
+
+const PersonCard = ({ person }) => {
+  const { t } = useTranslation();
+  const socials = [
+    { href: person.portfolio, Icon: Globe, label: 'Portfolio' },
+    { href: person.github, Icon: Github, label: 'GitHub' },
+    { href: person.linkedin, Icon: Linkedin, label: 'LinkedIn' },
+    { href: person.email ? `mailto:${person.email}` : null, Icon: Mail, label: 'Email' },
+  ].filter((s) => s.href);
+
+  return (
+    <div
+      className={`flex flex-col justify-between rounded-2xl border bg-white p-5 transition-all hover:shadow-md ${
+        person.featured
+          ? 'border-[#9A3E50]/40 ring-1 ring-[#9A3E50]/10'
+          : 'border-gray-200 hover:border-[#9A3E50]/30'
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-semibold text-gray-900 leading-tight">{person.name}</p>
+          <p className="text-sm text-[#9A3E50] mt-1">
+            {t(`info.team.${person.roleKey}`, 'Desenvolupador')}
+          </p>
+        </div>
+        {person.featured && (
+          <span className="shrink-0 rounded-full bg-[#9A3E50]/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#9A3E50]">
+            {t('info.team.founder_badge', 'Fundador')}
+          </span>
+        )}
+      </div>
+      {socials.length > 0 && (
+        <div className="mt-4 flex items-center gap-2">
+          {socials.map(({ href, Icon, label }) => (
+            <a
+              key={label}
+              href={href}
+              target={href.startsWith('http') ? '_blank' : undefined}
+              rel="noreferrer"
+              aria-label={`${label} · ${person.name}`}
+              className="rounded-lg bg-gray-100 p-2 text-gray-600 transition-colors hover:bg-[#9A3E50]/10 hover:text-[#9A3E50]"
+            >
+              <Icon className="h-4 w-4" />
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+PersonCard.propTypes = {
+  person: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    roleKey: PropTypes.string.isRequired,
+    featured: PropTypes.bool,
+    portfolio: PropTypes.string,
+    github: PropTypes.string,
+    linkedin: PropTypes.string,
+    email: PropTypes.string,
+  }).isRequired,
+};
+
+/** Renders an array of legal sections: { title, body: string[], items?: string[] }. */
+const LegalSections = ({ nsKey, fallback = [] }) => {
+  const { t } = useTranslation();
+  const sections = t(`${nsKey}.sections`, { returnObjects: true, defaultValue: fallback });
+  const list = Array.isArray(sections) ? sections : fallback;
+
+  return (
+    <>
+      {list.map((section, i) => (
+        <section key={i}>
+          <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
+          {(section.body || []).map((paragraph, j) => (
+            <p key={j} className="mb-3">{paragraph}</p>
+          ))}
+          {Array.isArray(section.items) && section.items.length > 0 && (
+            <ul className="list-disc pl-6 space-y-2">
+              {section.items.map((item, k) => (
+                <li key={k}>{item}</li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
+    </>
+  );
+};
+
+const LastUpdated = ({ nsKey }) => {
+  const { t } = useTranslation();
+  const value = t(`${nsKey}.updated`, '27 d\'agost de 2026');
+  return (
+    <p className="text-sm text-gray-400 !mt-0 !mb-8">
+      {t('info.last_updated_label', 'Última actualització')}: {value}
+    </p>
+  );
+};
+
+LegalSections.propTypes = {
+  nsKey: PropTypes.string.isRequired,
+  fallback: PropTypes.array,
+};
+
+LastUpdated.propTypes = {
+  nsKey: PropTypes.string.isRequired,
+};
 
 export const PrivacyPolicyPage = () => {
   const { t } = useTranslation();
   return (
-    <BaseInfoPage 
-      title={t('info.privacy.title', 'Política de Privacitat')} 
-      content={t('info.privacy.content', 'A INWINE ens prenem molt seriosament la teva privacitat. Aquesta pàgina detalla com recollim, utilitzem i protegim les teves dades personals.')}
+    <BaseInfoPage
+      title={t('info.privacy.title', 'Política de Privacitat')}
+      content={t('info.privacy.content', 'A INWINE ens prenem seriosament la teva privacitat. Aquesta política explica quines dades personals tractem, amb quina finalitat i base jurídica, durant quant de temps i quins drets tens.')}
     >
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.privacy.section1.title', "1. Recollida d'Informació")}</h2>
-        <p>{t('info.privacy.section1.text', "Recollim informació quan et registres al nostre lloc, fas una comanda o et subscrius al nostre butlletí. La informació inclou el teu nom, correu electrònic i número de telèfon.")}</p>
-      </section>
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.privacy.section2.title', "2. Ús de la Informació")}</h2>
-        <p>{t('info.privacy.section2.text', "Qualsevol informació que recollim de tu pot ser utilitzada per:")}</p>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>{t('info.privacy.section2.item1', 'Personalitzar la teva experiència.')}</li>
-          <li>{t('info.privacy.section2.item2', 'Millorar el nostre lloc web i servei al client.')}</li>
-          <li>{t('info.privacy.section2.item3', 'Processar transaccions i enviar correus electrònics periòdics.')}</li>
-        </ul>
-      </section>
+      <Seo title={t('info.privacy.title', 'Política de Privacitat')} path="/privacitat" />
+      <LastUpdated nsKey="info.privacy" />
+      <LegalSections nsKey="info.privacy" />
     </BaseInfoPage>
   );
 };
@@ -29,40 +171,77 @@ export const PrivacyPolicyPage = () => {
 export const TermsOfUsePage = () => {
   const { t } = useTranslation();
   return (
-    <BaseInfoPage 
-      title={t('info.terms.title', "Condicions d'Ús")} 
-      content={t('info.terms.content', "Benvingut a INWINE. En accedir al nostre lloc web, acceptes complir aquestes condicions d'ús.")}
+    <BaseInfoPage
+      title={t('info.terms.title', "Condicions d'Ús")}
+      content={t('info.terms.content', "Aquestes condicions regulen l'accés i l'ús de la plataforma INWINE. En registrar-te o utilitzar el lloc web acceptes aquestes condicions en la seva totalitat.")}
     >
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.terms.section1.title', "1. Ús de la Llicència")}</h2>
-        <p>{t('info.terms.section1.text', "Es concedeix permís per descarregar temporalment una còpia dels materials al lloc web d'INWINE només per a visualització transitòria personal i no comercial.")}</p>
-      </section>
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.terms.section2.title', "2. Exclusió de Responsabilitat")}</h2>
-        <p>{t('info.terms.section2.text', "Els materials al lloc web d'INWINE es proporcionen \"tal com són\". INWINE no ofereix cap garantia, expressa o implícita.")}</p>
-      </section>
+      <Seo title={t('info.terms.title', "Condicions d'Ús")} path="/condicions" />
+      <LastUpdated nsKey="info.terms" />
+      <LegalSections nsKey="info.terms" />
     </BaseInfoPage>
   );
 };
 
 export const CookiesPolicyPage = () => {
   const { t } = useTranslation();
+  const table = t('info.cookies.table', { returnObjects: true, defaultValue: [] });
+  const rows = Array.isArray(table) ? table : [];
+
   return (
-    <BaseInfoPage 
-      title={t('info.cookies.title', "Política de Cookies")} 
-      content={t('info.cookies.content', "Utilitzem cookies per millorar la teva experiència al nostre lloc web.")}
+    <BaseInfoPage
+      title={t('info.cookies.title', 'Política de Cookies')}
+      content={t('info.cookies.content', "Aquest lloc web utilitza cookies pròpies i de tercers per garantir-ne el funcionament, recordar les teves preferències i analitzar-ne l'ús. Aquí t'expliquem quines fem servir i com pots gestionar-les.")}
     >
+      <Seo title={t('info.cookies.title', 'Política de Cookies')} path="/cookies" />
+      <LastUpdated nsKey="info.cookies" />
+      <LegalSections nsKey="info.cookies" />
+
+      {rows.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold mb-4">
+            {t('info.cookies.table_title', 'Cookies que utilitzem')}
+          </h2>
+          <div className="overflow-x-auto -mx-2 sm:mx-0">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="text-left border-b-2 border-gray-200">
+                  <th className="py-2 px-2 font-semibold">{t('info.cookies.col_name', 'Cookie')}</th>
+                  <th className="py-2 px-2 font-semibold">{t('info.cookies.col_provider', 'Proveïdor')}</th>
+                  <th className="py-2 px-2 font-semibold">{t('info.cookies.col_purpose', 'Finalitat')}</th>
+                  <th className="py-2 px-2 font-semibold">{t('info.cookies.col_duration', 'Durada')}</th>
+                  <th className="py-2 px-2 font-semibold">{t('info.cookies.col_category', 'Categoria')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, i) => (
+                  <tr key={i} className="border-b border-gray-100 align-top">
+                    <td className="py-2 px-2 font-mono text-[13px] text-gray-900 whitespace-nowrap">{row.name}</td>
+                    <td className="py-2 px-2">{row.provider}</td>
+                    <td className="py-2 px-2">{row.purpose}</td>
+                    <td className="py-2 px-2 whitespace-nowrap">{row.duration}</td>
+                    <td className="py-2 px-2">{row.category}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
       <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.cookies.what_are', "Què són les cookies?")}</h2>
-        <p>{t('info.cookies.what_are_text', "Les cookies sont petits fitxers de text que s'emmagatzemen al teu dispositiu quan visites un lloc web per recordar les teves preferències.")}</p>
-      </section>
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.cookies.types', "Tipus de cookies que utilitzem")}</h2>
-        <ul className="list-disc pl-6 space-y-2">
-          <li><strong>{t('info.cookies.type_necessary', 'Necessàries:')}</strong> {t('info.cookies.type_necessary_text', 'Essencials per al funcionament del lloc.')}</li>
-          <li><strong>{t('info.cookies.type_analysis', 'Anàlisi:')}</strong> {t('info.cookies.type_analysis_text', 'Per entendre com interactuen els usuaris amb el web.')}</li>
-          <li><strong>{t('info.cookies.type_marketing', 'Màrqueting:')}</strong> {t('info.cookies.type_marketing_text', 'Per mostrar anuncis rellevants.')}</li>
-        </ul>
+        <h2 className="text-2xl font-bold mb-4">
+          {t('info.cookies.manage_title', 'Com gestionar les teves preferències')}
+        </h2>
+        <p className="mb-4">
+          {t('info.cookies.manage_text', "Pots acceptar, rebutjar o configurar les cookies no essencials en qualsevol moment des del panell de preferències. També pots esborrar-les o bloquejar-les des de la configuració del teu navegador.")}
+        </p>
+        <button
+          type="button"
+          onClick={openCookieSettings}
+          className="inline-flex items-center justify-center px-6 py-2.5 bg-[#9A3E50] text-white text-sm font-bold rounded-xl hover:bg-[#853545] transition-all not-prose"
+        >
+          {t('info.cookies.manage_button', 'Configurar cookies')}
+        </button>
       </section>
     </BaseInfoPage>
   );
@@ -89,18 +268,15 @@ export const LegalNoticePage = () => {
 export const AboutUsPage = () => {
   const { t } = useTranslation();
   return (
-    <BaseInfoPage 
-      title={t('info.about.title', "Sobre nosaltres")} 
-      content={t('info.about.content', "INWINE és la plataforma líder per connectar productors de vi, inversors i restaurants.")}
+    <BaseInfoPage
+      title={t('info.about.title', 'Sobre nosaltres')}
+      content={t(
+        'info.about.content',
+        "INWINE és una plataforma que connecta cellers, restaurants i inversors del món del vi. Neix d'una idea de Pol Santandreu i l'ha desenvolupada un equip apassionat per la tecnologia i el vi.",
+      )}
     >
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.about.mission', "La nostra missió")}</h2>
-        <p>{t('info.about.mission_text', "Volem revolucionar el sector vinícola utilitzant la tecnologia per connectar l'excel·lència del camp amb la taula i el mercat d'inversió.")}</p>
-      </section>
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.about.commitment', "El nostre compromís")}</h2>
-        <p>{t('info.about.commitment_text', "Treballem amb transparència i passió per oferir la millor experiència a tota la nostra comunitat.")}</p>
-      </section>
+      <Seo title={t('info.about.title', 'Sobre nosaltres')} path="/sobre-nosaltres" />
+      <LegalSections nsKey="info.about" />
     </BaseInfoPage>
   );
 };
@@ -108,13 +284,18 @@ export const AboutUsPage = () => {
 export const TeamPage = () => {
   const { t } = useTranslation();
   return (
-    <BaseInfoPage 
-      title={t('info.team.title', "Equip")} 
-      content={t('info.team.content', "Coneix les persones que fan possible INWINE.")}
+    <BaseInfoPage
+      title={t('info.team.title', 'Equip')}
+      content={t('info.team.content', 'Les persones que han fet possible INWINE.')}
     >
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.team.talent', "Talent i Passió")}</h2>
-        <p>{t('info.team.talent_text', "El nostre equip està format per sommeliers, desenvolupadors i experts en finances, tots units per l'amor al vi.")}</p>
+      <Seo title={t('info.team.title', 'Equip')} path="/equip" />
+      <LegalSections nsKey="info.team" />
+      <section className="not-prose">
+        <div className="grid gap-4 sm:grid-cols-2">
+          {PEOPLE.map((person) => (
+            <PersonCard key={person.name} person={person} />
+          ))}
+        </div>
       </section>
     </BaseInfoPage>
   );
@@ -210,20 +391,9 @@ export const IdeasPage = () => {
   );
 };
 
-export const DevelopersPage = () => {
-  const { t } = useTranslation();
-  return (
-    <BaseInfoPage 
-      title={t('info.developers.title', "Desenvolupadors")} 
-      content={t('info.developers.content', "Documentació i eines per integrar-te amb la nostra plataforma.")}
-    >
-      <section>
-        <h2 className="text-2xl font-bold mb-4">{t('info.developers.api', "API REST")}</h2>
-        <p>{t('info.developers.api_text', "Accedeix a la nostra documentació tècnica per integrar dades de vins i mercats a les teves aplicacions.")}</p>
-      </section>
-    </BaseInfoPage>
-  );
-};
+// The developer / team / project info now lives in the Empresa section pages
+// (/sobre-nosaltres and /equip). Keep this route as a redirect for old links.
+export const DevelopersPage = () => <Navigate to="/sobre-nosaltres" replace />;
 
 export const GuaranteePage = () => {
   const { t } = useTranslation();

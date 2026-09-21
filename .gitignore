@@ -1,0 +1,9 @@
+# Informe interno de auditoría de seguridad: contiene detalles de
+# vulnerabilidades (algunas ya corregidas) que no deben acabar en el
+# historial de git ni en un repositorio público. Consúltalo localmente.
+SECURITY.md
+
+# Basura habitual del sistema operativo / editor a nivel de raíz del repo
+# (backend/ y frontend/ ya tienen su propio .gitignore más específico).
+.DS_Store
+Thumbs.db

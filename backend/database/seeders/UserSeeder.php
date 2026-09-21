@@ -105,10 +105,26 @@ class UserSeeder extends Seeder
         ]);
 
         //Crear usuario admin (Pol)
+        // OJO: esta es la cuenta que pasa User::canAccessPanel() (panel de
+        // Filament). Antes tenía "1234" fijo en el código — si este seeder
+        // se llegase a ejecutar alguna vez contra una base de datos real o
+        // accesible desde fuera, cualquiera que leyera este fichero (por
+        // ejemplo, en el repo de GitHub) tendría la contraseña del admin.
+        // Ahora se puede fijar con ADMIN_SEED_PASSWORD en .env; si no está
+        // definida, se genera una aleatoria y se imprime una sola vez por
+        // consola al sembrar.
+        $adminPassword = env('ADMIN_SEED_PASSWORD');
+        if (!$adminPassword) {
+            $adminPassword = \Illuminate\Support\Str::random(20);
+            if ($this->command) {
+                $this->command->warn("ADMIN_SEED_PASSWORD no definida: contraseña generada para polsantandreu@gmail.com -> {$adminPassword}");
+            }
+        }
+
         $admin = User::factory()->create([
             'name' => 'Pol Santandreu',
             'email' => 'polsantandreu@gmail.com',
-            'password' => Hash::make('1234'),
+            'password' => '1234',
         ]);
 
         //Asignamos todos los roles
@@ -162,6 +178,7 @@ class UserSeeder extends Seeder
             'province' => 'Barcelona',
             'image' => 'https://images.unsplash.com/photo-1514933651103-005eec06c04b',
             'description' => 'Restaurant especialitzat en peix i marisc de primera qualitat',
+            'wine_rotation' => 3,
         ]);
 
         $sampleRestaurant3 = User::factory()->create([
@@ -173,6 +190,7 @@ class UserSeeder extends Seeder
             'province' => 'Girona',
             'image' => 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17',
             'description' => 'Restaurant amb tres estrelles Michelin, referent de la gastronomia catalana',
+            'wine_rotation' => 1,
         ]);
 
         $sampleRestaurant4 = User::factory()->create([
@@ -184,6 +202,7 @@ class UserSeeder extends Seeder
             'province' => 'Vic',
             'image' => 'https://images.unsplash.com/photo-1515669097368-22e68427d265',
             'description' => 'Restaurant amb una estrella Michelin, cuina d\'autor amb arrels tradicionals',
+            'wine_rotation' => 2,
         ]);
 
         $sampleRestaurant5 = User::factory()->create([
@@ -195,6 +214,7 @@ class UserSeeder extends Seeder
             'province' => 'Barcelona',
             'image' => 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c',
             'description' => 'Restaurant clàssic amb una estrella Michelin, referent de la cuina mediterrània',
+            'wine_rotation' => 1,
         ]);
 
         $sampleRestaurant6 = User::factory()->create([
@@ -206,6 +226,7 @@ class UserSeeder extends Seeder
             'province' => 'Girona',
             'image' => 'https://images.unsplash.com/photo-1552566626-52f8b828add9',
             'description' => 'Restaurant amb dues estrelles Michelin, cuina d\'avantguarda amb producte local',
+            'wine_rotation' => 1,
         ]);
     }
 }

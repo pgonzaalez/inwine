@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_URL } from "@/config/api";
 
 const Notifications = ({ userToken }) => {
   const [notifications, setNotifications] = useState([]);
@@ -10,7 +11,7 @@ const Notifications = ({ userToken }) => {
   };
   // Función para recuperar notificaciones
   const fetchNotifications = async () => {
-    const res = await fetch("http://localhost:8000/api/not ifications", {
+    const res = await fetch(`${API_URL}/notifications`, {
       headers: {
         Authorization: `Bearer ${userToken}`,
       },
