@@ -9,6 +9,7 @@ import { useFetchUser } from "@components/auth/FetchUser"
 import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal";
 import { EditRequestModal } from "@/components/restaurant/modals/EditRequestModal";
 import ProductGallery from "@/components/landing/requests/ProductGallery"
+import { API_URL, BASE_URL } from "@/config/api"
 
 const primaryColors = {
   dark: "#9A3E50",
@@ -107,8 +108,8 @@ export default function ViewOneRequest() {
   const [requestStatus, setRequestStatus] = useState(null)
 
   const { user, loading: userLoading } = useFetchUser()
-  const apiUrl = import.meta.env.VITE_API_URL
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const apiUrl = API_URL
+  const baseUrl = BASE_URL
 
   useEffect(() => {
     if (!user || userLoading) return
@@ -206,6 +207,7 @@ export default function ViewOneRequest() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -230,6 +232,7 @@ export default function ViewOneRequest() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 

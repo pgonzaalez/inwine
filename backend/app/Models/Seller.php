@@ -19,6 +19,14 @@ class Seller extends Model
         'balance',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'bank_account' => 'encrypted',
+            'phone_contact' => 'encrypted',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

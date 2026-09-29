@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import ConfirmationDialog from "@components/ConfirmationDialogComponent"
 import { useFetchUser } from "@components/auth/FetchUser"
+import { API_URL, BASE_URL } from "@/config/api"
+import { getCookie } from "@/utils/utils"
 
 // Definimos los colores rosé para usar en todo el componente
 const roseColors = {
@@ -172,8 +174,8 @@ export default function WineList() {
   const [wines, setWines] = useState([])
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState("")
-  const apiUrl = import.meta.env.VITE_API_URL
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const apiUrl = API_URL
+  const baseUrl = BASE_URL
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [currentWineId, setCurrentWineId] = useState(null)
   const { user, error } = useFetchUser()
@@ -217,6 +219,9 @@ export default function WineList() {
     try {
       const response = await fetch(`${apiUrl}/v1/${user.id}/products/${currentWineId}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
       })
 
       if (!response.ok) {

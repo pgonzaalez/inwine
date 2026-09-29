@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next"
+import { BASE_URL } from "@/config/api"
 
 export const WineDetailsForm = ({
   formData,
@@ -19,7 +20,7 @@ export const WineDetailsForm = ({
   const { t } = useTranslation()
   const [isDragging, setIsDragging] = useState(false);
   // Helper function to check if a field has an error
-  const baseUrl = import.meta.env.VITE_URL_BASE;
+  const baseUrl = BASE_URL;
   const hasError = (fieldName) => {
     return touchedFields[fieldName] && errors[fieldName]
   }

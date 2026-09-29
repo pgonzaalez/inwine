@@ -5,6 +5,9 @@ import "./App.css";
 import Layout from "@layout/Layout";
 import HeaderLayout from "@layout/HeaderLayout";
 import ScrollToTop from "@components/ScrollToTop";
+import RouteAnalytics from "@components/RouteAnalytics";
+import CookieConsent from "@components/CookieConsent";
+import NotFoundPage from "@pages/NotFoundPage";
 // Pages
 import Profile from "@pages/Profile/ProfilePage";
 import Notifications from "@pages/Notification/NotificationsPage";
@@ -12,6 +15,7 @@ import Notifications from "@pages/Notification/NotificationsPage";
 import Main from "@pages/MainPage";
 import ProductPage from "@pages/Landing/ProductsPage";
 import ViewProductsRequest from "@pages/ViewProductsRequest";
+import ViewRestaurantsRequest from "@pages/ViewRestaurantsRequest";
 import OrderCart from "@pages/Landing/Cart/OrderCartPage";
 import Login from "@pages/LoginPage";
 import Contacte from "@pages/Landing/ContactPage";
@@ -30,11 +34,12 @@ import EditProductPage from "@pages/Seller/EditProductPage";
 // Pages Inversor
 import RegisterInversor from "@pages/RegisterInversorPage";
 import Inversor from "@pages/Inversor/InversorDashboardPage";
-import InvestmentHistoryPage from "@pages/Inversor/HistoricPage";
 import ShowInvestment from "@pages/Inversor/ShowInvestment";
+import InvestmentHistoryPage from "@pages/Inversor/InvestmentHistoryPage";
 // Pages Restaurant
 import RegisterRestaurant from "@pages/RegisterRestaurantPage";
 import Restaurant from "@pages/Restaurant/RestaurantDashboard";
+import RestaurantProductsPage from "@pages/Restaurant/RestaurantProductsPage";
 import ViewOneRequest from "@pages/Restaurant/ViewOneRequest";
 import SettingsPage from "@pages/SettingsPage";
 // Info Pages
@@ -53,24 +58,28 @@ import {
   IdeasPage,
   DevelopersPage,
   GuaranteePage,
-  ProductDeclarationsPage
+  ProductDeclarationsPage,
+  UserManualPage,
 } from "@pages/Info/InfoPages";
 
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <RouteAnalytics />
       <Routes>
         <Route element={<HeaderLayout />}>
           <Route path="/" element={<Main />} />
           <Route path="/productes" element={<ProductPage />} />
           <Route path="/productes/:id" element={<ViewProductsRequest />} />
+          <Route path="/restaurants/:id" element={<ViewRestaurantsRequest />} />
           <Route path="/cistella" element={<OrderCart />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-summary" element={<OrderSummaryPage />} />
           <Route path="/contacte" element={<Contacte />} />
           <Route path="/favorites" element={<FavoritesPage />} />
-          
+          <Route path="/manual-us" element={<UserManualPage />} />
+
           <Route path="/settings" element={<SettingsPage />} />
 
           {/* Info Routes */}
@@ -88,7 +97,13 @@ export default function App() {
           <Route path="/idees" element={<IdeasPage />} />
           <Route path="/desenvolupadors" element={<DevelopersPage />} />
           <Route path="/garantia" element={<GuaranteePage />} />
-          <Route path="/declaracions-producte" element={<ProductDeclarationsPage />} />
+          <Route
+            path="/declaracions-producte"
+            element={<ProductDeclarationsPage />}
+          />
+
+          {/* 404 — catch-all */}
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         {/* Rutas con Sidebar */}
@@ -178,7 +193,15 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
+            path="/restaurant/products"
+            element={
+              <ProtectedRoute>
+                <RestaurantProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/restaurant/requests/:id"
             element={
               <ProtectedRoute>
@@ -202,7 +225,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
           {/* Rutas protegidas para Inversor */}
           <Route
             path="/investor/dashboard"
@@ -216,7 +238,7 @@ export default function App() {
             path="/investor/historic"
             element={
               <ProtectedRoute>
-                < InvestmentHistoryPage />
+                <InvestmentHistoryPage />
               </ProtectedRoute>
             }
           />
@@ -224,7 +246,7 @@ export default function App() {
             path="/investor/historic/:id"
             element={
               <ProtectedRoute>
-                < ShowInvestment />
+                <ShowInvestment />
               </ProtectedRoute>
             }
           />
@@ -251,6 +273,7 @@ export default function App() {
         <Route path="/register/restaurant" element={<RegisterRestaurant />} />
         <Route path="/login" element={<Login />} />
       </Routes>
+      <CookieConsent />
     </Router>
   );
 }

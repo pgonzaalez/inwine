@@ -12,6 +12,7 @@ import { Notification } from "@/components/restaurant/Notification"
 import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal"
 import { EditRequestModal } from "@/components/restaurant/modals/EditRequestModal"
 import { getCookie } from "@/utils/utils"
+import { API_URL, BASE_URL } from "@/config/api"
 
 function RestaurantDashboardComponent() {
   const { t } = useTranslation()
@@ -31,8 +32,8 @@ function RestaurantDashboardComponent() {
   const [requestStatus, setRequestStatus] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
-  const apiUrl = import.meta.env.VITE_API_URL
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const apiUrl = API_URL
+  const baseUrl = BASE_URL
 
   const { user, loading: userLoading } = useFetchUser()
 
@@ -178,6 +179,7 @@ function RestaurantDashboardComponent() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -225,6 +227,7 @@ function RestaurantDashboardComponent() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 

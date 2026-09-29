@@ -1,10 +1,97 @@
 <!doctype html>
-<html lang="en">
+<html lang="ca">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>InWine</title>
+
+    <!-- Primary Meta Tags -->
+    <title>InWine · Inverteix, ven i descobreix vins únics</title>
+    <meta
+      name="title"
+      content="InWine · Inverteix, ven i descobreix vins únics"
+    />
+    <meta
+      name="description"
+      content="InWine connecta cellers, restaurants i inversors en un sol lloc. Descobreix vins seleccionats, inverteix en partides exclusives i fes créixer el teu negoci vitivinícola."
+    />
+    <meta
+      name="keywords"
+      content="vi, inversió en vi, celler, restaurant, comprar vi, vins exclusius, InWine, mercat del vi, DO Catalunya"
+    />
+    <meta name="author" content="InWine" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#9A3E50" />
+    <link rel="canonical" href="https://inwine.cat/" />
+
+    <!-- Icons / PWA -->
+    <link rel="icon" type="image/webp" href="/logo.webp" />
+    <link rel="apple-touch-icon" href="/logo.webp" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="InWine" />
+    <meta property="og:locale" content="ca_ES" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:locale:alternate" content="en_GB" />
+    <meta property="og:url" content="https://inwine.cat/" />
+    <meta
+      property="og:title"
+      content="InWine · Inverteix, ven i descobreix vins únics"
+    />
+    <meta
+      property="og:description"
+      content="InWine connecta cellers, restaurants i inversors en un sol lloc. Descobreix vins seleccionats, inverteix en partides exclusives i fes créixer el teu negoci vitivinícola."
+    />
+    <meta property="og:image" content="https://inwine.cat/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="InWine" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@inwine" />
+    <meta
+      name="twitter:title"
+      content="InWine · Inverteix, ven i descobreix vins únics"
+    />
+    <meta
+      name="twitter:description"
+      content="InWine connecta cellers, restaurants i inversors en un sol lloc. Descobreix vins seleccionats, inverteix en partides exclusives i fes créixer el teu negoci vitivinícola."
+    />
+    <meta name="twitter:image" content="https://inwine.cat/og-image.jpg" />
+
+    <!-- Organization structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "InWine",
+        "url": "https://inwine.cat",
+        "logo": "https://inwine.cat/logo.webp",
+        "description": "InWine connecta cellers, restaurants i inversors per descobrir, vendre i invertir en vins únics.",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Carrer del Sol, 1",
+          "postalCode": "08201",
+          "addressLocality": "Sabadell",
+          "addressCountry": "ES"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+34-937-12-34-56",
+          "email": "info@inwine.cat",
+          "contactType": "customer service",
+          "availableLanguage": ["Catalan", "Spanish", "English"]
+        }
+      }
+    </script>
+
+    <!--
+      Analytics (Google Analytics 4) is loaded lazily from src/utils/analytics.js
+      and ONLY after the user grants analytics consent in the cookie dialog.
+      Nothing is loaded or stored if the user rejects.
+    -->
   </head>
   <body>
     <div id="root"></div>

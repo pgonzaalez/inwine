@@ -2,9 +2,13 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\User;
-use App\Models\Product;
+use App\Models\Investor;
 use App\Models\OrderRequested;
+use App\Models\Product;
+use App\Models\RequestRestaurant;
+use App\Models\Restaurant;
+use App\Models\Seller;
+use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -12,42 +16,36 @@ class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        // Obtener el número total de usuarios y productos
         $totalUsers = User::count();
         $totalProducts = Product::count();
-        $totalSales = OrderRequested::sum('total_price');
-
-        // Formatear los números para mostrar de forma más legible (por ejemplo, en miles o millones)
-        $formatNumber = function (int $number): string {
-            if ($number < 1000) {
-                return (string) number_format($number, 0);
-            }
-
-            if ($number < 1000000) {
-                return number_format($number / 1000, 2) . 'k';
-            }
-
-            return number_format($number / 1000000, 2) . 'm';
-        };
+        $totalSales = (float) OrderRequested::sum('total_price');
+        $platformEarnings = (float) RequestRestaurant::sum('platform_earnings');
+        $pendingRequests = RequestRestaurant::where('status', 'pending')->count();
 
         return [
-            // Widget para los usuarios totales
-            Stat::make('Total Usuarios', $formatNumber($totalUsers))
-                ->description('Usuarios activos')
+            Stat::make('Usuaris', number_format($totalUsers, 0, ',', '.'))
+                ->description(Restaurant::count() . ' restaurants · ' . Seller::count() . ' cellers · ' . Investor::count() . ' inversors')
                 ->descriptionIcon('heroicon-m-user-group')
-                ->chart([100, 120, 130, 140, 160])  // Aquí puedes agregar un gráfico si lo deseas
                 ->color('primary'),
 
-            // Widget para los productos totales
-            Stat::make('Total Productos', $formatNumber($totalProducts))
-                ->description('Productos en stock')
+            Stat::make('Productes al catàleg', number_format($totalProducts, 0, ',', '.'))
+                ->description(Product::where('status', 'in_stock')->count() . ' en estoc')
                 ->descriptionIcon('heroicon-m-cube')
-                ->chart([50, 60, 70, 80, 90])  // Agregar gráfico si lo deseas
-                ->color('secondary'),
+                ->color('gray'),
 
-            Stat::make('Ventas Totales', '$' . $formatNumber($totalSales))
-                ->description('Ingresos generados')
-                ->descriptionIcon('heroicon-m-currency-dollar')
+            Stat::make('Peticions pendents', (string) $pendingRequests)
+                ->description('Requereixen acció d\'un celler o de la plataforma')
+                ->descriptionIcon('heroicon-m-clock')
+                ->color($pendingRequests > 0 ? 'warning' : 'success'),
+
+            Stat::make('Vendes totals', number_format($totalSales, 2, ',', '.') . ' €')
+                ->description('Ingressos generats per comandes pagades')
+                ->descriptionIcon('heroicon-m-currency-euro')
+                ->color('success'),
+
+            Stat::make('Comissió de plataforma', number_format($platformEarnings, 2, ',', '.') . ' €')
+                ->description('Acumulada sobre totes les peticions')
+                ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
         ];
     }

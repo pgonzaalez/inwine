@@ -15,16 +15,44 @@ class RequestRestaurant extends Model
         'product_id',
         'quantity',
         'price_restaurant',
-        'price_restaurant_with_commission',
+        'restaurant_earnings', // Ganancias del restaurante
+        'platform_earnings', // Ganancias de la plataforma
+        'investor_earnings', // Ganancias del inversor
         'status'
     ];
 
     protected static function booted()
     {
         static::saving(function ($requestRestaurant) {
-            $requestRestaurant->price_restaurant_with_commission = $requestRestaurant->calculatePriceWithCommission();
+            $product = $requestRestaurant->product;
+
+            // Precio base del restaurante menos la comisión de la plataforma (5%)
+            $price_after_platform_commission = $requestRestaurant->price_restaurant - round($requestRestaurant->price_restaurant * 0.05, 2);
+
+            // Beneficio del restaurante después de pagar al inversor
+            $profit_restaurant = $price_after_platform_commission - $product->price_demanded_with_commission;
+
+            // Ganancia del restaurante (70% del beneficio restante)
+            $requestRestaurant->restaurant_earnings = round($profit_restaurant * 0.7, 2);
+
+            // Ganancia de la plataforma (5% del precio del restaurante)
+            $requestRestaurant->platform_earnings = round($requestRestaurant->price_restaurant * 0.05, 2);
+
+            // Ganancia del inversor: recupera su capital (price_demanded_with_commission)
+            // más el 30% del beneficio restante, y de ese beneficio se le
+            // descuenta su propia comisión ("Comissió per l'inversor") antes
+            // de pagarle. investor_earnings queda como el importe NETO a darle.
+            $investor_base = $product->price_demanded_with_commission; // Precio que recibe el inversor inicialmente
+            $investor_profit = round($profit_restaurant * 0.3, 2); // 30% del beneficio restante
+
+            $investorCommissionPercentage = (float) (Commission::where('name', "Comissió per l'inversor")->value('percentage') ?? 0);
+            $investor_commission = round($investor_profit * $investorCommissionPercentage / 100, 2);
+            $investor_profit_net = round($investor_profit - $investor_commission, 2);
+
+            $requestRestaurant->investor_earnings = $investor_base + $investor_profit_net;
         });
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -35,12 +63,13 @@ class RequestRestaurant extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function calculatePriceWithCommission(): float
+    public function orders()
     {
-        $commission = Commission::where('name', 'Comissió pel restaurant')->first();
+        return $this->hasMany(Order::class);
+    }
 
-        if (!$commission) return $this->price_restaurant;
-
-        return round($this->price_restaurant * (1 + $commission->percentage / 100), 2);
+    public function ordersRequested()
+    {
+        return $this->hasMany(OrderRequested::class);
     }
 }

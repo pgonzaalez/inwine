@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -50,6 +51,7 @@ public function show(Request $request)
             'NIF' => $user->NIF,
             'name' => $user->name,
             'email' => $user->email,
+            'notify_by_email' => $user->notify_by_email,
             'roles' => $user->roles->pluck('role'),
             'active_role' => $activeRoles,
             'details' => []
@@ -78,7 +80,7 @@ public function show(Request $request)
      */
     public function update(Request $request)
     {
-        Log::info('Solicitud recibida para editar un usuario', ['data' => $request->all()]);
+        Log::info('Solicitud recibida para editar un usuario', ['data' => $request->except(['NIF'])]);
 
         $user = $request->user();
 
@@ -97,13 +99,76 @@ public function show(Request $request)
 
         $validatedData = $validatedData->validated();
 
-        Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
+        Log::info('Datos validados correctamente', ['validated_data' => collect($validatedData)->except('NIF')->all()]);
 
         $user->update($validatedData);
 
         Log::info('Usuario editado correctamente', ['user_id' => $user->id]);
 
         return response()->json($user);
+    }
+
+    /**
+     * Actualiza las preferencias de notificación del usuario autenticado.
+     * Endpoint separado de update() porque ese exige NIF/name/email, que
+     * este formulario no tiene por qué enviar.
+     */
+    public function updatePreferences(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = Validator::make($request->all(), [
+            'notify_by_email' => 'required|boolean',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validated->errors(),
+            ], 422);
+        }
+
+        $user->update($validated->validated());
+
+        return response()->json(['success' => true, 'notify_by_email' => $user->notify_by_email]);
+    }
+
+    /**
+     * Cambia la contraseña del usuario autenticado. Exige la contraseña
+     * actual (no basta con tener sesión iniciada) para evitar que alguien
+     * que encuentre una sesión abierta pueda apropiarse de la cuenta
+     * cambiando la contraseña sin conocerla.
+     */
+    public function updatePassword(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = Validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validated->errors(),
+            ], 422);
+        }
+
+        $validated = $validated->validated();
+
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'success' => false,
+                'errors' => ['current_password' => ['La contrasenya actual no és correcta.']],
+            ], 422);
+        }
+
+        $user->update(['password' => Hash::make($validated['password'])]);
+
+        Log::info('Contraseña actualizada', ['user_id' => $user->id]);
+
+        return response()->json(['success' => true]);
     }
 
     /**

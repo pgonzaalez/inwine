@@ -11,7 +11,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserRoleResource extends Resource
 {
@@ -19,11 +18,19 @@ class UserRoleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static ?string $modelLabel = 'Rols';
+    protected static ?string $modelLabel = 'Rol';
+
+    protected static ?string $pluralModelLabel = 'Rols d\'usuari';
 
     protected static ?string $navigationGroup = "Gestió d'usuaris";
 
-    protected static ?int $navigationSort = 20;
+    protected static ?int $navigationSort = 40;
+
+    public const ROLES = [
+        'seller' => 'Celler',
+        'investor' => 'Inversor',
+        'restaurant' => 'Restaurant',
+    ];
 
     public static function form(Form $form): Form
     {
@@ -33,11 +40,15 @@ class UserRoleResource extends Resource
                     ->label('Usuari')
                     ->relationship('user', 'name')
                     ->searchable()
+                    ->preload()
                     ->required(),
-                Forms\Components\TextInput::make('role')
+                Forms\Components\Select::make('role')
+                    ->label('Rol')
+                    ->options(self::ROLES)
                     ->required(),
                 Forms\Components\Toggle::make('is_active')
-                    ->required(),
+                    ->label('Actiu')
+                    ->helperText('Rol actualment seleccionat per l\'usuari a l\'app.'),
             ]);
     }
 
@@ -49,23 +60,39 @@ class UserRoleResource extends Resource
                     ->label('Usuari')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('role'),
+                Tables\Columns\TextColumn::make('user.email')
+                    ->label('Correu')
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('role')
+                    ->label('Rol')
+                    ->badge()
+                    ->colors([
+                        'success' => 'seller',
+                        'info' => 'investor',
+                        'warning' => 'restaurant',
+                    ])
+                    ->formatStateUsing(fn (string $state): string => self::ROLES[$state] ?? $state),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Actiu')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Creat')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('Rol')
+                    ->options(self::ROLES),
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Actiu'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -76,9 +103,7 @@ class UserRoleResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -88,5 +113,11 @@ class UserRoleResource extends Resource
             'create' => Pages\CreateUserRole::route('/create'),
             'edit' => Pages\EditUserRole::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // Amaga els rols dels comptes de User::HIDDEN_EMAILS.
+        return parent::getEloquentQuery()->whereHas('user', fn (Builder $query) => $query->visibleToAdmins());
     }
 }

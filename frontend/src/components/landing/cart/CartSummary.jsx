@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 export function CartSummary({
   orderId,
   subtotal,
-  serviceCommission,
+  platformFees,
   shippingCost,
   total,
   selectedItemsCount,
@@ -30,6 +30,8 @@ export function CartSummary({
         
       }
       localStorage.setItem("totalPrice", total.toFixed(2));
+      localStorage.setItem("shippingCost", shippingCost.toFixed(2));
+      localStorage.setItem("platformFees", platformFees.toFixed(2));
       navigate("/checkout");
     }
   };
@@ -51,23 +53,23 @@ export function CartSummary({
 
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-                {t('cart.summary.service_fee.label', 'Comissió de servei')}
+                {t('cart.summary.service_fee.label', 'Comissions i taxes')}
                 <button
                   className="ml-1 text-gray-400 hover:text-gray-600 focus:outline-none"
-                  title={t('cart.summary.service_fee.tooltip', '3% del subtotal')}
+                  title={t('cart.summary.service_fee.tooltip', 'Comissió del celler i recàrrec de pagament')}
                 >
                 <Info className="h-4 w-4" />
               </button>
             </div>
             <span className="font-medium">
-              {serviceCommission.toFixed(2)} €
+              {platformFees.toFixed(2)} €
             </span>
           </div>
 
           <div className="flex justify-between items-center">
             <div className="flex items-center">
                 {t('cart.summary.shipping.label', "Despeses d'enviament")}
-                {subtotal > 100 && (
+                {shippingCost === 0 && (
                   <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
                     {t('cart.summary.shipping.free', 'Gratis')}
                   </span>

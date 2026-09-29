@@ -26,6 +26,25 @@ class RestaurantFactory extends Factory
             'name_contact' => $this->faker->name,
             'credit_card' => $this->faker->creditCardNumber,
             'balance' => $this->faker->randomFloat(2, 0, 100000),
+            'business_name' => $this->faker->company() . ' Restaurant',
+            'province' => $this->faker->randomElement(['Barcelona', 'Girona', 'Lleida', 'Tarragona']),
+            'description' => $this->faker->sentence(10),
+            'number_of_diners' => $this->faker->numberBetween(1, 120),
+            'wine_rotation' => $this->faker->numberBetween(1, 7),
+            'reference_number' => $this->faker->numberBetween(10, 45),
+            'shifts' => $this->faker->randomElement([
+                'mond_to_sund_lunch',
+                'mond_to_sund_dinner',
+                'mond_to_sund_lunch_and_dinner',
+                'tues_to_sund_lunch',
+                'tues_to_sund_dinner',
+                'tues_to_sund_lunch_and_dinner',
+                'frid_to_sund_lunch',
+                'frid_to_sund_dinner',
+                'frid_to_sund_lunch_and_dinner',
+                'satu_and_sund_lunch',
+                'satu_and_sund_dinner',
+                'satu_and_sund_lunch_and_dinner']),
         ];
     }
 }

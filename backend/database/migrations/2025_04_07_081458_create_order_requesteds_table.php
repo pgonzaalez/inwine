@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('request_restaurant_id')->constrained()->cascadeOnDelete();
             $table->enum('status', ['paid', 'shipped', 'waiting','completed'])->default('paid');
             $table->double('total_price');
+            $table->double('investor_earnings')->nullable();
             $table->timestamps();
         });
     }

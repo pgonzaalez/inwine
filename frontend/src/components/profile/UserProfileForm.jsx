@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react"
 import { useFetchUser } from "@/components/auth/FetchUser"
 import { getCookie } from "@/utils/utils"
+import { useTranslation } from "react-i18next";
+import { API_URL } from "@/config/api"
 
 export default function UserProfileForm({ primaryColors }) {
+  const { t } = useTranslation();
   const { user } = useFetchUser()
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = API_URL
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     NIF: "",
@@ -204,7 +207,7 @@ export default function UserProfileForm({ primaryColors }) {
           background: `linear-gradient(to right, ${primaryColors.dark}, ${primaryColors.light})`,
         }}
       >
-        {isLoading ? "Guardant..." : "Guardar canvis"}
+        {isLoading ? t("profile.saving") : t("profile.save_changes")}
       </button>
     </form>
   )

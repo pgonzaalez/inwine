@@ -18,7 +18,14 @@ class ProductController extends Controller
      */
     public function index()
     {
+        // Show only one product per stack (oldest in_stock per group)
         $products = Product::where('status', 'in_stock')
+            ->whereRaw('id = (
+                SELECT MIN(p2.id) FROM products p2
+                WHERE p2.status = "in_stock"
+                AND COALESCE(p2.parent_product_id, p2.id) = COALESCE(products.parent_product_id, products.id)
+            )')
+            ->whereHas('seller', fn ($query) => $query->visibleToAdmins())
             ->withCount('requestsRestaurant')
             ->orderBy('requests_restaurant_count', 'desc')
             ->get();
@@ -38,7 +45,6 @@ class ProductController extends Controller
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at,
                 'requests_restaurant_count' => $product->requests_restaurant_count,
-
             ];
         });
 
@@ -53,6 +59,12 @@ class ProductController extends Controller
         $products = Product::where('user_id', $userId)->get();
 
         $response = $products->map(function ($product) {
+            $stackRootId = $product->parent_product_id ?? $product->id;
+            $stackQueued = Product::where('status', 'in_stock')
+                ->where('id', '!=', $product->id)
+                ->whereRaw('COALESCE(parent_product_id, id) = ?', [$stackRootId])
+                ->count();
+
             return [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -64,6 +76,8 @@ class ProductController extends Controller
                 'image' => $product->image,
                 'status' => $product->status,
                 'user_id' => $product->user_id,
+                'parent_product_id' => $product->parent_product_id,
+                'stack_queued' => $stackQueued,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at
             ];
@@ -132,7 +146,6 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240',
-            'user_id' => 'required|exists:users,id'
         ]);
 
         if ($validator->fails()) {
@@ -154,8 +167,8 @@ class ProductController extends Controller
                 'description',
                 'price_demanded',
                 'quantity',
-                'user_id'
             ]);
+            $productData['user_id'] = auth()->id();
 
             $product = Product::create($productData);
 
@@ -241,11 +254,15 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         $product = Product::find($id);
-    
+
         if (!$product) {
             return response()->json([
                 'message' => 'Producto no encontrado'
             ], 404);
+        }
+
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['message' => 'No estás autorizado para modificar este producto'], 403);
         }
     
         $validator = Validator::make($request->all(), [
@@ -262,7 +279,6 @@ class ProductController extends Controller
             'existing_images.*' => 'numeric',
             'removed_images' => 'nullable|array',
             'removed_images.*' => 'numeric',
-            'user_id' => 'sometimes|required|exists:users,id'
         ]);
     
         if ($validator->fails()) {
@@ -283,9 +299,8 @@ class ProductController extends Controller
                 'description',
                 'price_demanded',
                 'quantity',
-                'user_id'
             ]);
-    
+
             $product->update($productData);
     
             // Procesamos las imágenes eliminadas
@@ -345,18 +360,88 @@ class ProductController extends Controller
             }
     
             DB::commit();
-    
+
+            Log::info('Producto actualizado', ['product_id' => $product->id, 'user_id' => auth()->id()]);
+
             // Cargamos las imágenes para la respuesta
             $product->load('images');
-    
+
             return response()->json([
                 'data' => $product
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-    
+            Log::error('Error al actualizar producto', ['product_id' => $product->id, 'error' => $e->getMessage()]);
+
             return response()->json([
                 'message' => 'Error al actualizar el producto: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Duplicate a product into the stack (same data, new ID, parent_product_id set to root).
+     */
+    public function duplicate(string $id)
+    {
+        $product = Product::with('images')->find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Producto no encontrado'
+            ], 404);
+        }
+
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado para duplicar este producto'], 403);
+        }
+
+        // Always point to the root of the stack
+        $stackRootId = $product->parent_product_id ?? $product->id;
+
+        DB::beginTransaction();
+
+        try {
+            $newProduct = Product::create([
+                'name' => $product->name,
+                'origin' => $product->origin,
+                'year' => $product->year,
+                'wine_type_id' => $product->wine_type_id,
+                'description' => $product->description,
+                'price_demanded' => $product->price_demanded,
+                'quantity' => $product->quantity,
+                'image' => $product->image,
+                'status' => 'in_stock',
+                'user_id' => $product->user_id,
+                'parent_product_id' => $stackRootId,
+            ]);
+
+            // Copy image records (same paths, no file duplication needed)
+            foreach ($product->images as $image) {
+                ProductImage::create([
+                    'product_id' => $newProduct->id,
+                    'image_path' => $image->image_path,
+                    'is_primary' => $image->is_primary,
+                    'order' => $image->order,
+                ]);
+            }
+
+            DB::commit();
+
+            Log::info('Producto duplicado', ['product_id' => $product->id, 'new_product_id' => $newProduct->id, 'user_id' => auth()->id()]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $newProduct
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al duplicar producto', ['product_id' => $product->id, 'error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al duplicar el producto: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -373,6 +458,10 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Producto no encontrado'
             ], 404);
+        }
+
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado para eliminar este producto'], 403);
         }
 
         DB::beginTransaction();
@@ -393,12 +482,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Producto eliminado', ['product_id' => $product->id, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Producto eliminado correctamente'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al eliminar producto', ['product_id' => $product->id, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
@@ -412,6 +504,10 @@ class ProductController extends Controller
      */
     public function destroyAllByUser(string $userId, string $productId)
     {
+        if ((int) $userId !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado'], 403);
+        }
+
         $product = Product::with('images')->where('user_id', $userId)->find($productId);
         if (!$product) {
             return response()->json([
@@ -436,12 +532,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Producto eliminado (destroyAllByUser)', ['product_id' => $product->id, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Producto eliminado correctamente'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al eliminar producto (destroyAllByUser)', ['product_id' => $product->id, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
@@ -462,6 +561,10 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Producto no encontrado'
             ], 404);
+        }
+
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado para modificar este producto'], 403);
         }
 
         $image = ProductImage::where('product_id', $productId)
@@ -509,12 +612,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Imagen de producto eliminada', ['product_id' => $product->id, 'image_id' => $imageId, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Imagen eliminada correctamente'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al eliminar imagen de producto', ['product_id' => $product->id, 'image_id' => $imageId, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
@@ -535,6 +641,10 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Producto no encontrado'
             ], 404);
+        }
+
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'No estás autorizado para modificar este producto'], 403);
         }
 
         $image = ProductImage::where('product_id', $productId)
@@ -565,12 +675,15 @@ class ProductController extends Controller
 
             DB::commit();
 
+            Log::info('Imagen principal de producto actualizada', ['product_id' => $product->id, 'image_id' => $imageId, 'user_id' => auth()->id()]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Imagen principal actualizada correctamente'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al actualizar imagen principal', ['product_id' => $product->id, 'image_id' => $imageId, 'error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
