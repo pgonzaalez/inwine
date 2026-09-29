@@ -15,6 +15,7 @@ import {
   ShoppingCart,
   ShieldCheck,
   Heart,
+  BookOpen,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { getCookie, deleteCookie } from "@/utils/utils";
@@ -210,6 +211,7 @@ export default function Header() {
   const navItems = [
     { name: t("header.nav.home"), href: "/" },
     { name: t("header.nav.products"), href: "/productes" },
+    { name: t("header.nav.manual"), href: "/manual-us" },
     { name: t("header.nav.contact"), href: "/contacte" },
   ];
 
@@ -414,6 +416,14 @@ export default function Header() {
                     >
                       <Heart className="mr-2 h-4 w-4" />
                       {t("favorites.title", "Els meus Favorits")}
+                    </Link>
+
+                    <Link
+                      to="/manual-us"
+                      className="flex items-center px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
+                    >
+                      <BookOpen className="mr-2 h-4 w-4" />
+                      {t("header.user.manual")}
                     </Link>
 
                     <Link

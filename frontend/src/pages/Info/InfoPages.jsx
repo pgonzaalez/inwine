@@ -410,6 +410,22 @@ export const GuaranteePage = () => {
   );
 };
 
+export const UserManualPage = () => {
+  const { t } = useTranslation();
+  return (
+    <BaseInfoPage
+      title={t('info.manual.title', "Manual d'Ús")}
+      content={t(
+        'info.manual.content',
+        "Guia ràpida per treure el màxim partit a INWINE, tant si compres vi, vens des de la teva bodega, gestiones un restaurant o inverteixes en partides.",
+      )}
+    >
+      <Seo title={t('info.manual.title', "Manual d'Ús")} path="/manual-us" />
+      <LegalSections nsKey="info.manual" />
+    </BaseInfoPage>
+  );
+};
+
 export const ProductDeclarationsPage = () => {
   const { t } = useTranslation();
   return (

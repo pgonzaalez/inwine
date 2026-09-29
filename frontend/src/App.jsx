@@ -59,6 +59,7 @@ import {
   DevelopersPage,
   GuaranteePage,
   ProductDeclarationsPage,
+  UserManualPage,
 } from "@pages/Info/InfoPages";
 
 export default function App() {
@@ -77,6 +78,7 @@ export default function App() {
           <Route path="/order-summary" element={<OrderSummaryPage />} />
           <Route path="/contacte" element={<Contacte />} />
           <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/manual-us" element={<UserManualPage />} />
 
           <Route path="/settings" element={<SettingsPage />} />
 

@@ -3,7 +3,8 @@
     "nav": {
       "home": "INICIO",
       "products": "PRODUCTOS",
-      "contact": "CONTACTO"
+      "contact": "CONTACTO",
+      "manual": "MANUAL DE USO"
     },
     "search": "Buscar...",
     "cart": "Carrito",
@@ -11,6 +12,7 @@
       "account": "Mi cuenta",
       "profile": "Perfil",
       "change_role": "Cambiar rol",
+      "manual": "Manual de uso",
       "settings": "Configuración",
       "logout": "Cerrar sesión",
       "role": "Rol",
@@ -676,7 +678,13 @@
       "current_password": "Contraseña Actual",
       "new_password": "Nueva Contraseña",
       "confirm_password": "Confirmar Nueva Contraseña",
-      "update_btn": "Actualizar Contraseña"
+      "update_btn": "Actualizar Contraseña",
+      "saving": "Actualizando...",
+      "errors": {
+        "mismatch": "Las contraseñas nuevas no coinciden.",
+        "too_short": "La nueva contraseña debe tener al menos 8 caracteres.",
+        "generic": "No se ha podido actualizar la contraseña."
+      }
     },
     "notifications": {
       "title": "Preferencias de Notificaciones",
@@ -1172,6 +1180,93 @@
       "content": "Certificaciones y datos técnicos de nuestros vinos.",
       "transparency": "Transparencia Total",
       "transparency_text": "Todos nuestros vinos cuentan con declaraciones nutricionales y de procedencia detalladas según la normativa vigente."
+    },
+    "manual": {
+      "title": "Manual de Uso",
+      "content": "Guía rápida para sacarle el máximo partido a INWINE, tanto si compras vino, vendes desde tu bodega, gestionas un restaurante o inviertes en partidas.",
+      "sections": [
+        {
+          "title": "1. Primeros pasos",
+          "body": [
+            "Para usar INWINE necesitas crear una cuenta. Puedes registrarte como bodega/vendedor, restaurante o inversor según lo que quieras hacer en la plataforma; también puedes navegar y añadir productos al carrito sin necesidad de un rol específico.",
+            "Si tienes varios roles asociados a tu cuenta, puedes cambiar entre ellos en cualquier momento desde el menú de usuario, en la esquina superior derecha del header."
+          ],
+          "items": [
+            "Haz clic en el icono de usuario del header y selecciona «Iniciar sesión», o regístrate desde /register/seller, /register/restaurant o /register/investor.",
+            "Completa tus datos y verifica tu correo electrónico si se te solicita.",
+            "Accede al panel de control (dashboard) correspondiente a tu rol."
+          ]
+        },
+        {
+          "title": "2. Buscar y comprar vino",
+          "body": [
+            "Desde el apartado «Productos» del menú puedes explorar todo el catálogo disponible. Usa el icono de la lupa en el header para buscar por nombre, bodega o denominación."
+          ],
+          "items": [
+            "Marca tus vinos preferidos con el icono de corazón para guardarlos en «Mis Favoritos», accesible desde el menú de usuario.",
+            "Añade productos al carrito y revisa tu selección desde el icono del carrito del header.",
+            "Completa la compra desde el proceso de checkout, donde podrás revisar el resumen del pedido antes de confirmar el pago."
+          ]
+        },
+        {
+          "title": "3. Vender como bodega",
+          "body": [
+            "Si tienes el rol de vendedor/bodega, dispones de un panel propio para publicar y gestionar tus vinos."
+          ],
+          "items": [
+            "Publica nuevas partidas desde la opción «Crear producto» de tu panel.",
+            "Gestiona el catálogo, edita o retira productos desde «Gestión de vinos».",
+            "Consulta el estado de tus pedidos y ventas desde el dashboard de vendedor."
+          ]
+        },
+        {
+          "title": "4. Gestionar pedidos como restaurante",
+          "body": [
+            "Con el rol de restaurante puedes solicitar producto directamente a las bodegas de la plataforma."
+          ],
+          "items": [
+            "Explora los productos disponibles y envía solicitudes de pedido desde tu panel de restaurante.",
+            "Consulta el detalle y el estado de cada solicitud desde «Mis pedidos».",
+            "Accede al histórico de compras en cualquier momento."
+          ]
+        },
+        {
+          "title": "5. Invertir en partidas de vino",
+          "body": [
+            "El rol de inversor te permite participar en la financiación de partidas de vino seleccionadas."
+          ],
+          "items": [
+            "Consulta las oportunidades de inversión disponibles desde tu panel de inversor.",
+            "Revisa el detalle de cada inversión antes de confirmar tu participación.",
+            "Consulta el histórico completo de tus inversiones desde «Historial de inversiones»."
+          ]
+        },
+        {
+          "title": "6. Gestionar tu cuenta",
+          "body": [
+            "Desde el menú de usuario, en el header, puedes acceder rápidamente a:"
+          ],
+          "items": [
+            "Perfil: consulta y edita tus datos personales.",
+            "Cambiar rol: si dispones de más de un rol, cambia de panel sin cerrar sesión.",
+            "Favoritos: revisa los productos que has guardado.",
+            "Configuración: ajusta las preferencias de tu cuenta.",
+            "Cerrar sesión: sal de tu cuenta de forma segura."
+          ]
+        },
+        {
+          "title": "7. Idioma y notificaciones",
+          "body": [
+            "Puedes cambiar el idioma de la plataforma en cualquier momento desde el selector de bandera situado en el header (Catalán, Castellano o Inglés). Si tienes notificaciones pendientes relacionadas con tus pedidos o inversiones, las encontrarás en el apartado de notificaciones de tu panel."
+          ]
+        },
+        {
+          "title": "8. ¿Necesitas más ayuda?",
+          "body": [
+            "Si tienes dudas que no se resuelven en este manual, puedes escribirnos desde la página de Contacto y nuestro equipo te responderá lo antes posible."
+          ]
+        }
+      ]
     },
     "last_updated_label": "Última actualización"
   },

@@ -3,7 +3,7 @@
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "./CheckoutForm"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { API_URL } from "@/config/api"
 import { getCookie } from "@/utils/utils"
 
@@ -15,8 +15,17 @@ export default function StripeWrapper() {
   const [orderDetails, setOrderDetails] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  // Crear un PaymentIntent no és una operació idempotent al servidor: cada
+  // crida en genera un de nou a Stripe. En desenvolupament, React StrictMode
+  // executa els efectes dues vegades en muntar el component, i sense aquesta
+  // guarda això disparava dues peticions seguides i, per tant, dos
+  // PaymentIntents (un es paga, l'altre queda "incomplet" per sempre).
+  const hasRequestedRef = useRef(false)
 
   useEffect(() => {
+    if (hasRequestedRef.current) return
+    hasRequestedRef.current = true
+
     const orderIdsString = localStorage.getItem("currentOrderIds");
 
     if (!orderIdsString) {

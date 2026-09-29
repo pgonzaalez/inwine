@@ -3,7 +3,8 @@
     "nav": {
       "home": "INICI",
       "products": "PRODUCTES",
-      "contact": "CONTACTE"
+      "contact": "CONTACTE",
+      "manual": "MANUAL D'ÚS"
     },
     "search": "Buscar...",
     "cart": "Cistella",
@@ -11,6 +12,7 @@
       "account": "El meu compte",
       "profile": "Perfil",
       "change_role": "Canviar rol",
+      "manual": "Manual d'ús",
       "settings": "Configuració",
       "logout": "Tancar sessió",
       "role": "Rol",
@@ -677,7 +679,13 @@
       "current_password": "Contrasenya Actual",
       "new_password": "Nova Contrasenya",
       "confirm_password": "Confirmar Nova Contrasenya",
-      "update_btn": "Actualitzar Contrasenya"
+      "update_btn": "Actualitzar Contrasenya",
+      "saving": "Actualitzant...",
+      "errors": {
+        "mismatch": "Les contrasenyes noves no coincideixen.",
+        "too_short": "La nova contrasenya ha de tenir almenys 8 caràcters.",
+        "generic": "No s'ha pogut actualitzar la contrasenya."
+      }
     },
     "notifications": {
       "title": "Preferències de Notificacions",
@@ -1173,6 +1181,93 @@
       "content": "Certificacions i dades tècniques dels nostres vins.",
       "transparency": "Transparència Total",
       "transparency_text": "Tots els nostres vins compten amb declaracions nutricionals i de procedència detallades segons la normativa vigent."
+    },
+    "manual": {
+      "title": "Manual d'Ús",
+      "content": "Guia ràpida per treure el màxim partit a INWINE, tant si compres vi, vens des de la teva bodega, gestiones un restaurant o inverteixes en partides.",
+      "sections": [
+        {
+          "title": "1. Primers passos",
+          "body": [
+            "Per utilitzar INWINE necessites crear un compte. Pots registrar-te com a bodega/venedor, restaurant o inversor segons el que vulguis fer a la plataforma; també pots navegar i afegir productes al carret sense necessitat d'un rol específic.",
+            "Si tens diversos rols associats al teu compte, pots canviar entre ells en qualsevol moment des del menú d'usuari, a la cantonada superior dreta del header."
+          ],
+          "items": [
+            "Fes clic a la icona d'usuari del header i selecciona «Iniciar sessió», o registra't des de /register/seller, /register/restaurant o /register/investor.",
+            "Completa les teves dades i verifica el teu correu electrònic si se't sol·licita.",
+            "Accedeix al panell de control (dashboard) corresponent al teu rol."
+          ]
+        },
+        {
+          "title": "2. Cercar i comprar vi",
+          "body": [
+            "Des de l'apartat «Productes» del menú pots explorar tot el catàleg disponible. Fes servir la icona de la lupa del header per cercar per nom, bodega o denominació."
+          ],
+          "items": [
+            "Marca els teus vins preferits amb la icona de cor per desar-los a «Els meus Favorits», accessible des del menú d'usuari.",
+            "Afegeix productes al carret i revisa la teva selecció des de la icona del carret del header.",
+            "Completa la compra des del procés de checkout, on podràs revisar el resum de la comanda abans de confirmar el pagament."
+          ]
+        },
+        {
+          "title": "3. Vendre com a bodega",
+          "body": [
+            "Si tens el rol de venedor/bodega, disposes d'un panell propi per publicar i gestionar els teus vins."
+          ],
+          "items": [
+            "Publica noves partides des de l'opció «Crear producte» del teu panell.",
+            "Gestiona el catàleg, edita o retira productes des de «Gestió de vins».",
+            "Consulta l'estat de les teves comandes i vendes des del dashboard de venedor."
+          ]
+        },
+        {
+          "title": "4. Gestionar comandes com a restaurant",
+          "body": [
+            "Amb el rol de restaurant pots sol·licitar producte directament a les bodegues de la plataforma."
+          ],
+          "items": [
+            "Explora els productes disponibles i envia sol·licituds de comanda des del teu panell de restaurant.",
+            "Consulta el detall i l'estat de cada sol·licitud des de «Les meves comandes».",
+            "Accedeix a l'històric de compres en qualsevol moment."
+          ]
+        },
+        {
+          "title": "5. Invertir en partides de vi",
+          "body": [
+            "El rol d'inversor et permet participar en el finançament de partides de vi seleccionades."
+          ],
+          "items": [
+            "Consulta les oportunitats d'inversió disponibles des del teu panell d'inversor.",
+            "Revisa el detall de cada inversió abans de confirmar la teva participació.",
+            "Consulta l'històric complet de les teves inversions des de «Històric d'inversions»."
+          ]
+        },
+        {
+          "title": "6. Gestionar el teu compte",
+          "body": [
+            "Des del menú d'usuari, al header, pots accedir ràpidament a:"
+          ],
+          "items": [
+            "Perfil: consulta i edita les teves dades personals.",
+            "Canviar rol: si disposes de més d'un rol, canvia de panell sense tancar sessió.",
+            "Favorits: revisa els productes que has desat.",
+            "Configuració: ajusta les preferències del teu compte.",
+            "Tancar sessió: surt del teu compte de forma segura."
+          ]
+        },
+        {
+          "title": "7. Idioma i notificacions",
+          "body": [
+            "Pots canviar l'idioma de la plataforma en qualsevol moment des del selector de bandera situat al header (Català, Castellà o Anglès). Si tens notificacions pendents relacionades amb les teves comandes o inversions, les trobaràs a l'apartat de notificacions del teu panell."
+          ]
+        },
+        {
+          "title": "8. Necessites més ajuda?",
+          "body": [
+            "Si tens dubtes que no es resolen en aquest manual, pots escriure'ns des de la pàgina de Contacte i el nostre equip et respondrà com més aviat millor."
+          ]
+        }
+      ]
     },
     "last_updated_label": "Última actualització"
   },

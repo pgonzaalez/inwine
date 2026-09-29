@@ -3,7 +3,8 @@
     "nav": {
       "home": "HOME",
       "products": "PRODUCTS",
-      "contact": "CONTACT"
+      "contact": "CONTACT",
+      "manual": "USER MANUAL"
     },
     "search": "Search...",
     "cart": "Cart",
@@ -11,6 +12,7 @@
       "account": "My account",
       "profile": "Profile",
       "change_role": "Change role",
+      "manual": "User manual",
       "settings": "Settings",
       "logout": "Log out",
       "role": "Role",
@@ -676,7 +678,13 @@
       "current_password": "Current Password",
       "new_password": "New Password",
       "confirm_password": "Confirm New Password",
-      "update_btn": "Update Password"
+      "update_btn": "Update Password",
+      "saving": "Updating...",
+      "errors": {
+        "mismatch": "The new passwords do not match.",
+        "too_short": "The new password must be at least 8 characters long.",
+        "generic": "The password could not be updated."
+      }
     },
     "notifications": {
       "title": "Notification Preferences",
@@ -1172,6 +1180,93 @@
       "content": "Certifications and technical data of our wines.",
       "transparency": "Total Transparency",
       "transparency_text": "All our wines have detailed nutritional and provenance declarations according to current regulations."
+    },
+    "manual": {
+      "title": "User Manual",
+      "content": "A quick guide to getting the most out of INWINE, whether you're buying wine, selling from your winery, running a restaurant, or investing in wine batches.",
+      "sections": [
+        {
+          "title": "1. Getting started",
+          "body": [
+            "To use INWINE you need to create an account. You can register as a winery/seller, restaurant or investor depending on what you want to do on the platform; you can also browse and add products to your cart without a specific role.",
+            "If your account has more than one role, you can switch between them at any time from the user menu in the top-right corner of the header."
+          ],
+          "items": [
+            "Click the user icon in the header and select \"Login\", or sign up from /register/seller, /register/restaurant or /register/investor.",
+            "Fill in your details and verify your email if requested.",
+            "Access the dashboard for your role."
+          ]
+        },
+        {
+          "title": "2. Search and buy wine",
+          "body": [
+            "From the \"Products\" section of the menu you can explore the full catalogue. Use the search icon in the header to search by name, winery or designation of origin."
+          ],
+          "items": [
+            "Mark your favourite wines with the heart icon to save them to \"My Favourites\", accessible from the user menu.",
+            "Add products to your cart and review your selection from the cart icon in the header.",
+            "Complete your purchase through the checkout process, where you can review the order summary before confirming payment."
+          ]
+        },
+        {
+          "title": "3. Selling as a winery",
+          "body": [
+            "If you have the seller/winery role, you have your own dashboard to publish and manage your wines."
+          ],
+          "items": [
+            "Publish new batches from the \"Create product\" option in your dashboard.",
+            "Manage your catalogue, edit or remove products from \"Wine management\".",
+            "Check the status of your orders and sales from the seller dashboard."
+          ]
+        },
+        {
+          "title": "4. Managing orders as a restaurant",
+          "body": [
+            "With the restaurant role you can request products directly from wineries on the platform."
+          ],
+          "items": [
+            "Browse available products and send order requests from your restaurant dashboard.",
+            "Check the details and status of each request from \"My orders\".",
+            "Access your purchase history at any time."
+          ]
+        },
+        {
+          "title": "5. Investing in wine batches",
+          "body": [
+            "The investor role lets you take part in funding selected wine batches."
+          ],
+          "items": [
+            "Check the investment opportunities available from your investor dashboard.",
+            "Review the details of each investment before confirming your participation.",
+            "See your full investment history under \"Investment history\"."
+          ]
+        },
+        {
+          "title": "6. Managing your account",
+          "body": [
+            "From the user menu in the header you can quickly access:"
+          ],
+          "items": [
+            "Profile: view and edit your personal details.",
+            "Change role: if you have more than one role, switch dashboards without logging out.",
+            "Favourites: review the products you have saved.",
+            "Settings: adjust your account preferences.",
+            "Log out: securely sign out of your account."
+          ]
+        },
+        {
+          "title": "7. Language and notifications",
+          "body": [
+            "You can change the platform's language at any time using the flag selector in the header (Catalan, Spanish or English). Any pending notifications about your orders or investments will appear in the notifications section of your dashboard."
+          ]
+        },
+        {
+          "title": "8. Need more help?",
+          "body": [
+            "If you have questions that aren't answered in this manual, you can reach us through the Contact page and our team will get back to you as soon as possible."
+          ]
+        }
+      ]
     },
     "last_updated_label": "Last updated"
   },

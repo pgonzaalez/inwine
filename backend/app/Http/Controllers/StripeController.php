@@ -112,26 +112,7 @@ class StripeController extends Controller
 
             $amountInCents = (int) round($totalAmount * 100);
 
-            $paymentIntent = PaymentIntent::create([
-                'amount' => $amountInCents,
-                'currency' => 'eur',
-                'automatic_payment_methods' => [
-                    'enabled' => true,
-                ],
-                'metadata' => [
-                    'order_ids' => implode(',', $orderIds)
-                ]
-            ]);
-
-            foreach ($orderIds as $orderId) {
-                Payment::create([
-                    'order_id' => $orderId,
-                    'stripe_payment_intent_id' => $paymentIntent->id,
-                    'status' => $paymentIntent->status,
-                    'amount' => $amountInCents,
-                    'currency' => $paymentIntent->currency,
-                ]);
-            }
+            $paymentIntent = $this->resolvePaymentIntent($orderIds, $amountInCents);
 
             return response()->json([
                 'clientSecret' => $paymentIntent->client_secret,
@@ -151,5 +132,103 @@ class StripeController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    // Estats d'un PaymentIntent en els quals encara no s'ha cobrat res i,
+    // per tant, es pot reutilitzar o cancel·lar amb seguretat.
+    private const REUSABLE_PAYMENT_INTENT_STATUSES = [
+        'requires_payment_method',
+        'requires_confirmation',
+        'requires_action',
+    ];
+
+    /**
+     * Retorna el PaymentIntent que cal fer servir per a aquestes comandes.
+     *
+     * Cada cop que el checkout es torna a carregar (recàrrega de pàgina,
+     * doble muntatge del component, l'usuari torna enrere i repeteix el
+     * pagament...) es tornava a cridar aquest endpoint, i com que abans es
+     * creava sempre un PaymentIntent nou, a Stripe (i a la taula payments)
+     * quedaven "penjats" PaymentIntents en estat incomplet que mai s'arribaven
+     * a pagar ni cancel·lar. Ara, si les comandes ja tenen un PaymentIntent en
+     * curs, es reutilitza (actualitzant l'import si ha canviat); si n'hi ha un
+     * de vell que ja no serveix, es cancel·la abans de crear-ne un de nou.
+     */
+    private function resolvePaymentIntent(array $orderIds, int $amountInCents): PaymentIntent
+    {
+        $latestPaymentsByOrder = Payment::whereIn('order_id', $orderIds)
+            ->orderByDesc('id')
+            ->get()
+            ->unique('order_id');
+
+        $intentIds = $latestPaymentsByOrder->pluck('stripe_payment_intent_id')->unique();
+
+        // Totes les comandes apunten al mateix PaymentIntent: potser es pot
+        // reutilitzar directament.
+        if ($latestPaymentsByOrder->count() === count($orderIds) && $intentIds->count() === 1) {
+            try {
+                $existingIntent = PaymentIntent::retrieve($intentIds->first());
+
+                if (in_array($existingIntent->status, self::REUSABLE_PAYMENT_INTENT_STATUSES, true)) {
+                    if ($existingIntent->amount !== $amountInCents) {
+                        $existingIntent = PaymentIntent::update($existingIntent->id, [
+                            'amount' => $amountInCents,
+                        ]);
+
+                        Payment::whereIn('order_id', $orderIds)
+                            ->where('stripe_payment_intent_id', $existingIntent->id)
+                            ->update(['amount' => $amountInCents]);
+                    }
+
+                    return $existingIntent;
+                }
+            } catch (\Exception $e) {
+                Log::warning('No se pudo recuperar el PaymentIntent existente, se creará uno nuevo', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        // No es pot reutilitzar: es cancel·len els PaymentIntents anteriors
+        // d'aquestes comandes que encara estiguin pendents, perquè no quedin
+        // com a "incomplets" per sempre al dashboard de Stripe.
+        foreach ($intentIds as $intentId) {
+            if (!$intentId) {
+                continue;
+            }
+
+            try {
+                $oldIntent = PaymentIntent::retrieve($intentId);
+                if (in_array($oldIntent->status, self::REUSABLE_PAYMENT_INTENT_STATUSES, true)) {
+                    $oldIntent->cancel();
+                    Payment::where('stripe_payment_intent_id', $intentId)->update(['status' => 'canceled']);
+                }
+            } catch (\Exception $e) {
+                Log::warning('No se pudo cancelar un PaymentIntent anterior', ['error' => $e->getMessage()]);
+            }
+        }
+
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $amountInCents,
+            'currency' => 'eur',
+            'automatic_payment_methods' => [
+                'enabled' => true,
+            ],
+            'metadata' => [
+                'order_ids' => implode(',', $orderIds)
+            ]
+        ]);
+
+        foreach ($orderIds as $orderId) {
+            Payment::create([
+                'order_id' => $orderId,
+                'stripe_payment_intent_id' => $paymentIntent->id,
+                'status' => $paymentIntent->status,
+                'amount' => $amountInCents,
+                'currency' => $paymentIntent->currency,
+            ]);
+        }
+
+        return $paymentIntent;
     }
 }

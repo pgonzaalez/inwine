@@ -19,7 +19,7 @@ import { API_URL } from "@/config/api";
 import { getCookie } from "@/utils/utils";
 
 const SettingsPage = () => {
-  const { t, i18n } = useTranslation('settings');
+  const { t, i18n } = useTranslation();
   const { user, loading, refetchUser } = useFetchUser();
   const location = useLocation();
   const [activeSection, setActiveSection] = useState('security');
