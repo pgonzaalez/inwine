@@ -14,9 +14,8 @@ class CommissionSeeder extends Seeder
     public function run(): void
     {
         $commissions = [
-            ["name" => "Comissió pel producte", "percentage" => 5.00],
+            ["name" => "Comissió pel producte", "percentage" => 10.00],
             ["name" => "Comissió pel restaurant", "percentage" => 5.00],
-            ["name" => "Comissió pel transportista", "percentage" => 5.00],
             ["name" => "Comissió per l'inversor", "percentage" => 5.00],
         ];
 

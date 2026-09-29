@@ -7,6 +7,7 @@ import ProductGrid from "@/components/landing/products/ProductGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
 import { useTranslation } from "react-i18next"
 import { getCookie } from "@/utils/utils"
+import { API_URL } from "@/config/api"
 
 export default function FavoritesPage() {
   const { t } = useTranslation()
@@ -19,7 +20,7 @@ export default function FavoritesPage() {
     const fetchFavoriteProducts = async () => {
       setLoading(true)
       const token = getCookie("token")
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+      const apiUrl = API_URL
 
       if (!token) {
         // Fallback to local cookie favorites if not logged in
@@ -67,7 +68,7 @@ export default function FavoritesPage() {
 
   const toggleFavorite = async (productId) => {
     const token = getCookie("token")
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+    const apiUrl = API_URL
 
     if (!token) {
       setFavorites((prev) => {

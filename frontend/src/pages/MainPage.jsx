@@ -1,14 +1,12 @@
-
 import { motion } from "framer-motion";
 import Footer from "@components/FooterComponent";
+import Seo from "@components/Seo";
 import AboutSection from "@components/landing/AboutComponent";
 import CarouselComponent from "@components/landing/CarouselComponent";
 import UserCards from "@components/landing/UserCardsComponent";
 import LastInteractions from "@components/landing/LastInteractionsComponent";
 
-
 export default function App() {
-
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
@@ -16,6 +14,7 @@ export default function App() {
 
   return (
     <>
+      <Seo title="Inverteix, ven i descobreix vins únics" path="/" />
       <div className="relative w-full h-screen overflow-hidden">
         {/* Fons de vídeo */}
         <video
@@ -61,7 +60,7 @@ export default function App() {
         </motion.div>
       </section>
 
-      <section className=" text-center">
+      {/* <section className=" text-center">
         <motion.div
           className=" mx-auto p-8"
           initial="hidden"
@@ -71,9 +70,8 @@ export default function App() {
         >
           <LastInteractions />
         </motion.div>
-      </section>
+      </section> */}
 
-      
       <Footer />
     </>
   );

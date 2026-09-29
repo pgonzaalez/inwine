@@ -11,7 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -19,31 +19,55 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $modelLabel = 'Usuaris';
+    protected static ?string $modelLabel = 'Usuari';
+
+    protected static ?string $pluralModelLabel = 'Usuaris';
 
     protected static ?string $navigationGroup = "Gestió d'usuaris";
 
     protected static ?int $navigationSort = 10;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('NIF')
-                    ->required()
-                    ->maxLength(9),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                Forms\Components\Section::make('Dades personals')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nom')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('NIF')
+                            ->label('NIF')
+                            ->required()
+                            ->maxLength(9),
+                        Forms\Components\TextInput::make('email')
+                            ->label('Correu electrònic')
+                            ->email()
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true),
+                        Forms\Components\DateTimePicker::make('email_verified_at')
+                            ->label('Verificat el')
+                            ->native(false)
+                            ->helperText('Buit = correu no verificat encara.'),
+                    ]),
+                Forms\Components\Section::make('Seguretat')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('password')
+                            ->label('Contrasenya')
+                            ->password()
+                            ->revealable()
+                            ->maxLength(255)
+                            ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                            ->dehydrated(fn (?string $state): bool => filled($state))
+                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->helperText(fn (string $operation) => $operation === 'edit' ? 'Deixa-ho en blanc per no canviar-la.' : null),
+                    ]),
             ]);
     }
 
@@ -51,29 +75,76 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('NIF')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
+                    ->label('Nom')
+                    ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Correu')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable(),
+                Tables\Columns\TextColumn::make('roles.role')
+                    ->label('Rols')
+                    ->badge()
+                    ->separator(',')
+                    ->colors([
+                        'success' => 'seller',
+                        'info' => 'investor',
+                        'warning' => 'restaurant',
+                    ])
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'seller' => 'Celler',
+                        'investor' => 'Inversor',
+                        'restaurant' => 'Restaurant',
+                        default => $state,
+                    }),
+                Tables\Columns\IconColumn::make('email_verified_at')
+                    ->label('Verificat')
+                    ->boolean()
+                    ->getStateUsing(fn (User $record): bool => $record->email_verified_at !== null),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Registrat')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Actualitzat')
+                    ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('email_verified_at')
+                    ->label('Correu verificat')
+                    ->nullable()
+                    ->placeholder('Tots')
+                    ->trueLabel('Verificats')
+                    ->falseLabel('Pendents de verificar'),
+                Tables\Filters\SelectFilter::make('roles')
+                    ->label('Rol')
+                    ->relationship('roles', 'role')
+                    ->options([
+                        'seller' => 'Celler',
+                        'investor' => 'Inversor',
+                        'restaurant' => 'Restaurant',
+                    ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('verify')
+                    ->label('Verificar')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('success')
+                    ->visible(fn (User $record) => $record->email_verified_at === null)
+                    ->requiresConfirmation()
+                    ->action(fn (User $record) => $record->forceFill(['email_verified_at' => now()])->save()),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -85,7 +156,8 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\RolesRelationManager::class,
+            RelationManagers\ProductsRelationManager::class,
         ];
     }
 
@@ -98,8 +170,26 @@ class UserResource extends Resource
         ];
     }
 
-    public static function getNavigationSort(): ?int
+    public static function getGloballySearchableAttributes(): array
     {
-        return 1;
+        return ['name', 'email'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return ['Correu' => $record->email];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) User::visibleToAdmins()->count();
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // Oculta els comptes de User::HIDDEN_EMAILS: no apareixen a la
+        // taula, a la cerca global, ni es poden obrir per edició/visualització
+        // encara que algú es sàpiga la URL directa.
+        return parent::getEloquentQuery()->visibleToAdmins();
     }
 }

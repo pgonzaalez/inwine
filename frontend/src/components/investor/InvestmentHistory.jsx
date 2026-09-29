@@ -7,6 +7,7 @@ import { InvestmentStatusDistribution } from "./InvestmentStatusDistribution";
 import { InvestmentTable } from "./InvestmentTable"
 import { getCookie } from "@/utils/utils" // Usando tu utilidad personalizada
 import { useTranslation } from "react-i18next"
+import { API_URL } from "@/config/api"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -22,7 +23,7 @@ function InvestmentHistoryComponent() {
   const [activeFilter, setActiveFilter] = useState("all")
   const [isLoading, setIsLoading] = useState(false)
   const { user, userLoading } = useFetchUser()
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = API_URL
 
   // Implementación simple de alertas
   const [notification, setNotification] = useState(null)

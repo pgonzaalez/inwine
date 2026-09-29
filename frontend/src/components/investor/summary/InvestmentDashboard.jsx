@@ -10,6 +10,7 @@ import { InvestmentOriginChart } from "./InvestmentOriginChart"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/tabs"
 import { Calendar, BarChartIcon as ChartBar, CircleDollarSign, Map } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { API_URL } from "@/config/api"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -25,7 +26,7 @@ function InvestmentDashboardComponent() {
   const [isLoading, setIsLoading] = useState(false)
   const [notification, setNotification] = useState(null)
   const { user, userLoading } = useFetchUser()
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = API_URL
 
   useEffect(() => {
     fetchInvestments()

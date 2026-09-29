@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Seller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\UserRole;
 
@@ -27,12 +28,15 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
+            // No se loguea la contraseña nunca, ni siquiera en un intento fallido.
+            Log::warning('Intento de login con email inexistente', ['email' => $request->email]);
             throw ValidationException::withMessages([
                 'email' => ['Usuari o contrasenya incorrecta.']
             ]);
         }
 
         if (!Hash::check($request->password, $user->password)) {
+            Log::warning('Intento de login con contraseña incorrecta', ['user_id' => $user->id, 'email' => $user->email]);
             throw ValidationException::withMessages([
                 'email' => ['Usuari o contrasenya incorrecta.']
             ]);
@@ -48,6 +52,8 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
+
+        Log::info('Login correcto', ['user_id' => $user->id, 'email' => $user->email, 'roles' => $roles]);
 
         return response()->json([
             'token' => $token,
@@ -77,11 +83,15 @@ class AuthController extends Controller
             ->where('role', $request->role)
             ->update(['is_active' => true]);
 
+        Log::info('Cambio de rol activo', ['user_id' => $user->id, 'role' => $request->role]);
+
         return response()->json(['message' => 'Rol actualizado correctamente']);
     }
 
     public function logout(Request $request)
     {
+        Log::info('Logout', ['user_id' => $request->user()->id, 'email' => $request->user()->email]);
+
         $request->user()->tokens()->delete();
 
         return response()->json([
@@ -91,7 +101,8 @@ class AuthController extends Controller
 
     public function storeSeller(Request $request)
     {
-        Log::info('Solicitud recibida para crear un productor', ['data' => $request->all()]);
+        // Nunca se loguea la contraseña ni otros datos sensibles en crudo.
+        Log::info('Solicitud recibida para crear un productor', ['data' => $request->except(['password', 'NIF'])]);
 
         try {
             // Validar los datos de entrada
@@ -103,8 +114,6 @@ class AuthController extends Controller
                 'address' => 'nullable|string|min:2|max:255',
                 'phone' => 'nullable|string|max:11',
                 'name_contact' => 'nullable|string|max:20',
-                'bank_account' => 'nullable|string|max:34',
-                'balance' => 'nullable|numeric',
             ]);
 
             if ($validatedData->fails()) {
@@ -119,7 +128,7 @@ class AuthController extends Controller
             // Obtener los datos validados
             $validatedData = $validatedData->validated();
 
-            Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
+            Log::info('Datos validados correctamente', ['validated_data' => collect($validatedData)->except('password')->all()]);
 
             // Crear usuario
             $user = User::create([
@@ -138,14 +147,17 @@ class AuthController extends Controller
                 'role' => 'seller'
             ]);
 
-            // Crear seller con todos los campos requeridos
+            // Crear seller con todos los campos requeridos. El saldo y la cuenta
+            // bancaria nunca se aceptan desde el formulario de alta: se fijan en
+            // el servidor y solo se pueden editar después desde el perfil ya
+            // autenticado (SellerController::update).
             $seller = Seller::create([
                 'user_id' => $user->id,
                 'address' => $validatedData['address'],
                 'phone_contact' => $validatedData['phone'],
                 'name_contact' => $validatedData['name_contact'],
-                'bank_account' => $validatedData['bank_account'] ?? null,
-                'balance' => $validatedData['balance'] ?? 0.00,
+                'bank_account' => null,
+                'balance' => 0.00,
             ]);
 
             Log::info('Productor creado exitosamente', ['seller_id' => $seller->id]);
@@ -168,7 +180,8 @@ class AuthController extends Controller
 
     public function storeRestaurant(Request $request)
     {
-        Log::info('Solicitud recibida para crear un restaurante', ['data' => $request->all()]);
+        // Nunca se loguea la contraseña ni otros datos sensibles en crudo.
+        Log::info('Solicitud recibida para crear un restaurante', ['data' => $request->except(['password', 'NIF', 'credit_card'])]);
 
         try {
             // Validar los datos de entrada
@@ -180,8 +193,16 @@ class AuthController extends Controller
                 'address' => 'nullable|string|min:2|max:255',
                 'phone' => 'nullable|string|max:11',
                 'name_contact' => 'nullable|string|max:20',
-                'credit_card' => 'nullable|string|max:34',
-                'balance' => 'nullable|numeric',
+                'business_name' => 'required|string|min:5',
+                'province' => 'required|string|min:3',
+                'description' => 'required|string|min:20|max:100',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+                'number_of_diners' => 'nullable|integer|min:0',
+                'wine_rotation' => 'nullable|integer',
+                'reference_number' => 'nullable|string|max:50',
+                'workdays_per_week' => 'nullable|integer|min:1|max:7',
+                'services' => 'nullable|array',
+                'services.*' => 'in:breakfast,lunch,dinner',
             ]);
 
             if ($validatedData->fails()) {
@@ -196,7 +217,7 @@ class AuthController extends Controller
             // Obtener los datos validados
             $validatedData = $validatedData->validated();
 
-            Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
+            Log::info('Datos validados correctamente', ['validated_data' => collect($validatedData)->except('password')->all()]);
 
             // Crear usuario
             $user = User::create([
@@ -215,14 +236,31 @@ class AuthController extends Controller
                 'role' => 'restaurant'
             ]);
 
-            // Crear restaurante con todos los campos requeridos
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('restaurants', 'public');
+                $validatedData['image'] = Storage::url($path);
+            }
+
+            // Crear restaurante con todos los campos requeridos. El saldo y la
+            // tarjeta nunca se aceptan desde el formulario de alta: se fijan en
+            // el servidor y solo se pueden editar después desde el perfil ya
+            // autenticado (RestaurantController::update).
             $restaurant = Restaurant::create([
                 'user_id' => $user->id,
                 'address' => $validatedData['address'],
                 'phone_contact' => $validatedData['phone'],
                 'name_contact' => $validatedData['name_contact'],
-                'credit_card' => $validatedData['credit_card'] ?? null,
-                'balance' => $validatedData['balance'] ?? 0.00,
+                'credit_card' => null,
+                'balance' => 0.00,
+                'business_name' => $validatedData['business_name'],
+                'description' => $validatedData['description'],
+                'province' => $validatedData['province'],
+                'image' => $validatedData['image'] ?? null,
+                'number_of_diners' => $validatedData['number_of_diners'],
+                'wine_rotation' => $validatedData['wine_rotation'] ?? null,
+                'reference_number' => $validatedData['reference_number'] ?? null,
+                'workdays_per_week' => $validatedData['workdays_per_week'] ?? null,
+                'services' => $validatedData['services'] ?? null,
             ]);
 
             Log::info('Restaurante creado exitosamente', ['restaurant' => $restaurant->id]);
@@ -245,7 +283,8 @@ class AuthController extends Controller
 
     public function storeInvestor(Request $request)
     {
-        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->all()]);
+        // Nunca se loguea la contraseña ni otros datos sensibles en crudo.
+        Log::info('Solicitud recibida para crear un inversor', ['data' => $request->except(['password', 'NIF'])]);
 
         try {
             // Validar los datos de entrada
@@ -256,9 +295,6 @@ class AuthController extends Controller
                 'password' => 'required|string|min:8',
                 'address' => 'nullable|string|min:2|max:255',
                 'phone' => 'nullable|string|max:11',
-                'credit_card' => 'nullable|string|max:34',
-                'bank_account' => 'nullable|string|max:34',
-                'balance' => 'nullable|numeric',
             ]);
 
             if ($validatedData->fails()) {
@@ -273,7 +309,7 @@ class AuthController extends Controller
             // Obtener los datos validados
             $validatedData = $validatedData->validated();
 
-            Log::info('Datos validados correctamente', ['validated_data' => $validatedData]);
+            Log::info('Datos validados correctamente', ['validated_data' => collect($validatedData)->except('password')->all()]);
 
             // Crear usuario
             $user = User::create([
@@ -292,14 +328,17 @@ class AuthController extends Controller
                 'role' => 'investor'
             ]);
 
-            // Crear inversor con todos los campos requeridos
+            // Crear inversor con todos los campos requeridos. El saldo, la
+            // tarjeta y la cuenta bancaria nunca se aceptan desde el formulario
+            // de alta: se fijan en el servidor y solo se pueden editar después
+            // desde el perfil ya autenticado (InvestorController::update).
             $investor = Investor::create([
                 'user_id' => $user->id,
                 'address' => $validatedData['address'],
                 'phone_contact' => $validatedData['phone'],
-                'credit_card' => $validatedData['credit_card'] ?? null,
-                'bank_account' => $validatedData['bank_account'] ?? null,
-                'balance' => $validatedData['balance'] ?? 0.00,
+                'credit_card' => null,
+                'bank_account' => null,
+                'balance' => 0.00,
             ]);
 
             Log::info('Inversor creado exitosamente', ['investor' => $investor->id]);

@@ -4,6 +4,7 @@ import { Filter, Eye } from "lucide-react"
 import { StatusBadge } from "./StatusBadge"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import { BASE_URL } from "@/config/api"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -16,7 +17,7 @@ export const InvestmentTable = ({ investments, activeFilter, setActiveFilter }) 
   const { t, i18n } = useTranslation()
   const locale = i18n.language === "ca" ? "ca-ES" : i18n.language === "es" ? "es-ES" : "en-US"
   // Get the base URL from environment variables
-  const baseUrl = import.meta.env.VITE_URL_BASE
+  const baseUrl = BASE_URL
   const navigate = useNavigate()
 
   // Array de filtros para evitar el warning de keys

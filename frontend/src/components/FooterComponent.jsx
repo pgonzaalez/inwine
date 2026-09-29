@@ -1,4 +1,3 @@
-import { CheckIcon, HeadphonesIcon, PlaneIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -95,14 +94,6 @@ export default function Footer() {
                   className="hover:text-gray-600 transition-colors"
                 >
                   {t("footer.links.ideas")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/desenvolupadors"
-                  className="hover:text-gray-600 transition-colors"
-                >
-                  {t("footer.links.developers")}
                 </Link>
               </li>
             </ul>

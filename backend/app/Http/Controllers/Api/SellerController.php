@@ -42,7 +42,8 @@ class SellerController extends Controller
      */
     public function update(Request $request)
     {
-        Log::info('Solicitud recibida para crear un productor', ['data' => $request->all()]);
+        // Nunca se loguea la cuenta bancaria en crudo.
+        Log::info('Solicitud recibida para crear un productor', ['data' => $request->except(['bank_account'])]);
 
         $user = Auth::user();
 
@@ -93,7 +94,7 @@ class SellerController extends Controller
                 'bank_account' => $request->bank_account,
             ];
 
-            Log::info('Creando o actualizando datos del vendedor', ['sellerData' => $sellerData]);
+            Log::info('Creando o actualizando datos del vendedor', ['sellerData' => collect($sellerData)->except('bank_account')->all()]);
 
             Seller::updateOrCreate(
                 ['user_id' => $user->id],

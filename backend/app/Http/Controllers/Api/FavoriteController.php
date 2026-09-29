@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FavoriteController extends Controller
 {
@@ -61,8 +62,10 @@ class FavoriteController extends Controller
         }
 
         $status = $user->favorites()->toggle($productId);
-        
+
         $isFavorite = count($status['attached']) > 0;
+
+        Log::info('Favorito modificado', ['user_id' => $user->id, 'product_id' => $productId, 'is_favorite' => $isFavorite]);
 
         return response()->json([
             'message' => $isFavorite ? 'Product added to favorites' : 'Product removed from favorites',

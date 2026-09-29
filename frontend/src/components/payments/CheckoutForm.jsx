@@ -7,15 +7,16 @@ export default function CheckoutForm() {
 
   const [message, setMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isElementReady, setIsElementReady] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsLoading(true)
 
-    if (!stripe || !elements) {
-      setIsLoading(false)
+    if (!stripe || !elements || !isElementReady) {
       return
     }
+
+    setIsLoading(true)
 
     const orderId = localStorage.getItem("currentOrderId")
 
@@ -44,12 +45,15 @@ export default function CheckoutForm() {
         <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Pagar comanda</h2>
 
         <div className="mb-4">
-          <PaymentElement />
+          <PaymentElement
+            onReady={() => setIsElementReady(true)}
+            onLoadError={(event) => setMessage(event.error?.message || "No s'ha pogut carregar el formulari de pagament.")}
+          />
         </div>
 
         <button
           type="submit"
-          disabled={!stripe || isLoading}
+          disabled={!stripe || !isElementReady || isLoading}
           className={`w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition duration-200 ${
             isLoading ? "opacity-50 cursor-not-allowed" : ""
           }`}

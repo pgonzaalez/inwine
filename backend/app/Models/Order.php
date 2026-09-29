@@ -23,4 +23,9 @@ class Order extends Model
     {
         return $this->belongsTo(RequestRestaurant::class);
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

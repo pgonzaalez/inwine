@@ -42,8 +42,8 @@ const RoleSelector = ({ roles = [], onSelect }) => {
   }
 
   return (
-    <div className=" flex items-center justify-center p-4">
-      <div>
+    <div className="flex items-center justify-center p-2 sm:p-4 w-full">
+      <div className="w-full">
         <div className="grid gap-4">
           {roles.map((role, index) => {
             const { icon, label, description } = getRoleInfo(role)
@@ -53,9 +53,13 @@ const RoleSelector = ({ roles = [], onSelect }) => {
               <div
                 key={index}
                 onClick={() => setSelectedRole(role)}
+                onDoubleClick={() => {
+                  setSelectedRole(role)
+                  onSelect(role)
+                }}
                 className={`border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 ${
                   isSelected
-                    ? "border-[#BE6674] bg-[#BE6674]/5"
+                    ? "border-[#BE6674] bg-[#BE6674]/5 shadow-sm"
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
@@ -92,12 +96,12 @@ const RoleSelector = ({ roles = [], onSelect }) => {
           })}
         </div>
 
-        <div className="mt-8 flex justify-between">
+        <div className="mt-6 flex justify-end">
           <button
             onClick={handleContinue}
             disabled={!selectedRole}
-            className={`px-6 py-2 rounded-lg text-white transition-all duration-200 ${
-              selectedRole ? "bg-[#BE6674] hover:bg-[#741C28]" : "bg-gray-300 cursor-not-allowed"
+            className={`w-full sm:w-auto px-6 py-2.5 rounded-lg text-white font-medium transition-all duration-200 cursor-pointer ${
+              selectedRole ? "bg-[#BE6674] hover:bg-[#741C28] shadow-sm" : "bg-gray-300 cursor-not-allowed"
             }`}
           >
             {t("common.continue")}

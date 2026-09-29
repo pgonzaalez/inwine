@@ -1,6 +1,6 @@
 "use client"
 
-import { Filter, Send } from "lucide-react"
+import { Filter, Send, Plus } from "lucide-react"
 import { StatusBadge } from "@components/seller/wineManagement/StatusBadge"
 import { useTranslation } from "react-i18next"
 
@@ -32,7 +32,7 @@ const getWineTypeColor = (type) => {
   }
 }
 
-export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, activeFilter, setActiveFilter }) => {
+export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, handleDuplicateProduct, duplicatingProduct, activeFilter, setActiveFilter }) => {
   const { t } = useTranslation()
   // Array de filtros para evitar el warning de keys
   const filters = [
@@ -213,6 +213,37 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
                     {t("dashboards.seller.management.table.actions.details")}
                   </button>
 
+                  <button
+                    type="button"
+                    onClick={() => handleDuplicateProduct(wine.id)}
+                    disabled={duplicatingProduct === wine.id}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center ${
+                      duplicatingProduct === wine.id ? "opacity-70" : "hover:opacity-90"
+                    }`}
+                    style={{
+                      backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
+                        primaryColors.dark.slice(3, 5),
+                        16,
+                      )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.15)`,
+                      color: primaryColors.dark,
+                      cursor: duplicatingProduct === wine.id ? "wait" : "pointer",
+                    }}
+                  >
+                    {duplicatingProduct === wine.id ? (
+                      <div className="w-3 h-3 rounded-full border-2 border-current border-t-transparent animate-spin"></div>
+                    ) : (
+                      <>
+                        <Plus size={12} className="mr-1" />
+                        {t("dashboards.seller.management.table.actions.add_more")}
+                        {wine.stack_queued > 0 && (
+                          <span className="ml-1 px-1 rounded text-white text-xs" style={{ backgroundColor: primaryColors.dark }}>
+                            +{wine.stack_queued}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </button>
+
                   {wine.status === "requested" && (
                     <button
                       type="button"
@@ -296,6 +327,37 @@ export const WineTable = ({ wines, baseUrl, handleSendProduct, sendingProduct, a
                   }}
                 >
                   {t("dashboards.seller.management.table.actions.details")}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleDuplicateProduct(wine.id)}
+                  disabled={duplicatingProduct === wine.id}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center ${
+                    duplicatingProduct === wine.id ? "opacity-70" : "hover:opacity-90"
+                  }`}
+                  style={{
+                    backgroundColor: `rgba(${Number.parseInt(primaryColors.dark.slice(1, 3), 16)}, ${Number.parseInt(
+                      primaryColors.dark.slice(3, 5),
+                      16,
+                    )}, ${Number.parseInt(primaryColors.dark.slice(5, 7), 16)}, 0.15)`,
+                    color: primaryColors.dark,
+                    cursor: duplicatingProduct === wine.id ? "wait" : "pointer",
+                  }}
+                >
+                  {duplicatingProduct === wine.id ? (
+                    <div className="w-3 h-3 rounded-full border-2 border-current border-t-transparent animate-spin"></div>
+                  ) : (
+                    <>
+                      <Plus size={12} className="mr-1" />
+                      {t("dashboards.seller.management.table.actions.add_more")}
+                      {wine.stack_queued > 0 && (
+                        <span className="ml-1 px-1 rounded text-white text-xs" style={{ backgroundColor: primaryColors.dark }}>
+                          +{wine.stack_queued}
+                        </span>
+                      )}
+                    </>
+                  )}
                 </button>
 
                 {wine.status === "requested" && (
