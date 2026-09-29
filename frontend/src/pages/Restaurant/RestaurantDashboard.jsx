@@ -11,7 +11,7 @@ import { WineTypeDistribution } from "@/components/restaurant/WineTypeDistributi
 import { Notification } from "@/components/restaurant/Notification"
 import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal"
 import { EditRequestModal } from "@/components/restaurant/modals/EditRequestModal"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { API_URL, BASE_URL } from "@/config/api"
 
 function RestaurantDashboardComponent() {
@@ -46,7 +46,7 @@ function RestaurantDashboardComponent() {
 
     try {
       setIsLoading(true)
-      const response = await fetch(`${apiUrl}/v1/${user.id}/restaurant`)
+      const response = await apiFetch(`${apiUrl}/v1/${user.id}/restaurant`)
 
       if (!response.ok) {
         throw new Error(t("dashboards.restaurant.messages.error_server"))
@@ -80,12 +80,11 @@ function RestaurantDashboardComponent() {
     if (!selectedRequestId) return
 
     try {
-      const response = await fetch(`${apiUrl}/v1/restaurant/${selectedRequestId}`, {
+      const response = await apiFetch(`${apiUrl}/v1/restaurant/${selectedRequestId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -118,12 +117,11 @@ function RestaurantDashboardComponent() {
 
     try {
       // Enviamos solo el precio actualizado
-      const response = await fetch(`${apiUrl}/v1/restaurants/${selectedRequestId}?price_restaurant=${offerPrice}`, {
+      const response = await apiFetch(`${apiUrl}/v1/restaurants/${selectedRequestId}?price_restaurant=${offerPrice}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": `Bearer ${getCookie("token")}`,
         }
       })
 
@@ -174,12 +172,11 @@ function RestaurantDashboardComponent() {
       const url = `${apiUrl}/v1/logistic/${productId}/deliver`
 
       // Realizar la petición POST
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -222,12 +219,11 @@ function RestaurantDashboardComponent() {
       const url = `${apiUrl}/v1/logistic/${productId}/sell`
 
       // Realizar la petición POST
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 

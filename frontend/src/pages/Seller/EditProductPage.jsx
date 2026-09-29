@@ -9,7 +9,7 @@ import { WineDetailsForm } from "@/components/product/WineDetailsForm"
 import { WinePricingForm } from "@/components/product/WinePricingForm"
 import { validateStep } from "@/utils/form-validation"
 import { API_URL } from "@/config/api"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { useCommissionPercentage } from "@/hooks/useCommissionPercentage"
 
 export default function EditProduct() {
@@ -50,7 +50,7 @@ export default function EditProduct() {
   // Cargar tipos de vino
   useEffect(() => {
     const fetchWineTypes = async () => {
-      const response = await fetch(`${apiUrl}/v1/winetypes`)
+      const response = await apiFetch(`${apiUrl}/v1/winetypes`)
       const data = await response.json()
       setWineTypes(data)
     }
@@ -64,7 +64,7 @@ export default function EditProduct() {
       
       try {
         setIsLoading(true);
-        const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`);
+        const response = await apiFetch(`${apiUrl}/v1/${user.id}/products/${productId}`);
         
         if (!response.ok) {
           throw new Error(t("dashboards.seller.product.error_fetch"));
@@ -347,11 +347,8 @@ export default function EditProduct() {
         })
       }
 
-      const response = await fetch(`${apiUrl}/v1/products/${productId}`, {
+      const response = await apiFetch(`${apiUrl}/v1/products/${productId}`, {
         method: "POST", // Usamos POST con _method=PUT para compatibilidad con FormData
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
         body: formDataObj,
       })
 

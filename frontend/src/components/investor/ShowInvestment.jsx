@@ -7,7 +7,7 @@ import {
 } from "lucide-react"
 import { StatusBadge } from "@components/investor/StatusBadge"
 import { useFetchUser } from "@components/auth/FetchUser"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { useTranslation } from "react-i18next"
 import { API_URL, BASE_URL } from "@/config/api"
 
@@ -39,20 +39,8 @@ export default function ShowInvestment() {
   const fetchInvestment = async () => {
     try {
       setIsLoading(true)
-      const token = getCookie("token")
 
-      if (!token) {
-        setError(t("dashboards.investor.messages.no_token"))
-        setIsLoading(false)
-        return
-      }
-
-      const response = await fetch(`${apiUrl}/${user.id}/investments/${investmentId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
+      const response = await apiFetch(`${apiUrl}/${user.id}/investments/${investmentId}`)
 
       if (!response.ok) {
         throw new Error(t("dashboards.investor.details.messages.error_fetch", "No s'ha pogut obtenir la informació de la inversió."))

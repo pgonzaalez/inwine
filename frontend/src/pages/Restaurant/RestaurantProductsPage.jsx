@@ -7,7 +7,7 @@ import { useFetchUser } from "@components/auth/FetchUser"
 import { Package, Check, ShoppingBag, Info } from "lucide-react"
 import ProductGrid from "@/components/landing/products/ProductGrid"
 import { API_URL } from "@/config/api"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { useCommissionPercentage } from "@/hooks/useCommissionPercentage"
 
 const primaryColors = {
@@ -35,7 +35,7 @@ function RestaurantRequestFormComponent() {
     const fetchProducts = async () => {
       setLoadingProducts(true)
       try {
-        const response = await fetch(`${apiUrl}/v1/products`)
+        const response = await apiFetch(`${apiUrl}/v1/products`)
         const data = await response.json()
         setProducts(data)
       } catch (error) {
@@ -71,11 +71,10 @@ function RestaurantRequestFormComponent() {
     setRequestStatus(null);
 
     try {
-      const response = await fetch(`${apiUrl}/v1/restaurants`, {
+      const response = await apiFetch(`${apiUrl}/v1/restaurants`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({
           user_id: user?.id,

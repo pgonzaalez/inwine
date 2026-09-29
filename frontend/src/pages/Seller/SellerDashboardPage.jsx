@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 import { BarChart3, Wine, ShoppingBag, TrendingUp, Check } from "lucide-react"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { useTranslation } from "react-i18next"
+import { apiFetch } from "@/utils/apiFetch"
 import { API_URL, BASE_URL } from "@/config/api"
 
 // Definimos los colores primarios
@@ -178,7 +179,7 @@ const SellerDashboardContent = () => {
     const fetchWines = async () => {
       if (!user) return
       try {
-        const response = await fetch(`${apiUrl}/v1/${user.id}/products`)
+        const response = await apiFetch(`${apiUrl}/v1/${user.id}/products`)
         if (!response.ok) {
           throw new Error(t("dashboards.seller.messages.error_server"))
         }

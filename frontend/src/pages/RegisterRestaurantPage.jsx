@@ -24,7 +24,7 @@ import {
   Wine,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { setCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 import { API_URL } from "@/config/api";
 
 import { useTranslation } from "react-i18next";
@@ -205,7 +205,7 @@ const AddRestaurantForm = () => {
 
   const handleLogin = async (email, password) => {
     try {
-      const response = await fetch(`${apiUrl}/login`, {
+      const response = await apiFetch(`${apiUrl}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -219,8 +219,6 @@ const AddRestaurantForm = () => {
       if (!response.ok) {
         throw new Error(result.message || t("auth.login.error_generic"));
       }
-
-      setCookie("token", result.token, 7);
     } catch (error) {
       setMessage(error.message);
       setMessageType("error");
@@ -265,7 +263,7 @@ const AddRestaurantForm = () => {
         formDataObj.append("image", selectedImage.file);
       }
 
-      const response = await fetch(`${apiUrl}/v1/restaurant`, {
+      const response = await apiFetch(`${apiUrl}/v1/restaurant`, {
         method: "POST",
         headers: {
           Accept: "application/json",

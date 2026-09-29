@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 import { API_URL } from "@/config/api";
 
 export function useFetchUser() {
@@ -9,22 +9,10 @@ export function useFetchUser() {
   const apiUrl = API_URL;
 
   const fetchUser = async () => {
-    const token = getCookie("token");
-
-    if (!token) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
 
-      const response = await fetch(`${apiUrl}/user`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiFetch(`${apiUrl}/user`);
 
       if (!response.ok) throw new Error();
 

@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 import Footer from "../components/FooterComponent"
 import RequestsSection from "../components/landing/requests/RequestSection"
+import { apiFetch } from "@/utils/apiFetch"
 import { API_URL, BASE_URL } from "@/config/api"
 
 export default function RestaurantDetail() {
@@ -29,7 +30,7 @@ export default function RestaurantDetail() {
           return
         }
 
-        const restaurantResponse = await fetch(`${apiUrl}/v1/restaurants-info/${id}`)
+        const restaurantResponse = await apiFetch(`${apiUrl}/v1/restaurants-info/${id}`)
 
         if (!restaurantResponse.ok) {
           throw new Error("Error en obtenir les dades del restaurant")
@@ -38,7 +39,7 @@ export default function RestaurantDetail() {
         const restaurantData = await restaurantResponse.json()
         setRestaurant(restaurantData)
 
-        const requestsResponse = await fetch(`${apiUrl}/v1/${restaurantData.user_id}/restaurant`)
+        const requestsResponse = await apiFetch(`${apiUrl}/v1/${restaurantData.user_id}/restaurant`)
 
         if (!requestsResponse.ok) {
           throw new Error("Error en obtenir les dades de les sol·licituts del restaurant")
@@ -63,7 +64,7 @@ export default function RestaurantDetail() {
   useEffect(() => {
     const fetchWineTypes = async () => {
       try {
-        const response = await fetch(`${apiUrl}/v1/winetypes`)
+        const response = await apiFetch(`${apiUrl}/v1/winetypes`)
         if (!response.ok) {
           throw new Error("Error en obtenir els tipus de vi")
         }

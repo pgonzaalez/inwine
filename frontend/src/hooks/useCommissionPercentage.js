@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { apiFetch } from "@/utils/apiFetch"
 import { API_URL } from "@/config/api"
 
 /**
@@ -16,7 +17,7 @@ export function useCommissionPercentage(type) {
 
     const fetchCommission = async () => {
       try {
-        const response = await fetch(`${API_URL}/v1/commissions/${type}`)
+        const response = await apiFetch(`${API_URL}/v1/commissions/${type}`)
         if (!response.ok) return
         const data = await response.json()
         if (isMounted) {

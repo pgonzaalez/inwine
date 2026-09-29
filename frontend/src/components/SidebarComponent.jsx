@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import { useTranslation } from "react-i18next";
 import { useFetchUser } from "@components/auth/FetchUser"
-import { getCookie, deleteCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import Modal from "@components/Modal";
 import RoleSelector from "@/components/RoleSelector"
 import { API_URL } from "@/config/api"
@@ -51,12 +51,11 @@ export default function Sidebar() {
 
   const redirectToDashboard = async (role) => {
     try {
-      const response = await fetch(`${apiUrl}/update-active-role`, {
+      const response = await apiFetch(`${apiUrl}/update-active-role`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({ role }),
       });
@@ -88,23 +87,17 @@ export default function Sidebar() {
   };
 
   const handleLogout = async () => {
-    const token = getCookie("token")
-    if (!token) {
-      // console.log("No hay token de autenticación")
-      return
-    }
+    if (!user) return
 
     try {
-      const response = await fetch(`${apiUrl}/logout`, {
+      const response = await apiFetch(`${apiUrl}/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       })
 
       if (response.ok) {
-        deleteCookie("token");
         window.location.href = "/"
       } else {
         // console.log("Error al hacer logout")

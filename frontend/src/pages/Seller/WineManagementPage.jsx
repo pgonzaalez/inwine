@@ -7,7 +7,7 @@ import { Notification } from "@components/seller/wineManagement/Notification"
 import { WineTable } from "@components/seller/wineManagement/WineTable"
 import { WineTypeDistribution } from "@components/seller/wineManagement/WineTypeDistribution"
 import { API_URL, BASE_URL } from "@/config/api"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 
 // Definimos los colores primarios
 const primaryColors = {
@@ -39,7 +39,7 @@ function WineManagementComponent() {
     if (!user) return
     try {
       setLoading(true)
-      const response = await fetch(`${apiUrl}/v1/${user.id}/products`)
+      const response = await apiFetch(`${apiUrl}/v1/${user.id}/products`)
       if (!response.ok) {
         throw new Error(t("dashboards.seller.messages.error_server"))
       }
@@ -72,12 +72,11 @@ function WineManagementComponent() {
       const url = `${apiUrl}/v1/logistic/${productId}/send`
 
       // Realizar la petición POST
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -105,12 +104,11 @@ function WineManagementComponent() {
     if (!productId) return
     try {
       setDuplicatingProduct(productId)
-      const response = await fetch(`${apiUrl}/v1/products/${productId}/duplicate`, {
+      const response = await apiFetch(`${apiUrl}/v1/products/${productId}/duplicate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
       if (!response.ok) throw new Error(t("dashboards.seller.messages.error_server"))

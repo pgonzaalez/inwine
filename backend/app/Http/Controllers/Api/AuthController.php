@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Investor;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
@@ -51,12 +52,15 @@ class AuthController extends Controller
             $userRoles->first()->update(['is_active' => true]);
         }
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        // Autenticación por sesión (cookie httpOnly), no por token: el
+        // frontend es una SPA en un dominio stateful de Sanctum, así que le
+        // basta con mandar credentials: "include" en cada petición.
+        Auth::login($user);
+        $request->session()->regenerate();
 
         Log::info('Login correcto', ['user_id' => $user->id, 'email' => $user->email, 'roles' => $roles]);
 
         return response()->json([
-            'token' => $token,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -92,7 +96,9 @@ class AuthController extends Controller
     {
         Log::info('Logout', ['user_id' => $request->user()->id, 'email' => $request->user()->email]);
 
-        $request->user()->tokens()->delete();
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logged out successfully'

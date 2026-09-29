@@ -6,6 +6,7 @@ import Footer from "../components/FooterComponent"
 import ProductGallery from "../components/landing/requests/ProductGallery"
 import ProductInfo from "../components/landing/requests/ProductInfo"
 import RequestsSection from "../components/landing/requests/RequestSection"
+import { apiFetch } from "@/utils/apiFetch"
 import { API_URL, BASE_URL } from "@/config/api"
 
 export default function ProductDetail() {
@@ -32,8 +33,8 @@ export default function ProductDetail() {
         // console.log("Fetching product with ID:", id)
 
         const [productResponse, requestsResponse] = await Promise.all([
-          fetch(`${apiUrl}/v1/products/${id}`),
-          fetch(`${apiUrl}/v1/request-product/${id}`),
+          apiFetch(`${apiUrl}/v1/products/${id}`),
+          apiFetch(`${apiUrl}/v1/request-product/${id}`),
         ])
 
         if (!productResponse.ok || !requestsResponse.ok) {
@@ -62,7 +63,7 @@ export default function ProductDetail() {
   useEffect(() => {
     const fetchWineTypes = async () => {
       try {
-        const response = await fetch(`${apiUrl}/v1/winetypes`)
+        const response = await apiFetch(`${apiUrl}/v1/winetypes`)
         if (!response.ok) {
           throw new Error("Error en obtenir els tipus de vi")
         }

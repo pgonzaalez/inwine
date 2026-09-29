@@ -3,7 +3,7 @@ import { Star, Heart, Share2, Check, Copy, ShoppingBag, Package, Info } from "lu
 import Modal from "@components/Modal"
 import { useFetchUser } from "@components/auth/FetchUser";
 import { API_URL } from "@/config/api";
-import { getCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 import { useCommissionPercentage } from "@/hooks/useCommissionPercentage";
 
 export default function ProductInfo({ product, wineTypeName }) {
@@ -143,11 +143,10 @@ export default function ProductInfo({ product, wineTypeName }) {
     setRequestStatus(null);
 
     try {
-      const response = await fetch(`${apiUrl}/v1/restaurants`, {
+      const response = await apiFetch(`${apiUrl}/v1/restaurants`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({
           user_id: user.user?.id,

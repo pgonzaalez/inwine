@@ -12,6 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Autenticación de la SPA vía cookie de sesión de Sanctum en vez de
+        // Bearer token: antepone EnsureFrontendRequestsAreStateful al grupo
+        // "api", que trata las peticiones que llegan desde un dominio listado
+        // en config/sanctum.php (stateful) como autenticadas por sesión
+        // (cookie httpOnly) en lugar de por token. Requiere que el frontend
+        // mande credentials: "include" en cada petición.
+        $middleware->statefulApi();
+
         // Por defecto, Laravel intenta redirigir a un invitado no autenticado
         // a la ruta NOMBRADA 'login' (pensado para apps con sesión web). Esta
         // API no tiene ninguna ruta así — el login es POST /api/login, sin

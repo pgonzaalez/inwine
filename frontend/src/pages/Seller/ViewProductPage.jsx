@@ -9,7 +9,7 @@ import ProductInfo from "@/components/landing/requests/ProductInfo";
 import { DeleteProductModal } from "@/components/seller/modals/DeleteProductModal";
 import { useFetchUser } from "@components/auth/FetchUser";
 import { API_URL, BASE_URL } from "@/config/api";
-import { getCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 
 export default function ViewProductPage() {
   const { id: productId } = useParams();
@@ -32,7 +32,7 @@ export default function ViewProductPage() {
   const fetchProduct = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`);
+      const response = await apiFetch(`${apiUrl}/v1/${user.id}/products/${productId}`);
       if (!response.ok) {
         throw new Error(t("dashboards.seller.product.error_fetch"));
       }
@@ -47,11 +47,8 @@ export default function ViewProductPage() {
 
   const handleDeleteProduct = async () => {
     try {
-      const response = await fetch(`${apiUrl}/v1/${user.id}/products/${productId}`, {
+      const response = await apiFetch(`${apiUrl}/v1/${user.id}/products/${productId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
       });
 
       if (!response.ok) {

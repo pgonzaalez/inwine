@@ -14,7 +14,7 @@ import {
     Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { setCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { API_URL } from "@/config/api"
 
 import { useTranslation } from "react-i18next";
@@ -99,7 +99,7 @@ const AddInvestorForm = () => {
 
     const handleLogin = async (email, password) => {
         try {
-            const response = await fetch(`${apiUrl}/login`, {
+            const response = await apiFetch(`${apiUrl}/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -113,9 +113,6 @@ const AddInvestorForm = () => {
             if (!response.ok) {
                 throw new Error(result.message || t("auth.login.error_generic"));
             }
-
-            setCookie("token", result.token, 7);
-
         } catch (error) {
             setMessage(error.message);
             setMessageType("error");
@@ -152,7 +149,7 @@ const AddInvestorForm = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch(`${apiUrl}/v1/investor`, {
+            const response = await apiFetch(`${apiUrl}/v1/investor`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

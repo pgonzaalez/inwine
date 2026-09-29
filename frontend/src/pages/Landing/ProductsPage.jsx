@@ -8,11 +8,13 @@ import ProductGrid from "@/components/landing/products/ProductGrid"
 import RestaurantGrid from "@/components/landing/products/RestaurantGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
 import { useTranslation } from "react-i18next";
-import { getCookie } from "@/utils/utils";
+import { useFetchUser } from "@/components/auth/FetchUser";
+import { apiFetch } from "@/utils/apiFetch";
 import { API_URL } from "@/config/api";
 
 export default function ProductPage() {
   const { t } = useTranslation();
+  const { user, loading: userLoading } = useFetchUser();
   // State for filters and tabs
   const [selectedType, setSelectedType] = useState("")
   const [priceRange, setPriceRange] = useState([0, 10000])
@@ -40,17 +42,16 @@ export default function ProductPage() {
     // Set initial mobile state
     setIsMobile(window.innerWidth < 768)
     setShowFilters(window.innerWidth >= 768)
+  }, [])
 
-    const token = getCookie("token")
-    if (token) {
+  useEffect(() => {
+    if (userLoading) return
+
+    if (user) {
         const fetchFavorites = async () => {
             const apiUrl = API_URL
             try {
-                const response = await fetch(`${apiUrl}/favorites/ids`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
+                const response = await apiFetch(`${apiUrl}/favorites/ids`)
                 if (response.ok) {
                     const data = await response.json()
                     setFavorites(data.map(id => String(id)))
@@ -67,7 +68,7 @@ export default function ProductPage() {
           } catch (error) {}
         }
     }
-  }, [])
+  }, [user, userLoading])
 
   // Guardar favoritos en cookies cuando cambien
   useEffect(() => {
@@ -97,7 +98,7 @@ export default function ProductPage() {
       setLoading(true)
       try {
         const apiUrl = API_URL
-        const response = await fetch(`${apiUrl}/v1/products`)
+        const response = await apiFetch(`${apiUrl}/v1/products`)
         const data = await response.json()
         
         // Asegurarse de que cada producto tenga un ID y que sea un número
@@ -124,7 +125,7 @@ export default function ProductPage() {
     const fetchWineTypes = async () => {
       try {
         const apiUrl = API_URL
-        const response = await fetch(`${apiUrl}/v1/winetypes`)
+        const response = await apiFetch(`${apiUrl}/v1/winetypes`)
         const data = await response.json()
         setWineTypes(data)
       } catch (error) {
@@ -144,8 +145,8 @@ export default function ProductPage() {
         const apiUrl = API_URL
 
         const [restaurantsResponse, requestsResponse] = await Promise.all([
-          fetch(`${apiUrl}/v1/restaurants-info`),
-          fetch(`${apiUrl}/v1/restaurants-requests`),
+          apiFetch(`${apiUrl}/v1/restaurants-info`),
+          apiFetch(`${apiUrl}/v1/restaurants-requests`),
         ])
 
         if (!restaurantsResponse.ok || !requestsResponse.ok) {
@@ -279,11 +280,10 @@ export default function ProductPage() {
   const toggleFavorite = async (productId) => {
     const pId = String(productId);
     console.log("Toggle favorite called with ID:", pId, "Current favorites:", favorites);
-    
-    const token = getCookie("token")
+
     const apiUrl = API_URL
 
-    if (!token) {
+    if (!user) {
       setFavorites((prevFavorites) => {
         if (prevFavorites.includes(pId)) {
           return prevFavorites.filter((id) => id !== pId)
@@ -295,10 +295,9 @@ export default function ProductPage() {
     }
 
     try {
-      const response = await fetch(`${apiUrl}/favorites/${pId}/toggle`, {
+      const response = await apiFetch(`${apiUrl}/favorites/${pId}/toggle`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
       })

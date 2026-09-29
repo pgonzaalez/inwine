@@ -18,7 +18,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
-import { getCookie, deleteCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 import { API_URL } from "@/config/api";
 import Modal from "@components/Modal";
 import RoleSelector from '@/components/RoleSelector';
@@ -49,12 +49,11 @@ export default function Header() {
 
   const redirectToDashboard = async (role) => {
     try {
-      const response = await fetch(`${apiUrl}/update-active-role`, {
+      const response = await apiFetch(`${apiUrl}/update-active-role`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({ role }),
       });
@@ -104,23 +103,17 @@ export default function Header() {
   };
 
   const handleLogout = async () => {
-    const token = getCookie("token");
-    if (!token) {
-      // console.log("No hay token de autenticación")
-      return;
-    }
+    if (!user.user) return;
 
     try {
-      const response = await fetch(`${apiUrl}/logout`, {
+      const response = await apiFetch(`${apiUrl}/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
-        deleteCookie("token");
         window.location.href = "/";
       } else {
         // console.log("Error al hacer logout")
@@ -134,11 +127,10 @@ export default function Header() {
     const fetchCartCount = async () => {
       try {
         const apiUrl = API_URL;
-        const response = await fetch(`${apiUrl}/v1/${user.user.id}/orders`, {
+        const response = await apiFetch(`${apiUrl}/v1/${user.user.id}/orders`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${getCookie("token")}`,
           },
         });
 

@@ -9,7 +9,7 @@ import { WineDetailsForm } from "@/components/product/WineDetailsForm"
 import { WinePricingForm } from "@/components/product/WinePricingForm"
 import { validateStep } from "@/utils/form-validation"
 import { API_URL } from "@/config/api"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { useCommissionPercentage } from "@/hooks/useCommissionPercentage"
 
 export default function CreateProduct() {
@@ -49,7 +49,7 @@ export default function CreateProduct() {
 
   useEffect(() => {
     const fetchWineTypes = async () => {
-      const response = await fetch(`${apiUrl}/v1/winetypes`)
+      const response = await apiFetch(`${apiUrl}/v1/winetypes`)
       const data = await response.json()
       setWineTypes(data)
     }
@@ -218,11 +218,8 @@ export default function CreateProduct() {
         formDataObj.append(`images[]`, img.file) // Changed to images[] for Laravel
       })
 
-      const response = await fetch(`${apiUrl}/v1/products`, {
+      const response = await apiFetch(`${apiUrl}/v1/products`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
         body: formDataObj, // Send FormData instead of JSON
       })
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useFetchUser } from "@/components/auth/FetchUser"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { useTranslation } from "react-i18next";
 import { API_URL } from "@/config/api"
 
@@ -85,12 +85,10 @@ export default function InvestorForm({ primaryColors }) {
     setIsLoading(true)
 
     try {
-      const token = getCookie("token")
-      const response = await fetch(`${apiUrl}/investor`, {
+      const response = await apiFetch(`${apiUrl}/investor`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       })

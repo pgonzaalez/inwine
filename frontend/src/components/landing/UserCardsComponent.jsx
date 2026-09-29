@@ -3,7 +3,7 @@ import { Check } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import { useFetchUser } from "@components/auth/FetchUser";
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { useTranslation } from "react-i18next";
 import { API_URL } from "@/config/api"
 
@@ -38,12 +38,11 @@ export default function UserCards() {
   
   const handleRoleChange = async (role) => {
     try {
-      const response = await fetch(`${apiUrl}/update-active-role`, {
+      const response = await apiFetch(`${apiUrl}/update-active-role`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({ role }),
       });

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { CheckCircle, CreditCard } from "lucide-react";
 import { useFetchUser } from "@/components/auth/FetchUser";
+import { apiFetch } from "@/utils/apiFetch";
 import { API_URL, BASE_URL } from "@/config/api";
 
 export default function OrderSummaryPage() {
@@ -25,13 +26,6 @@ export default function OrderSummaryPage() {
     if (imagePath.startsWith("http")) return imagePath;
     return `${baseUrl}${imagePath}`;
   };
-
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-    return null;
-  }
 
   const totalPrice = localStorage.getItem("totalPrice");
   if (!totalPrice) {
@@ -60,11 +54,10 @@ export default function OrderSummaryPage() {
 
   const markOrderAsCompleted = async (orderId) => {
     try {
-      const response = await fetch(`${apiUrl}/v1/orders/${orderId}/completed`, {
+      const response = await apiFetch(`${apiUrl}/v1/orders/${orderId}/completed`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1")}`,
         },
       });
 
@@ -91,16 +84,10 @@ export default function OrderSummaryPage() {
     const fetchOrderDetails = async () => {
       setLoading(true);
       try {
-        const token = getCookie("token");
-        if (!token) {
-          throw new Error("No authentication token found");
-        }
-
-        const response = await fetch(`${apiUrl}/v1/${user.id}/orders`, {
+        const response = await apiFetch(`${apiUrl}/v1/${user.id}/orders`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         });
 

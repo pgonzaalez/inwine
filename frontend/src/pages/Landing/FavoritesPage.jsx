@@ -6,34 +6,37 @@ import Footer from "@/components/FooterComponent"
 import ProductGrid from "@/components/landing/products/ProductGrid"
 import EmptyState from "@/components/landing/products/EmptyState"
 import { useTranslation } from "react-i18next"
-import { getCookie } from "@/utils/utils"
+import { useFetchUser } from "@/components/auth/FetchUser"
+import { apiFetch } from "@/utils/apiFetch"
 import { API_URL } from "@/config/api"
 
 export default function FavoritesPage() {
   const { t } = useTranslation()
+  const { user, loading: userLoading } = useFetchUser()
   const [favorites, setFavorites] = useState([])
   const [favoriteProducts, setFavoriteProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
+    if (userLoading) return
+
     const fetchFavoriteProducts = async () => {
       setLoading(true)
-      const token = getCookie("token")
       const apiUrl = API_URL
 
-      if (!token) {
+      if (!user) {
         // Fallback to local cookie favorites if not logged in
         const savedFavorites = document.cookie.split("; ").find((row) => row.startsWith("favorites="))
         if (savedFavorites) {
           try {
             const ids = JSON.parse(savedFavorites.split("=")[1])
             setFavorites(ids.map(id => String(id)))
-            
+
             // We still need to fetch the product details for these IDs
             // The API doesn't have a bulk fetch by ID, so we might need to fetch all and filter
             // or we could fetch each one. For now, fetch all products and filter.
-            const response = await fetch(`${apiUrl}/v1/products`)
+            const response = await apiFetch(`${apiUrl}/v1/products`)
             if (response.ok) {
               const allProducts = await response.json()
               const filtered = allProducts.filter(p => ids.map(id => String(id)).includes(String(p.id)))
@@ -46,11 +49,7 @@ export default function FavoritesPage() {
       }
 
       try {
-        const response = await fetch(`${apiUrl}/favorites`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        const response = await apiFetch(`${apiUrl}/favorites`)
         if (response.ok) {
           const data = await response.json()
           setFavoriteProducts(data)
@@ -64,13 +63,12 @@ export default function FavoritesPage() {
     }
 
     fetchFavoriteProducts()
-  }, [])
+  }, [user, userLoading])
 
   const toggleFavorite = async (productId) => {
-    const token = getCookie("token")
     const apiUrl = API_URL
 
-    if (!token) {
+    if (!user) {
       setFavorites((prev) => {
         const newFavs = prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
         document.cookie = `favorites=${JSON.stringify(newFavs)}; path=/`
@@ -81,10 +79,9 @@ export default function FavoritesPage() {
     }
 
     try {
-      const response = await fetch(`${apiUrl}/favorites/${productId}/toggle`, {
+      const response = await apiFetch(`${apiUrl}/favorites/${productId}/toggle`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
       })

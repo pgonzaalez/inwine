@@ -5,7 +5,7 @@ import { Home, ShoppingCart, LogIn } from "lucide-react";
 import { useFetchUser } from "@components/auth/FetchUser";
 import Modal from "@components/Modal";
 import { useNavigate } from "react-router-dom";
-import { getCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 import { API_URL } from "@/config/api";
 
 export default function RequestCard({ request, index, mode, productPrice, isRequestsExpanded }) {
@@ -34,11 +34,10 @@ export default function RequestCard({ request, index, mode, productPrice, isRequ
       setIsLoading(true);
 
       // Realizar la petición POST a la API
-      const response = await fetch(`${apiUrl}/v1/orders`, {
+      const response = await apiFetch(`${apiUrl}/v1/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({
           user_id: user.id,
@@ -70,14 +69,7 @@ export default function RequestCard({ request, index, mode, productPrice, isRequ
       if (!user) return;
 
       try {
-        const response = await fetch(
-          `${apiUrl}/v1/${user.id}/orders/`,
-          {
-            headers: {
-              Authorization: `Bearer ${getCookie("token")}`,
-            },
-          }
-        );
+        const response = await apiFetch(`${apiUrl}/v1/${user.id}/orders/`);
 
         if (!response.ok) return;
 

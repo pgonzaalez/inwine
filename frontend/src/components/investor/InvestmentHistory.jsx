@@ -5,7 +5,7 @@ import { Notification } from "@components/seller/wineManagement/Notification"
 import { InvestmentStats } from "./InvestmentStats"
 import { InvestmentStatusDistribution } from "./InvestmentStatusDistribution";
 import { InvestmentTable } from "./InvestmentTable"
-import { getCookie } from "@/utils/utils" // Usando tu utilidad personalizada
+import { apiFetch } from "@/utils/apiFetch"
 import { useTranslation } from "react-i18next"
 import { API_URL } from "@/config/api"
 
@@ -38,20 +38,7 @@ function InvestmentHistoryComponent() {
     try {
       setIsLoading(true)
 
-      const token = getCookie("token")
-
-      if (!token) {
-        setNotification(t("dashboards.investor.messages.no_token"))
-        setIsLoading(false)
-        return
-      }
-
-      const response = await fetch(`${apiUrl}/${user.id}/investments`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
+      const response = await apiFetch(`${apiUrl}/${user.id}/investments`)
 
       if (!response.ok) {
         throw new Error(t("dashboards.investor.messages.error_server"))

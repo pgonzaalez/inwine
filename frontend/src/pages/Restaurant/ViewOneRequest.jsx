@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { Edit, Trash, ArrowLeft, DollarSign, Store, Tag, MapPin, Calendar, Wine } from "lucide-react"
-import { getCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 import { useFetchUser } from "@components/auth/FetchUser"
 import { DeleteRequestModal } from "@/components/restaurant/modals/DeleteRequestModal";
 import { EditRequestModal } from "@/components/restaurant/modals/EditRequestModal";
@@ -119,7 +119,7 @@ export default function ViewOneRequest() {
   const fetchRequest = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch(`${apiUrl}/v1/${user.id}/restaurant/${id}`)
+      const response = await apiFetch(`${apiUrl}/v1/${user.id}/restaurant/${id}`)
       if (!response.ok) {
         throw new Error(t("dashboards.restaurant.messages.error_fetch"))
       }
@@ -134,12 +134,11 @@ export default function ViewOneRequest() {
 
   const handleDeleteRequest = async () => {
     try {
-      const response = await fetch(`${apiUrl}/v1/restaurant/${id}`, {
+      const response = await apiFetch(`${apiUrl}/v1/restaurant/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -166,12 +165,11 @@ export default function ViewOneRequest() {
 
     try {
       // Enviamos solo el precio actualizado
-      const response = await fetch(`${apiUrl}/v1/restaurants/${id}?price_restaurant=${offerPrice}`, {
+      const response = await apiFetch(`${apiUrl}/v1/restaurants/${id}?price_restaurant=${offerPrice}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         }
       });
 
@@ -202,12 +200,11 @@ export default function ViewOneRequest() {
       const productId = request.product.id;
       const url = `${apiUrl}/v1/logistic/${productId}/deliver`;
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -227,12 +224,11 @@ export default function ViewOneRequest() {
       const productId = request.product.id;
       const url = `${apiUrl}/v1/logistic/${productId}/sell`;
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 

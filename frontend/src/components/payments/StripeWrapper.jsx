@@ -5,7 +5,7 @@ import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "./CheckoutForm"
 import { useEffect, useRef, useState } from "react"
 import { API_URL } from "@/config/api"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 
 const apiUrl = API_URL
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
@@ -63,11 +63,10 @@ export default function StripeWrapper() {
 
     console.log("Valid Order IDs being sent to API:", orderIds);
 
-    fetch(`${apiUrl}/v1/create-payment-intent`, {
+    apiFetch(`${apiUrl}/v1/create-payment-intent`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getCookie("token")}`,
       },
       body: JSON.stringify({ orderIds,totalPrice }),
     })

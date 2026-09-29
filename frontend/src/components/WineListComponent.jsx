@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom"
 import ConfirmationDialog from "@components/ConfirmationDialogComponent"
 import { useFetchUser } from "@components/auth/FetchUser"
 import { API_URL, BASE_URL } from "@/config/api"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 
 // Definimos los colores rosé para usar en todo el componente
 const roseColors = {
@@ -194,7 +194,7 @@ export default function WineList() {
     const fetchWines = async () => {
       if (!user) return
       try {
-        const response = await fetch(`${apiUrl}/v1/${user.id}/products`)
+        const response = await apiFetch(`${apiUrl}/v1/${user.id}/products`)
         if (!response.ok) {
           throw new Error("No s'ha pogut connectar amb el servidor")
         }
@@ -217,11 +217,8 @@ export default function WineList() {
 
   const handleDeleteWine = async () => {
     try {
-      const response = await fetch(`${apiUrl}/v1/${user.id}/products/${currentWineId}`, {
+      const response = await apiFetch(`${apiUrl}/v1/${user.id}/products/${currentWineId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
-        },
       })
 
       if (!response.ok) {

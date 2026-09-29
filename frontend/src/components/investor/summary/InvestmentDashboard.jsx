@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useFetchUser } from "@components/auth/FetchUser"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { InvestmentSummaryCards } from "./InvestmentSummaryCards"
 import { InvestmentTimelineChart } from "./InvestmentTimelineChart"
 import { InvestmentStatusChart } from "./InvestmentStatusChart"
@@ -38,20 +38,7 @@ function InvestmentDashboardComponent() {
     try {
       setIsLoading(true)
 
-      const token = getCookie("token")
-
-      if (!token) {
-        setNotification(t("dashboards.investor.messages.no_token"))
-        setIsLoading(false)
-        return
-      }
-
-      const response = await fetch(`${apiUrl}/${user.id}/investments`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
+      const response = await apiFetch(`${apiUrl}/${user.id}/investments`)
 
       if (!response.ok) {
         throw new Error(t("dashboards.investor.messages.error_server"))

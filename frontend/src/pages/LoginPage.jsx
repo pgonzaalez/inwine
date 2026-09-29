@@ -10,7 +10,7 @@ import {
   Mail,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { getCookie, setCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 import RoleSelector from "@/components/RoleSelector"
 import Modal from "@components/Modal";
 import { API_URL } from "@/config/api";
@@ -60,7 +60,7 @@ const LoginForm = () => {
 
     try {
       // Petición al backend
-      const response = await fetch(`${apiUrl}/login`, {
+      const response = await apiFetch(`${apiUrl}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -82,10 +82,10 @@ const LoginForm = () => {
         }
       }
 
-      // Guardar token, resetear form, guardar usuario
+      // Resetear form, guardar usuario (la sesión ya queda autenticada por
+      // la cookie httpOnly que ha puesto el backend)
       setMessage(t("auth.login.success"))
       setMessageType("success")
-      setCookie("token", result.token, 7)
       setUserData(result.user)
       setFormData({ email: "", password: "" })
 
@@ -108,12 +108,11 @@ const LoginForm = () => {
     try {
       // Solo necesitamos actualizar el rol si hay más de uno
       if (userData?.roles?.length > 1) {
-        const response = await fetch(`${apiUrl}/update-active-role`, {
+        const response = await apiFetch(`${apiUrl}/update-active-role`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            Authorization: `Bearer ${getCookie("token")}`,
           },
           body: JSON.stringify({ role }),
         });

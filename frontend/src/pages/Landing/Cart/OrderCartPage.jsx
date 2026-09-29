@@ -8,7 +8,7 @@ import { CartItem } from "@/components/landing/cart/CartItem"
 import { CartSummary } from "@/components/landing/cart/CartSummary"
 import { DeleteCartModal } from "@/components/landing/cart/DeleteCartModal"
 import { useFetchUser } from "@/components/auth/FetchUser"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { API_URL, BASE_URL } from "@/config/api"
 import { useCommissionPercentage } from "@/hooks/useCommissionPercentage"
 
@@ -33,11 +33,10 @@ useEffect(() => {
 
     try {
       const apiUrl = API_URL
-      const response = await fetch(`${apiUrl}/v1/${user.id}/orders`, {
+      const response = await apiFetch(`${apiUrl}/v1/${user.id}/orders`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 
@@ -75,11 +74,10 @@ useEffect(() => {
 
     try {
       const apiUrl = API_URL
-        await fetch(`${apiUrl}/v1/${user.id}/orders/clear`, {
+        await apiFetch(`${apiUrl}/v1/${user.id}/orders/clear`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({
           selectedOrderIds: cartItems
@@ -105,11 +103,10 @@ useEffect(() => {
   const removeItem = async (orderId) => {
     try {
       const apiUrl = API_URL
-      await fetch(`${apiUrl}/v1/orders/${orderId}`, {
+      await apiFetch(`${apiUrl}/v1/orders/${orderId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
       })
 

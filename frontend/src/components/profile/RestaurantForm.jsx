@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useFetchUser } from "@/components/auth/FetchUser"
-import { getCookie } from "@/utils/utils"
+import { apiFetch } from "@/utils/apiFetch"
 import { useTranslation } from "react-i18next";
 import { API_URL, BASE_URL } from "@/config/api"
 
@@ -183,7 +183,6 @@ export default function RestaurantForm({ primaryColors }) {
     setIsLoading(true)
 
     try {
-      const token = getCookie("token")
       const formDataObj = new FormData()
       formDataObj.append("_method", "PUT")
 
@@ -202,11 +201,8 @@ export default function RestaurantForm({ primaryColors }) {
         formDataObj.append("remove_image", "1")
       }
 
-      const response = await fetch(`${apiUrl}/restaurant`, {
+      const response = await apiFetch(`${apiUrl}/restaurant`, {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
         body: formDataObj
       })
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { apiFetch } from "@/utils/apiFetch";
 import { API_URL } from "@/config/api";
 
-const Notifications = ({ userToken }) => {
+const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
 
   const primaryColors = {
@@ -11,11 +12,7 @@ const Notifications = ({ userToken }) => {
   };
   // Función para recuperar notificaciones
   const fetchNotifications = async () => {
-    const res = await fetch(`${API_URL}/notifications`, {
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
+    const res = await apiFetch(`${API_URL}/notifications`);
 
     if (res.ok) {
       const data = await res.json();
@@ -28,7 +25,7 @@ const Notifications = ({ userToken }) => {
   // Llamamos a la función al montar el componente
   useEffect(() => {
     fetchNotifications();
-  }, [userToken]);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">

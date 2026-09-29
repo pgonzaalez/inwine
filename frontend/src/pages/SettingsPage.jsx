@@ -16,7 +16,7 @@ import { useFetchUser } from "@/components/auth/FetchUser";
 import Footer from "@components/FooterComponent";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "@/config/api";
-import { getCookie } from "@/utils/utils";
+import { apiFetch } from "@/utils/apiFetch";
 
 const SettingsPage = () => {
   const { t, i18n } = useTranslation();
@@ -81,11 +81,10 @@ const SettingsPage = () => {
     setIsSavingPassword(true);
 
     try {
-      const response = await fetch(`${API_URL}/user/password`, {
+      const response = await apiFetch(`${API_URL}/user/password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify(passwordForm),
       });
@@ -119,11 +118,10 @@ const SettingsPage = () => {
     setIsSavingNotifications(true);
 
     try {
-      const response = await fetch(`${API_URL}/user/preferences`, {
+      const response = await apiFetch(`${API_URL}/user/preferences`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("token")}`,
         },
         body: JSON.stringify({ notify_by_email: newValue }),
       });
